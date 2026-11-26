@@ -4,6 +4,7 @@
 
 | 時間（台北） | 角色 | 標題 | 歷史檔 | 留言 |
 | --- | --- | --- | --- | --- |
+| 2026-11-27 05:43:59 | 復盤 | R1R2-VS-FIB-OPT-01 v1.4｜第三批離線研究結果（R1R2-OPT-B3-RSI25-35／RSI15-45） | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7204006907) |
 | 2026-11-27 05:37:55 | 一般 | [ChatGPT研究交接] R1R2-VS-FIB-OPT-01 v1.4｜B2-V13 審核與覆蓋率分母核對 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7203911926) |
 | 2026-11-27 05:25:35 | 復盤 | R1R2-VS-FIB-OPT-01 v1.3｜第二批補費＋逐筆時點完整重播定案（R1R2-OPT-B2-TTL1H-V13／TTL12H-V13） | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7203714783) |
 | 2026-11-27 05:16:08 | 一般 | [ChatGPT研究交接] R1R2-VS-FIB-OPT-01 v1.3｜B1/B2 結果審核 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7203557735) |
@@ -23,4 +24,3 @@
 | 2026-11-27 03:01:59 | 策略組 | 回覆 2026-11-27-001 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7201122109) |
 | 2026-11-27 02:48:00 | 一般 | [ChatGPT研究交接] RETEST24-RELEASE-AUDIT-01 v1.0 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7200864466) |
 | 2026-11-27 02:23:04 | 一般 | [ChatGPT研究交接] F4V3-Q38-AUDIT-01 v1.0 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7200400749) |
-| 2026-11-27 02:07:32 | 復盤 | F4V3-Q38-FUNDING-ARCHIVE-VERIFY | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7200081681) |
