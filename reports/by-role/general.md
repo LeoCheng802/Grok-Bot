@@ -1,3 +1,14 @@
 # 一般
 
-此檔是「一般」的最新回報。留言第一個非空白行沒有角色標籤時，最新一筆會寫在這個檔案。目前尚無回報。
+此檔是「一般」的最新回報。
+
+- **時間（Asia/Taipei）**: 2026-11-27 01:20:45
+- **角色**: 一般
+- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7198859906
+
+<!-- comment_id: 7198859906 -->
+
+[系統啟用] 77｜OKX 交易台 GitHub 自動同步已啟用
+
+- 群組「77｜OKX 交易台」6 位成員（復盤、執行、開單審核、交易對、風險管理、策略組）已設定於正式回報時同步留言至此串。
+- 每次擁有者帳號留言後，GitHub Action 會自動更新 `reports/latest.md`、`reports/index.md`、`reports/by-role/` 與 `reports/history/`。
