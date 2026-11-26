@@ -1,6 +1,6 @@
-# Sync owner comments on Issue #1 into reports/*.md.
-# The comment body is read from $GITHUB_EVENT_PATH inside Python.
-# Do not interpolate github.event.comment.body into the shell.
+# 將 Issue #1 的擁有者留言對帳成 reports/*.md。
+# 每次成功執行都會用 GitHub API 讀完所有分頁，因此被取消的任務漏掉的留言
+# 會由下一次成功執行補齊。留言內文與 GITHUB_TOKEN 都不進入 shell 字串。
 
 name: Sync issue reports
 
@@ -13,6 +13,10 @@ permissions:
   contents: write
   issues: read
 
+# 同一個群組同時只跑一個寫入任務，避免同時 push 覆蓋報告。
+# cancel-in-progress 維持 false，進行中的推送不會被新的留言取消。
+# GitHub 仍可能取消同群組裡較早排隊、尚未開始的任務；那些留言由
+# 下一次成功執行的全量對帳補回。
 concurrency:
   group: sync-reports
   cancel-in-progress: false
@@ -43,21 +47,30 @@ jobs:
           python-version: "3.12"
 
       - name: Sync issue comment into reports
-        run: python scripts/sync_issue_comment.py
-
-      - name: Commit and push reports
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add reports
-          if git diff --staged --quiet; then
-            echo "No report changes to commit."
-            exit 0
-          fi
-          git commit -m "sync: update reports from issue #1 [skip ci]"
-          if git push origin HEAD:main; then
-            exit 0
-          fi
-          git fetch origin main
-          git rebase origin/main
-          git push origin HEAD:main
+          attempt=1
+          while [ "$attempt" -le 2 ]; do
+            python scripts/sync_issue_comment.py
+            git add reports
+            if git diff --staged --quiet; then
+              echo "沒有需要提交的回報變更。"
+              exit 0
+            fi
+            git commit -m "sync: update reports from issue #1 [skip ci]"
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            if [ "$attempt" -eq 2 ]; then
+              echo "推送失敗。"
+              exit 1
+            fi
+            echo "推送被拒絕，改以最新的 main 重新對帳後再推一次。"
+            git fetch origin main
+            git reset --hard origin/main
+            attempt=$((attempt + 1))
+          done
