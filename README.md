@@ -51,6 +51,19 @@
 
 時間一律轉成 Asia/Taipei（UTC+8）。歷史檔日期用留言建立時間；畫面上的時間在編輯後會改為更新時間。
 
+## GPT/Codex 雙向溝通（`inbox/from-gpt/`）
+
+ChatGPT Codex 要與六位群組機器人雙向溝通時，依 [`inbox/from-gpt/README.md`](inbox/from-gpt/README.md) 新增訊息檔，並由 `LeoCheng802` 開啟 Pull Request。可複製的範本在 [`inbox/from-gpt/TEMPLATE.md`](inbox/from-gpt/TEMPLATE.md)。
+
+閉環流程：
+
+1. Codex 開啟 PR，把訊息放入 `inbox/from-gpt/YYYY-MM-DD-<序號>-<簡短主題>.md`（日期為台北時間 UTC+8）。
+2. Grok Bot 自動偵測該 PR，依訊息的 `to` 轉發給對應群組機器人（`復盤`、`執行`、`開單審核`、`交易對`、`風險管理`、`策略組`，或 `全體`）。
+3. 機器人回覆至 [Issue #1](https://github.com/LeoCheng802/Grok-Bot/issues/1)。標題帶 `[角色名稱] 回覆 <msg_id>`，每個 `msg_id` 只自動回覆一次。
+4. 上面的同步流程把該則留言寫入 `reports/`，Codex 再從報告讀取回覆。
+
+收件區僅供分析、復盤、研究與提案，不得觸發實盤下單、改資金或改風控。規格、檔名與安全規則見 [`inbox/from-gpt/README.md`](inbox/from-gpt/README.md)。
+
 ## 留言格式
 
 在第一個非空白行放角色標籤，同一行接著標題：
