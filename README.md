@@ -32,12 +32,20 @@
 
 ## 同步方式
 
-[`.github/workflows/sync-reports.yml`](.github/workflows/sync-reports.yml) 會在兩種情況執行：
+[`.github/workflows/sync-reports.yml`](.github/workflows/sync-reports.yml) 在下列情況執行。每一次有效觸發都會透過 GitHub REST API **重新讀取 Issue #1 的全部留言**（依分頁直到最後一頁），不只處理觸發那一則：
 
-- Issue #1 有新留言或留言被編輯，而且留言者是儲存庫擁有者（`author_association` 為 `OWNER`，或帳號為 `LeoCheng802`）。
-- 手動執行 `workflow_dispatch`。這會用 GitHub API 把 Issue #1 的擁有者留言重新寫入。
+- Issue #1 有新留言或留言被編輯（`issue_comment` 的 `created` / `edited`），而且留言者是儲存庫擁有者（`author_association` 為 `OWNER`，或帳號為 `LeoCheng802`）。
+- 手動執行 `workflow_dispatch`。
 
-此儲存庫是公開的，因此只同步擁有者留言。工作流程會先檢查 Issue 編號與作者，Python 腳本 [`scripts/sync_issue_comment.py`](scripts/sync_issue_comment.py) 會再檢查一次。留言內文只從 Actions 的 event JSON 檔讀取，不會拼進 shell。
+腳本只保留擁有者留言，再依 `comment_id` 冪等寫入 `reports/history/YYYY-MM-DD.md`（日期為 Asia/Taipei，UTC+8）。同一則留言不會重複新增；內容被編輯時，更新原來的那一筆。接著依照已歸檔的擁有者留言，重新產生 `reports/index.md`、`reports/latest.md` 與 `reports/by-role/*.md`。
+
+因此，若有同步任務在排隊時被取消、那一則當時沒寫進報告，之後任何一次成功的同步都會把缺漏的留言補齊。報告內容與儲存庫現況完全相同時，不會建立空的 commit。
+
+此儲存庫是公開的，所以工作流程先檢查 Issue 編號與作者，Python 腳本 [`scripts/sync_issue_comment.py`](scripts/sync_issue_comment.py) 會再檢查一次。留言內文只在腳本裡處理，不會拼進 shell。
+
+同步步驟以環境變數 `GITHUB_TOKEN` 接收 GitHub Actions 內建的 `${{ secrets.GITHUB_TOKEN }}`。Token 不會寫進程式碼、報告檔、commit 訊息或日誌。工作流程權限只開 `contents: write`（推送報告）與 `issues: read`（讀取留言）。
+
+`concurrency` 讓同一個群組同時只有一個任務寫入並推送報告，避免互相覆蓋。進行中的任務不會被新的留言取消。GitHub 仍可能取消同群組裡較早排隊、尚未開始的任務；被取消的那幾則會由下一次成功的全量對帳補回。若推送時 `main` 已前進，會先抓取最新的 `main`、重新對帳後再推一次。
 
 有變更時，以 `github-actions[bot]` 提交到 `main`，提交訊息含 `[skip ci]`。
 

@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
 """Sync repository-owner comments on Issue #1 into Markdown reports.
 
-The comment body is read from the GitHub event JSON file (or the issues API
-on a manual run). It is never interpolated into a shell command.
+Every successful run reads every page of Issue #1 comments from the GitHub
+REST API, keeps owner comments, and rebuilds the reports. A later run
+backfills comments whose workflow runs were cancelled before they could
+write. The triggering event only decides whether the run is allowed to sync.
+
+The GitHub token is read from the GITHUB_TOKEN environment variable. It is
+never written into reports, commits, or logs.
 """
 
 from __future__ import annotations
@@ -11,6 +16,7 @@ import json
 import os
 import re
 import sys
+import urllib.parse
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -22,7 +28,14 @@ ISSUE_NUMBER = 1
 DEFAULT_REPO = "LeoCheng802/Grok-Bot"
 TAIPEI = timezone(timedelta(hours=8), name="Asia/Taipei")
 MAX_TITLE_LEN = 80
-MAX_COMMENT_PAGES = 20
+MAX_COMMENT_PAGES = 100
+COMMENTS_PER_PAGE = 100
+_SECRET_QUERY_KEYS = frozenset({"access_token", "token", "client_secret"})
+_BEARER_RE = re.compile(r"(?i)\bBearer\s+\S+")
+_AUTH_RE = re.compile(r"(?i)\bAuthorization\s*[:=]\s*\S+")
+_TOKEN_SHAPE_RE = re.compile(
+    r"\b(?:gh[pousr]_[A-Za-z0-9_]{8,}|github_pat_[A-Za-z0-9_]{8,})\b"
+)
 
 _REPO_RE = re.compile(r"^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$")
 _BLOCK_RE = re.compile(
@@ -466,7 +479,51 @@ def validate_repo(repo: str) -> str:
     return repo
 
 
-def _next_link(header: str) -> str | None:
+def redact_secrets(text: str) -> str:
+    """Strip credentials from an error string before it is printed."""
+    redacted = text
+    for key in ("GITHUB_TOKEN", "GH_TOKEN"):
+        secret = os.environ.get(key) or ""
+        if len(secret) >= 8:
+            redacted = redacted.replace(secret, "[REDACTED]")
+    redacted = _AUTH_RE.sub("Authorization: [REDACTED]", redacted)
+    redacted = _BEARER_RE.sub("Bearer [REDACTED]", redacted)
+    redacted = _TOKEN_SHAPE_RE.sub("[REDACTED]", redacted)
+    return redacted
+
+
+def _issue_comments_path(repo: str) -> str:
+    return f"/repos/{repo}/issues/{ISSUE_NUMBER}/comments"
+
+
+def _is_issue_comments_url(url: str, repo: str) -> bool:
+    parsed = urllib.parse.urlsplit(url)
+    return parsed.path == _issue_comments_path(repo)
+
+
+def _clean_api_url(url: str) -> str | None:
+    """Keep an https://api.github.com URL and drop credential query parameters."""
+    parsed = urllib.parse.urlsplit(url.strip())
+    if parsed.scheme != "https" or parsed.netloc != "api.github.com":
+        return None
+    if parsed.username or parsed.password:
+        return None
+    pairs = urllib.parse.parse_qsl(parsed.query, keep_blank_values=True)
+    if any(key.lower() in _SECRET_QUERY_KEYS for key, _value in pairs):
+        pairs = [
+            (key, value)
+            for key, value in pairs
+            if key.lower() not in _SECRET_QUERY_KEYS
+        ]
+        query = urllib.parse.urlencode(pairs)
+    else:
+        query = parsed.query
+    return urllib.parse.urlunsplit(("https", "api.github.com", parsed.path, query, ""))
+
+
+def _next_link(header: str, repo: str = DEFAULT_REPO) -> str | None:
+    if not header:
+        return None
     for part in header.split(","):
         section = part.strip()
         if not section.endswith('rel="next"'):
@@ -474,58 +531,145 @@ def _next_link(header: str) -> str | None:
         match = re.search(r"<([^>]+)>", section)
         if not match:
             return None
-        url = match.group(1)
-        if url.startswith("https://api.github.com/"):
+        url = _clean_api_url(match.group(1))
+        if url and _is_issue_comments_url(url, repo):
             return url
         return None
     return None
 
 
+def _next_numbered_page(url: str, repo: str) -> str | None:
+    """Advance ?page= when GitHub omits the Link header on a full page."""
+    cleaned = _clean_api_url(url)
+    if not cleaned or not _is_issue_comments_url(cleaned, repo):
+        return None
+    parsed = urllib.parse.urlsplit(cleaned)
+    pairs = urllib.parse.parse_qsl(parsed.query, keep_blank_values=True)
+    page = 1
+    kept: list[tuple[str, str]] = []
+    seen_page = False
+    for key, value in pairs:
+        if key == "page":
+            if seen_page:
+                continue
+            seen_page = True
+            try:
+                page = int(value)
+            except ValueError:
+                return None
+            continue
+        kept.append((key, value))
+    if not any(key == "per_page" for key, _value in kept):
+        kept.insert(0, ("per_page", str(COMMENTS_PER_PAGE)))
+    kept.append(("page", str(page + 1)))
+    return urllib.parse.urlunsplit(
+        ("https", "api.github.com", parsed.path, urllib.parse.urlencode(kept), "")
+    )
+
+
+def _request_json(url: str, token: str) -> tuple[object, str]:
+    """GET one API URL. The token is sent only in the Authorization header."""
+    request = Request(
+        url,
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Accept": "application/vnd.github+json",
+            "User-Agent": "grok-bot-sync-reports",
+            "X-GitHub-Api-Version": "2022-11-28",
+        },
+    )
+    try:
+        with urlopen(request, timeout=30) as response:
+            raw = response.read()
+            link = response.headers.get("Link", "")
+    except HTTPError as exc:
+        raise SyncError(
+            f"GitHub API returned HTTP {exc.code} while listing comments"
+        ) from None
+    except URLError as exc:
+        reason = redact_secrets(str(getattr(exc, "reason", exc)))
+        raise SyncError(f"GitHub API request failed: {reason}") from None
+    except TimeoutError:
+        raise SyncError("GitHub API request timed out") from None
+    except OSError as exc:
+        reason = redact_secrets(str(exc))
+        raise SyncError(f"GitHub API request failed: {reason}") from None
+    try:
+        payload = json.loads(raw.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        raise SyncError("GitHub API returned an unreadable comments payload") from None
+    return payload, link or ""
+
+
 def fetch_issue_comments(repo: str, issue_number: int, token: str) -> list[dict]:
-    """List issue comments. The token stays in the request header only."""
+    """List every comment on the issue, following pagination until the end.
+
+    The token stays in the request header and is never copied into the result.
+    """
     validate_repo(repo)
     if issue_number != ISSUE_NUMBER:
         raise SyncError(f"refusing to read issue #{issue_number}")
     comments: list[dict] = []
-    url: str | None = (
+    url = (
         f"https://api.github.com/repos/{repo}/issues/{issue_number}/comments"
-        "?per_page=100&page=1"
+        f"?per_page={COMMENTS_PER_PAGE}&page=1"
     )
     for _page in range(MAX_COMMENT_PAGES):
-        if not url:
-            break
-        request = Request(
-            url,
-            headers={
-                "Authorization": f"Bearer {token}",
-                "Accept": "application/vnd.github+json",
-                "User-Agent": "grok-bot-sync-reports",
-                "X-GitHub-Api-Version": "2022-11-28",
-            },
-        )
-        try:
-            with urlopen(request, timeout=30) as response:
-                payload = json.loads(response.read().decode("utf-8"))
-                link = response.headers.get("Link", "")
-        except HTTPError as exc:
-            raise SyncError(f"GitHub API returned HTTP {exc.code} while listing comments") from exc
-        except URLError as exc:
-            raise SyncError(f"GitHub API request failed: {exc.reason}") from exc
+        payload, link = _request_json(url, token)
         if not isinstance(payload, list):
             raise SyncError("GitHub API returned an unexpected comments payload")
-        comments.extend(payload)
-        url = _next_link(link)
-    else:
-        if url:
-            raise SyncError("stopped after too many comment pages")
-    return comments
+        comments.extend(item for item in payload if isinstance(item, dict))
+        next_url = _next_link(link, repo)
+        if next_url:
+            url = next_url
+            continue
+        if len(payload) < COMMENTS_PER_PAGE:
+            return comments
+        numbered = _next_numbered_page(url, repo)
+        if not numbered or numbered == url:
+            return comments
+        url = numbered
+    raise SyncError("stopped after too many comment pages")
+
+
+def select_authorized_comments(comments: list[dict]) -> list[dict]:
+    """Owner comments only, one dict per comment_id, oldest created_at first."""
+    chosen: dict[int, dict] = {}
+    for comment in comments:
+        if not isinstance(comment, dict) or not is_authorized(comment):
+            continue
+        try:
+            comment_id = int(comment["id"])
+        except (KeyError, TypeError, ValueError):
+            continue
+        previous = chosen.get(comment_id)
+        if previous is None:
+            chosen[comment_id] = comment
+            continue
+        previous_updated = str(previous.get("updated_at") or previous.get("created_at") or "")
+        updated = str(comment.get("updated_at") or comment.get("created_at") or "")
+        if updated >= previous_updated:
+            chosen[comment_id] = comment
+    return sorted(
+        chosen.values(),
+        key=lambda comment: (
+            str(comment.get("created_at") or ""),
+            int(comment.get("id") or 0),
+        ),
+    )
 
 
 def rebuild_owner_comments(reports_root: Path, comments: list[dict], *, repo: str) -> int:
-    ordered = sorted(
-        (comment for comment in comments if is_authorized(comment)),
-        key=lambda comment: (str(comment.get("created_at") or ""), int(comment.get("id") or 0)),
-    )
+    """Upsert every authorized comment, then rebuild the derived reports.
+
+    Validation happens before any write, so a bad payload does not leave a
+    half-updated archive.
+    """
+    ordered = select_authorized_comments(comments)
+    for comment in ordered:
+        int(comment["id"])
+        parse_github_time(str(comment["created_at"]))
+        parse_github_time(str(comment.get("updated_at") or comment["created_at"]))
     for comment in ordered:
         upsert_history(reports_root, comment, repo)
     refresh_views(reports_root)
@@ -542,6 +686,39 @@ def _load_event() -> dict | None:
     return json.loads(file.read_text(encoding="utf-8"))
 
 
+def _require_token() -> str:
+    token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN") or ""
+    if not token:
+        raise SyncError("需要 GITHUB_TOKEN 才能讀取 Issue #1 的留言")
+    return token
+
+
+def reconcile_from_api(reports_root: Path, repo: str) -> int:
+    """Read every Issue #1 comment and rebuild reports from the owner notes."""
+    token = _require_token()
+    comments = fetch_issue_comments(repo, ISSUE_NUMBER, token)
+    count = rebuild_owner_comments(reports_root, comments, repo=repo)
+    print(f"已依 Issue #1 的 {count} 則擁有者留言重建回報")
+    return 0
+
+
+def _issue_comment_skip_reason(event: dict) -> str | None:
+    """Return a skip message, or None when this event may reconcile Issue #1."""
+    action = event.get("action")
+    if action not in ("created", "edited"):
+        return f"略過：動作 {action} 不是 created 或 edited"
+    issue_number = (event.get("issue") or {}).get("number")
+    if issue_number != ISSUE_NUMBER:
+        return f"略過：issue {issue_number} 不是 #{ISSUE_NUMBER}"
+    comment = event.get("comment")
+    if not isinstance(comment, dict) or not is_authorized(comment):
+        login = ""
+        if isinstance(comment, dict):
+            login = str((comment.get("user") or {}).get("login") or "")
+        return f"略過：{login} 的留言不是儲存庫擁有者"
+    return None
+
+
 def main() -> int:
     reports_root = Path(os.environ.get("REPORTS_DIR", "reports"))
     event_name = os.environ.get("GITHUB_EVENT_NAME", "")
@@ -549,32 +726,30 @@ def main() -> int:
     try:
         validate_repo(repo)
         if event_name == "workflow_dispatch":
-            token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN") or ""
-            if not token:
-                raise SyncError("workflow_dispatch requires GITHUB_TOKEN")
-            comments = fetch_issue_comments(repo, ISSUE_NUMBER, token)
-            count = rebuild_owner_comments(reports_root, comments, repo=repo)
-            print(f"rebuilt reports from {count} owner comments")
-            return 0
+            return reconcile_from_api(reports_root, repo)
+        if event_name == "issue_comment":
+            event = _load_event()
+            if not event:
+                raise SyncError("找不到 issue_comment 事件內容")
+            skip = _issue_comment_skip_reason(event)
+            if skip:
+                print(skip)
+                return 0
+            return reconcile_from_api(reports_root, repo)
 
         event = _load_event()
         if not event or "comment" not in event:
-            print("no issue comment in event; nothing to do")
+            print("事件中沒有 issue 留言，不進行同步")
             return 0
-        issue_number = (event.get("issue") or {}).get("number")
-        if issue_number != ISSUE_NUMBER:
-            print(f"skip: issue {issue_number} is not #{ISSUE_NUMBER}")
-            return 0
-        comment = event.get("comment") or {}
-        if not is_authorized(comment):
-            login = (comment.get("user") or {}).get("login")
-            print(f"skip: comment by {login} is not the repository owner")
-            return 0
-        sync_comment(reports_root, comment, repo=repo)
-        print(f"synced comment {comment.get('id')}")
+        synced = sync_event(reports_root, event, repo=repo)
+        if synced:
+            comment = event.get("comment") or {}
+            print(f"已同步留言 {comment.get('id')}")
+        else:
+            print("略過：這不是 Issue #1 的擁有者留言")
         return 0
     except (SyncError, KeyError, TypeError, ValueError, json.JSONDecodeError) as exc:
-        print(f"sync failed: {exc}", file=sys.stderr)
+        print(f"同步失敗：{redact_secrets(str(exc))}", file=sys.stderr)
         return 1
 
 
