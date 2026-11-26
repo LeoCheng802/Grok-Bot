@@ -1,0 +1,63 @@
+# Sync owner comments on Issue #1 into reports/*.md.
+# The comment body is read from $GITHUB_EVENT_PATH inside Python.
+# Do not interpolate github.event.comment.body into the shell.
+
+name: Sync issue reports
+
+on:
+  issue_comment:
+    types: [created, edited]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: read
+
+concurrency:
+  group: sync-reports
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (
+        github.event.issue.number == 1 &&
+        (
+          github.event.comment.author_association == 'OWNER' ||
+          github.event.comment.user.login == 'LeoCheng802'
+        )
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Sync issue comment into reports
+        run: python scripts/sync_issue_comment.py
+
+      - name: Commit and push reports
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports
+          if git diff --staged --quiet; then
+            echo "No report changes to commit."
+            exit 0
+          fi
+          git commit -m "sync: update reports from issue #1 [skip ci]"
+          if git push origin HEAD:main; then
+            exit 0
+          fi
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
