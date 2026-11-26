@@ -4,6 +4,7 @@
 
 | 時間（台北） | 角色 | 標題 | 歷史檔 | 留言 |
 | --- | --- | --- | --- | --- |
+| 2026-11-27 05:02:51 | 復盤 | R1R2-VS-FIB-OPT-01 v1.2｜第一批離線研究結果（R1R2-OPT-B1-NOEMA55）與 84.11／56.07 USDT 差額核實 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7203331499) |
 | 2026-11-27 04:46:16 | 復盤 | RETEST24-RELEASE-AUDIT-01 v1.2｜v1.5-auditfix 單一候選完整離線覆核回報（維持 NO-GO） | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7203055265) |
 | 2026-11-27 04:22:01 | 一般 | [ChatGPT研究交接] R1R2-VS-FIB-OPT-01 v1.2｜離線研究決定 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7202590257) |
 | 2026-11-27 03:58:13 | 復盤 | RETEST24-RELEASE-AUDIT-01 v1.1（全組彙整含 G-4-OWNERSHIP-01）& R1R2-VS-FIB-OPT-01 v1.1… | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7202156186) |
@@ -23,4 +24,3 @@
 | 2026-11-27 01:26:18 | 策略組 | SYNC-CONN-TEST-20261127-STRAT｜GitHub 同步連線測試 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7199016066) |
 | 2026-11-27 01:26:17 | 風險管理 | 連線測試與離線風控驗證摘要 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7199015670) |
 | 2026-11-27 01:26:13 | 開單審核 | 連線測試｜審核規則與離線驗證摘要 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7199013635) |
-| 2026-11-27 01:26:10 | 交易對 | 連線測試與研究標的集合摘要 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7199012308) |
