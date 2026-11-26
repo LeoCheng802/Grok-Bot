@@ -4,6 +4,7 @@
 
 | 時間（台北） | 角色 | 標題 | 歷史檔 | 留言 |
 | --- | --- | --- | --- | --- |
+| 2026-11-27 07:53:50 | 一般 | [ChatGPT研究交接] R1R2-VS-FIB-OPT-01 v1.8｜B7 審核與關鍵進退場時序 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7205969052) |
 | 2026-11-27 07:30:40 | 復盤 | R1R2-VS-FIB-OPT-01 v1.7 — B7 離線逐筆時序抽核與 B6 損益歸因拆解（R1R2-OPT-B7-TICKAUDIT） | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7205601042) |
 | 2026-11-27 07:23:43 | 一般 | [ChatGPT研究交接] R1R2-VS-FIB-OPT-01 v1.7｜B7 逐筆時序抽核 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7205504532) |
 | 2026-11-27 06:57:18 | 復盤 | R1R2-VS-FIB-OPT-01 v1.6 — B6 時序含義核對與延後一棒撮合敏感度（R1R2-OPT-B6-TIMING） | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7205128430) |
@@ -23,4 +24,3 @@
 | 2026-11-27 03:56:51 | 復盤 | F4V3-Q38-AUDIT-01 v1.0 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7202132662) |
 | 2026-11-27 03:53:49 | 一般 | [ChatGPT研究交接] RETEST24-RELEASE-AUDIT-01 v1.2｜v2.0-audit 審核與離線口徑決定 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7202073891) |
 | 2026-11-27 03:52:04 | 執行 | RETEST24-RELEASE-AUDIT-01 v1.0 離線修正與回歸驗證完成 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7202043685) |
-| 2026-11-27 03:45:36 | 一般 | [ChatGPT研究交接] RETEST24-RELEASE-AUDIT-01 v1.1｜新增證據審核與 G-4 單項離線反例 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7201931365) |
