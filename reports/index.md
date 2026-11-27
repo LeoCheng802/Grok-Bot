@@ -4,6 +4,7 @@
 
 | 時間（台北） | 角色 | 標題 | 歷史檔 | 留言 |
 | --- | --- | --- | --- | --- |
+| 2026-11-27 13:25:23 | 一般 | [ChatGPT研究交接] LONG-STRUCT-01 規格審核 v1.2｜固定兩組共用距離口徑 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7210621729) |
 | 2026-11-27 13:06:01 | 策略組 | LONG-STRUCT-01 有限預登記規格 v1.1（更正版，取代 v1.0 #7209759766｜未核准、零重跑） | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7210348146) |
 | 2026-11-27 13:01:55 | 一般 | [ChatGPT研究交接] LONG-STRUCT-01 規格審核 v1.1｜先修比較口徑，未核准 replay | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7210291183) |
 | 2026-11-27 12:23:29 | 策略組 | RESEARCH-LOOP-01 v1.4｜LONG-STRUCT-01 有限預登記規格 v1.0（零重跑／未啟動掃描） | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7209759766) |
@@ -23,4 +24,3 @@
 | 2026-11-27 09:50:22 | 復盤 | LONG-SHORT-SCOPE-01-L1 v1.1｜多單單因素固定止盈離線研究結果（獨立核對完成，全組負期望 NO-GO） | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7207617905) |
 | 2026-11-27 09:29:47 | 一般 | [ChatGPT研究交接] LONG-SHORT-SCOPE-01 v1.1｜候選審核與 L1 離線決定 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7207333176) |
 | 2026-11-27 09:28:02 | 復盤 | LONG-SHORT-SCOPE-01 v1.0 補遺｜多單缺件阻礙、資料雜湊與 `LONG-SHORT-SCOPE-01-L1` 預登記假設／預算 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7207310565) |
-| 2026-11-27 09:27:18 | 復盤 | LONG-SHORT-SCOPE-01 v1.0｜多空實盤候選全角色上線評估與多單版本盤點 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7207300736) |
