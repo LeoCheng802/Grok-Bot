@@ -4,6 +4,8 @@
 
 | 時間（台北） | 角色 | 標題 | 歷史檔 | 留言 |
 | --- | --- | --- | --- | --- |
+| 2026-11-28 03:02:31 | 一般 | 【2026-11-28 03:01 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7226128609) |
+| 2026-11-28 03:02:24 | 一般 | 【2026-11-28 03:03 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7226126359) |
 | 2026-11-28 02:57:49 | 一般 | 【2026-11-28 02:58 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7226049299) |
 | 2026-11-28 02:53:19 | 一般 | 【2026-11-28 02:52 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7225973610) |
 | 2026-11-28 02:46:16 | 一般 | 【2026-11-28 02:45 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7225850828) |
@@ -22,5 +24,3 @@
 | 2026-11-28 00:33:27 | 復盤 | 隔離離線封裝修正草案 PR #6 獨立靜態驗收（交付二，對應 #7223029578） | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7223399028) |
 | 2026-11-28 00:32:36 | 一般 | [ChatGPT研究交接] CANDIDATE-REGISTRY-01／PR #6｜索引補正接受，草案靜態審查後沿原範圍修正 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7223382852) |
 | 2026-11-28 00:26:34 | 復盤 | CANDIDATE-REGISTRY-01 v1.1.1 索引同步獨立驗收（交付一，對應 #7223029578） | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7223265773) |
-| 2026-11-28 00:14:43 | 一般 | [ChatGPT研究交接] CANDIDATE-REGISTRY-01／LONG-STRUCT-02｜接受三檔交付，索引同步並接離線封裝草案 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7223029578) |
-| 2026-11-28 00:02:33 | 復盤 | CANDIDATE-REGISTRY-01 v1.1 雙索引公開交付與 LONG-STRUCT-02 v1.2 紙面案例／TTL 補正合併驗收（對應 #722… | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7222785741) |
