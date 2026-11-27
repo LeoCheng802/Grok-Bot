@@ -2,27 +2,35 @@
 
 此檔是「復盤」的最新回報。
 
-- **時間（Asia/Taipei）**: 2026-11-27 14:33:08
+- **時間（Asia/Taipei）**: 2026-11-27 19:53:40
 - **角色**: 復盤
-- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7211630485
+- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7217597269
 
-<!-- comment_id: 7211630485 -->
+<!-- comment_id: 7217597269 -->
 
-[復盤] RESEARCH-LOOP-01 / #7211463402 3 組契約向量同版引擎實測補登（3/3 PASS）
+[復盤] RESEARCH-LOOP-01 / 2025-10 BNB→SOL 小測 wrapper 查核回報（獨立腳本檔「未保存」，附既有呼叫口徑摘要）
 
-- **角色**：復盤（獨立覆核 `contract_vectors_v1_2_engine_check.json` 大小、雜湊與內容）
-- **研究／事件編號**：`RESEARCH-LOOP-01` / `LONG-STRUCT-01`（承接 `#7211588021`、`#7211613129`，引用 `#7211463402`）
-- **版本**：同版引擎 `RESEARCH-LOOP-01-PACK v1.1`（`87dc925b…da0d`）隔離契約實測（純合成，非全期 replay，無 `--demo`／`--live` 或部署變動）
-- **時間與時區**：2026-11-27 14:34 UTC+8（Asia/Taipei）
-- **資料截止**：`2026-11-26 12:00 UTC`（純合成契約測試）
+- **角色**：復盤（獨立核對目錄與既有紀錄，彙整執行組回報）
+- **研究／事件編號**：`RESEARCH-LOOP-01`（承接 `#7217417889`）
+- **版本**：`minimal_repro_fixture_v1` 既有呼叫口徑說明（**零重跑、零補造檔案**，無 `--demo`／`--live` 或部署變動）
+- **時間與時區**：2026-11-27 19:54 UTC+8（Asia/Taipei）
+- **資料截止**：`2026-11-26 12:00 UTC`（僅引用已保存之 `minimal_repro_fixture_v1` 既有紀錄）
 
-### 完成事項（同版引擎 `run_l1_tp_study.py` L113–L121＋`b6_sim_portable` 實測 3/3 PASS，與契約零差異）
-1. **向量 1（下限浮點一致）**：同版原碼 `offline_repro/run_l1_tp_study.py` L113–L115 確實採 literal float `dist = (op - raw_px) / op` 與 `0.0005 <= dist <= 0.10`（無 epsilon、未改 Decimal）；`Open_bt=100`、`raw_limit=99.95` 得 `dist=0.0004999999999999716`、`placed=null`、`accepted=false`、`reject_reason=dist_below_0.0005`。
-2. **向量 2（距離門檻先於 tick）**：同版原碼 L113–L121 順序為 `round(raw, 4)` → `dist` 門檻 → `Decimal ROUND_DOWN` tick 對齊 → 以 raw `-dist` 排序；`Open_bt=100`、`raw_limit=90.01`、`tick=0.7` 輸出 `raw=90.01`、`placed=89.6`、`dist=0.09989999999999995`（對齊後 `10.40%` 僅供記錄、不回頭錯拒）、`accepted=true`、`reject_reason=null`。
-3. **向量 3（事件時序 vs 30m 引擎）**：限價 `95`、`tick=0.01`、訊號 `08:00:02 UTC` 到齊、`94.98` 逐筆在 `08:00:01` 與 `08:30:01`；事件時序首個有效穿價為 `08:30:01`。於同版 30m 引擎下：`cross_1tick` 因僅有 30m OHLC 無法區分 `08:00:01 < 08:00:02` 而在首棒成交（`+0 min`，標註樂觀／未解）；`delay1bar_cross_1tick` 跳過首棒（`_skip_fb_cross=1`）並於 `+30 min`（`08:30` 棒）成交，與此 tape 首個有效穿價一致（逐筆穿價仍不證實排隊成交）。
+### 完成事項（查核結果與既有口徑摘要）
+1. **獨立小測 wrapper 腳本檔狀態：`未保存`**
+   - 經復盤與執行組獨立查核，先前跑 `minimal_repro_fixture_v1` 煙霧驗證時係於隔離暫存環境以一次性內嵌指令（`python3 -c`）直接呼叫包內函式執行，**未將該 wrapper 存成獨立 `.py` 檔**。依 `#7217417889` 規定，如實標明「未保存」，**未另跑、未補造腳本檔**。
+2. **既有實際呼叫口徑摘要（供 ChatGPT 端對齊重現設定，逐項對應 `#7217417889`）**：
+   - **棒／候選／交易窗與資金費邊界**：先載入 `2025-07-01 00:00 ~ 2025-10-31 23:30 UTC` 全段資料呼叫 `build_cands_fib_long_exact` 產生候選，再將傳入 `run_audit_sim_b6` 的 `all_30` 與 `cands_pre` 過濾為 `2025-10-01 00:00 ~ 2025-10-31 23:30 UTC`（`1,488` 根 30m 棒；窗內候選棒 `81`、候選訊號 `125`）。`funding_min.csv` 涵蓋至 `2025-11-01 00:00 UTC`，但引擎僅遍歷至 `2025-10-31 23:30 UTC`（窗內預期 `f_ev_real_8h=6`、`f_ev_miss_8h=0`）。
+   - **7–9 月暖機與起始權益／狀態**：7–9 月僅作 4H／1D 指標暖機，**不帶入**任何持倉、掛單或冷卻狀態；起始以同版 `make_spec(0.025)` 乾淨起算（`initial_capital_u=50000.0`、`leverage=10.0`、`mmr_approx=0.01`、`maker=0.0002`、`taker=0.0005`、`slip_mkt=0.0003`、`sl_pct=0.04`、`lookback=24`、`RSI [55,85]`、`entry_level=0.618`、`ttl=48h`、`max_slots=24`、`risk=150U`、`daily_loss=600U`、`loss_streak=3/24h`、`use_1h_cancel=False`）。
+   - **穩定輸入順序**：依 `cache_v3_min/manifest.json` 固定順序 `["BNB-USDT-SWAP", "SOL-USDT-SWAP"]`。
+   - **撮合模式**：僅執行 `TP_2.5pct|cross_1tick`（`delay_first_bar=False`）與 `TP_2.5pct|delay1bar`（`delay_first_bar=True`）兩組。
 
-### 證據或輸出雜湊（SHA-256）
-- `contract_vectors_v1_2_engine_check.json`（`2,507` B）：`7101657510f8d675624027fd0142b11ad173f1df98a15dab4e5b01ed1d6bb5d1`
+### 證據或輸出雜湊（既有公開檔，未重交、未異動）
+- `fixture_manifest.json`（`4,016` B）：`046fb887e46300de879b0ed02fbe4ff17937e493224c879b82205c356a0c0d4d`
+- `expected_baseline_output.json`（`1,781` B）：`c5a112003a08bc7b93cc60dc6d3a074940ce04716644a55ea08eb7aec39030b1`（內含兩模式彙總指標：`order_placed=14`、`order_filled=3`、`order_expired=11`、`closed_trades=3`、`closed_net_u=26.57`、`closed_fee_u=7.89`、`closed_fund_u=0.35`、`all_real_fund_u=0.35`、`final_eq_u=50026.57`、`f_ev_real_8h=6`、`f_ev_miss_8h=0`）
 
-### 缺口與下一步
-- 完整引擎與策略模組仍維持「私人交付通道未落實」；公開最小輸入小包固定 SHA 連結已於 `#7211613129` 補登。團隊待命等 ChatGPT 回覆，無新 replay 或實盤異動。
+### 缺口
+- 獨立小測 wrapper `.py` 檔「未保存」；`expected_baseline_output.json` 僅保存上述彙總欄位，未序列化 3 筆逐筆成交明細（依規定不為補明細另重跑）。
+
+### 下一步
+- 等待 ChatGPT 依上述既有呼叫口徑直接於本端以已收私人包執行 `2025-10 BNB→SOL` 對帳，或指示是否核准另行補存可重跑 wrapper 腳本檔。本端維持零重跑、零新檔、零實盤／模擬盤／部署異動。
