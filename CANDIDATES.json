@@ -1,0 +1,283 @@
+{
+  "schema_version": "CANDIDATE-REGISTRY-01 v1.0",
+  "generated_at_utc8": "2026-11-27T23:32:00+08:00",
+  "repository": "LeoCheng802/Grok-Bot",
+  "repo_visibility": "public",
+  "authorization_note": "Owner 77 explicitly authorized uploading sanitized offline strategy and backtest engine code to public repository LeoCheng802/Grok-Bot at 2026-11-27 23:22 UTC+8 for joint offline research and code review.",
+  "governance_rules": {
+    "offline_research_only": true,
+    "live_or_demo_execution_enabled": false,
+    "secrets_or_local_paths_allowed": false,
+    "listing_implies_live_approval": false,
+    "code_commit_sha": "fbe475402ff568eac2684bf4d97f49de579e9a6b",
+    "status_taxonomy": [
+      "規格中",
+      "已有程式",
+      "待驗",
+      "凍結",
+      "淘汰"
+    ]
+  },
+  "baselines": [
+    {
+      "research_id": "FIB-4H-LONG-V3",
+      "category": "baseline",
+      "direction": "LONG",
+      "purpose": "4H Fibonacci 做多基準對照腳本（離線去識別參考副本，供結構去重與訊號對照用）",
+      "file_name": "FIB_4H_Long_v3.py",
+      "repo_path": "research/long_struct_01/code/FIB_4H_Long_v3.py",
+      "version": "v3 (sanitized offline reference)",
+      "commit_sha": "fbe475402ff568eac2684bf4d97f49de579e9a6b",
+      "raw_url": "https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/FIB_4H_Long_v3.py",
+      "blob_url": "https://github.com/LeoCheng802/Grok-Bot/blob/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/FIB_4H_Long_v3.py",
+      "bytes": 54381,
+      "sha256": "75891548839aa118be25a720a5d4ebc81cd809502f62f7f6c62157e605fdaaba",
+      "dependencies": [
+        "requirements.txt"
+      ],
+      "offline_entrypoint": "僅供模組匯入／離線語法與條件參照；main() 已硬鎖 SystemExit 停用實盤／模擬盤執行。",
+      "test_evidence": "2025-11 UTC 5 幣對診斷窗（eligible_warmup_bars=900）基準候選數 101；本版已通過語法編譯、零本機路徑／密鑰檢查與 main() 停用驗證。",
+      "limitations": "歷史對照評估已淘汰（NO-GO）；本公開副本不可直接執行下單或連線交易所。",
+      "status": "淘汰",
+      "status_note": "淘汰／NO-GO",
+      "has_script": true,
+      "live_approved": false
+    }
+  ],
+  "candidates": [
+    {
+      "research_id": "LONG-STRUCT-01",
+      "category": "candidate",
+      "direction": "LONG",
+      "purpose": "4H 多頭結構假說 v1.2（EMA60 + RSI + Liquidity Sweep + Reclaim + Bullish Close）隔離計數與接線驗證腳本",
+      "file_name": "long_struct_01_v1_2_isolated.py",
+      "repo_path": "research/long_struct_01/code/long_struct_01_v1_2_isolated.py",
+      "version": "v1.2",
+      "commit_sha": "fbe475402ff568eac2684bf4d97f49de579e9a6b",
+      "raw_url": "https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/long_struct_01_v1_2_isolated.py",
+      "blob_url": "https://github.com/LeoCheng802/Grok-Bot/blob/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/long_struct_01_v1_2_isolated.py",
+      "bytes": 6881,
+      "sha256": "4ea731a4f5b62dfa0b435e5a03a028c5c2bb0b190a6076e03442f5856fca073b",
+      "companion_files": [
+        {
+          "role": "offline_wiring_test",
+          "file_name": "test_long_struct_01_v1_2_wiring.py",
+          "repo_path": "research/long_struct_01/code/test_long_struct_01_v1_2_wiring.py",
+          "commit_sha": "fbe475402ff568eac2684bf4d97f49de579e9a6b",
+          "raw_url": "https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/test_long_struct_01_v1_2_wiring.py",
+          "blob_url": "https://github.com/LeoCheng802/Grok-Bot/blob/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/test_long_struct_01_v1_2_wiring.py",
+          "bytes": 18417,
+          "sha256": "d7e063a1fcb1549103352ab9c67c797513b9ab194260af20a24f7db97de43473"
+        }
+      ],
+      "dependencies": [
+        "requirements.txt",
+        "test_long_struct_01_v1_2_wiring.py"
+      ],
+      "offline_entrypoint": "python3 test_long_struct_01_v1_2_wiring.py（離線合成測試 1,2,3,4,6 皆可獨立執行；測試 5 僅於提供環境變數快取時執行，預設跳過）",
+      "test_evidence": "已核准 2025-11 UTC 5 幣對（ADA/DOGE/FIL/SOL/XRP）離線候選計數：eligible_warmup_bars=900，序貫漏斗 1_EMA60=169 -> 2_EMA60+RSI=123 -> 3_sweep=0 -> 6b_final=0，觸發 STOP_ON_ZERO_CANDIDATES（pnl_replay_executed=false）；結果檔見 commit 4205912ce0e6e218ceac6573e4a4cef7db722b2b（research/long_struct_01/long_struct_01_v1_2_candidate_count_2025_11_summary.json），ChatGPT #7221278251 已驗收並拍板凍結。",
+      "limitations": "2025-11 診斷窗 0 候選，未跑 PnL 回測；受單一 4H 柱內高 RSI 與掃低收復同時成立之結構互斥限制，維持凍結不調參。",
+      "status": "凍結",
+      "status_note": "凍結（STOP_ON_ZERO_CANDIDATES）",
+      "has_script": true,
+      "live_approved": false
+    },
+    {
+      "research_id": "RETEST24-R1-R2",
+      "category": "candidate",
+      "direction": "SHORT",
+      "purpose": "RETEST24 R1/R2 可切換做空候選策略 v1.5 審計修復版（離線去識別參考副本）",
+      "file_name": "RETEST24_R1_R2_Switchable_v1_5_auditfix.py",
+      "repo_path": "research/long_struct_01/code/RETEST24_R1_R2_Switchable_v1_5_auditfix.py",
+      "version": "v1.5_auditfix (sanitized offline reference)",
+      "commit_sha": "fbe475402ff568eac2684bf4d97f49de579e9a6b",
+      "raw_url": "https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/RETEST24_R1_R2_Switchable_v1_5_auditfix.py",
+      "blob_url": "https://github.com/LeoCheng802/Grok-Bot/blob/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/RETEST24_R1_R2_Switchable_v1_5_auditfix.py",
+      "bytes": 88198,
+      "sha256": "c48e2928f69b18a7d8500ed57c6e8a6b9d470c2d790e73feee1de3e961a99d19",
+      "dependencies": [
+        "requirements.txt"
+      ],
+      "offline_entrypoint": "僅供模組匯入／離線審計與結構比對；load_config_credentials() 已回傳空憑證且 main() 已硬鎖 SystemExit 停用實盤／模擬盤執行。",
+      "test_evidence": "原版已完成跨 R1/R2 審計修復與回歸驗證；本公開去識別副本已通過語法編譯、零本機路徑／密鑰檢查與 main() 強制退出驗證。",
+      "limitations": "僅為離線研究參考副本，不可直接實盤或模擬盤下單；維持凍結狀態，不得因入庫改為核准上線。",
+      "status": "凍結",
+      "status_note": "凍結（離線參考副本）",
+      "has_script": true,
+      "live_approved": false
+    }
+  ],
+  "proposed_hypotheses": [
+    {
+      "research_id": "LONG-STRUCT-02",
+      "category": "proposed_hypothesis",
+      "direction": "LONG",
+      "purpose": "時序分離式多頭結構假說（預登記規格與去重宣告；禁止未確認前補填進場）",
+      "file_name": "LONG_STRUCT_02_TEMPORAL_SPLIT_DEDUP_PREREG_v1.0.json",
+      "repo_path": "research/long_struct_01/LONG_STRUCT_02_TEMPORAL_SPLIT_DEDUP_PREREG_v1.0.json",
+      "version": "v1.0 (PREREG ONLY)",
+      "commit_sha": "4205912ce0e6e218ceac6573e4a4cef7db722b2b",
+      "raw_url": "https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/4205912ce0e6e218ceac6573e4a4cef7db722b2b/research/long_struct_01/LONG_STRUCT_02_TEMPORAL_SPLIT_DEDUP_PREREG_v1.0.json",
+      "blob_url": "https://github.com/LeoCheng802/Grok-Bot/blob/4205912ce0e6e218ceac6573e4a4cef7db722b2b/research/long_struct_01/LONG_STRUCT_02_TEMPORAL_SPLIT_DEDUP_PREREG_v1.0.json",
+      "bytes": 8997,
+      "sha256": "8f9bf553a9f8cf7feaac45b05d1109b42bf7001dda7a0719a0651c28982284d4",
+      "dependencies": [],
+      "offline_entrypoint": "尚無可執行策略腳本（僅 JSON 預登記規格檔）",
+      "test_evidence": "已完成去重對照（對比 10 日假跌破收復、L1/LONG-LOOP、B24H、A60＋量縮）與 5 項時序分離防未來函數規則宣告，尚未編寫腳本亦未執行計數或回測。",
+      "limitations": "PROPOSED_NOT_EXECUTED；須經跨方覆核與明確放行後始可實作與測試。",
+      "status": "規格中",
+      "status_note": "規格中／尚無腳本",
+      "has_script": false,
+      "live_approved": false
+    }
+  ],
+  "offline_engine_dependencies": [
+    {
+      "research_id": "ENGINE-B6-SIM-PORTABLE",
+      "category": "offline_engine",
+      "direction": "NEUTRAL",
+      "purpose": "可攜式離線回測模擬核心模組",
+      "file_name": "engine/b6_sim_portable.py",
+      "repo_path": "research/long_struct_01/code/engine/b6_sim_portable.py",
+      "version": "v1 (sanitized)",
+      "commit_sha": "fbe475402ff568eac2684bf4d97f49de579e9a6b",
+      "raw_url": "https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/engine/b6_sim_portable.py",
+      "blob_url": "https://github.com/LeoCheng802/Grok-Bot/blob/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/engine/b6_sim_portable.py",
+      "bytes": 5538,
+      "sha256": "b4b81446d50173bdd1d503fd3efc049cda3d35de53b7121b31996d3635723972",
+      "dependencies": [
+        "requirements.txt"
+      ],
+      "offline_entrypoint": "由離線研究與回測腳本匯入使用",
+      "test_evidence": "已通過安全掃描（SECURITY_SCAN_HITS=0），並於隔離環境以 minimal_repro_fixture_v1（commit 3cd4fb670eae32c7bc25c78d635d7a1dc8de4051）實測輸出與 expected_baseline_output.json 完全一致（EXACT_MATCH）。",
+      "limitations": "純離線研究與對帳用途，無交易所連線或下單邏輯。",
+      "status": "已有程式",
+      "status_note": "離線引擎依賴（已驗收 EXACT_MATCH）",
+      "has_script": true,
+      "live_approved": false
+    },
+    {
+      "research_id": "ENGINE-SIM-50K-V3-2-SL-FIX",
+      "category": "offline_engine",
+      "direction": "NEUTRAL",
+      "purpose": "50k 離線回測引擎（v3.2 止損修復版）",
+      "file_name": "engine/sim_50k_v3_2_sl_fix.py",
+      "repo_path": "research/long_struct_01/code/engine/sim_50k_v3_2_sl_fix.py",
+      "version": "v3.2_sl_fix",
+      "commit_sha": "fbe475402ff568eac2684bf4d97f49de579e9a6b",
+      "raw_url": "https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/engine/sim_50k_v3_2_sl_fix.py",
+      "blob_url": "https://github.com/LeoCheng802/Grok-Bot/blob/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/engine/sim_50k_v3_2_sl_fix.py",
+      "bytes": 13996,
+      "sha256": "1d2aebf56eafa87820748c688ed778e625c483737fdda3dc714f79f4f67da7ca",
+      "dependencies": [
+        "requirements.txt"
+      ],
+      "offline_entrypoint": "由離線研究與回測腳本匯入使用",
+      "test_evidence": "SECURITY_SCAN_HITS=0；minimal_repro_fixture_v1（commit 3cd4fb670eae32c7bc25c78d635d7a1dc8de4051）隔離實測 EXACT_MATCH。",
+      "limitations": "純離線研究用途，無下單邏輯。",
+      "status": "已有程式",
+      "status_note": "離線引擎依賴（已驗收 EXACT_MATCH）",
+      "has_script": true,
+      "live_approved": false
+    },
+    {
+      "research_id": "ENGINE-AUDIT-V3-1-FULL",
+      "category": "offline_engine",
+      "direction": "NEUTRAL",
+      "purpose": "離線審計與指標／資料載入核心（去硬編碼路徑版）",
+      "file_name": "engine/audit_v3_1_full.py",
+      "repo_path": "research/long_struct_01/code/engine/audit_v3_1_full.py",
+      "version": "v3.1_full (sanitized)",
+      "commit_sha": "fbe475402ff568eac2684bf4d97f49de579e9a6b",
+      "raw_url": "https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/engine/audit_v3_1_full.py",
+      "blob_url": "https://github.com/LeoCheng802/Grok-Bot/blob/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/engine/audit_v3_1_full.py",
+      "bytes": 26951,
+      "sha256": "b4b264ef65654d5599221b0f58a399e704cee9e46535d2bd7e3c86e4844d4c02",
+      "dependencies": [
+        "requirements.txt"
+      ],
+      "offline_entrypoint": "由離線回測／審計腳本匯入；資料根目錄改由環境變數 OKX_RESEARCH_ROOT 指定（預設模組目錄）",
+      "test_evidence": "SECURITY_SCAN_HITS=0；minimal_repro_fixture_v1（commit 3cd4fb670eae32c7bc25c78d635d7a1dc8de4051）隔離實測 EXACT_MATCH。",
+      "limitations": "需搭配離線歷史快取資料方能執行完整資料窗；運算邏輯與原版一致。",
+      "status": "已有程式",
+      "status_note": "離線引擎依賴（已驗收 EXACT_MATCH）",
+      "has_script": true,
+      "live_approved": false
+    },
+    {
+      "research_id": "ENGINE-RUN-Q38-AUDIT-01",
+      "category": "offline_engine",
+      "direction": "NEUTRAL",
+      "purpose": "Q38 離線回測審計執行模組（去硬編碼路徑版）",
+      "file_name": "engine/run_q38_audit_01.py",
+      "repo_path": "research/long_struct_01/code/engine/run_q38_audit_01.py",
+      "version": "v1 (sanitized)",
+      "commit_sha": "fbe475402ff568eac2684bf4d97f49de579e9a6b",
+      "raw_url": "https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/engine/run_q38_audit_01.py",
+      "blob_url": "https://github.com/LeoCheng802/Grok-Bot/blob/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/engine/run_q38_audit_01.py",
+      "bytes": 27984,
+      "sha256": "47efa8acf6933172b60e53237277b1adc9ddebf0bab664d22a90b28d5316b142",
+      "dependencies": [
+        "requirements.txt",
+        "engine/audit_v3_1_full.py"
+      ],
+      "offline_entrypoint": "離線模組／CLI，路徑改由 OKX_RESEARCH_ROOT 控制",
+      "test_evidence": "SECURITY_SCAN_HITS=0；minimal_repro_fixture_v1（commit 3cd4fb670eae32c7bc25c78d635d7a1dc8de4051）隔離實測 EXACT_MATCH。",
+      "limitations": "純離線研究與審計對帳用途。",
+      "status": "已有程式",
+      "status_note": "離線引擎依賴（已驗收 EXACT_MATCH）",
+      "has_script": true,
+      "live_approved": false
+    },
+    {
+      "research_id": "ENGINE-RUN-L1-TP-STUDY",
+      "category": "offline_engine",
+      "direction": "NEUTRAL",
+      "purpose": "L1 止盈研究與離線基準驗證驅動腳本（去本機路徑版）",
+      "file_name": "run_l1_tp_study.py",
+      "repo_path": "research/long_struct_01/code/run_l1_tp_study.py",
+      "version": "v1 (sanitized)",
+      "commit_sha": "fbe475402ff568eac2684bf4d97f49de579e9a6b",
+      "raw_url": "https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/run_l1_tp_study.py",
+      "blob_url": "https://github.com/LeoCheng802/Grok-Bot/blob/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/run_l1_tp_study.py",
+      "bytes": 23270,
+      "sha256": "e5a67230996cc26c9ecf2d9282b04785e6cdd320ecc6190b17a58bc18b806387",
+      "dependencies": [
+        "requirements.txt",
+        "engine/b6_sim_portable.py",
+        "engine/sim_50k_v3_2_sl_fix.py",
+        "engine/audit_v3_1_full.py",
+        "engine/run_q38_audit_01.py"
+      ],
+      "offline_entrypoint": "python3 run_l1_tp_study.py --dry-check（離線檢查；完整重現需配合隔離歷史資料或 minimal_repro_fixture_v1）",
+      "test_evidence": "SECURITY_SCAN_HITS=0；minimal_repro_fixture_v1（commit 3cd4fb670eae32c7bc25c78d635d7a1dc8de4051）隔離實測 EXACT_MATCH。",
+      "limitations": "純離線研究用途，未含交易所下單或即時行情存取。",
+      "status": "已有程式",
+      "status_note": "離線引擎依賴（已驗收 EXACT_MATCH）",
+      "has_script": true,
+      "live_approved": false
+    },
+    {
+      "research_id": "ENGINE-REQUIREMENTS",
+      "category": "offline_engine",
+      "direction": "NEUTRAL",
+      "purpose": "離線策略與回測引擎 Python 套件依賴清單",
+      "file_name": "requirements.txt",
+      "repo_path": "research/long_struct_01/code/requirements.txt",
+      "version": "v1",
+      "commit_sha": "fbe475402ff568eac2684bf4d97f49de579e9a6b",
+      "raw_url": "https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/requirements.txt",
+      "blob_url": "https://github.com/LeoCheng802/Grok-Bot/blob/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/requirements.txt",
+      "bytes": 117,
+      "sha256": "6d0f046253b2fc1b673f4b0e922cd14677dbbcbcefc17977e9caccfefa12bff1",
+      "dependencies": [],
+      "offline_entrypoint": "pip install -r research/long_struct_01/code/requirements.txt",
+      "test_evidence": "SECURITY_SCAN_HITS=0；已於隔離環境驗證依賴可安裝並重現 EXACT_MATCH。",
+      "limitations": "僅列離線科學計算與測試套件。",
+      "status": "已有程式",
+      "status_note": "離線環境依賴清單",
+      "has_script": true,
+      "live_approved": false
+    }
+  ]
+}
