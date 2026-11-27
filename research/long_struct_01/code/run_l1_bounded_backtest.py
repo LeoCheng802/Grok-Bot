@@ -18,6 +18,7 @@ Strictly preserves:
 from __future__ import annotations
 
 import argparse
+import calendar
 import hashlib
 import http.client
 import importlib.util
@@ -502,7 +503,116 @@ def make_spec_tp25():
     }
 
 
-def summarize_run(res):
+BAR_30M_MS = 30 * 60 * 1000
+
+
+def _ts_ms_to_ym(ts_ms) -> str:
+    return datetime.fromtimestamp(int(ts_ms) / 1000.0, tz=TZ_UTC).strftime("%Y-%m")
+
+
+def _ts_ms_to_iso(ts_ms):
+    if ts_ms is None:
+        return None
+    return datetime.fromtimestamp(int(ts_ms) / 1000.0, tz=TZ_UTC).isoformat()
+
+
+def _enumerate_scored_utc_months(start_ts_ms, end_ts_ms, bar_interval_ms: int = BAR_30M_MS):
+    """Return ordered list of (YYYY-MM, is_partial_month) covering [start_ts_ms, end_ts_ms] inclusive.
+
+    CLI --start-utc and --end-utc are inclusive 30m bar-open timestamps (last bar open 23:30:00Z).
+    """
+    if start_ts_ms is None or end_ts_ms is None or int(end_ts_ms) < int(start_ts_ms):
+        return []
+    s_ms = int(start_ts_ms)
+    e_ms = int(end_ts_ms)
+    s_dt = datetime.fromtimestamp(s_ms / 1000.0, tz=TZ_UTC)
+    e_dt = datetime.fromtimestamp(e_ms / 1000.0, tz=TZ_UTC)
+    y, m = s_dt.year, s_dt.month
+    out = []
+    while (y, m) <= (e_dt.year, e_dt.month):
+        month_start = datetime(y, m, 1, 0, 0, 0, tzinfo=TZ_UTC)
+        ny, nm = (y + 1, 1) if m == 12 else (y, m + 1)
+        next_month_start = datetime(ny, nm, 1, 0, 0, 0, tzinfo=TZ_UTC)
+        ms_start = int(month_start.timestamp() * 1000)
+        ms_last_bar_open = int(next_month_start.timestamp() * 1000) - int(bar_interval_ms)
+        is_partial = (s_ms > ms_start) or (e_ms < ms_last_bar_open)
+        out.append((f"{y:04d}-{m:02d}", is_partial))
+        y, m = ny, nm
+    return out
+
+
+def _build_by_year_month(ord_log: list, trades: list, start_ts_ms=None, end_ts_ms=None) -> dict:
+    """Strict B6/Q38 monthly accounting using actual pts/ets/xts fields."""
+    buckets = {}
+
+    def _new_bucket(is_partial=None):
+        return {
+            "is_partial_month": is_partial,
+            "unique_first_fills": 0,
+            "closed_trades": 0,
+            "closed_wins": 0,
+            "closed_net_u": 0.0,
+            "closed_fee_u": 0.0,
+            "closed_fund_u": 0.0,
+            "gross_win_u": 0.0,
+            "gross_loss_u": 0.0,
+        }
+
+    for ym, is_partial in _enumerate_scored_utc_months(start_ts_ms, end_ts_ms):
+        buckets[ym] = _new_bucket(is_partial=is_partial)
+
+    for o in ord_log:
+        if o.get("outcome") != "filled":
+            continue
+        ets = o.get("ets")
+        ym = _ts_ms_to_ym(ets) if ets is not None else "MISSING_FILL_TS"
+        if ym not in buckets:
+            buckets[ym] = _new_bucket(is_partial=None)
+        buckets[ym]["unique_first_fills"] += 1
+
+    for t in trades:
+        xts = t.get("xts")
+        ym = _ts_ms_to_ym(xts) if xts is not None else "MISSING_EXIT_TS"
+        if ym not in buckets:
+            buckets[ym] = _new_bucket(is_partial=None)
+        b = buckets[ym]
+        net = float(t.get("net", 0.0))
+        fee = float(t.get("fee", 0.0))
+        fund = float(t.get("fund", 0.0))
+        b["closed_trades"] += 1
+        if net > 0:
+            b["closed_wins"] += 1
+            b["gross_win_u"] += net
+        elif net < 0:
+            b["gross_loss_u"] += abs(net)
+        b["closed_net_u"] += net
+        b["closed_fee_u"] += fee
+        b["closed_fund_u"] += fund
+
+    out = {}
+    for ym in sorted(buckets.keys()):
+        b = buckets[ym]
+        ct = b["closed_trades"]
+        out[ym] = {
+            "is_partial_month": b["is_partial_month"],
+            "unique_first_fills": b["unique_first_fills"],
+            "closed_trades": ct,
+            "closed_wins": b["closed_wins"],
+            "closed_win_rate_pct": round(100.0 * b["closed_wins"] / ct, 2) if ct else 0.0,
+            "closed_net_u": round(b["closed_net_u"], 4),
+            "closed_fee_u": round(b["closed_fee_u"], 4),
+            "closed_fund_u": round(b["closed_fund_u"], 4),
+            "closed_pf": (
+                round(b["gross_win_u"] / b["gross_loss_u"], 4)
+                if b["gross_loss_u"] > 0
+                else (None if b["gross_win_u"] == 0 else "INF")
+            ),
+            "closed_expectancy_u": round(b["closed_net_u"] / ct, 4) if ct else 0.0,
+        }
+    return out
+
+
+def summarize_run(res, start_ts_ms=None, end_ts_ms=None):
     ov = res["overall_trade_stats"]
     by_year = {}
     for y_int, d in sorted(res.get("by_year", {}).items()):
@@ -517,28 +627,10 @@ def summarize_run(res):
             "mtm_mdd_pct": d["mtm_mdd_pct"],
             "end_eq_u": d["end_eq_u"],
         }
-    by_month = {}
-    for tr in res.get("trades_detail", []) or []:
-        ts_exit = tr.get("exit_ts") or tr.get("close_ts") or tr.get("entry_ts")
-        if ts_exit is None:
-            continue
-        ym = datetime.fromtimestamp(int(ts_exit) / 1000.0, tz=TZ_UTC).strftime("%Y-%m")
-        m = by_month.setdefault(ym, {"trades": 0, "wins": 0, "net_pnl_u": 0.0})
-        m["trades"] += 1
-        net = float(tr.get("net_pnl_u", tr.get("net_u", tr.get("pnl_u", 0.0))))
-        if net > 0:
-            m["wins"] += 1
-        m["net_pnl_u"] += net
-    by_month_out = {
-        ym: {
-            "trades": d["trades"],
-            "win_rate_pct": round(100.0 * d["wins"] / d["trades"], 2) if d["trades"] else 0.0,
-            "net_pnl_u": round(d["net_pnl_u"], 2),
-        }
-        for ym, d in sorted(by_month.items())
-    }
-    ol = res.get("_ord_log", [])
-    filled_ol = [o for o in ol if o["outcome"] == "filled"]
+    ol = res.get("_ord_log", []) or []
+    trades = res.get("_trades", []) or []
+    filled_ol = [o for o in ol if o.get("outcome") == "filled"]
+    by_year_month = _build_by_year_month(ol, trades, start_ts_ms=start_ts_ms, end_ts_ms=end_ts_ms)
     return {
         "final_eq_u": res["final_eq_u"],
         "ret_eq_pct": res["ret_eq_pct"],
@@ -557,15 +649,91 @@ def summarize_run(res):
         "skip_first_bar_cross": res.get("_skip_fb_cross", 0),
         "order_placed": len(ol),
         "order_filled": len(filled_ol),
-        "order_expired": sum(1 for o in ol if o["outcome"] == "expired"),
-        "order_margin_rej": sum(1 for o in ol if o["outcome"] == "margin_rej"),
+        "order_expired": sum(1 for o in ol if o.get("outcome") == "expired"),
+        "order_margin_rej": sum(1 for o in ol if o.get("outcome") == "margin_rej"),
+        "order_pend_at_end": sum(1 for o in ol if o.get("outcome") == "pend_at_end"),
         "f_ev_real_8h": res["f_ev_real_8h"],
         "f_ev_real_non8h": res["f_ev_real_non8h"],
         "f_ev_miss_8h": res["f_ev_miss_8h"],
         "by_year": by_year,
-        "by_month": by_month_out,
+        "by_year_month": by_year_month,
+        "by_month": by_year_month,
+        "is_partial_month_convention": "30m_bar_open_inclusive_first_00_00_to_last_23_30_utc",
+        "monthly_accounting_contract": {
+            "unique_first_fills_field": "_ord_log[outcome=='filled'].ets (UTC month; includes open-at-end)",
+            "closed_trades_field": "_trades.xts (UTC month; never falls back to ets)",
+            "monthly_buckets_enumerated_for_scored_window": True,
+            "is_partial_month_convention": "30m_bar_open_inclusive_first_00_00_to_last_23_30_utc",
+        },
     }
 
+
+def build_local_detail_payload(res, scenario_name: str, initial_capital_u: float = 50000.0) -> dict:
+    """Build untruncated local trade/order/realized-curve/missing-funding detail payload."""
+    ol = res.get("_ord_log", []) or []
+    trades = res.get("_trades", []) or []
+    miss_events = sorted(e for e in (res.get("events_set") or set()) if len(e) >= 4 and e[3] == "miss_8h")
+    sorted_trades = sorted(trades, key=lambda t: (t.get("xts") if t.get("xts") is not None else -1, str(t.get("inst", ""))))
+    eq = float(initial_capital_u)
+    realized_curve = []
+    trades_out = []
+    for idx, t in enumerate(sorted_trades, 1):
+        net = float(t.get("net", 0.0))
+        eq += net
+        xts = t.get("xts")
+        ets = t.get("ets")
+        trades_out.append({
+            "seq": idx,
+            "inst_id": t.get("inst"),
+            "entry_ts_ms": ets,
+            "entry_ts_utc": _ts_ms_to_iso(ets),
+            "exit_ts_ms": xts,
+            "exit_ts_utc": _ts_ms_to_iso(xts),
+            "exit_reason": t.get("reason"),
+            "net_pnl_u": round(net, 6),
+            "fee_u": round(float(t.get("fee", 0.0)), 6),
+            "fund_u": round(float(t.get("fund", 0.0)), 6),
+            "realized_eq_after_u": round(eq, 6),
+        })
+        realized_curve.append({
+            "seq": idx,
+            "exit_ts_ms": xts,
+            "exit_ts_utc": _ts_ms_to_iso(xts),
+            "realized_eq_u": round(eq, 6),
+        })
+    orders_out = [
+        {
+            "inst_id": o.get("inst"),
+            "placed_ts_ms": o.get("pts"),
+            "placed_ts_utc": _ts_ms_to_iso(o.get("pts")),
+            "filled_ts_ms": o.get("ets"),
+            "filled_ts_utc": _ts_ms_to_iso(o.get("ets")),
+            "outcome": o.get("outcome"),
+        }
+        for o in ol
+    ]
+    missing_all = [
+        {
+            "inst_id": inst,
+            "ts_ms": int(t30),
+            "ts_utc": _ts_ms_to_iso(t30),
+            "kind": kind,
+        }
+        for (_, inst, t30, kind) in miss_events
+    ]
+    return {
+        "scenario": scenario_name,
+        "equity_curve_basis": "REALIZED_CLOSED_TRADES_ONLY_NOT_MTM_UNREALIZED",
+        "initial_capital_u": initial_capital_u,
+        "final_realized_eq_u": round(eq, 6),
+        "closed_trades_count": len(trades_out),
+        "orders_count": len(orders_out),
+        "missing_funding_events_count": len(missing_all),
+        "trades_detail": trades_out,
+        "orders_detail": orders_out,
+        "realized_equity_curve": realized_curve,
+        "missing_funding_events_all": missing_all,
+    }
 
 def parse_args(argv=None):
     p = argparse.ArgumentParser(description="BACKTEST-READINESS-01 v1.0 bounded offline L1 baseline runner")
@@ -732,12 +900,17 @@ def main(argv=None) -> int:
 
             bars = sorted(all_bars_set)
             cands_by_bar, max_lev = build_cands_fib_long_exact(raw, start_ts, end_ts)
-            total_cands = sum(len(v) for v in cands_by_bar.values())
+            in_window_cands = {bt: v for bt, v in cands_by_bar.items() if start_ts <= int(bt) <= end_ts}
+            candidate_bars_in_window = len(in_window_cands)
+            candidate_signals_in_window = sum(len(v) for v in in_window_cands.values())
+            candidate_bars_including_warmup = len(cands_by_bar)
+            candidate_signals_including_warmup = sum(len(v) for v in cands_by_bar.values())
             mapping_check = verify_mapping(orig_mod, raw, cands_by_bar, start_ts, end_ts)
             if mapping_check["signal_mismatches"] != 0 or mapping_check["exit_target_mismatches"] != 0:
                 raise RuntimeError("Mapping verification failed: " + json.dumps(mapping_check))
 
             arms = {}
+            local_details_by_scenario = {}
             missing_by_scenario = {}
             for name in requested_scenarios:
                 tp_pct, dly = FROZEN_SCENARIOS[name]
@@ -768,8 +941,18 @@ def main(argv=None) -> int:
                             }
                             for (_, inst, t30, kind) in miss_events[:25]
                         ],
+                        "missing_funding_events_all": [
+                            {
+                                "inst_id": inst,
+                                "ts_ms": int(t30),
+                                "ts_utc": datetime.fromtimestamp(t30 / 1000.0, tz=TZ_UTC).isoformat(),
+                                "kind": kind,
+                            }
+                            for (_, inst, t30, kind) in miss_events
+                        ],
                     }
-                arms[name] = summarize_run(r)
+                arms[name] = summarize_run(r, start_ts_ms=start_ts, end_ts_ms=end_ts)
+                local_details_by_scenario[name] = build_local_detail_payload(r, scenario_name=name)
 
             funding_db_sha_after = sha(src_funding_db)
             cache_manifest_sha_after = sha(cache_manifest_path)
@@ -792,8 +975,10 @@ def main(argv=None) -> int:
                     "scope": scope_preview,
                     "symbols_loaded": len(raw),
                     "bars_30m_in_window": len(bars),
-                    "candidate_bars_in_window": len(cands_by_bar),
-                    "candidate_signals_in_window": total_cands,
+                    "candidate_bars_in_window": candidate_bars_in_window,
+                    "candidate_signals_in_window": candidate_signals_in_window,
+                    "candidate_bars_including_warmup": candidate_bars_including_warmup,
+                    "candidate_signals_including_warmup": candidate_signals_including_warmup,
                     "mapping_verification": mapping_check,
                     "inputs_unchanged": True,
                     "sha256": {
@@ -807,10 +992,25 @@ def main(argv=None) -> int:
                     "missing_funding_gaps": missing_by_scenario,
                     "policy_note": "Offline hard refusal: miss_8h > 0 aborts with exit 2 and writes NO success report (zero-fill/interpolation/network fetch forbidden).",
                 }
+                _atomic_write_text(
+                    local_details_file,
+                    json.dumps(
+                        {
+                            "status": "ABORTED_MISSING_FUNDING",
+                            "study_id": "BACKTEST-READINESS-01",
+                            "version": "v1.9",
+                            "scenarios": local_details_by_scenario,
+                        },
+                        ensure_ascii=False,
+                        indent=2,
+                    ) + "\n",
+                )
+                abort_payload["local_details_file"] = str(local_details_file.name)
+                abort_payload["local_details_sha256"] = sha(local_details_file)
                 _atomic_write_text(abort_report, json.dumps(abort_payload, ensure_ascii=False, indent=2) + "\n")
                 print("ABORT_REPORT_SHA256:", sha(abort_report), flush=True)
                 print("MISSING_FUNDING_SUMMARY:", json.dumps({
-                    k: {kk: vv for kk, vv in v.items() if kk != "sample_events_utc"}
+                    k: {kk: vv for kk, vv in v.items() if kk not in ("sample_events_utc", "missing_funding_events_all")}
                     for k, v in missing_by_scenario.items()
                 }, ensure_ascii=False), flush=True)
                 return 2
@@ -828,8 +1028,10 @@ def main(argv=None) -> int:
                 "symbols_loaded": len(raw),
                 "symbol_order": ordered_syms if len(ordered_syms) <= 10 else ordered_syms[:10] + ["..."],
                 "bars_30m_in_window": len(bars),
-                "candidate_bars_in_window": len(cands_by_bar),
-                "candidate_signals_in_window": total_cands,
+                "candidate_bars_in_window": candidate_bars_in_window,
+                "candidate_signals_in_window": candidate_signals_in_window,
+                "candidate_bars_including_warmup": candidate_bars_including_warmup,
+                "candidate_signals_including_warmup": candidate_signals_including_warmup,
                 "mapping_verification": mapping_check,
                 "inputs_unchanged": True,
                 "sha256": {
@@ -849,6 +1051,21 @@ def main(argv=None) -> int:
                 ],
                 "arms": arms,
             }
+            _atomic_write_text(
+                local_details_file,
+                json.dumps(
+                    {
+                        "status": "PASS",
+                        "study_id": "BACKTEST-READINESS-01",
+                        "version": "v1.9",
+                        "scenarios": local_details_by_scenario,
+                    },
+                    ensure_ascii=False,
+                    indent=2,
+                ) + "\n",
+            )
+            result_payload["local_details_file"] = str(local_details_file.name)
+            result_payload["local_details_sha256"] = sha(local_details_file)
             _atomic_write_text(final_report, json.dumps(result_payload, ensure_ascii=False, indent=2) + "\n")
             print("FINAL_REPORT_SHA256:", sha(final_report), flush=True)
             for name, s in arms.items():

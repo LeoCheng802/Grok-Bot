@@ -647,26 +647,35 @@ def _ts_ms_to_iso(ts_ms):
     return datetime.fromtimestamp(int(ts_ms) / 1000.0, tz=TZ_UTC).isoformat()
 
 
-def _enumerate_scored_utc_months(start_ts_ms, end_ts_ms):
-    """Return ordered list of (YYYY-MM, is_partial_month) covering [start_ts_ms, end_ts_ms] inclusive."""
+BAR_30M_MS = 30 * 60 * 1000
+
+
+def _enumerate_scored_utc_months(start_ts_ms, end_ts_ms, bar_interval_ms: int = BAR_30M_MS):
+    """Return ordered list of (YYYY-MM, is_partial_month) covering [start_ts_ms, end_ts_ms] inclusive.
+
+    CLI --start-utc and --end-utc are inclusive 30m bar-open timestamps:
+    a UTC calendar month [YYYY-MM-01T00:00:00Z, next_month_01T00:00:00Z) has its last
+    30m bar open at next_month_start - bar_interval_ms (e.g., 23:30:00Z for 30m bars,
+    giving 1,488 bars for a 31-day month). Therefore end_ts_ms >= last_bar_open_ms
+    with start_ts_ms <= month_start_ms covers 100% of the month's bars (is_partial_month=False).
+    """
     if start_ts_ms is None or end_ts_ms is None or int(end_ts_ms) < int(start_ts_ms):
         return []
-    s_dt = datetime.fromtimestamp(int(start_ts_ms) / 1000.0, tz=TZ_UTC)
-    e_dt = datetime.fromtimestamp(int(end_ts_ms) / 1000.0, tz=TZ_UTC)
+    s_ms = int(start_ts_ms)
+    e_ms = int(end_ts_ms)
+    s_dt = datetime.fromtimestamp(s_ms / 1000.0, tz=TZ_UTC)
+    e_dt = datetime.fromtimestamp(e_ms / 1000.0, tz=TZ_UTC)
     y, m = s_dt.year, s_dt.month
     out = []
     while (y, m) <= (e_dt.year, e_dt.month):
         month_start = datetime(y, m, 1, 0, 0, 0, tzinfo=TZ_UTC)
-        last_day = calendar.monthrange(y, m)[1]
-        month_end = datetime(y, m, last_day, 23, 59, 59, 999000, tzinfo=TZ_UTC)
+        ny, nm = (y + 1, 1) if m == 12 else (y, m + 1)
+        next_month_start = datetime(ny, nm, 1, 0, 0, 0, tzinfo=TZ_UTC)
         ms_start = int(month_start.timestamp() * 1000)
-        ms_end = int(month_end.timestamp() * 1000)
-        is_partial = (int(start_ts_ms) > ms_start) or (int(end_ts_ms) < ms_end)
+        ms_last_bar_open = int(next_month_start.timestamp() * 1000) - int(bar_interval_ms)
+        is_partial = (s_ms > ms_start) or (e_ms < ms_last_bar_open)
         out.append((f"{y:04d}-{m:02d}", is_partial))
-        if m == 12:
-            y, m = y + 1, 1
-        else:
-            m += 1
+        y, m = ny, nm
     return out
 
 
@@ -778,6 +787,7 @@ def summarize_run(r: dict, start_ts_ms=None, end_ts_ms=None) -> dict:
         "same_bar_sl": int(r.get("_same_bar_sl", 0)),
         "skip_first_bar_cross": int(r.get("_skip_fb_cross", 0)),
         "by_year_month": _build_by_year_month(ol, trades, start_ts_ms=start_ts_ms, end_ts_ms=end_ts_ms),
+        "is_partial_month_convention": "30m_bar_open_inclusive_first_00_00_to_last_23_30_utc",
     }
 
 
@@ -871,6 +881,7 @@ def build_local_detail_payload(scenario_name: str, r: dict, start_ts_ms=None, en
         "open_at_end": enriched_open,
         "closed_trade_realized_equity_curve": closed_realized_eq_curve,
         "by_year_month": _build_by_year_month(ol, trades, start_ts_ms=start_ts_ms, end_ts_ms=end_ts_ms),
+        "is_partial_month_convention": "30m_bar_open_inclusive_first_00_00_to_last_23_30_utc",
         "final_eq_u": round(float(r.get("_end_eq_raw", r.get("final_eq", 50000.0))), 6),
         "mtm_mdd_pct": round(float(r.get("mtm_mdd_pct", 0.0)), 6),
     }
