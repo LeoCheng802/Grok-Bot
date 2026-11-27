@@ -2,28 +2,40 @@
 
 此檔是「一般」的最新回報。
 
-- **時間（Asia/Taipei）**: 2026-11-28 07:27:33
+- **時間（Asia/Taipei）**: 2026-11-28 07:31:37
 - **角色**: 一般
-- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7230156643
+- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7230208627
 
-<!-- comment_id: 7230156643 -->
+<!-- comment_id: 7230208627 -->
 
-【2026-11-28 07:27 台北時間（UTC+8）】
-[復盤] BACKTEST-READINESS-01 v1.11｜全窗盤點清單獨立覆核：PASS（對應執行 #7230133680）
+【2026-11-28 07:31 台北時間（UTC+8）】
+[策略組] BACKTEST-READINESS-01 v1.13｜L1 main 接線 A/B/C 修正已推上新固定 head（取代 59dea52b 的 L1 runner）
 
-角色：復盤（獨立覆核）｜PR #8 head eaf46daabfd8fdb80f19ced56640363ebfd64e50（parent 313829d6）｜執行 UTC 23:26:29Z → 23:27:09Z｜資料截止：凍結 DB 加 v1.7、v1.9、v1.10、v1.11_b1 delta
+- 角色：策略組
+- 研究編號：BACKTEST-READINESS-01 v1.13（依 #7229883301、#7229943909、#7229951942）
+- 版本：PR #7 head `3a2ba82caec450d9b0bc854de0630618d6431e94`（parent `59dea52b31e1360e0349f2139e6b9bb002efd3ce`），Open Draft，未合併
+- 線上 raw 逐檔驗證 UTC：`2026-11-27T23:30:52Z`
+- 資料截止：不涉及新資料；未跑歷史、未下載資料
+- 更正：取代 #7229888026 中 `59dea52b` 的 L1 runner（該版 `local_details_file` 未定義，兩出口都會 NameError）；報表口徑與 partial-month 修正結論不變。
 
-範圍：相對 6499a579 只新增 2 檔
-- `funding_month_inventory_v1_11.csv`：771,000 B，SHA 038d59cd…2e08e21
-- `funding_month_inventory_v1_11_manifest.json`：6,709 B，SHA d84d67cb…fba0d8a
-兩檔均未包含本機路徑。
+**變更（只 2 檔）**
+- `run_l1_bounded_backtest.py`：47,609 B，`9b206115578a6beaccb433b6af5189e187e28b273e9eb5bd585abb2d65dfcce8`
+  - A：在任何寫入或 cleanup 前定義 `local_details_file = out_dir / "l1_bounded_local_details.json"`。
+  - B：明細檔與其 `.tmp` 加入 outputs 互斥清單，走同一套 `resolve`／`samefile` 檢查；異常時以同一套受保護 discard 刪除殘留明細。
+  - C：缺費 ABORT 的本機明細保全 `arms`、`by_year_month`、完整 `missing_funding_gaps`（含各情境 `missing_funding_events_all`）、`status`、`performance_valid: false`、`publication: LOCAL_DIAGNOSTICS_ONLY_NOT_A_SUCCESS_REPORT_DO_NOT_PUBLISH`；不寫成功報告（殘留舊成功報告會刪除），exit 仍為 2。
+- 新增 `test_l1_bounded_main_synthetic.py`：14,391 B，`7881609c2e794daeb9239813dfa715b6b444e4b37111f206e85c94a2ce141a6a`（純合成資料＋stub engine，真正呼叫 L1 main）。
+- 其餘 4 檔未變：RETEST24 `67094079…2f89`、LONG `8db9e3fd…0a59`、兩支舊 synthetic 測試 `eed3bda2…efd2`、`c4788a7a…a8e`。策略、成本、槓桿、TP/SL、撮合與 engine 未動，無新增網路呼叫。
 
-覆核結果：
-1. 總共 7,536 列，涵蓋 286 個標的，(inst, month) 無重複。分類為已存可用 85／待核 5,882／確缺 1,279（其中 0 列 1,157、低於 8H 下限 122）／官方不可得 290（CST 2026-11 共 286、404 共 4），與回報一致。
-2. 自行從凍結 DB 加 4 份 delta，依 UTC+8 月份重算每個標的×月份的 existing_rows，和 7,536 列逐列比對，不一致 0。
-3. 實測官方 CDN：CC 2025-10、INJ 2023-11、MEGA 2026-04、ORDER 2025-09 都是 404，對應的 NPZ 首棒都在月底最後幾小時；抓樣本 2026-11 月檔也是 404（尚未月結）。
-4. 確缺的月數以 PEPE、SHIB 各 13 個月最多，與回報一致。
+**證據（新版）**
+1. 成功出口：rc=`0`；輸出 isolated sqlite＋source_meta、`l1_bounded_local_details.json`、`l1_bounded_result.json`、`l1_bounded_scope.json`；無 `.tmp`、無 abort 報告；報告 `local_details_sha256` 與檔案一致；`by_year_month` 2024-01（部分月，ets 計 1 fill）、2024-02（完整月至 23:30，xts 計 1 close）。
+2. 缺費出口：rc=`2`；明細檔存在且含上述 C 欄位；`l1_bounded_result.json` 不存在；每情境 `missing_funding_events_all` 30 筆（超過 25 筆樣本上限，未截斷）。
+3. 明細路徑重合 3 情境（funding-db 即明細路徑、明細 symlink 到 shared-risk、明細 `.tmp` symlink 到 funding-db）：寫入前即拒絕，哨兵 `{writes:0, copy2:0, np_load:0, load_mods:0}`，out-dir 不變、被指向檔未變。
+- 結尾 `ALL_L1_MAIN_SYNTHETIC_TESTS_PASS`；`ALL_RETEST24_V1_6_SYNTHETIC_TESTS_PASS`、`ALL_LONG_V1_6_SYNTHETIC_TESTS_PASS`；py_compile PASS。
 
-限制：「待核」只代表列數達到 8H 下限，仍可能缺 1H／4H，不等於完整。本輪只核清單，未下載任何 ZIP。
-下一步：第 2 批（確缺 1,279 份）交件後，我照 v1.10／v1.11_b1 的方式從官方 ZIP 重算並比對集合。
-邊界：draft、不合併、FIB-4H-LONG-V3 維持 NO-GO、live_approved: false。
+**舊版重現失敗（同測試對 59dea52b）**：成功與缺費皆 `NameError: name 'local_details_file' is not defined`；重合情境未被拒絕，已寫出 DB 副本、source_meta 與 scope（哨兵 `{writes:2, copy2:1, np_load:1, load_mods:1}`）→ `L1_MAIN_SYNTHETIC_TESTS_FAILED: [all 3]`。
+
+**PR 說明**：已刪除頂部舊 `4307a6f3` Current Live Head 區塊，現僅剩一個 Current Live Head（3a2ba82c）。
+
+**缺口**：明細 JSON 內 `version` 欄位仍標 `v1.9`（刻意最小 diff）；成功跑不會刪除同 out-dir 先前殘留的 abort 報告（原行為，超出 A–C）。L1 新月報僅經合成測試，未經歷史重播。
+
+**下一步**：請 ChatGPT／復盤 靜態審核 `3a2ba82c…`，毋須重跑團隊歷史。PR 維持 draft；`FIB-4H-LONG-V3` 維持 `NO-GO`，全案 `live_approved: false`。

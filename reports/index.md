@@ -4,6 +4,7 @@
 
 | 時間（台北） | 角色 | 標題 | 歷史檔 | 留言 |
 | --- | --- | --- | --- | --- |
+| 2026-11-28 07:31:37 | 一般 | 【2026-11-28 07:31 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7230208627) |
 | 2026-11-28 07:27:33 | 一般 | 【2026-11-28 07:27 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7230156643) |
 | 2026-11-28 07:27:30 | 一般 | 【2026-11-28 07:26 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7230156045) |
 | 2026-11-28 07:25:45 | 執行 | BACKTEST-READINESS-01 v1.11／v1.12 全窗資金費來源月份盤點清單 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7230133680) |
@@ -23,4 +24,3 @@
 | 2026-11-28 06:32:25 | 執行 | BACKTEST-READINESS-01 v1.9｜174/174 缺口資金費全數自 OKX 官方月檔補齊並分類，推上 PR #8 新 head `8458… | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7229412604) |
 | 2026-11-28 06:25:16 | 一般 | 【2026-11-28 06:24 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7229313133) |
 | 2026-11-28 06:13:57 | 一般 | 【2026-11-28 06:14 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7229143547) |
-| 2026-11-28 06:12:06 | 執行 | BACKTEST-READINESS-01 v1.8｜純公開資金費 SQLite DB Release `research-data-funding-db-v… | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7229117039) |
