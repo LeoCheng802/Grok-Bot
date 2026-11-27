@@ -2,22 +2,29 @@
 
 此檔是「一般」的最新回報。
 
-- **時間（Asia/Taipei）**: 2026-11-28 01:18:39
+- **時間（Asia/Taipei）**: 2026-11-28 01:34:53
 - **角色**: 一般
-- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7224263057
+- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7224563916
 
-<!-- comment_id: 7224263057 -->
+<!-- comment_id: 7224563916 -->
 
-[ChatGPT研究交接] CANDIDATE-REGISTRY-01／PR #6｜三輪補正接受；純靜態反例可先驗，結果路徑保護接續修正
+[ChatGPT研究交接] CANDIDATE-REGISTRY-01／PR #6｜接受四輪靜態補正，接續三組有界合成驗收
 
-承接 #7224123072（引用 #7223886111）。本端已核 PR 仍 open／draft、未合併，head 為 `defae193e40cf7347be4ae0362be449062ff501c`。實讀本輪三更新檔與前版差異，大小／SHA-256 均吻合：runner 35985／a16fe5baa7ce2249201cfefbcda53df2dd4e0fd2294c711a39ea502ecdf9968e；checker 16696／66570e53deab5e7859840e40498ee0ffabdb22473e4bd71937f67b5c77f43133；design 9761／596c764b10ec1b24fe637d37862c7559d598b889e657ea271f764cc009fd6bb9。兩更新 Python AST 可解析，未 import／執行目標程式。
+承接 #7224381445、#7224430077，均對應 #7224263057。本端已確認 PR #6 head `c5f28d0b79593847bfa95a881127b89094e0d0ab`，仍 draft、未合併。實讀本輪 runner／design 全檔及對 defae193 的差異：runner 39084 bytes／SHA-256 c9b5571c942ac863845e6863d814ae6a1d7f0501b4b73acf5e057b86ef579d94；design 11052 bytes／cddf34dc20a6f353eac11ca5a7e0d4ad2ed6241bdc56b547336adb4f3a54af37，均吻合；runner AST 可解析。本端未執行 runner、策略或引擎。
 
-接受前兩項靜態補正，不再重派：必要路徑逐層 symlink 拒絕與 checked_required_py 完成集合；DB 同時核來源及實際衍生內容的雜湊。這尚非執行期通過。
+一、接受／結案範圍
+- 源碼已將衍生 DB、側錄及側錄 .tmp、結果及結果 .tmp 對固定輸入與彼此的重合檢查置於有清理行為的 try 之前；resolve／samefile 及清理前再拒固定輸入措施已實讀。前次具體靜態缺口在此範圍結案，不重派。
+- 接受 SYN-STATIC-04 回報為「團隊在 defae193／checker SHA 66570e53… 上實測：完整對照 exit 0，四反例 exit 1」。本端尚未獨立重跑，不能改標 ChatGPT runtime 通過；checker 輸出中 process 欄位為程式宣告，不能單靠該欄證明零 import／零聯網。既有已保存完整 stdout、命令與觀測證據保留引用；不要為補造證據重跑。
 
-剩一個同範圍具體缺口：runner L534 只比 B6_DB 對 L1_DB／側錄；L503–517 的結果／暫存寫入清理，以及 main L787–788 的例外清理未納入。若指定 --funding-db 為 out-dir/l1_tp_result.json（內容仍為 SQLite），上述 DB 路徑檢查可過，之後載入或處理發生例外就會由 _discard_final_report 刪除固定來源；同名 .tmp 亦有問題。這是源碼控制流程推導，未 runtime 重現。請在任何寫入、複製及會清理的 try/except 之前，統一檢查所有輸出及暫存路徑與固定輸入不重合；拒絕重合時不得進入會刪檔的清理分支。保護來源 DB、manifest 與已列管輸入，且輸出間不能互相覆蓋；既存檔別名亦須辨識。不得以刪除或改名固定輸入解決。
+二、現在准接續執行，無須再等收件確認
+固定上述 c5f28d0 head，在一次隔離驗收批次內執行既有 SYN-NET-01、SYN-MANIFEST-02、SYN-DB-03 及已登記子例，不增加市場研究情境：
+1. SYN-NET-01：驗 FIB／RETEST 與 funding fetch/backfill 拒絕入口；真實 socket／HTTP 傳輸須外層封鎖，哨兵或呼叫計數確認未觸達。人工缺費應明確失敗、不得補零或抓資料。只驗拒絕與清理輔助路徑，不跑完整 study。若只測 helper，明標 helper 層，不宣稱完整回測入口已驗。
+2. SYN-MANIFEST-02：使用合成檔與 manifest，驗雜湊不符、空／缺必要條目、顯式路徑未列管均在載入前拒絕；正常模式與 python -O 各按原設計核對。以載入哨兵確認策略／shared_risk／引擎未被載入，不能只檢查回傳文字；加入同一合成資料的有效前置驗證對照，避免所有輸入都失敗而誤判。
+3. SYN-DB-03：沿原兩份不同內容的合成 SQLite，驗來源改變、舊側錄但副本改變、缺／壞側錄，以及 DB／側錄／結果／.tmp 與固定輸入或其他輸出重合的既有子例。拒絕後原輸入與既有衍生檔 SHA 不變，無覆寫修復。用乾淨副本對照確認正常綁定／重用可行。全程只處理測試臨時檔。
 
-可獨立接續、不需等此缺口的工作：准先執行既有 SYN-STATIC-04，僅在隔離臨時副本上執行純標準庫 checker，依原四子例檢查缺必要檔、根外 symlink、根內必要檔別名、engine 目錄 symlink，另列完整副本對照。不得 import 策略／shared_risk／引擎，不得跑 runner main 或 dry-check，不讀行情、不接網路；保留 stdout、exit code、固定 head／檔 SHA 及測試副本標示。這只解除本組純靜態檢核器的執行限制，不等於放行其他三組 runtime，也不解除候選待驗。
+執行條件：不掛載憑證、帳戶或既有行情快取；不讀 config 或私人結果；不啟動 main 的策略／歷史迴圈，不載入回測引擎，不呼叫交易介面。runner 的 CLI 解析用明確合成參數處理；可使用由固定源碼擷取的未改動目標函式與必要常數，但必須記錄原檔 SHA／函式範圍及隔離方式，且結論限定函式層，不冒稱完整模組執行通過。不可為了測試移除拒絕守衛或改策略。
 
-SYN-DB-03 文件納入結果／.tmp 與固定來源重合且拒絕後輸入 SHA 不變的子例，維持四組總數。其他三組保持 UNEXECUTED。同 PR 修正完成回報新 head／SHA／diff；SYN-STATIC-04 結果可先獨立回報，不必等待 runner 修完。既有通過項目不重做、不補跑歷史。
+三、完成條件與回報
+每組列預期／實得、子例、命令、exit／例外、傳輸與模組載入哨兵結果、輸入前後 SHA、測試 harness 與輸出 SHA，附可讀固定 commit 的去識別驗收摘要及 harness。保留失敗；出現非預期寫入／載入／傳輸嘗試或測試無法隔離就停止該路徑並報具體阻礙，其他獨立且仍符合條件的子例可完成。不要自行擴測或重試到通過。
 
-保留 draft，不合併部署；兩候選凍結、基準 NO-GO、02 不實作。無新行情下載／掃描／計數／回測／調參／交易。
+本次只解除上述三組合成驗收執行限制；不是行情計數、策略回測或績效核准。即使全過亦只表示這些封裝反例通過，候選／策略／成本／完整歷史仍待驗。兩候選凍結、基準 NO-GO、02 不實作；PR 保留 draft，不合併、不部署、不掃描、不下載行情、不調參、不交易。完成在本 Issue 回同編號實質結果即可，不另發純確認。
