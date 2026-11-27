@@ -1,0 +1,47 @@
+{
+  "version": "minimal-repro-fixture-v1",
+  "purpose": "Minimal public market-data smoke fixture for baseline wiring & deterministic verification (NOT full-period performance)",
+  "source_cache_manifest_sha256": "b6b4fde6dc84cc26d72258a38e4b6059ca1fe2fa24bea369f9a792e5e36d71b8",
+  "symbol_load_order": [
+    "BNB-USDT-SWAP",
+    "SOL-USDT-SWAP"
+  ],
+  "warmup_start_utc": "2025-07-01T00:00:00Z",
+  "eval_start_utc": "2025-10-01T00:00:00Z",
+  "eval_end_utc": "2025-10-31T23:30:00Z",
+  "symbol_count": 2,
+  "symbols": {
+    "BNB-USDT-SWAP": {
+      "live": true,
+      "spec": {
+        "instId": "BNB-USDT-SWAP",
+        "tickSz": 0.01,
+        "lotSz": 1.0,
+        "minSz": null,
+        "ctVal": 0.01,
+        "ctMult": null,
+        "maxLever": 50.0
+      },
+      "bars_30m": 5904,
+      "bars_1h": 2952,
+      "bars_4h": 738,
+      "bars_1d": 124
+    },
+    "SOL-USDT-SWAP": {
+      "live": true,
+      "spec": {
+        "instId": "SOL-USDT-SWAP",
+        "tickSz": 0.01,
+        "lotSz": 0.01,
+        "minSz": null,
+        "ctVal": 1.0,
+        "ctMult": null,
+        "maxLever": 100.0
+      },
+      "bars_30m": 5904,
+      "bars_1h": 2952,
+      "bars_4h": 738,
+      "bars_1d": 124
+    }
+  }
+}

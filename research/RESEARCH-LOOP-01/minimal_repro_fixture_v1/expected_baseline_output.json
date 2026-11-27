@@ -1,0 +1,68 @@
+{
+  "fixture": "minimal-repro-fixture-v1",
+  "note": "Smoke wiring verification on 2 symbols over 2025-10 UTC only; NOT a performance claim or OOS result.",
+  "workspace_in_sys_path": false,
+  "symbol_load_order": [
+    "BNB-USDT-SWAP",
+    "SOL-USDT-SWAP"
+  ],
+  "eval_window_utc": [
+    "2025-10-01T00:00:00Z",
+    "2025-10-31T23:30:00Z"
+  ],
+  "bars_30m_in_window": 1488,
+  "candidate_bars_in_window": 81,
+  "candidate_signals_in_window": 125,
+  "runs": {
+    "TP_2.5pct|cross_1tick": {
+      "final_eq_u": 50026.57,
+      "ret_eq_pct": 0.05,
+      "cagr_eq_pct": 0.63,
+      "mtm_mdd_pct": 0.41,
+      "ann_calmar_eq": 1.529,
+      "closed_trades": 3,
+      "win_rate_pct": 66.67,
+      "closed_net_u": 26.57,
+      "closed_fee_u": 7.89,
+      "closed_fund_u": 0.35,
+      "all_real_fund_u": 0.35,
+      "pf": 1.173,
+      "expectancy_u": 8.856,
+      "same_bar_sl": 0,
+      "skip_first_bar_cross": 0,
+      "order_placed": 14,
+      "order_filled": 3,
+      "order_expired": 11,
+      "order_margin_rej": 0,
+      "f_ev_real_8h": 6,
+      "f_ev_real_non8h": 0,
+      "f_ev_miss_8h": 0,
+      "by_year": {}
+    },
+    "TP_2.5pct|delay1bar": {
+      "final_eq_u": 50026.57,
+      "ret_eq_pct": 0.05,
+      "cagr_eq_pct": 0.63,
+      "mtm_mdd_pct": 0.41,
+      "ann_calmar_eq": 1.529,
+      "closed_trades": 3,
+      "win_rate_pct": 66.67,
+      "closed_net_u": 26.57,
+      "closed_fee_u": 7.89,
+      "closed_fund_u": 0.35,
+      "all_real_fund_u": 0.35,
+      "pf": 1.173,
+      "expectancy_u": 8.856,
+      "same_bar_sl": 0,
+      "skip_first_bar_cross": 0,
+      "order_placed": 14,
+      "order_filled": 3,
+      "order_expired": 11,
+      "order_margin_rej": 0,
+      "f_ev_real_8h": 6,
+      "f_ev_real_non8h": 0,
+      "f_ev_miss_8h": 0,
+      "by_year": {}
+    }
+  }
+}

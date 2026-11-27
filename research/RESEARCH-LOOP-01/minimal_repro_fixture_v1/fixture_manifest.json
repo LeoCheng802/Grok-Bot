@@ -1,0 +1,92 @@
+{
+  "research_id": "RESEARCH-LOOP-01",
+  "version": "v1.5-minimal-repro-fixture-v1",
+  "created_utc": "2026-11-27T06:20:39Z",
+  "purpose": "De-identified minimal public market input fixture, engine/dependency inventory, startup commands, and deterministic baseline smoke expected output. Does NOT include full strategy/engine code.",
+  "private_delivery_channel_status": "私人交付通道未落實",
+  "private_pack_reference": {
+    "archive_name": "RESEARCH-LOOP-01-PACK-v1.1.tar.gz",
+    "size_bytes": 136828,
+    "sha256": "87dc925b8025c3bcaba87debb4d1bf8a86b794a8e47921f6ac2208b04e17da0d",
+    "manifest_sha256": "3dacf887135804560ee45d1e43a6f4162c322ec1a60cf5b5227440ba55399874",
+    "file_count": 20,
+    "delivery_channel": "Private only (not uploaded to public repo; awaits user-designated private repo or direct transfer to ChatGPT)"
+  },
+  "runtime_dependencies": {
+    "python": "3.13.5",
+    "packages": [
+      "numpy==2.5.5",
+      "pandas==3.0.6",
+      "requests==2.34.2"
+    ],
+    "stdlib_used": [
+      "argparse",
+      "copy",
+      "csv",
+      "datetime",
+      "decimal",
+      "hashlib",
+      "importlib",
+      "inspect",
+      "json",
+      "math",
+      "os",
+      "pathlib",
+      "shutil",
+      "sqlite3",
+      "sys",
+      "time"
+    ]
+  },
+  "engine_module_hashes": {},
+  "startup_commands": {
+    "dry_check_no_data": "python3 offline_repro/run_l1_tp_study.py --dry-check",
+    "full_baseline_replay_requires_full_cache": "python3 offline_repro/run_l1_tp_study.py --cache-dir <path/to/cache_v3> --funding-db <path/to/funding_archive_l1_isolated.sqlite> --out-dir ./out",
+    "minimal_fixture_sqlite_build_from_csv": "python3 -c \"import csv,sqlite3; c=sqlite3.connect('funding_min.sqlite'); c.execute('CREATE TABLE funding_archive(inst_id TEXT NOT NULL,ts_snapped INTEGER NOT NULL,ts_raw INTEGER NOT NULL,rate REAL NOT NULL,source_ym TEXT NOT NULL,PRIMARY KEY(inst_id,ts_snapped))'); r=list(csv.reader(open('funding_min.csv')))[1:]; c.executemany('INSERT INTO funding_archive VALUES(?,?,?,?,?)',[(a,int(b),int(d),float(e),f) for a,b,d,e,f in r]); c.commit()\""
+  },
+  "symbol_load_order": [
+    "BNB-USDT-SWAP",
+    "SOL-USDT-SWAP"
+  ],
+  "warmup_window_utc": [
+    "2025-07-01T00:00:00Z",
+    "2025-10-31T23:30:00Z"
+  ],
+  "eval_window_utc": [
+    "2025-10-01T00:00:00Z",
+    "2025-10-31T23:30:00Z"
+  ],
+  "public_fixture_files": [
+    {
+      "path": "cache_v3_min/manifest.json",
+      "size_bytes": 1207,
+      "sha256": "3647a3d9b532c1abd7dbfd47713ae55ba7355b319bcf7473c0162bbfda1e24c4"
+    },
+    {
+      "path": "cache_v3_min/BNB-USDT-SWAP.npz",
+      "size_bytes": 109976,
+      "sha256": "a96987b294a8683dfde77988de56fa7075f690ad5fc290057f89d5d2e0fe3a0a"
+    },
+    {
+      "path": "cache_v3_min/SOL-USDT-SWAP.npz",
+      "size_bytes": 123730,
+      "sha256": "e242fbe50d80e25215deb79fa2e49c160be07598bf1b5219c9aee2d2c7f00f46"
+    },
+    {
+      "path": "funding_min.csv",
+      "size_bytes": 47990,
+      "sha256": "9b8dd0a98c0df71ed47631784dddc4a6317b178c15873cbee3e7c4e99ef3dd60"
+    },
+    {
+      "path": "expected_baseline_output.json",
+      "size_bytes": 1781,
+      "sha256": "c5a112003a08bc7b93cc60dc6d3a074940ce04716644a55ea08eb7aec39030b1"
+    }
+  ],
+  "missing_items_and_gaps": [
+    "私人交付通道未落實：完整 20 檔 RESEARCH-LOOP-01-PACK-v1.1.tar.gz（含策略腳本與離線引擎模組）尚未落實至 ChatGPT 可直接存取的私人位置。",
+    "完整 286 檔歷史行情快取（cache_v3，約 268 MB）尚未全量上傳至公開 repo，本次僅提供 2 檔（BNB/SOL）最小可重現煙霧輸入供接線與基準邏輯核對。",
+    "既定 61 個月度資金費分片（commit 94348bd5）維持不重抓、不重驗收；本最小輸入檔僅自既有 L1 隔離庫唯讀切出 BNB/SOL 2025-07~10 片段（740 筆，f_ev_miss_8h=0）。",
+    "歷史 BBO、歷史 MMR（以 1% 近似）與跨頻率非 8H 應收分母維持未知限制；本最小輸出僅為接線驗證，不代表全期績效或樣本外結果。"
+  ]
+}
