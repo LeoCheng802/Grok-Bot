@@ -580,13 +580,16 @@ def _atomic_write_text(path: Path, text: str) -> None:
 
 def _discard_final_report(path: Path, fixed_inputs) -> None:
     """Remove only a derived report. Never unlink a path that is a fixed input."""
-    for candidate in (path, Path(str(path) + ".tmp")):
-        for label, fixed in fixed_inputs:
+    candidates = (path, Path(str(path) + ".tmp"))
+    fixed_list = tuple(fixed_inputs)
+    for candidate in candidates:
+        for label, fixed in fixed_list:
             if _paths_overlap(candidate, fixed):
                 raise RuntimeError(
                     "refusing to delete " + candidate.name
                     + " because it overlaps fixed input " + label
                 )
+    for candidate in candidates:
         if candidate.exists():
             candidate.unlink()
 
