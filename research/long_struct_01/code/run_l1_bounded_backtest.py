@@ -814,6 +814,7 @@ def main(argv=None) -> int:
         final_report = out_dir / "l1_bounded_result.json"
         abort_report = out_dir / "l1_bounded_missing_funding_abort.json"
         scope_file = out_dir / "l1_bounded_scope.json"
+        local_details_file = out_dir / "l1_bounded_local_details.json"
 
         outputs = (
             ("L1_DB", l1_db),
@@ -825,6 +826,8 @@ def main(argv=None) -> int:
             ("abort report temp", Path(str(abort_report) + ".tmp")),
             ("scope file", scope_file),
             ("scope file temp", Path(str(scope_file) + ".tmp")),
+            ("local details file", local_details_file),
+            ("local details file temp", Path(str(local_details_file) + ".tmp")),
         )
         fixed_inputs = [
             ("funding-db", src_funding_db),
@@ -999,6 +1002,11 @@ def main(argv=None) -> int:
                             "status": "ABORTED_MISSING_FUNDING",
                             "study_id": "BACKTEST-READINESS-01",
                             "version": "v1.9",
+                            "performance_valid": False,
+                            "publication": "LOCAL_DIAGNOSTICS_ONLY_NOT_A_SUCCESS_REPORT_DO_NOT_PUBLISH",
+                            "arms": arms,
+                            "by_year_month": {k: v["by_year_month"] for k, v in arms.items()},
+                            "missing_funding_gaps": missing_by_scenario,
                             "scenarios": local_details_by_scenario,
                         },
                         ensure_ascii=False,
@@ -1058,6 +1066,7 @@ def main(argv=None) -> int:
                         "status": "PASS",
                         "study_id": "BACKTEST-READINESS-01",
                         "version": "v1.9",
+                        "by_year_month": {k: v["by_year_month"] for k, v in arms.items()},
                         "scenarios": local_details_by_scenario,
                     },
                     ensure_ascii=False,
@@ -1078,6 +1087,7 @@ def main(argv=None) -> int:
             return 0
         except Exception:
             _discard_final_report(final_report, fixed_inputs)
+            _discard_final_report(local_details_file, fixed_inputs)
             raise
 
 
