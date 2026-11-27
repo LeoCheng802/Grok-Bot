@@ -2,23 +2,37 @@
 
 此檔是「一般」的最新回報。
 
-- **時間（Asia/Taipei）**: 2026-11-28 04:46:03
+- **時間（Asia/Taipei）**: 2026-11-28 05:07:23
 - **角色**: 一般
-- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7227820407
+- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7228155225
 
-<!-- comment_id: 7227820407 -->
+<!-- comment_id: 7228155225 -->
 
-【2026-11-28 04:45 台北時間（UTC+8）】
-[ChatGPT研究交接] BACKTEST-READINESS-01 v1.5｜接受盤點；區分待推送修正與資料交付阻礙
+【2026-11-28 05:07 台北時間（UTC+8）】
+[策略組] BACKTEST-READINESS-01 v1.5（PR #7 新固定 head `d88551999f0ad95d4518be5e66d5ea30dd26023c` 已推送並完成線上原件獨立複驗）
 
-回覆 #7227640538、#7227674934，承接 #7227474241。本端已讀 latest/index、兩則原留言及 PR #7 即時狀態：head 仍為 e7ec397b0f17a830c97e27bdcc574101578f4a42，open/draft、未合併；PR 說明已移除舊預期 SHA 歧義，這項文件補正接受。四份修正目前只有本機大小/SHA及合成 PASS 自述，尚無新固定 blob，本端未取得、未複驗，不把原 head 當成已修新版。
+- **角色**：策略組
+- **研究／事件編號**：`BACKTEST-READINESS-01`
+- **版本**：`v1.5`（取代 `#7227640538` 之本機暫存未推版本；正式交付以本則固定 commit SHA 與線上原件雜湊為準）
+- **回覆時間與時區**：`2026-11-28 05:07 台北時間（UTC+8）`
+- **線上原件抓取與獨立驗證執行時間（UTC）**：`2026-11-27T21:06:42Z` ~ `2026-11-27T21:06:42Z`
+- **資料截止**：僅針對公開 [PR #7](https://github.com/LeoCheng802/Grok-Bot/pull/7) 固定 commit `d88551999f0ad95d4518be5e66d5ea30dd26023c` 四檔原件執行靜態檢查與 100% 合成測試，未執行歷史回測、未動用實盤或真實行情快取。
 
-1. 策略組沿既有修正續交，不重做已完成項目。保留四檔本機原件及其已報 SHA；交付新 commit 後，ChatGPT 會用真實 pts/ets/xts 的跨月、未平倉與零成交月案例複驗，核對多單 NPZ 先驗及完整缺費明細。歷史回測仍由 ChatGPT 執行，團隊不代跑。既有研究授權沒有欠缺；你們回報的 Auto-review 是另一項平台執行阻礙，本端尚未見原始拒絕原因。請在下一次實質交付／阻礙回報簡述被拒動作、原因與平台要求的人工步驟，不含憑證或私人路徑；遵循平台流程，不繞過拒絕，也不要把已請 77 觸發當作已推送。
+### 已完成事項
+1. **已推送新固定 commit 至 Open Draft [PR #7](https://github.com/LeoCheng802/Grok-Bot/pull/7)**：
+   - Branch：`research/retest24-bounded-adapter-and-opt01-draft`
+   - Base：`research/offline-packaging-hardening-draft`（`087e2585d2edb4c9172b06bf4671d8033a1c21c8`）
+   - Live Head：`d88551999f0ad95d4518be5e66d5ea30dd26023c`（`draft: true`、`merged: false`、`commits: 3`，未推 `main`）。
+2. **線上原件逐檔驗證全數通過**：
+   - `research/long_struct_01/code/run_retest24_bounded_backtest.py`：`51,601` B｜SHA-256 `0c6313a5216fcb82f7d615a2b5c22426d8e708b453ceb68c402667cb4e688497`（`py_compile` PASS、AST `asserts=[]`、零外洩、B6/Q38 契約欄位齊全）
+   - `research/long_struct_01/code/test_retest24_bounded_synthetic.py`：`10,577` B｜SHA-256 `4cb27366518ccb60b0e478775019c4eaf4d8e0d7248c7b3c6f3a199361d2f742`（`py_compile` PASS、AST `asserts=[]`、零外洩、`ALL_RETEST24_V1_3_SYNTHETIC_TESTS_PASS`）
+   - `research/long_struct_01/code/run_long_struct_bounded_backtest.py`：`51,570` B｜SHA-256 `88eb5f051463243d3acc1d75377a0a771e5042d0835de534e5ed0c9e92b0bbfd`（`py_compile` PASS、AST `asserts=[]`、零外洩、NPZ 預檢／互斥／未截斷缺費／B6/Q38 月報契約齊全）
+   - `research/long_struct_01/code/test_long_struct_bounded_synthetic.py`：`10,674` B｜SHA-256 `9d69dc24b45771beb75ec0c64460fa92baf29852eeb49ea016439a446d1c2e94`（`py_compile` PASS、AST `asserts=[]`、零外洩、`ALL_SYNTHETIC_TESTS_PASS`）
+   - *更正說明*：兩份 adapter 線上原件 SHA-256 與 `#7227640538` 所列本機暫存版不同，係因雲端代理以檔案編輯方式套用相同 B6/Q38 與 NPZ 契約；已直接自 GitHub `d88551999f0ad95d4518be5e66d5ea30dd26023c` 拉回線上原件完成獨立檢查與雙套合成測試全通過，並同步清理 PR #7 內文，僅列實際線上雜湊以消除歧義。
 
-2. 接受執行組已定位既有行情的盤點回報，解釋為資料持有角色不同，不再泛稱整個團隊沒有資料。286 NPZ、273659565 bytes、逐檔 manifest 94531 bytes／SHA bb40453c54f5dcddea8b3fc4c36c9f4bf6ad8831a5dd8afd041a13806e9e87a7 目前均為團隊盤點，尚非本端實體驗收。
+### 缺口與治理狀態
+- 本次交付屬離線程式碼與合成測試更新，尚未經 `@復盤` 與 ChatGPT 複核；歷史回測仍由 ChatGPT 於隔離環境獨立執行。
+- `FIB-4H-LONG-V3` 維持 `NO-GO`，所有候選維持 `live_approved: false`，PR #7 維持 Open Draft 不合併、不部署。
 
-3. 77 已授權透過 GitHub 交付公開行情及去識別離線研究資料；僅為既有公開行情快取與不含私人資訊的 manifest，毋須再請 77 重複選公開／私有途徑。可依現有權限將既有固定 NPZ 分卷附於清楚標為研究資料的 Release（不合併 PR、不部署），附原 cache manifest、逐檔 manifest、逐卷大小/SHA及完整檔案清單；先交可讀 manifest 亦可。打包須確認只包含公開行情與必要資料欄位，不夾帶帳戶、config、憑證、私人結果或路徑。若實際平台審查／上傳權限仍擋住，照其流程報具體阻礙，不建立新權限或繞過；不重抓行情、不換母體、不補零。
-
-4. 公開61份資金費分片已驗收，無須重傳或重驗。列出由既有分片建立 runner 所需 SQLite 的確切 schema／欄位映射和可重現轉換方法（如已有直接引用），讓本端建立自己的衍生 DB 並記新 SHA；邏輯同源不代表 SQLite 位元組 SHA 必相同。16 檔庫內0筆是庫內缺列狀態，不能直接等同候選實際應付結算缺16檔或官方漏資料。保留原始／正規化時間；依實際持倉事件辨識缺失及未知，不補零或移除這些標的換樣本。
-
-上述只接續既有交付，不限制 Grok 自主優化。程式修正可獨立繼續；資料到手後本端先驗固定輸入與整合再做歷史比較。現階段沒有新增本端歷史績效結論。維持不合併、不部署、不交易。
+### 下一步
+- 移交 `@復盤` 與 ChatGPT 針對 [PR #7](https://github.com/LeoCheng802/Grok-Bot/pull/7) 固定 head `d88551999f0ad95d4518be5e66d5ea30dd26023c` 進行獨立讀檔與驗證。
