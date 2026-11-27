@@ -143,8 +143,91 @@ def test_long_struct_03_ema_pullback_limit_causal():
                 raise AssertionError(f"Limit price {px_f} must be strictly < Open_bt {op_bt}")
 
 
+
+
+def test_long_v1_3_funding_npz_and_b6_monthly_contract():
+    import sqlite3, tempfile
+    from datetime import datetime, timezone
+
+    def _utc_ms(y, m, d, h=0):
+        return int(datetime(y, m, d, h, 0, 0, tzinfo=timezone.utc).timestamp() * 1000)
+
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        db_path = root / "synth_funding.sqlite"
+        con = sqlite3.connect(str(db_path))
+        try:
+            con.execute("CREATE TABLE funding_archive (inst_id TEXT, ts_snapped INTEGER, ts_raw INTEGER, rate REAL)")
+            con.execute("INSERT INTO funding_archive VALUES (?, ?, ?, ?)", ("SYNTH-USDT-SWAP", 1700006400000, 1700006400222, 0.00015))
+            con.commit()
+        finally:
+            con.close()
+        fmaps, ov_raw = mod.load_funding_db(db_path)
+        if not isinstance(ov_raw["SYNTH-USDT-SWAP"], dict):
+            raise RuntimeError("long load_funding_db ov_raw[inst] must be dict")
+        if ov_raw["SYNTH-USDT-SWAP"].get(1700006400000, 1700006400000) != 1700006400222:
+            raise RuntimeError("long load_funding_db ts_raw not preserved")
+        if ov_raw["SYNTH-USDT-SWAP"].get(1700035200000, 1700035200000) != 1700035200000:
+            raise RuntimeError("long load_funding_db miss fallback failed")
+
+        npz_path = root / "SYNTH-USDT-SWAP.npz"
+        np.savez(npz_path, ts30=np.array([1700006400000], dtype=np.int64), ohlc30=np.ones((1, 4)),
+                 ts4=np.array([1700006400000], dtype=np.int64), ohlc4=np.ones((1, 4)),
+                 ts1=np.array([1700006400000], dtype=np.int64), ohlc1=np.ones((1, 4)),
+                 d1_ts=np.array([1700006400000], dtype=np.int64))
+        good_sha = mod.sha(npz_path)
+        resolved, recs = mod._verify_and_record_npz_inputs(
+            ["SYNTH-USDT-SWAP"], root, {"SYNTH-USDT-SWAP": {}},
+            {"SYNTH-USDT-SWAP": {"sha256": good_sha, "size_bytes": npz_path.stat().st_size}},
+        )
+        if not recs["SYNTH-USDT-SWAP"]["manifest_verified"]:
+            raise RuntimeError("long NPZ manifest_verified expected True")
+        overlap_blocked = False
+        try:
+            mod._verify_output_paths_disjoint([("bad", npz_path)], [("npz", resolved["SYNTH-USDT-SWAP"])])
+        except RuntimeError:
+            overlap_blocked = True
+        if not overlap_blocked:
+            raise RuntimeError("long NPZ disjoint guard failed")
+
+    start_ts, end_ts = _utc_ms(2024, 1, 10), _utc_ms(2024, 4, 15)
+    t_fill_jan, t_close_feb, t_open_apr = _utc_ms(2024, 1, 31, 16), _utc_ms(2024, 2, 3, 4), _utc_ms(2024, 4, 12, 8)
+    events = {(0, "SYNTH-USDT-SWAP", _utc_ms(2024, 2, 1) + i * 28800000, "miss_8h") for i in range(28)}
+    fake_res = {
+        "_ord_log": [
+            {"inst": "SYNTH-USDT-SWAP", "pts": _utc_ms(2024, 1, 31, 12), "exp": _utc_ms(2024, 2, 2, 12), "px": 100.0, "outcome": "filled", "ets": t_fill_jan},
+            {"inst": "SYNTH-USDT-SWAP", "pts": _utc_ms(2024, 3, 5), "exp": _utc_ms(2024, 3, 7), "px": 99.0, "outcome": "expired", "ets": None},
+            {"inst": "SYNTH-USDT-SWAP", "pts": _utc_ms(2024, 4, 12, 4), "exp": _utc_ms(2024, 4, 14, 4), "px": 95.0, "outcome": "filled", "ets": t_open_apr},
+        ],
+        "_trades": [
+            {"inst": "SYNTH-USDT-SWAP", "side": "long", "ets": t_fill_jan, "xts": t_close_feb, "net": 85.0, "fund": -1.5, "fee": 2.0, "reason": "tp"},
+        ],
+        "_open": [{"inst": "SYNTH-USDT-SWAP", "ets": t_open_apr}],
+        "_end_eq_raw": 50085.0,
+        "mtm_mdd_pct": 0.35,
+        "f_ev_real_8h": 2,
+        "f_ev_real_non8h": 0,
+        "f_ev_miss_8h": 28,
+        "_real_fund_raw": -1.5,
+        "events_set": events,
+    }
+    s = mod.summarize_run(fake_res, start_ts_ms=start_ts, end_ts_ms=end_ts)
+    bym = s["by_year_month"]
+    if not (bym["2024-01"]["unique_first_fills"] == 1 and bym["2024-01"]["closed_trades"] == 0):
+        raise RuntimeError("long 2024-01 cross-month fill mismatch")
+    if not (bym["2024-02"]["unique_first_fills"] == 0 and bym["2024-02"]["closed_trades"] == 1):
+        raise RuntimeError("long 2024-02 cross-month close mismatch")
+    if not (bym["2024-03"]["unique_first_fills"] == 0 and bym["2024-03"]["closed_trades"] == 0):
+        raise RuntimeError("long 2024-03 zero-trade month mismatch")
+    if not (bym["2024-04"]["unique_first_fills"] == 1 and bym["2024-04"]["closed_trades"] == 0):
+        raise RuntimeError("long 2024-04 open-at-end mismatch")
+    det = mod.build_local_detail_payload("cross_1tick", fake_res, start_ts_ms=start_ts, end_ts_ms=end_ts)
+    if det["missing_funding_events_count"] != 28 or len(det["missing_funding_events_all"]) != 28:
+        raise RuntimeError("long miss_8h truncated")
+
 if __name__ == "__main__":
     test_long_struct_02_timeline_1_k6_confirm_and_step_c_register()
     test_long_struct_02_timeline_2_early_invalidation()
     test_long_struct_03_ema_pullback_limit_causal()
+    test_long_v1_3_funding_npz_and_b6_monthly_contract()
     print("ALL_SYNTHETIC_TESTS_PASS")
