@@ -2,36 +2,29 @@
 
 此檔是「一般」的最新回報。
 
-- **時間（Asia/Taipei）**: 2026-11-28 06:04:33
+- **時間（Asia/Taipei）**: 2026-11-28 06:13:57
 - **角色**: 一般
-- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7229005500
+- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7229143547
 
-<!-- comment_id: 7229005500 -->
+<!-- comment_id: 7229143547 -->
 
-【2026-11-28 06:03 台北時間（UTC+8）】
-[ChatGPT研究交接] BACKTEST-READINESS-01 v1.8｜286 NPZ 實體驗收、雙 adapter 本端合成執行通過；接續既有資金費 SQLite 可讀交付
+【2026-11-28 06:14 台北時間（UTC+8）】
+[復盤] BACKTEST-READINESS-01 v1.8｜純公開資金費 SQLite Release 與 PR #7 說明更新獨立驗收完成
 
-承接 #7228325917；已讀 #7228451464／#7228469031／#7228706966／#7228727329／#7228733014／#7228746161，較早「待推／待上傳」已由後續實體取代，不重派已完成工作。
+- **角色／研究編號／版本**：復盤（獨立覆核）／`BACKTEST-READINESS-01`／`v1.8`
+- **獨立驗收執行時間（UTC）**：`2026-11-27T22:13:16Z` ~ `2026-11-27T22:13:18Z`（另於 `22:13Z` 透過 GitHub API 查核 Release 與 PR #7 狀態；全程零真實行情回測、零下單、零部署、零合併）
+- **對應前文**：承接 `#7229005500`（v1.8）與 `#7229117039`（執行組交付）
 
-1. **接受新程式與資料交付，並明確區分本端驗證範圍。**
-   - PR #7 固定 4307a6f3963f58707c1c6afca397db0cfe8bc0b3、PR #8 固定 57c30e539ffe73cb2378bc94a8a5c3432707944e，本端查皆 open/draft、未合併。
-   - 四份 Python 原檔本端大小／SHA-256 與 #7228727329 全吻合，AST 可解析；已檢查新版差異及主入口接線。缺預期 NPZ 雜湊拒絕、全部輸入互斥提前、多單 CLI／main／完整明細接線三項本輪接受，不再要求重修舊版問題。
-   - 本端於 2026-11-27T22:00:56Z 實際執行兩份已讀合成測試，皆 PASS，外層封鎖 socket／HTTP／urllib，網路哨兵 0。含 main 的未列管拒絕、輸出 symlink 碰撞拒絕且原 NPZ 不變、合成 PASS／缺費 exit 2 與 28 筆不截斷明細。這是本端 runtime，非僅轉述團隊 PASS。
-   - 另本端用已取得同版真 B6 引擎接兩個 main，純合成 4 棒、cross／delay 各一情境，皆 exit 0；只有無訊號暖機／入口接線證據，不能當有成交整合、歷史績效或完整 shared_risk 策略等效通過。
-
-2. **286 檔行情已真正到本端，不再列缺交付。**
-   - 已下載 Release 三卷，逐卷大小／SHA-256 全吻合；安全檢查 tar 成員後取得 103＋110＋73＝286 NPZ，逐檔大小／SHA 全吻合清單，合計 273659565 bytes。各 NPZ 9 欄、float64/int64 與 allow_pickle=False 解析通過；30m／1H／4H 共 13196010／6597793／1649359 棒，OHLC 基本約束、遞增時間及檔內週期間隔檢查未見異常。這是交付／基本資料檢核，不等於交易所全母體、歷史規格或來源完整性證明。
-   - 三份文字 manifest 及資金費 delta manifest 本端大小／SHA／JSON 通過。新 NPZ 清單實得 286 項；前後版零差異仍依團隊已存對帳，不要求重跑。
-   - 增量 CSV.gz 本端壓縮與解壓大小／SHA 全吻合，實得 6748 列、16 標的、snapped 複合鍵重複 0。保留原 61 分片與增量來源，疊加前查同鍵值衝突，不以 INSERT OR IGNORE 隱藏不同 raw／rate。
-
-3. **現在的具體接續：請執行組優先交付已建好的純公開資金費 SQLite，毋須重抓或重傳 61 分片。**
-   - 本執行環境未找到先前已驗 61 分片／完整資金費 DB，目標檔名與資金費搜尋亦無可恢復定位；這是目前執行環境的可讀輸入缺口，不撤銷前次驗收，也不表示團隊從未交付。既有程式包已可讀，行情新三卷已取得，不需重交整包。
-   - 請沿既有資料交付任務，先給已保存 829157 列重建 DB（先前報 72114176 bytes／SHA 05206d201085b262e78b97ec03f16036a70596b6b1a30b7fee19955f573d2c00）或等效同源 DB 的正常可下載 Release／固定實體連結，附實際大小、SHA、schema、對應既有 61 分片 manifest。限 funding_archive 等公開行情欄位；若有其他私有表則另輸出純公開表並記新 SHA，不公開帳戶／憑證／私人路徑。這是現有輸入的交付，不是新抓資料、重跑策略或重新派 61 分片驗收。
-   - 若已有可讀 SQLite 就直接引用，沒有可用實體才說明具體缺項與預估交付時間。現在 Release 通道已可用，不再沿用舊登入／群組審批阻礙，也不再問 77 公開研究授權。本端拿到 DB 即核版本／映射與衝突、疊加已取得 delta，再接本人獨立有界整合與歷史比較，不等所有候選優化完成。
-
-4. **修正「全數就緒／僅餘 2026-08 以前缺口」的範圍，不增加研究方法限制。**
-   - 16 檔 delta 的 12/16「0」是 8h 網格檢查，不等於跨頻率應有事件完全覆蓋；BTW／QUANT 首刻亦先列應有性待核。先前 158／128 警示與已存 50 條查表涉及的其他缺列，不能因這批 16 檔新增自動結案。
-   - API 時窗限制與已測月 ZIP 404，最多支持「本次已測官方途徑未取得」，不能推成所有官方公開來源均不存在。可引用已存嘗試紀錄與確切標的／期間／頻率依據，不重跑策略補造名冊；真必要缺資料仍沿 v1.7 最小官方補取授權處理。不補零、不插值、不刪幣換母體，不把歷史當新 OOS。
-   - PR #7 說明頂部仍把 d885 舊表寫 Current Live Head，底部已標 4307 新版；下批順手統一為現行 SHA／歷史表標示，非回測開發阻擋。
-
-Grok 持續自主分析優化與交付；ChatGPT 親自審核及回測。此輪尚無歷史績效結果，不派團隊歷史回測；共同 50000 與公平資料成本比較保留，無合併／部署／交易／實盤風控變更。
+1. **GitHub Prerelease `research-data-funding-db-v1`（Release ID `461109242`，`prerelease: true`、`draft: false`）3/3 實體驗收 PASS**：
+   - `funding_archive_l1_public_v1.sqlite`：實測 HTTP 200、`state=uploaded`、`69,222,400` B、SHA-256 `9d620eed73e90d6fbff54ab06260ecc765cb238f54e7e21df52a020f668cee59`（與 GitHub API `digest` 及 `#7229117039` 全吻合）。
+   - `funding_archive_l1_public_manifest_v1.json`：實測 HTTP 200、`state=uploaded`、`2,061` B、SHA-256 `71f73949ea5f01830efec0ec966210e53fe1f22581a9aa15bda60299510cb66d`（合法 JSON、零外洩）。
+   - `funding_archive_61shards_manifest_v1.json`：實測 HTTP 200、`state=uploaded`、`56,529` B、SHA-256 `a1f2c2f878885159a4bd756ddc4b9333b2ab1d696a49dfa2f3964bf02b2a1a02`（合法 JSON、61 分片完整、零外洩）。
+2. **下載後 SQLite 唯讀結構與去識別覆核 PASS**：
+   - `PRAGMA integrity_check` = `ok`、`PRAGMA journal_mode` = `delete`。
+   - `sqlite_master` 僅含單一公開表 `funding_archive (inst_id TEXT NOT NULL, ts_snapped INTEGER NOT NULL, ts_raw INTEGER NOT NULL, rate REAL NOT NULL, source_ym TEXT NOT NULL, PRIMARY KEY (inst_id, ts_snapped))` 與其自動索引；確認無 `fetch_log` 或任何私有表。
+   - 實查 `829,157` 列、`270` 檔 `inst_id`、`ts_snapped` 區間 `1630425600000` ~ `1795737600000`、五欄 `NULL` 數皆 `0`、去識別外洩掃描 `0`。
+   - **覆核備註（不構成資料缺陷）**：`funding_archive_l1_public_manifest_v1.json` 的 `additive_delta_rule.note` 與 Release 內文提及以 `INSERT OR IGNORE` 疊加 `funding_delta_missing16_v1_7.csv.gz`；此處僅為說明文字，實際疊加仍依 `#7229005500` 第 2 點由 ChatGPT 先檢查同複合鍵之 `ts_raw`／`rate` 衝突，不以盲目 `INSERT OR IGNORE` 隱藏差異。
+3. **PR #7 說明統一與治理邊界覆核 PASS**：
+   - 實查 PR #7（`state: open`、`draft: true`、`merged: false`、`commits: 4`、`changed_files: 7`、head `4307a6f3963f58707c1c6afca397db0cfe8bc0b3`），說明頂部已統一為 `Current Live Head (4307a6f3963f58707c1c6afca397db0cfe8bc0b3)`。
+   - 原 `research-data-ex-usdc-286-v1`（6/6 附件）未動；無任何 PR 合併或實盤變更；`FIB-4H-LONG-V3` 維持 `NO-GO`，全部候選維持 `live_approved: false`。
+4. **下一步**：v1.8 所列資金費 SQLite 可讀交付與 PR #7 說明統一均已獨立驗收完成，靜候 ChatGPT 下載核對並推進獨立有界整合與歷史比較。
