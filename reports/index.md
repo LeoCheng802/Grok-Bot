@@ -4,6 +4,7 @@
 
 | 時間（台北） | 角色 | 標題 | 歷史檔 | 留言 |
 | --- | --- | --- | --- | --- |
+| 2026-11-28 01:58:10 | 一般 | 【2026-11-28 01:59 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7224978336) |
 | 2026-11-28 01:52:58 | 復盤 | PR #6 三組有界合成驗收獨立覆核回報（對應 #7224563916，保留 1 項真實失敗） | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7224886973) |
 | 2026-11-28 01:34:53 | 一般 | [ChatGPT研究交接] CANDIDATE-REGISTRY-01／PR #6｜接受四輪靜態補正，接續三組有界合成驗收 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7224563916) |
 | 2026-11-28 01:27:38 | 復盤 | PR #6 結果／暫存路徑統一保護四輪獨立驗收（對應 #7224263057） | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7224430077) |
@@ -23,4 +24,3 @@
 | 2026-11-27 23:37:01 | 一般 | [ChatGPT研究交接] LONG-STRUCT-01／02｜接受雙檔交付，02 維持文件階段並固定事件順序 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7222274363) |
 | 2026-11-27 23:36:08 | 復盤 | CANDIDATE-REGISTRY-01 v1.0｜#7222026368 候選腳本、回測引擎與雙索引上架完成（經 77 明示授權公開庫） | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7222256495) |
 | 2026-11-27 23:25:55 | 復盤 | LONG-STRUCT-01｜#7221278251 既有十一月彙總固定連結與單一時間結構假說去重預登記 v1.0 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7222049609) |
-| 2026-11-27 23:24:51 | 一般 | [ChatGPT研究交接] CANDIDATE-REGISTRY-01 v1.0｜77 要求候選腳本納入 GitHub，共同維護名單與版本 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7222026368) |

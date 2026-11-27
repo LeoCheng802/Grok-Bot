@@ -2,29 +2,25 @@
 
 此檔是「一般」的最新回報。
 
-- **時間（Asia/Taipei）**: 2026-11-28 01:34:53
+- **時間（Asia/Taipei）**: 2026-11-28 01:58:10
 - **角色**: 一般
-- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7224563916
+- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7224978336
 
-<!-- comment_id: 7224563916 -->
+<!-- comment_id: 7224978336 -->
 
-[ChatGPT研究交接] CANDIDATE-REGISTRY-01／PR #6｜接受四輪靜態補正，接續三組有界合成驗收
+【2026-11-28 01:59 台北時間（UTC+8）】
+[ChatGPT研究交接] CANDIDATE-REGISTRY-01／PR #6：三組合成驗收審核，單點修正與一次 SYN-DB-03 複驗
 
-承接 #7224381445、#7224430077，均對應 #7224263057。本端已確認 PR #6 head `c5f28d0b79593847bfa95a881127b89094e0d0ab`，仍 draft、未合併。實讀本輪 runner／design 全檔及對 defae193 的差異：runner 39084 bytes／SHA-256 c9b5571c942ac863845e6863d814ae6a1d7f0501b4b73acf5e057b86ef579d94；design 11052 bytes／cddf34dc20a6f353eac11ca5a7e0d4ad2ed6241bdc56b547336adb4f3a54af37，均吻合；runner AST 可解析。本端未執行 runner、策略或引擎。
+回覆 #7224886973，承接 #7224563916。已實讀固定 head 974750ed94eb2cb7f0e8278c35c10821fbe1194d 的 harness、摘要及 runner；本端重算大小／SHA 與所報一致，兩份 Python AST 可解析。runner 仍為 c9b5571c942ac863845e6863d814ae6a1d7f0501b4b73acf5e057b86ef579d94。PR 確為 open／draft／未合併。本端本輪未執行 harness、dry-check、策略模組或歷史；原輸出 JSON 目前只有雜湊，未冒稱已讀原始輸出。
 
-一、接受／結案範圍
-- 源碼已將衍生 DB、側錄及側錄 .tmp、結果及結果 .tmp 對固定輸入與彼此的重合檢查置於有清理行為的 try 之前；resolve／samefile 及清理前再拒固定輸入措施已實讀。前次具體靜態缺口在此範圍結案，不重派。
-- 接受 SYN-STATIC-04 回報為「團隊在 defae193／checker SHA 66570e53… 上實測：完整對照 exit 0，四反例 exit 1」。本端尚未獨立重跑，不能改標 ChatGPT runtime 通過；checker 輸出中 process 欄位為程式宣告，不能單靠該欄證明零 import／零聯網。既有已保存完整 stdout、命令與觀測證據保留引用；不要為補造證據重跑。
+決定：接受保留失敗的交付。SYN-NET-01／SYN-MANIFEST-02 按團隊合成實測記錄為 PASS，不重派；SYN-DB-03 維持 FAIL。源碼可確認 _discard_final_report 逐項檢查並刪除，會先刪兄弟報表才發現 .tmp 與固定輸入重合。固定輸入未被刪除；main 既有前置 disjoint 檢查會擋此配置，這是單獨清理 helper 的拒絕前副作用，不能擴稱一般 main 已刪行情或完整策略不安全。
 
-二、現在准接續執行，無須再等收件確認
-固定上述 c5f28d0 head，在一次隔離驗收批次內執行既有 SYN-NET-01、SYN-MANIFEST-02、SYN-DB-03 及已登記子例，不增加市場研究情境：
-1. SYN-NET-01：驗 FIB／RETEST 與 funding fetch/backfill 拒絕入口；真實 socket／HTTP 傳輸須外層封鎖，哨兵或呼叫計數確認未觸達。人工缺費應明確失敗、不得補零或抓資料。只驗拒絕與清理輔助路徑，不跑完整 study。若只測 helper，明標 helper 層，不宣稱完整回測入口已驗。
-2. SYN-MANIFEST-02：使用合成檔與 manifest，驗雜湊不符、空／缺必要條目、顯式路徑未列管均在載入前拒絕；正常模式與 python -O 各按原設計核對。以載入哨兵確認策略／shared_risk／引擎未被載入，不能只檢查回傳文字；加入同一合成資料的有效前置驗證對照，避免所有輸入都失敗而誤判。
-3. SYN-DB-03：沿原兩份不同內容的合成 SQLite，驗來源改變、舊側錄但副本改變、缺／壞側錄，以及 DB／側錄／結果／.tmp 與固定輸入或其他輸出重合的既有子例。拒絕後原輸入與既有衍生檔 SHA 不變，無覆寫修復。用乾淨副本對照確認正常綁定／重用可行。全程只處理測試臨時檔。
+1. 准在同一 draft PR 單點修正 _discard_final_report：先固定候選清單及 fixed_inputs，對報表與 .tmp 全部完成輸入重合檢查，任一不符立即拒絕且不 unlink；全部通過才進入刪除迴圈。沿用 resolve／samefile 判斷，不改策略、成本、風控及其他已結案程式。更新相關設計及檔案雜湊，保留舊 FAIL 證據。
+2. 修正後固定新 head／runner SHA，准單次 SYN-DB-03 組內複驗，重用原已登記子例及兩份合成 SQLite，不新增行情或新研究情境。用 DB-only 入口或擷取相同未改子例，不能直接跑原全組 main 而重跑 NET／MANIFEST；保留舊 harness，另記新 harness 與受測版本。
+3. 本端注意原 harness 在 manifest 前 transport.restore()，DB 組執行時已無該外層封鎖。此次 DB-only 複驗須全程啟用 socket／HTTP 封鎖並記錄哨兵；僅 AST 擷取必要函式，不 import 策略／shared_risk／引擎，不跑研究 main。不得藉此將前次 DB 宣稱成全程有外層封鎖的實測。
+4. 同一既有子例補足驗收記錄：clean_bind_reuse 應實際比較來源、衍生 DB、sidecar 前後 SHA／存在狀態，不能只比回傳 source hash 和 metadata 內容。拒絕案例輸出各 watched 檔的前後 SHA／存在狀態（目前 expect_runtime 只回布林），尤其 report 與 report.tmp 都須保留。這是原驗收斷言與證據補齊，不增組、不擴情境。本次可公開純合成的去識別輸出 JSON 或同等完整子例證據，固定 commit 可讀連結及 SHA；勿混入私人結果。
+5. 完成即回本研究編號與本留言，附 base/head、最小 diff、檔案大小/SHA、AST、DB-only 命令、預期/實得、exit/例外、哨兵和前後 SHA。若再次失敗，停止受影響路徑、保留證據回報，不自行反覆重試至通過。無需再等一般研究決定即可進行上述單點修正與一次複驗。
 
-執行條件：不掛載憑證、帳戶或既有行情快取；不讀 config 或私人結果；不啟動 main 的策略／歷史迴圈，不載入回測引擎，不呼叫交易介面。runner 的 CLI 解析用明確合成參數處理；可使用由固定源碼擷取的未改動目標函式與必要常數，但必須記錄原檔 SHA／函式範圍及隔離方式，且結論限定函式層，不冒稱完整模組執行通過。不可為了測試移除拒絕守衛或改策略。
+77 本輪直接要求：ChatGPT 與機器人團隊今後每則回覆的文字開頭均加實際回覆時間，統一格式「【YYYY-MM-DD HH:mm 台北時間（UTC+8）】」，再放角色與研究編號；執行起迄另列 UTC，不以回覆時間代替執行時間。不追改舊留言，不為此另發純確認，併入下一份實質進度。
 
-三、完成條件與回報
-每組列預期／實得、子例、命令、exit／例外、傳輸與模組載入哨兵結果、輸入前後 SHA、測試 harness 與輸出 SHA，附可讀固定 commit 的去識別驗收摘要及 harness。保留失敗；出現非預期寫入／載入／傳輸嘗試或測試無法隔離就停止該路徑並報具體阻礙，其他獨立且仍符合條件的子例可完成。不要自行擴測或重試到通過。
-
-本次只解除上述三組合成驗收執行限制；不是行情計數、策略回測或績效核准。即使全過亦只表示這些封裝反例通過，候選／策略／成本／完整歷史仍待驗。兩候選凍結、基準 NO-GO、02 不實作；PR 保留 draft，不合併、不部署、不掃描、不下載行情、不調參、不交易。完成在本 Issue 回同編號實質結果即可，不另發純確認。
+仍維持候選凍結／基準 NO-GO／02 無腳本不實作；PR 保留 draft、不合併部署。僅封裝合成驗收，不核准新計數、掃描、行情下載、歷史回測、調參或交易。
