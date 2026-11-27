@@ -2,30 +2,45 @@
 
 此檔是「復盤」的最新回報。
 
-- **時間（Asia/Taipei）**: 2026-11-28 00:26:34
+- **時間（Asia/Taipei）**: 2026-11-28 00:33:27
 - **角色**: 復盤
-- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7223265773
+- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7223399028
 
-<!-- comment_id: 7223265773 -->
+<!-- comment_id: 7223399028 -->
 
-[復盤] CANDIDATE-REGISTRY-01 v1.1.1 索引同步獨立驗收（交付一，對應 #7223029578）
+[復盤] 隔離離線封裝修正草案 PR #6 獨立靜態驗收（交付二，對應 #7223029578）
 
 - **角色**：復盤（獨立覆核與彙整）
-- **研究編號與版本**：`CANDIDATE-REGISTRY-01 v1.1.1`（索引同步獨立交付；交付二之獨立分支離線封裝草案 PR 進行中，完成後另行上報）
-- **時間與時區**：2026-11-28 00:26 UTC+8
-- **資料截止**：本輪零行情掃描、零計數、零下載、零回測重跑或補跑；候選凍結與基準 NO-GO 維持不變。
+- **研究編號與版本**：隔離離線封裝修正草案（[LeoCheng802/Grok-Bot PR #6](https://github.com/LeoCheng802/Grok-Bot/pull/6)，分支 `research/offline-packaging-hardening-draft`，承接交付一 `#7223265773`）
+- **時間與時區**：2026-11-28 00:34 UTC+8
+- **資料截止**：本輪零 import／執行任何交易或引擎模組、零跑 `main()`／`--dry-check`／歷史重現／行情掃描／計數，亦未補造舊測試證據；候選凍結與基準 NO-GO 維持不變。
 
-### 一、完成事項與 live raw 獨立驗收證據
-- **固定 40 碼 Commit SHA**：`1f38b000fe881044f02d0469ab08a6239f91bb31`（僅更新雙索引檔，零程式碼改動、零重寫歷史）
-- **公開固定 Raw URL 與雜湊（皆實測 HTTP 200、JSON 合法、去識別掃描 `0` 命中、零本機路徑／密鑰、所有項目 `live_approved = false`）**：
-  - [CANDIDATES.json](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/1f38b000fe881044f02d0469ab08a6239f91bb31/CANDIDATES.json)：`32,718` B，完整 SHA-256 `bb4568519669fbd18bbe2309463ecf185107e75b70daa4c306132814759e206a`
-  - [CANDIDATES.md](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/1f38b000fe881044f02d0469ab08a6239f91bb31/CANDIDATES.md)：`7,395` B，完整 SHA-256 `29ad8811b2d81ed20d952cadbc68ed8887d04a9908bc7028c4e75ac7673d0223`
-- **#7223029578 第 2 節四項同步核對全數通過**：
-  1. **`LONG-STRUCT-02` 同步至 `v1.2`**：MD 與 JSON 均已對齊 `LONG_STRUCT_02_TEMPORAL_SPLIT_DEDUP_PREREG_v1.2.json`（commit `5ca80cbcf45ebe9425516f658a7de838882403f1`、`21,344` B、SHA-256 `246cda1c8a23bea5d580b8b1e20bc53393dcd8483db85137fe5389a6d46bb06e`），並於 `supersedes` 與 MD 保留 `v1.1`（`b4f30219…caf4`）歷史連結。
-  2. **`private_pack_archive` 雜湊實核更正**：已以既有本機封裝檔實測核對 `RESEARCH-LOOP-01-PACK-v1.1.tar.gz` 雜湊確為 `87dc925b8025c3bcaba87debb4d1bf8a86b794a8e47921f6ac2208b04e17da0d`（與既有已驗收交付紀錄一致，確認前版 `87dc925b86441328…` 為抄寫誤植、非另一封裝版本），JSON 與 MD 均已修正且誤植雜湊殘留數為 `0`（零重下載、零補跑）。
-  3. **統一 `RETEST24` 研究 ID 與更新 MD 第 5 節**：MD 與 JSON 均統一為 `RETEST24-R1-R2`（版本獨立成欄）；MD 第 5 節過時的「待 77 直接確認公開範圍」字樣已清除，改為公開範圍已依 `#7222634694` 確認、程式改動按 `#7223029578` 有界範圍審核。
-  4. **審核口徑改為固定三檔表述**：JSON 與 MD 均已移除未列清單之「14 份」泛指，改明確引用 `#7223029578` 接受之 `#7222785741` 固定三檔。
+### 一、PR 狀態與固定 Commit 核對
+- **PR 連結與狀態**：[LeoCheng802/Grok-Bot PR #6](https://github.com/LeoCheng802/Grok-Bot/pull/6) — 實測 `state = open`、`draft = true`、`merged = false`、`commits = 1`、`changed_files = 5`（`+527 / -10`），**未合併、未部署、`main` 雙索引未動**。
+- **固定 Commit SHA**：
+  - Head：`056022303ec52e0dfe74629100d40e1eb9cc3401`
+  - Base（`main`）：分支起始於交付一 `1f38b000fe881044f02d0469ab08a6239f91bb31`（GitHub PR 物件當前 `base.sha` 指向 `main` `1d2dbadb2e87340e24ebca1d2f60a48e6ae3c4dc`；PR 實測僅含 1 筆 commit、5 檔純封裝變更）。
 
-### 二、缺口與下一步
-- **交付二進行中**：`@執行` 正於獨立分支 `research/offline-packaging-hardening-draft` 撰寫隔離離線封裝修正草案 PR（限既有 `FIB`、`RETEST24`、`run_l1_tp_study` 及必要封裝輔助檔，不合併、不部署、不改策略規則、僅做源碼差異／AST／靜態路徑檢查並附最多 4 項合成驗收設計）；完成並經復盤獨立驗收後，將另行上報 PR 連結、base/head 固定 commit 與變更檔完整 SHA-256。
-- **既有未解項維持**：`LONG-STRUCT-02` 續為 `PROPOSED_NOT_EXECUTED`（`has_script = false`），`B24H / A60` 同版去重待驗；全輪零交易／部署／行情掃描／回測。
+### 二、變更／新增 5 檔 live raw 獨立驗收（全部新副本維持 **`待驗`**，不沿用原版通過）
+以下 5 檔均已於 head `056022303ec52e0dfe74629100d40e1eb9cc3401` 實測 live raw **HTTP 200**、去識別掃描 **`0` 命中**（零本機路徑／密鑰字面值）、4 份 `.py` 皆通過 **`ast.parse` 語法解析**：
+1. [FIB_4H_Long_v3.py](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/056022303ec52e0dfe74629100d40e1eb9cc3401/research/long_struct_01/code/FIB_4H_Long_v3.py)：`55,001` B，SHA-256 `17b46a4e7ce898d9db8cd23078a2a62cd47309cf136597a5068e9f8c385d26d7`（狀態：**`待驗`**）
+2. [RETEST24_R1_R2_Switchable_v1_5_auditfix.py](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/056022303ec52e0dfe74629100d40e1eb9cc3401/research/long_struct_01/code/RETEST24_R1_R2_Switchable_v1_5_auditfix.py)：`89,100` B，SHA-256 `c2b00a987150c20d16f22500a5d6dc0f0dca00ccaac62851f4014a343f664b04`（狀態：**`待驗`**）
+3. [run_l1_tp_study.py](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/056022303ec52e0dfe74629100d40e1eb9cc3401/research/long_struct_01/code/run_l1_tp_study.py)：`27,347` B，SHA-256 `4543e15e4ad2608300860352a95ab6535e8a6fb06eef5be3ddf4cd29fc7fe047`（狀態：**`待驗`**）
+4. [offline_static_check.py](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/056022303ec52e0dfe74629100d40e1eb9cc3401/research/long_struct_01/code/offline_static_check.py)：`11,814` B，SHA-256 `bb3341e7fcaaefb1e48e300fc404984588e93f5a99166653de50b1a6ffe323fb`（狀態：**`待驗`**）
+5. [OFFLINE_HARDENING_DRAFT_DESIGN.md](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/056022303ec52e0dfe74629100d40e1eb9cc3401/research/long_struct_01/code/OFFLINE_HARDENING_DRAFT_DESIGN.md)：`7,973` B，SHA-256 `fb26289912c7ba0d5471243674d2edb8a8e3e7631521f77d840ba70b2eead09c`（狀態：**`待驗`**）
+
+### 三、AST 靜態守衛與差異核對摘要
+- **純封裝改動**：未改動訊號、指標、排序、成本、倉位、出場、TTL 或風控規則，未實作 `LONG-STRUCT-02`。
+- **AST 首行無條件拒絕守衛獨立驗證通過（無切回聯網開關）**：
+  - `FIB_4H_Long_v3.py`：`main()` 首行 `raise SystemExit(...)`；`notify` 與 `Exchange.call` 首行均無條件 `raise RuntimeError('OFFLINE_RESEARCH_COPY_NETWORK_DISABLED: ...')`。
+  - `RETEST24_R1_R2_Switchable_v1_5_auditfix.py`：`load_config_credentials()` 首行 `return ('', '', '')`；`main()` 首行 `raise SystemExit(...)`；`OkxClient.__init__`、`public_get`、`private_req` 首行均無條件 `raise RuntimeError('OFFLINE_RESEARCH_COPY_NETWORK_DISABLED: ...')`。
+  - `run_l1_tp_study.py`：`fetch_okx_funding` 與 `backfill_missing_funding` 首行均無條件 `raise RuntimeError('OFFLINE_RESEARCH_COPY_NETWORK_DISABLED: ...')`（缺費明示報錯，不補零、不聯網下載）；私人包 `--dry-check` 改要求顯式 `--manifest`、`--shared-risk`、`--orig-long` 路徑並依 manifest 所在目錄核對對應副本雜湊。
+  - `offline_static_check.py`：純標準庫（`ast`、`hashlib`、`json`、`pathlib`、`re`），將公開目錄靜態檢查與舊私人包 `--dry-check` 分離，不匯入交易模組。
+- **4 項無網路、無行情合成驗收設計已入檔（未執行，待核定後放行）**：`OFFLINE_HARDENING_DRAFT_DESIGN.md` 已實測包含 `SYN-NET-01`、`SYN-GAP-02`、`SYN-PATH-03`、`SYN-STATIC-04`。
+
+### 四、剩餘阻礙與下一步
+- **剩餘阻礙**：
+  1. 尚待正式覆核放行後方可執行任何執行期合成驗收或決定是否合併；本輪靜態通過**不解除**新 SHA 之 **`待驗`** 狀態。
+  2. `run_l1_tp_study.py` 頂層仍具引擎模組 import 與參數解析，故 `SYN-NET-01`、`SYN-GAP-02`、`SYN-PATH-03` 須待放行實際入口後再行執行。
+  3. 拒絕守衛下方仍保留原不可達之 HTTP／補費程式碼本體（無執行期切回開關）。
+- **下一步**：請 ChatGPT 覆核 [PR #6](https://github.com/LeoCheng802/Grok-Bot/pull/6) 源碼差異、靜態檢查結果與 4 項合成驗收設計，並指示是否放行執行該 4 項無網路無行情合成驗收或需先微調 PR 內容。

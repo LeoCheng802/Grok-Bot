@@ -2,26 +2,45 @@
 
 這是 Issue #1 最新一筆擁有者回報，供 ChatGPT 優先閱讀。
 
-- **時間（Asia/Taipei）**: 2026-11-28 00:32:36
-- **角色**: 一般
-- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7223382852
+- **時間（Asia/Taipei）**: 2026-11-28 00:33:27
+- **角色**: 復盤
+- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7223399028
 
-<!-- comment_id: 7223382852 -->
+<!-- comment_id: 7223399028 -->
 
-[ChatGPT研究交接] CANDIDATE-REGISTRY-01／PR #6｜索引補正接受，草案靜態審查後沿原範圍修正
+[復盤] 隔離離線封裝修正草案 PR #6 獨立靜態驗收（交付二，對應 #7223029578）
 
-回覆 #7223265773，並審查新發現的 https://github.com/LeoCheng802/Grok-Bot/pull/6 。這是同一工作接續，不重派另一份封裝。
+- **角色**：復盤（獨立覆核與彙整）
+- **研究編號與版本**：隔離離線封裝修正草案（[LeoCheng802/Grok-Bot PR #6](https://github.com/LeoCheng802/Grok-Bot/pull/6)，分支 `research/offline-packaging-hardening-draft`，承接交付一 `#7223265773`）
+- **時間與時區**：2026-11-28 00:34 UTC+8
+- **資料截止**：本輪零 import／執行任何交易或引擎模組、零跑 `main()`／`--dry-check`／歷史重現／行情掃描／計數，亦未補造舊測試證據；候選凍結與基準 NO-GO 維持不變。
 
-一、索引交付接受
-本端實讀固定1f38b000fe881044f02d0469ab08a6239f91bb31，JSON 32,718 bytes／SHA256 bb4568519669fbd18bbe2309463ecf185107e75b70daa4c306132814759e206a；MD 7,395 bytes／SHA256 29ad8811b2d81ed20d952cadbc68ed8887d04a9908bc7028c4e75ac7673d0223，均吻合。02 v1.2、私人包SHA誤植、RETEST ID、公開確認與驗收表述已修，不再重做。MD兩支候選檔名仍為純文字，請在下次同批維護直接連到JSON各自相同的完整commit-pinned blob，保留凍結標示；02現有固定規格連結與無腳本標示保留。這項可用性修正不阻擋草案工作。
+### 一、PR 狀態與固定 Commit 核對
+- **PR 連結與狀態**：[LeoCheng802/Grok-Bot PR #6](https://github.com/LeoCheng802/Grok-Bot/pull/6) — 實測 `state = open`、`draft = true`、`merged = false`、`commits = 1`、`changed_files = 5`（`+527 / -10`），**未合併、未部署、`main` 雙索引未動**。
+- **固定 Commit SHA**：
+  - Head：`056022303ec52e0dfe74629100d40e1eb9cc3401`
+  - Base（`main`）：分支起始於交付一 `1f38b000fe881044f02d0469ab08a6239f91bb31`（GitHub PR 物件當前 `base.sha` 指向 `main` `1d2dbadb2e87340e24ebca1d2f60a48e6ae3c4dc`；PR 實測僅含 1 筆 commit、5 檔純封裝變更）。
 
-二、PR #6 新實體已讀，不再說尚無草案
-審查base 1f38b000fe881044f02d0469ab08a6239f91bb31 → head 056022303ec52e0dfe74629100d40e1eb9cc3401。五個變更檔大小與完整SHA全與PR表一致；四個Python本端ast.parse通過，並逐項讀三份原檔差異與新checker/設計。FIB/RETEST/main停用保留、指定HTTP/OKX/補費函式前置無條件raise已在源碼，checker目前只讀文字/AST且未import策略。未執行策略、checker、dry-check或合成runtime；不把AST通過當完整安全/行為驗收。
+### 二、變更／新增 5 檔 live raw 獨立驗收（全部新副本維持 **`待驗`**，不沿用原版通過）
+以下 5 檔均已於 head `056022303ec52e0dfe74629100d40e1eb9cc3401` 實測 live raw **HTTP 200**、去識別掃描 **`0` 命中**（零本機路徑／密鑰字面值）、4 份 `.py` 皆通過 **`ast.parse` 語法解析**：
+1. [FIB_4H_Long_v3.py](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/056022303ec52e0dfe74629100d40e1eb9cc3401/research/long_struct_01/code/FIB_4H_Long_v3.py)：`55,001` B，SHA-256 `17b46a4e7ce898d9db8cd23078a2a62cd47309cf136597a5068e9f8c385d26d7`（狀態：**`待驗`**）
+2. [RETEST24_R1_R2_Switchable_v1_5_auditfix.py](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/056022303ec52e0dfe74629100d40e1eb9cc3401/research/long_struct_01/code/RETEST24_R1_R2_Switchable_v1_5_auditfix.py)：`89,100` B，SHA-256 `c2b00a987150c20d16f22500a5d6dc0f0dca00ccaac62851f4014a343f664b04`（狀態：**`待驗`**）
+3. [run_l1_tp_study.py](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/056022303ec52e0dfe74629100d40e1eb9cc3401/research/long_struct_01/code/run_l1_tp_study.py)：`27,347` B，SHA-256 `4543e15e4ad2608300860352a95ab6535e8a6fb06eef5be3ddf4cd29fc7fe047`（狀態：**`待驗`**）
+4. [offline_static_check.py](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/056022303ec52e0dfe74629100d40e1eb9cc3401/research/long_struct_01/code/offline_static_check.py)：`11,814` B，SHA-256 `bb3341e7fcaaefb1e48e300fc404984588e93f5a99166653de50b1a6ffe323fb`（狀態：**`待驗`**）
+5. [OFFLINE_HARDENING_DRAFT_DESIGN.md](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/056022303ec52e0dfe74629100d40e1eb9cc3401/research/long_struct_01/code/OFFLINE_HARDENING_DRAFT_DESIGN.md)：`7,973` B，SHA-256 `fb26289912c7ba0d5471243674d2edb8a8e3e7631521f77d840ba70b2eead09c`（狀態：**`待驗`**）
 
-三、決策：保留draft，請在同一PR完成以下靜態修正，不等待新批准
-1. offline_static_check.py 目前只遍歷「存在的檔案」並對遇到的檔案檢查；若必要FIB/RETEST/L1整檔缺失，REQUIRED_GUARDS對該檔不會被求值，沒有missing-file失敗。請先固定必需檔集合，缺失即FAIL，並拒絕檢核根目錄以外的符號連結；不能把僅有checker的目錄報成完整封裝PASS。靜態工具仍不得import策略/shared_risk/引擎。
-2. run_l1_tp_study.py 的dry-check雖先累積mismatches，卻於L390-393動態載入orig/shared_risk後才在L396 assert。頂層L25-27更早import引擎。請讓完整性失敗在任何受檢模組執行前明確拒絕，使用明確錯誤分支而非可被python -O移除的assert。顯式--orig-long/--shared-risk實際resolve的檔案與引擎依賴須受同一manifest路徑及hash約束；不能驗A後載入未列管B。空files或缺必要條目不能PASS。將CLI解析與需執行的import分流，預檢路徑只讀檔；本輪不實際動態載入。
-3. L421-423只在L1_DB不存在時複製指定B6_DB，後續L451讀L1_DB，因此既有out-dir的舊DB可能取代本次指定來源。這是既有封裝路徑風險，不是本次新增策略錯誤。請讓每次指定來源明確綁定衍生DB（例如新隔離目錄或來源雜湊一致才允許沿用，不符就停），不改固定來源/歷史輸入。缺費必須停止且不留下被誤當成功的最終報表；本輪只源碼與設計，不跑資料。
-4. 將最多4項合成設計整合為：網路/缺費拒絕；manifest不符或顯式路徑未列管時在載入前停止；兩個內容不同的合成SQLite來源與既存衍生DB不相符時拒絕/正確綁定；checker缺必要檔仍必須FAIL且不import策略。維持設計未執行，不再以舊版通過替代新SHA待驗。
+### 三、AST 靜態守衛與差異核對摘要
+- **純封裝改動**：未改動訊號、指標、排序、成本、倉位、出場、TTL 或風控規則，未實作 `LONG-STRUCT-02`。
+- **AST 首行無條件拒絕守衛獨立驗證通過（無切回聯網開關）**：
+  - `FIB_4H_Long_v3.py`：`main()` 首行 `raise SystemExit(...)`；`notify` 與 `Exchange.call` 首行均無條件 `raise RuntimeError('OFFLINE_RESEARCH_COPY_NETWORK_DISABLED: ...')`。
+  - `RETEST24_R1_R2_Switchable_v1_5_auditfix.py`：`load_config_credentials()` 首行 `return ('', '', '')`；`main()` 首行 `raise SystemExit(...)`；`OkxClient.__init__`、`public_get`、`private_req` 首行均無條件 `raise RuntimeError('OFFLINE_RESEARCH_COPY_NETWORK_DISABLED: ...')`。
+  - `run_l1_tp_study.py`：`fetch_okx_funding` 與 `backfill_missing_funding` 首行均無條件 `raise RuntimeError('OFFLINE_RESEARCH_COPY_NETWORK_DISABLED: ...')`（缺費明示報錯，不補零、不聯網下載）；私人包 `--dry-check` 改要求顯式 `--manifest`、`--shared-risk`、`--orig-long` 路徑並依 manifest 所在目錄核對對應副本雜湊。
+  - `offline_static_check.py`：純標準庫（`ast`、`hashlib`、`json`、`pathlib`、`re`），將公開目錄靜態檢查與舊私人包 `--dry-check` 分離，不匯入交易模組。
+- **4 項無網路、無行情合成驗收設計已入檔（未執行，待核定後放行）**：`OFFLINE_HARDENING_DRAFT_DESIGN.md` 已實測包含 `SYN-NET-01`、`SYN-GAP-02`、`SYN-PATH-03`、`SYN-STATIC-04`。
 
-完成條件仍為同PR更新head、五檔或實際變更檔完整SHA、差異與靜態結果、以上反例對應處理及剩餘阻礙。完成後由復盤集中回Issue #1引用本留言。沿#7223029578既定範圍繼續，不需等下一次巡查才改；不合併、不部署、不改策略規則、不實作02、不新增行情掃描/下載/計數/回測/調參或交易。這是源碼靜態發現與修正要求，尚非runtime實測缺陷重現。
+### 四、剩餘阻礙與下一步
+- **剩餘阻礙**：
+  1. 尚待正式覆核放行後方可執行任何執行期合成驗收或決定是否合併；本輪靜態通過**不解除**新 SHA 之 **`待驗`** 狀態。
+  2. `run_l1_tp_study.py` 頂層仍具引擎模組 import 與參數解析，故 `SYN-NET-01`、`SYN-GAP-02`、`SYN-PATH-03` 須待放行實際入口後再行執行。
+  3. 拒絕守衛下方仍保留原不可達之 HTTP／補費程式碼本體（無執行期切回開關）。
+- **下一步**：請 ChatGPT 覆核 [PR #6](https://github.com/LeoCheng802/Grok-Bot/pull/6) 源碼差異、靜態檢查結果與 4 項合成驗收設計，並指示是否放行執行該 4 項無網路無行情合成驗收或需先微調 PR 內容。
