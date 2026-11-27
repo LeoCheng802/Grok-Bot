@@ -2,44 +2,49 @@
 
 這是 Issue #1 最新一筆擁有者回報，供 ChatGPT 優先閱讀。
 
-- **時間（Asia/Taipei）**: 2026-11-28 06:41:56
-- **角色**: 一般
-- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7229543627
+- **時間（Asia/Taipei）**: 2026-11-28 06:46:51
+- **角色**: 執行
+- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7229611844
 
-<!-- comment_id: 7229543627 -->
+<!-- comment_id: 7229611844 -->
 
-【2026-11-28 06:40 台北時間（UTC+8）】
-[ChatGPT研究交接] BACKTEST-READINESS-01 v1.10｜174鍵補件接受；本端重測缺口縮為5/2，但另實證非8H漏列
+[執行] BACKTEST-READINESS-01 v1.10｜80 份官方逐幣月檔全量入庫比對：新增 10,633 列未入庫官方結算（含 1H／4H），新 7 鍵 7/7 取得，衝突 0；推上 PR #8 新 head `b0dcf61e…`
 
-承接 #7229313133，已實讀 #7229412604 / #7229448950。PR8固定8458510c0eb4bc365c121b9c835c2895103aea40、PR7仍4307a6f3963f58707c1c6afca397db0cfe8bc0b3，均open/draft未合併。
+- **角色**：執行
+- **研究／事件編號**：`BACKTEST-READINESS-01 v1.10`（對應 Issue #1 `#7229543627`）
+- **回報時間**：`2026-11-28 06:47 台北時間（UTC+8）`
+- **執行起迄（UTC）**：
+  - 月檔取得、保存與全量比對：`2026-11-27T22:45:55Z` → `2026-11-27T22:46:06Z`
+  - PR #8 推送與 live raw 驗證：`2026-11-27T22:46:22Z` → `2026-11-27T22:46:25Z`
 
-1. 本端取得新3檔，壓縮/解壓大小與SHA及兩JSON均吻合；174唯一鍵、65標的與前輪完整清單集合相等，分類檔與CSV的raw/snap/rate逐項吻合。170零偏移、4個raw晚4–7秒，原值保留；來源完整性不以時間吸附消除邊界限制。對前衍生庫查重合0/衝突0後建立新隔離庫836,079列，SHA256 fb8cabefbad2c91308faed7c21f8e324f6a91d9b0a1a500a764deed07d071bc1；原庫/前版增量不動。接受本批174鍵交付，不再補派這174鍵。
-2. ChatGPT已親自重測同版L1全期兩撮合各一次（不是Grok回測）：UTC2026-11-27T22:38:33.544360～22:40:36.728446，123.19秒；286標的、2023-01-01～2026-11-26 12UTC、50000/10x/TP2.5，未改策略/成本/風控/撮合。映射3000+4零差異，transport hits0，固定輸入不變。
-3. 最終仍為exit2 / ABORTED_MISSING_FUNDING：cross_1tick由158降至5，delay1bar由128降至2。前174鍵與新缺口集合交集0；補費逐結算進權益後重播出現新的持倉路徑及缺口，不可用舊績效期末補扣替代。新7鍵raw/snap查庫都沒有列。abort SHA256 8b904b092fcc7815a4f17e54cc56ee0d32210bf95c126a6d946ad5a82ab1176e。完整本端輸出保留，未接受任何完整淨績效或候選排名。
+### 0. 誠實更正
+- v1.9 當時 75 份月檔只在記憶體解析、**未落地保存**，因此本輪無法「重用已存月檔」，已依原 75 組 `(inst_id, 月份)` 重新取得同一官方路徑並**這次全數保存原始 ZIP**；另加新 7 鍵所需 5 份月檔，共 `80` 份，`80/80` HTTP 200。
+- 重新取得的 `0G-USDT-SWAP-fundingrates-2025-11.zip` SHA-256 `78748b1ab7fc6487cbb28522f897312411471cf82a8a0bc478c994cc41fc9407`，與 ChatGPT 獨立解析的同檔 SHA 完全一致。
 
-4. **另有已獨立驗證的非8H漏列，不能只補miss_8h清單。**
-本端針對分類檔所列1H時段，取得並解析官方0G 2025-11月檔：
-https://static.okx.com/cdn/okex/traderecords/swaprates/monthly/202511/0G-USDT-SWAP-fundingrates-2025-11.zip
-ZIP SHA256 78748b1ab7fc6487cbb28522f897312411471cf82a8a0bc478c994cc41fc9407。
-新重測delay中的模擬持倉仍跨2025-11-24 14:30～17:30 UTC（非帳戶/實盤交易）；官方檔有三筆：
-- 15:00 UTC / 1763996400000 / rate -0.0010031826789156：新衍生庫缺列。
-- 16:00 UTC / 1764000000000 / rate -0.0006500396625131：本批已補且相同。
-- 17:00 UTC / 1764003600000 / rate -0.0006074667787935：新衍生庫缺列。
-本端靜態亦核run_q38_audit_01.py：有fmap才計非8H，沒有fmap時僅t30%8H==0才報miss_8h，因此上述兩筆不會進5/2缺口計數，卻是在實際模擬持倉內的官方結算。這不是推測的均勻1H分母，也不是把缺率當0。本端只獨立抽驗此官方月檔；其餘74月來源仍按團隊交付證據標示，未冒稱全部官方重驗。
+### 1. A｜80 份月檔全量入庫比對（不只 174 個 8H 目標）
+- 官方列合計 `11,031`（月檔內重複鍵 `0`）；與原凍結 `829,157` 庫＋v1.7＋v1.9 逐鍵比對：已入庫且 `ts_raw`／費率一致 `398`，**衝突 `0`**，**尚未入庫 `10,633` 列**（`69` 標的）。
+- 未入庫列的結算網格：落在 8H 整點 `7,036`、非 8H 整點 `3,597`；以同標的官方相鄰結算間隔看，前一筆間隔 `4h` 計 `5,903`、`8h` 計 `3,972`、`1h` 計 `681`，其餘為月初首列或上市／停牌長間隔。
+- `0G-USDT-SWAP` 2025-11-24：`15:00`（`-0.0010031826789156`）與 `17:00`（`-0.0006074667787935`）確實未入庫並已列入本增量，`16:00` 原已入庫且一致，另 `14:00` 亦未入庫。
 
-接續資料決策（沿77已授權範圍，不派歷史回測）：
-A. 先重用本次已保存75個官方月檔，對照原829157庫及v1.7/v1.9增量，交付這些相關月份中**所有尚未入庫的真實官方結算列**，包含1H/4H及8H，保留raw/snap、率、來源月份、取得時間、原月檔SHA/列數/時戳範圍與衝突表；不要只挑174個8H網格目標。已有檔不重下載，分批可讀交付即可，無需為整理資料跑策略。
-B. 下方新7鍵先查同批既有75月檔/映射，沒有現存來源的才補最小必要官方月份；同時保留該相關月檔的非8H結算列，避免逐次只補單點。保持原版，不盲目INSERTIGNORE、不補零插值、刪幣或換母體。
-C. 檢核結果分清「指定174鍵已恢復」「新路徑7鍵待處理」「已證非8H漏列至少2筆」「其他持倉時段跨頻率完整性待驗」。不再把0個未解目標鍵寫成全資金費已完整。後續由GPT對可核官方結算清單與本端持倉時段對照，再自行重播；取得實質新資料前不重跑此同版。
-D. 策略可繼續自由優化及既有報表修正。PR7報表更正目前仍僅本機自述，待新固定head再審；不需因此重跑團隊歷史。完成一批資料就回可讀連結/實際SHA/剩餘缺口，不互相確認。無合併、部署、交易、實盤風控變更。
+### 2. B｜新路徑 7 鍵：`7/7` 已自官方月檔取得
+- `AEVO 2026-05-01T00:00Z`、`USELESS 2026-04-05T00:00Z`、`YB 2026-04-05T08:00Z`／`16:00Z`、`O 2026-08-18T00:00Z`：當期為 **4H 結算**（前後間隔均 `4h`）。
+- `THETA 2026-04-06T00:00Z`、`IOTA 2026-07-12T08:00Z`：當期為 8H 結算。
+- 7 鍵均在上述 `10,633` 列內，逐列費率與 `ts_raw` 見增量檔。
 
-新7個缺口（UTC，僅公開行情查表鍵）：
-cross_1tick：
-- AEVO-USDT-SWAP 2026-05-01T00:00Z
-- THETA-USDT-SWAP 2026-04-06T00:00Z
-- USELESS-USDT-SWAP 2026-04-05T00:00Z
-- YB-USDT-SWAP 2026-04-05T08:00Z
-- YB-USDT-SWAP 2026-04-05T16:00Z
-delay1bar：
-- IOTA-USDT-SWAP 2026-07-12T08:00Z
-- O-USDT-SWAP 2026-08-18T00:00Z
+### 3. C｜分類口徑（不宣稱資金費已完整）
+- 指定 174 鍵：已恢復（v1.9）。
+- 新路徑 7 鍵：本批已取得官方值，待 ChatGPT 疊加重測。
+- 非 8H 漏列：至少 `3,597` 列已證實（遠多於原 2 筆），**全數僅限這 80 個月份**。
+- **其他持倉時段跨頻率完整性：仍待驗**。本批只覆蓋 80 個 `(inst_id, 月份)`；原凍結庫其他月份是否同樣漏收 1H／4H 結算尚未全量檢查，屬下一批範圍。
+
+### 4. 已交可讀連結（PR #8 Open Draft 新 head `b0dcf61e26db0e99b178ad0fe59d3944edbe6492`，Parent `8458510c0eb4bc365c121b9c835c2895103aea40`，未合併、`main`／其他 PR／Releases 未動；live raw HTTP 200、大小與 SHA-256 吻合、零私有路徑與憑證）
+- PR：https://github.com/LeoCheng802/Grok-Bot/pull/8
+1. `research/funding_delta_v1_10/funding_delta_full75plus_v1_10.csv.gz`（`158,227` B，`10,633` 列，`4fe33c0efe78f1398b02cb231760d3817b13f985de013e51df9c273dec7c999b`；逐列 `raw`／`snap`、費率、前後間隔、來源月份、取得時間）：https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/b0dcf61e26db0e99b178ad0fe59d3944edbe6492/research/funding_delta_v1_10/funding_delta_full75plus_v1_10.csv.gz
+2. `research/funding_delta_v1_10/funding_source_months_v1_10.json`（`38,910` B，`04a86793fa08624bf0e60c20cc01f54a716e45019dd265f1b870351ad118ff2e`；80 月檔各自 URL、ZIP SHA、列數、時戳範圍）：https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/b0dcf61e26db0e99b178ad0fe59d3944edbe6492/research/funding_delta_v1_10/funding_source_months_v1_10.json
+3. `research/funding_delta_v1_10/funding_conflicts_v1_10.json`（`50` B，`b9900cb4aae6670829d75b3bb989bbc4227172b656dc28e6da0b6a606f95775d`；衝突表，0 筆）：https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/b0dcf61e26db0e99b178ad0fe59d3944edbe6492/research/funding_delta_v1_10/funding_conflicts_v1_10.json
+4. `research/funding_delta_v1_10/funding_delta_full75plus_v1_10_manifest.json`（`3,783` B，`ab64f5b4a4c579f05d9bee0f068c7de17a791b3c4f370f17958d0363fdfca14d`）：https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/b0dcf61e26db0e99b178ad0fe59d3944edbe6492/research/funding_delta_v1_10/funding_delta_full75plus_v1_10_manifest.json
+5. 80 份原始官方月檔 ZIP：`research/funding_delta_v1_10/official_monthly_zips/`（共約 328 KB）
+
+### 5. 剩餘缺口與下一步
+- 原凍結庫其他月份的 1H／4H 漏收尚未全量檢查；若要收口，下一批需對全部標的、全期月份取官方月檔逐鍵比對，預估約數千份小檔，數十分鐘可完成，待指示再做。
+- 請 `@復盤` 獨立驗收。`FIB-4H-LONG-V3` 維持 `NO-GO`，全案維持 `live_approved: false`；零歷史回測、零合併、零部署、零下單。
