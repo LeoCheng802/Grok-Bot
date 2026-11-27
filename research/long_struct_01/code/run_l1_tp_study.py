@@ -500,6 +500,73 @@ def _load_runtime_modules(bound):
     return loaded
 
 
+def _paths_overlap(left: Path, right: Path) -> bool:
+    """True when two paths are the same file by resolve() or samefile().
+
+    samefile covers existing hardlinks, symlinks, and case-insensitive aliases.
+    A missing path still matches when both resolve to the same location.
+    """
+    try:
+        if left.resolve() == right.resolve():
+            return True
+    except OSError as exc:
+        raise RuntimeError("path cannot be resolved for disjointness check") from exc
+    if left.exists() and right.exists():
+        try:
+            if os.path.samefile(left, right):
+                return True
+        except OSError:
+            return False
+    return False
+
+
+def _output_temp_paths():
+    """Derived outputs and the temp siblings this runner writes or deletes."""
+    return (
+        ("L1_DB", L1_DB),
+        ("L1_DB sidecar", L1_DB_SOURCE_META),
+        ("L1_DB sidecar temp", Path(str(L1_DB_SOURCE_META) + ".tmp")),
+        ("final report", FINAL_REPORT),
+        ("final report temp", Path(str(FINAL_REPORT) + ".tmp")),
+    )
+
+
+def _fixed_input_paths(bound):
+    """Fixed inputs that must never be deleted, renamed, or used as outputs."""
+    items = [
+        ("funding-db", B6_DB),
+        ("manifest", Path(ARGS.manifest)),
+        ("orig-long", Path(ARGS.orig_long)),
+        ("shared-risk", Path(ARGS.shared_risk)),
+        ("registered orig-long", bound["roles"]["orig_long"]),
+        ("registered shared-risk", bound["roles"]["shared_risk"]),
+    ]
+    for rel, path in bound["files"].items():
+        items.append(("manifest entry " + rel, path))
+    return items
+
+
+def _verify_output_paths_disjoint(outputs, fixed_inputs) -> None:
+    """Raise before any copy, write, or cleanup when an output aliases an input.
+
+    Output and temp paths must also be pairwise disjoint so one output cannot
+    overwrite another. This function does not delete or rename anything.
+    """
+    for index, (out_label, out_path) in enumerate(outputs):
+        for in_label, in_path in fixed_inputs:
+            if _paths_overlap(out_path, in_path):
+                raise RuntimeError(
+                    "output path " + out_label + " overlaps fixed input " + in_label
+                    + "; refusing before any copy, write, or cleanup"
+                )
+        for other_label, other_path in outputs[index + 1:]:
+            if _paths_overlap(out_path, other_path):
+                raise RuntimeError(
+                    "output path " + out_label + " overlaps output path " + other_label
+                    + "; refusing before any copy, write, or cleanup"
+                )
+
+
 def _atomic_write_text(path: Path, text: str) -> None:
     tmp = Path(str(path) + ".tmp")
     try:
@@ -511,8 +578,15 @@ def _atomic_write_text(path: Path, text: str) -> None:
         raise
 
 
-def _discard_final_report(path: Path) -> None:
+def _discard_final_report(path: Path, fixed_inputs) -> None:
+    """Remove only a derived report. Never unlink a path that is a fixed input."""
     for candidate in (path, Path(str(path) + ".tmp")):
+        for label, fixed in fixed_inputs:
+            if _paths_overlap(candidate, fixed):
+                raise RuntimeError(
+                    "refusing to delete " + candidate.name
+                    + " because it overlaps fixed input " + label
+                )
         if candidate.exists():
             candidate.unlink()
 
@@ -572,7 +646,7 @@ def _bind_isolated_funding_db(b6_db: Path, l1_db: Path, meta_path: Path) -> str:
             "derived_l1_db_sha256": derived_sha,
         }, ensure_ascii=False, indent=2))
     except Exception:
-        if l1_db.exists() and l1_db.resolve() != b6_real:
+        if l1_db.exists() and not _paths_overlap(l1_db, b6_db):
             l1_db.unlink()
         raise
     return source_sha
@@ -597,6 +671,8 @@ def main():
             "path_note": "explicit paths are the manifest-registered files; hashes match; no module import",
         }, ensure_ascii=False, indent=2))
         return
+    fixed_inputs = _fixed_input_paths(bound)
+    _verify_output_paths_disjoint(_output_temp_paths(), fixed_inputs)
     try:
         OUT_DIR.mkdir(parents=True, exist_ok=True)
         _bind_isolated_funding_db(B6_DB, L1_DB, L1_DB_SOURCE_META)
@@ -785,7 +861,7 @@ def main():
         _atomic_write_text(FINAL_REPORT, json.dumps(out, ensure_ascii=False, indent=2))
         print("OUTPUT_SHA256:", sha(FINAL_REPORT), flush=True)
     except Exception:
-        _discard_final_report(FINAL_REPORT)
+        _discard_final_report(FINAL_REPORT, fixed_inputs)
         raise
 
 if __name__ == "__main__":

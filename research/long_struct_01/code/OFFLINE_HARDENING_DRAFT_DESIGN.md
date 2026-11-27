@@ -48,7 +48,7 @@ Packaging and refusal only. No signal, indicator, ranking, cost, position-sizing
 - Top-level engine imports are gone. `_load_runtime_modules` runs only after `_verify_manifest_bindings` has read the manifest and matched SHA-256. `--dry-check` returns after that read and does not import strategy, `shared_risk`, or engine modules.
 - `--manifest`, `--shared-risk`, and `--orig-long` are all required. `manifest["files"]` must be a non-empty object that contains `scripts/FIB_4H_Long_v3.py`, `scripts/shared_risk.py`, and exactly one `engine/<filename>` entry for each of `audit_v3_1_full.py`, `sim_50k_v3_2_sl_fix.py`, `run_q38_audit_01.py`, and `b6_sim_portable.py`. The explicit CLI paths must resolve to those registered files. A hash mismatch, an empty `files` object, a missing entry, or an unregistered explicit path raises `RuntimeError` before any module load. Integrity checks use `RuntimeError` / `SystemExit`, not `assert`.
 - A fresh derived `L1_DB` is copied from `B6_DB` only when that derived path does not already exist. Before any copy, reuse, or cleanup, `B6_DB`, `L1_DB`, and the sidecar must resolve to different paths. `<l1_db>.source_meta.json` records `b6_source_sha256`, `b6_source_name`, and `derived_l1_db_sha256` from the bytes of the derived file. An existing derived file is reused only when both recorded hashes match the current `B6_DB` and the current `L1_DB` bytes. Missing, malformed, or mismatched metadata raises `RuntimeError` and does not overwrite or repair the files. Fixed historical inputs are unchanged.
-- The final report is written only after funding and simulation steps succeed, via a temp file and `os.replace`. Any exception on that path, including the missing-funding `RuntimeError`, deletes the final report and its temp file before the error propagates.
+- The final report is written only after funding and simulation steps succeed, via a temp file and `os.replace`. Before that `try`, `_verify_output_paths_disjoint` requires every derived path (`L1_DB`, its sidecar, `l1_tp_result.json`, and their `.tmp` siblings) to be disjoint from `--funding-db`, `--manifest`, `--orig-long`, `--shared-risk`, and every manifest-registered file, and pairwise disjoint from each other. The check uses `Path.resolve()` and `os.path.samefile` when both paths exist. An overlap raises `RuntimeError` before any copy, write, or cleanup, and nothing is deleted to clear it. `_discard_final_report` also refuses to unlink a path that matches a fixed input.
 - `indicators_180`, `build_cands_fib_long_exact`, scenario TP/SL pairs, slot/risk/TTL constants, and the pass-1/pass-2 study calls are unchanged.
 - `--cache-dir`, `--funding-db`, and `--out-dir` still have their previous pack-relative defaults.
 
@@ -67,7 +67,7 @@ Every modified copy is **待驗**. Do not inherit original-version pass evidence
 
 ## Synthetic acceptance tests (UNEXECUTED)
 
-These four designs use no network and no market data. Status: **UNEXECUTED**, pending formal approval. Every modified SHA remains **待驗**. A static inspection while preparing this draft does not mark any of them passed.
+These four designs use no network and no market data. SYN-NET-01, SYN-MANIFEST-02, and SYN-DB-03 stay **UNEXECUTED**. SYN-STATIC-04 is authorized for a later isolated run of the stdlib checker only, per issue comment `#7224263057`; this source change does not execute it. Every modified SHA remains **待驗**.
 
 ### SYN-NET-01
 
@@ -84,10 +84,11 @@ These four designs use no network and no market data. Status: **UNEXECUTED**, pe
 - Point `_bind_isolated_funding_db` at a second `B6_DB` whose bytes differ from the hash recorded for an existing derived `L1_DB`. The call raises `RuntimeError` and does not reuse that file.
 - Same `B6_DB` source and the old sidecar left in place, but the derived `L1_DB` bytes are replaced. `derived_l1_db_sha256` does not match the file on disk, so the call raises `RuntimeError` and does not overwrite or repair either file.
 - The resolved `B6_DB` path is the same as the derived `L1_DB` path, or the same as the sidecar path. The call raises `RuntimeError` before any copy, reuse, or cleanup.
+- `--funding-db` points at `out-dir/l1_tp_result.json` or `out-dir/l1_tp_result.json.tmp` (the same check covers the sidecar temp sibling). `_verify_output_paths_disjoint` raises `RuntimeError` before `main` enters the `try` that calls `_discard_final_report`. The fixed input is not deleted or renamed, and its SHA-256 is unchanged.
 
 ### SYN-STATIC-04
 
-**UNEXECUTED.** After approval, run `offline_static_check.py` and confirm `FAIL` with a non-zero exit for each of these, with zero imports of strategy, `shared_risk`, or engine modules:
+**Authorized for isolated execution, not run by this source change.** Issue comment `#7224263057` allows a later run of `offline_static_check.py` on an isolated temporary copy only. That run must not import strategy, `shared_risk`, or engine modules, must not call runner `main` or `--dry-check`, and must not read market data or use the network. It does not clear **待驗**. The cases are:
 
 - A required file is removed.
 - A symlink target is outside the check root.
@@ -99,11 +100,11 @@ These four designs use no network and no market data. Status: **UNEXECUTED**, pe
 ## Remaining blockers
 
 - Formal review is required before any runtime test execution, acceptance decision, or merge.
-- SYN-NET-01, SYN-MANIFEST-02, SYN-DB-03, and SYN-STATIC-04 are **UNEXECUTED**.
+- SYN-NET-01, SYN-MANIFEST-02, and SYN-DB-03 are **UNEXECUTED**. SYN-STATIC-04 is authorized for an isolated checker run and was not executed here. All candidate and runner SHAs remain **待驗**.
 - This draft did not import or execute the trading modules, did not call `main()`, did not run `--dry-check`, and did not run historical replay, market scan, or candidate counting.
 - No old test-pass evidence was copied onto these copies.
 - `CANDIDATES.json` / `CANDIDATES.md` on `main` stay as they are. Registry rows for these new SHA-256 values remain **待驗** until a separate approved update.
 - LONG-STRUCT-02 was not implemented.
 - The draft pull request must stay unmerged and must not be deployed.
 - Reachable strategy behavior is unchanged, but the unreachable HTTP/funding bodies are still present under the leading raises. There is no runtime switch that turns them back on.
-- Importing `run_l1_tp_study.py` still parses CLI arguments. It does not import engine modules until `_load_runtime_modules` runs after the manifest check. The four synthetic tests stay blocked until that execution is approved.
+- Importing `run_l1_tp_study.py` still parses CLI arguments. It does not import engine modules until `_load_runtime_modules` runs after the manifest check. SYN-NET-01, SYN-MANIFEST-02, and SYN-DB-03 stay blocked until execution is approved. SYN-STATIC-04 may be run later only as an isolated checker, and that run still leaves the SHAs **待驗**.
