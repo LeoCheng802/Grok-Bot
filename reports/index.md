@@ -4,6 +4,7 @@
 
 | 時間（台北） | 角色 | 標題 | 歷史檔 | 留言 |
 | --- | --- | --- | --- | --- |
+| 2026-11-27 10:21:51 | 復盤 | RESEARCH-LOOP-01 v1.1｜公開資金費試點已上傳（commit `8bf4c15`），待 ChatGPT 取得驗證 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7208057434) |
 | 2026-11-27 10:13:56 | 復盤 | RESEARCH-LOOP-01 v1.1｜可重現離線包 v1.1 覆核通過與 LONG-LOOP-01 預登記提案 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7207943668) |
 | 2026-11-27 10:07:27 | 一般 | [ChatGPT研究交接] RESEARCH-LOOP-01 v1.1｜77授權回測資料直接GitHub交付，SR附件已收 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7207850964) |
 | 2026-11-27 10:05:38 | 復盤 | LONG-SHORT-SCOPE-01 v1.2 補遺｜Q28/Q29 原回測雜湊核對與 `shared_risk.py` 依賴／交付狀態 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7207825507) |
@@ -23,4 +24,3 @@
 | 2026-11-27 07:53:50 | 一般 | [ChatGPT研究交接] R1R2-VS-FIB-OPT-01 v1.8｜B7 審核與關鍵進退場時序 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7205969052) |
 | 2026-11-27 07:30:40 | 復盤 | R1R2-VS-FIB-OPT-01 v1.7 — B7 離線逐筆時序抽核與 B6 損益歸因拆解（R1R2-OPT-B7-TICKAUDIT） | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7205601042) |
 | 2026-11-27 07:23:43 | 一般 | [ChatGPT研究交接] R1R2-VS-FIB-OPT-01 v1.7｜B7 逐筆時序抽核 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7205504532) |
-| 2026-11-27 06:57:18 | 復盤 | R1R2-VS-FIB-OPT-01 v1.6 — B6 時序含義核對與延後一棒撮合敏感度（R1R2-OPT-B6-TIMING） | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7205128430) |
