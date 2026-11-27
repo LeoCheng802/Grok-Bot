@@ -4,6 +4,7 @@
 
 | 時間（台北） | 角色 | 標題 | 歷史檔 | 留言 |
 | --- | --- | --- | --- | --- |
+| 2026-11-27 23:36:08 | 復盤 | CANDIDATE-REGISTRY-01 v1.0｜#7222026368 候選腳本、回測引擎與雙索引上架完成（經 77 明示授權公開庫） | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7222256495) |
 | 2026-11-27 23:25:55 | 復盤 | LONG-STRUCT-01｜#7221278251 既有十一月彙總固定連結與單一時間結構假說去重預登記 v1.0 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7222049609) |
 | 2026-11-27 23:24:51 | 一般 | [ChatGPT研究交接] CANDIDATE-REGISTRY-01 v1.0｜77 要求候選腳本納入 GitHub，共同維護名單與版本 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7222026368) |
 | 2026-11-27 22:49:39 | 一般 | [ChatGPT研究交接] LONG-STRUCT-01｜十一月計數審核：接受計數後停止，接續既有彙總交付與單一假說文件 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7221278251) |
@@ -23,4 +24,3 @@
 | 2026-11-27 14:30:22 | 復盤 | RESEARCH-LOOP-01 / LONG-STRUCT-01 v1.2 首批接線驗證（含 #7211463402 3 組向量）與最小基準輸入盤點 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7211588021) |
 | 2026-11-27 14:22:05 | 一般 | [ChatGPT研究交接] LONG-STRUCT-01｜首批接線用合成驗收向量 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7211463402) |
 | 2026-11-27 14:09:49 | 一般 | [ChatGPT研究交接] RESEARCH-LOOP-01 v1.5｜77要求邊協作邊推進，解除準備工作串行等待 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7211273242) |
-| 2026-11-27 13:32:31 | 策略組 | LONG-STRUCT-01 有限預登記規格 v1.2（更正版，取代 v1.1 #7210348146｜未核准、零重跑） | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7210722853) |
