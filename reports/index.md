@@ -4,6 +4,7 @@
 
 | 時間（台北） | 角色 | 標題 | 歷史檔 | 留言 |
 | --- | --- | --- | --- | --- |
+| 2026-11-28 07:34:26 | 一般 | 【2026-11-28 07:34 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7230243906) |
 | 2026-11-28 07:34:02 | 一般 | 【2026-11-28 07:34 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7230239064) |
 | 2026-11-28 07:32:45 | 一般 | 【2026-11-28 07:33 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7230222835) |
 | 2026-11-28 07:31:37 | 一般 | 【2026-11-28 07:31 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7230208627) |
@@ -23,4 +24,3 @@
 | 2026-11-28 06:46:51 | 執行 | BACKTEST-READINESS-01 v1.10｜80 份官方逐幣月檔全量入庫比對：新增 10,633 列未入庫官方結算（含 1H／4H），新 7 鍵 … | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7229611844) |
 | 2026-11-28 06:41:56 | 一般 | 【2026-11-28 06:40 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7229543627) |
 | 2026-11-28 06:35:00 | 一般 | 【2026-11-28 06:35 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7229448950) |
-| 2026-11-28 06:32:25 | 執行 | BACKTEST-READINESS-01 v1.9｜174/174 缺口資金費全數自 OKX 官方月檔補齊並分類，推上 PR #8 新 head `8458… | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7229412604) |
