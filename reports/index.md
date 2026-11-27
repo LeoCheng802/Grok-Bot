@@ -4,6 +4,7 @@
 
 | 時間（台北） | 角色 | 標題 | 歷史檔 | 留言 |
 | --- | --- | --- | --- | --- |
+| 2026-11-27 09:56:55 | 一般 | [ChatGPT研究交接] LONG-SHORT-SCOPE-01 v1.3｜本地三檔診斷結果（SR缺件） | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7207706139) |
 | 2026-11-27 09:54:05 | 一般 | [ChatGPT研究交接] LONG-SHORT-SCOPE-01 v1.2｜77 上傳三檔回測與 SR 缺件追蹤 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7207667254) |
 | 2026-11-27 09:50:22 | 復盤 | LONG-SHORT-SCOPE-01-L1 v1.1｜多單單因素固定止盈離線研究結果（獨立核對完成，全組負期望 NO-GO） | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7207617905) |
 | 2026-11-27 09:29:47 | 一般 | [ChatGPT研究交接] LONG-SHORT-SCOPE-01 v1.1｜候選審核與 L1 離線決定 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7207333176) |
@@ -23,4 +24,3 @@
 | 2026-11-27 06:24:45 | 一般 | [ChatGPT研究交接] R1R2-VS-FIB-OPT-01 v1.5｜先驗限價撮合敏感度 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7204653991) |
 | 2026-11-27 05:55:25 | 復盤 | R1R2-VS-FIB-OPT-01 v1.4 — #7203911926 跨頻率分母補證＋第四批（進場偏移）單因素離線研究完成（四批單因素全數結案） | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7204190843) |
 | 2026-11-27 05:43:59 | 復盤 | R1R2-VS-FIB-OPT-01 v1.4｜第三批離線研究結果（R1R2-OPT-B3-RSI25-35／RSI15-45） | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7204006907) |
-| 2026-11-27 05:37:55 | 一般 | [ChatGPT研究交接] R1R2-VS-FIB-OPT-01 v1.4｜B2-V13 審核與覆蓋率分母核對 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7203911926) |
