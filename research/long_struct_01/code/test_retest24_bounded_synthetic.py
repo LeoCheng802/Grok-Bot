@@ -187,8 +187,195 @@ def test_b6_q38_cross_month_and_local_details() -> None:
     _check({"slip_mkt", "ema55_calculation_window", "default_universe_exclusions"}.issubset(items), "missing diff items")
 
 
+
+
+def _make_e2e_synth_env(root: Path, include_miss_events: bool = False):
+    import json
+    cache_dir = root / "cache"
+    cache_dir.mkdir()
+    out_dir = root / "out"
+    code_dir = root / "code"
+    code_dir.mkdir()
+
+    # Tiny 100% synthetic stub engine & required manifest files
+    miss_line = (
+        '    events = {(0, "SYNTH-USDT-SWAP", 1706745600000 + i * 28800000, "miss_8h") for i in range(28)}'
+        if include_miss_events else
+        '    events = set()'
+    )
+    b6_stub = (
+        'def run_audit_sim_b6(raw, bars, spec, **kw):\n'
+        + miss_line + '\n'
+        '    return {\n'
+        '        "_ord_log": [{"inst": "SYNTH-USDT-SWAP", "pts": 1706659200000, "exp": 1706832000000, "px": 100.0, "outcome": "filled", "ets": 1706702400000}],\n'
+        '        "_trades": [{"inst": "SYNTH-USDT-SWAP", "side": "short", "ets": 1706702400000, "xts": 1706860800000, "net": 50.0, "fund": 0.5, "fee": 1.0, "reason": "tp"}],\n'
+        '        "_open": [], "_end_eq_raw": 50050.0, "mtm_mdd_pct": 0.1,\n'
+        '        "f_ev_real_8h": 1, "f_ev_real_non8h": 0, "f_ev_miss_8h": len(events), "_real_fund_raw": 0.5, "events_set": events,\n'
+        '    }\n'
+    )
+    (code_dir / "scripts").mkdir()
+    (code_dir / "engine").mkdir()
+    b6_path = code_dir / "engine" / "b6_sim_portable.py"
+    b6_path.write_text(b6_stub, encoding="utf-8")
+    sr_path = code_dir / "scripts" / "shared_risk.py"
+    sr_path.write_text("SHARED_RISK_STUB = True\n", encoding="utf-8")
+    rt_path = code_dir / "scripts" / "RETEST24_R1_R2_Switchable_v1_5_auditfix.py"
+    rt_path.write_text("RETEST24_STUB = True\n", encoding="utf-8")
+    s1_path = code_dir / "engine" / "sim_50k_v3_2_sl_fix.py"
+    s1_path.write_text("STUB = 1\n", encoding="utf-8")
+    s2_path = code_dir / "engine" / "audit_v3_1_full.py"
+    s2_path.write_text("STUB = 2\n", encoding="utf-8")
+    s3_path = code_dir / "engine" / "run_q38_audit_01.py"
+    s3_path.write_text("STUB = 3\n", encoding="utf-8")
+
+    manifest_path = code_dir / "manifest.json"
+    manifest_data = {
+        "files": {
+            "engine/b6_sim_portable.py": {"sha256": mod.sha(b6_path), "size": b6_path.stat().st_size},
+            "engine/sim_50k_v3_2_sl_fix.py": {"sha256": mod.sha(s1_path), "size": s1_path.stat().st_size},
+            "engine/audit_v3_1_full.py": {"sha256": mod.sha(s2_path), "size": s2_path.stat().st_size},
+            "engine/run_q38_audit_01.py": {"sha256": mod.sha(s3_path), "size": s3_path.stat().st_size},
+            "scripts/shared_risk.py": {"sha256": mod.sha(sr_path), "size": sr_path.stat().st_size},
+            "scripts/RETEST24_R1_R2_Switchable_v1_5_auditfix.py": {"sha256": mod.sha(rt_path), "size": rt_path.stat().st_size},
+        }
+    }
+    manifest_path.write_text(json.dumps(manifest_data), encoding="utf-8")
+
+    db_path = root / "funding.sqlite"
+    _make_synth_funding_db(db_path)
+
+    npz_path = cache_dir / "SYNTH-USDT-SWAP.npz"
+    ts_base = 1706745600000
+    ts30 = np.array([ts_base + i * 1800000 for i in range(4)], dtype=np.int64)
+    ts4 = np.array([ts_base + i * 14400000 for i in range(4)], dtype=np.int64)
+    np.savez(
+        npz_path,
+        ts30=ts30, ohlc30=np.ones((4, 4), dtype=np.float64) * 100.0,
+        ts4=ts4, ohlc4=np.ones((4, 4), dtype=np.float64) * 100.0,
+        ts1=ts4, ohlc1=np.ones((4, 4), dtype=np.float64) * 100.0,
+        d1_ts=np.array([ts_base], dtype=np.int64),
+    )
+    cache_manifest = {
+        "symbols": {
+            "SYNTH-USDT-SWAP": {"spec": {"tickSz": "0.1", "maxLever": "20"}}
+        }
+    }
+    (cache_dir / "manifest.json").write_text(json.dumps(cache_manifest), encoding="utf-8")
+
+    input_manifest_path = root / "input_manifest.json"
+    input_manifest_path.write_text(
+        json.dumps({"files": {"SYNTH-USDT-SWAP": {"sha256": mod.sha(npz_path), "size_bytes": npz_path.stat().st_size}}}),
+        encoding="utf-8",
+    )
+    return {
+        "manifest": manifest_path, "retest24": rt_path, "shared_risk": sr_path,
+        "cache_dir": cache_dir, "funding_db": db_path, "out_dir": out_dir,
+        "input_manifest": input_manifest_path, "npz_path": npz_path,
+    }
+
+
+def test_main_strict_manifest_disjoint_and_e2e_sentinels() -> None:
+    import json
+    with tempfile.TemporaryDirectory() as td:
+        env = _make_e2e_synth_env(Path(td), include_miss_events=False)
+        base_argv = [
+            "--manifest", str(env["manifest"]),
+            "--retest24-script", str(env["retest24"]),
+            "--shared-risk", str(env["shared_risk"]),
+            "--cache-dir", str(env["cache_dir"]),
+            "--funding-db", str(env["funding_db"]),
+            "--out-dir", str(env["out_dir"]),
+            "--candidate", "RETEST24_V1_5_FROZEN",
+            "--symbols", "SYNTH-USDT-SWAP",
+            "--start-utc", "2024-01-15T00:00:00Z",
+            "--end-utc", "2024-02-15T00:00:00Z",
+            "--scenarios", "R1_150U|cross_1tick",
+        ]
+
+        # Sentinel wrappers to prove ZERO writes and ZERO np.load / module loads on rejection
+        orig_np_load = mod.np.load
+        orig_load_mods = mod._load_runtime_modules
+        orig_write = mod._atomic_write_text
+        calls = {"np_load": 0, "load_mods": 0, "writes": []}
+
+        def _spy_np_load(*a, **kw):
+            calls["np_load"] += 1
+            return orig_np_load(*a, **kw)
+
+        def _spy_load_mods(*a, **kw):
+            calls["load_mods"] += 1
+            return orig_load_mods(*a, **kw)
+
+        def _spy_write(path, text):
+            calls["writes"].append(str(path))
+            return orig_write(path, text)
+
+        mod.np.load = _spy_np_load
+        mod._load_runtime_modules = _spy_load_mods
+        mod._atomic_write_text = _spy_write
+        try:
+            # 1) Reject when --input-manifest is omitted and cache manifest has no sha256/size
+            rejected_unlisted = False
+            try:
+                mod.main(base_argv)
+            except RuntimeError:
+                rejected_unlisted = True
+            _check(rejected_unlisted, "main() must reject unlisted NPZ without expected sha256/size")
+            _check(calls["np_load"] == 0 and calls["load_mods"] == 0 and not calls["writes"], "unlisted rejection must happen before np.load, module load, and any write")
+
+            # 2) Reject BEFORE any write when an output path collides (via symlink) with a selected NPZ, leaving NPZ intact
+            npz_sha_before = mod.sha(env["npz_path"])
+            env["out_dir"].mkdir(parents=True, exist_ok=True)
+            colliding_scope = env["out_dir"] / "retest24_bounded_scope.json"
+            colliding_scope.symlink_to(env["npz_path"])
+            rejected_collision = False
+            try:
+                mod.main(base_argv + ["--input-manifest", str(env["input_manifest"])])
+            except RuntimeError:
+                rejected_collision = True
+            _check(rejected_collision, "main() must reject output colliding with NPZ")
+            _check(calls["np_load"] == 0 and calls["load_mods"] == 0 and not calls["writes"], "disjoint rejection must happen before any write or load")
+            _check(mod.sha(env["npz_path"]) == npz_sha_before, "colliding input NPZ must remain completely untouched")
+            colliding_scope.unlink()
+
+            # 3) Valid PASS run via main() writes local details
+            rc_pass = mod.main(base_argv + ["--input-manifest", str(env["input_manifest"])])
+            _check(rc_pass == 0, "expected rc=0 for synthetic PASS run")
+            detail_file = env["out_dir"] / "retest24_bounded_local_details.json"
+            _check(detail_file.is_file(), "local detail file missing on PASS")
+            det = json.loads(detail_file.read_text(encoding="utf-8"))
+            _check(det["fixed_inputs_verified"]["npz_files_count"] == 1, "expected 1 verified NPZ")
+        finally:
+            mod.np.load = orig_np_load
+            mod._load_runtime_modules = orig_load_mods
+            mod._atomic_write_text = orig_write
+
+    # 4) ABORTED_MISSING_FUNDING run still writes full untruncated missing_funding_events_all (28 items)
+    with tempfile.TemporaryDirectory() as td2:
+        env2 = _make_e2e_synth_env(Path(td2), include_miss_events=True)
+        rc_abort = mod.main([
+            "--manifest", str(env2["manifest"]),
+            "--retest24-script", str(env2["retest24"]),
+            "--shared-risk", str(env2["shared_risk"]),
+            "--cache-dir", str(env2["cache_dir"]),
+            "--funding-db", str(env2["funding_db"]),
+            "--out-dir", str(env2["out_dir"]),
+            "--input-manifest", str(env2["input_manifest"]),
+            "--candidate", "RETEST24_V1_5_FROZEN",
+            "--symbols", "SYNTH-USDT-SWAP",
+            "--start-utc", "2024-01-15T00:00:00Z",
+            "--end-utc", "2024-02-15T00:00:00Z",
+            "--scenarios", "R1_150U|cross_1tick",
+        ])
+        _check(rc_abort == 2, "expected rc=2 for ABORTED_MISSING_FUNDING")
+        det2 = json.loads((env2["out_dir"] / "retest24_bounded_local_details.json").read_text(encoding="utf-8"))
+        miss_all = det2["scenarios"]["R1_150U|cross_1tick"]["missing_funding_events_all"]
+        _check(len(miss_all) == 28, "short ABORT local details must keep all 28 untruncated miss_8h events")
+
+
 if __name__ == "__main__":
     test_old_vs_new_funding_db_regression()
     test_npz_manifest_and_disjoint_guard()
     test_b6_q38_cross_month_and_local_details()
-    print("ALL_RETEST24_V1_3_SYNTHETIC_TESTS_PASS")
+    test_main_strict_manifest_disjoint_and_e2e_sentinels()
+    print("ALL_RETEST24_V1_6_SYNTHETIC_TESTS_PASS")

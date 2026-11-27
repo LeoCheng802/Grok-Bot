@@ -655,7 +655,43 @@ def make_sim_spec(candidate: str, tp_pct: float, sl_pct: float, ttl_hours: float
     }
 
 
+def _load_optional_input_manifest(manifest_arg: Optional[str]):
+    if not manifest_arg:
+        return None, None
+    p = Path(manifest_arg).expanduser().resolve()
+    if not p.is_file():
+        raise RuntimeError("input manifest missing: " + str(p))
+    data = json.loads(p.read_text(encoding="utf-8"))
+    if not isinstance(data, dict):
+        raise RuntimeError("input manifest must be a JSON object")
+    raw_entries = data.get("files", data.get("symbols", data))
+    if isinstance(raw_entries, list):
+        entries = {}
+        for item in raw_entries:
+            if not isinstance(item, dict):
+                raise RuntimeError("input manifest list entry must be an object")
+            key = item.get("inst_id") or item.get("symbol") or item.get("filename") or item.get("name")
+            if not key:
+                raise RuntimeError("input manifest list entry missing symbol/filename key")
+            entries[str(key)] = item
+        return p, entries
+    if not isinstance(raw_entries, dict):
+        raise RuntimeError("input manifest entries must be a JSON object or list")
+    return p, raw_entries
+
+
+def _is_valid_sha256_hex(val) -> bool:
+    if not isinstance(val, str) or len(val) != 64:
+        return False
+    try:
+        int(val, 16)
+        return True
+    except ValueError:
+        return False
+
+
 def _verify_and_record_npz_inputs(ordered_syms, cache_dir: Path, symbols_dict: dict, input_manifest_entries):
+    import zipfile
     resolved_paths = {}
     records = {}
     for inst in ordered_syms:
@@ -663,6 +699,10 @@ def _verify_and_record_npz_inputs(ordered_syms, cache_dir: Path, symbols_dict: d
         if not npz_path.is_file():
             raise RuntimeError("symbol npz missing from cache_dir: " + inst)
         actual_size = npz_path.stat().st_size
+        if actual_size <= 0:
+            raise RuntimeError("symbol npz is empty (0 bytes): " + inst)
+        if not zipfile.is_zipfile(npz_path):
+            raise RuntimeError("symbol npz invalid archive format: " + inst)
         actual_sha = sha(npz_path)
 
         expected_sha = None
@@ -670,7 +710,7 @@ def _verify_and_record_npz_inputs(ordered_syms, cache_dir: Path, symbols_dict: d
         sym_info = symbols_dict.get(inst, {})
         if isinstance(sym_info, dict):
             expected_sha = sym_info.get("npz_sha256") or sym_info.get("sha256")
-            expected_size = sym_info.get("npz_size_bytes") or sym_info.get("size_bytes")
+            expected_size = sym_info.get("npz_size_bytes") if sym_info.get("npz_size_bytes") is not None else sym_info.get("size_bytes")
 
         if input_manifest_entries is not None:
             m_entry = input_manifest_entries.get(inst) or input_manifest_entries.get(f"{inst}.npz")
@@ -679,22 +719,35 @@ def _verify_and_record_npz_inputs(ordered_syms, cache_dir: Path, symbols_dict: d
             if isinstance(m_entry, str):
                 expected_sha = m_entry
             elif isinstance(m_entry, dict):
-                if m_entry.get("sha256"):
-                    expected_sha = m_entry["sha256"]
+                if m_entry.get("sha256") is not None:
+                    expected_sha = m_entry.get("sha256")
                 if m_entry.get("size_bytes") is not None:
-                    expected_size = int(m_entry["size_bytes"])
+                    expected_size = m_entry.get("size_bytes")
+            else:
+                raise RuntimeError("invalid input_manifest entry type for: " + inst)
 
-        if expected_sha is not None and actual_sha.lower() != str(expected_sha).lower():
+        if not _is_valid_sha256_hex(expected_sha):
+            raise RuntimeError(f"missing or invalid expected sha256 for symbol npz (provide --input-manifest or cache manifest sha256): {inst}")
+        if expected_size is None or isinstance(expected_size, bool):
+            raise RuntimeError(f"missing or invalid expected size_bytes for symbol npz (provide --input-manifest or cache manifest size_bytes): {inst}")
+        try:
+            expected_size_int = int(expected_size)
+        except (TypeError, ValueError):
+            raise RuntimeError(f"non-integer expected size_bytes for symbol npz: {inst}")
+        if expected_size_int <= 0:
+            raise RuntimeError(f"expected size_bytes must be > 0 for symbol npz: {inst}")
+
+        if actual_sha.lower() != expected_sha.lower():
             raise RuntimeError(f"NPZ SHA-256 mismatch for {inst}: expected {expected_sha}, got {actual_sha}")
-        if expected_size is not None and actual_size != int(expected_size):
-            raise RuntimeError(f"NPZ size mismatch for {inst}: expected {expected_size}, got {actual_size}")
+        if actual_size != expected_size_int:
+            raise RuntimeError(f"NPZ size mismatch for {inst}: expected {expected_size_int}, got {actual_size}")
 
         resolved_paths[inst] = npz_path
         records[inst] = {
             "filename": npz_path.name,
             "sha256": actual_sha,
             "size_bytes": actual_size,
-            "manifest_verified": bool(expected_sha is not None),
+            "manifest_verified": True,
         }
     return resolved_paths, records
 
@@ -959,6 +1012,7 @@ def parse_args(argv=None):
     p.add_argument("--ttl-hours", type=float, default=None, help="Optional TTL hours override")
     p.add_argument("--max-slots", type=int, default=None, help="Optional max_slots override")
     p.add_argument("--risk-per-trade", type=float, default=None, help="Optional risk_per_trade (USDT) override")
+    p.add_argument("--input-manifest", default=None, help="Path to per-file NPZ manifest JSON with expected sha256 and size_bytes")
     p.add_argument("--dry-check", action="store_true", help="Read-only manifest & scope check; no runtime imports")
     return p.parse_args(argv)
 
@@ -1037,6 +1091,7 @@ def main(argv=None) -> int:
         final_report = out_dir / f"{args.candidate.lower()}_bounded_result.json"
         abort_report = out_dir / f"{args.candidate.lower()}_missing_funding_abort.json"
         scope_file = out_dir / f"{args.candidate.lower()}_bounded_scope.json"
+        local_detail_report = out_dir / f"{args.candidate.lower()}_bounded_local_details.json"
 
         outputs = (
             ("iso_db", iso_db),
@@ -1048,27 +1103,49 @@ def main(argv=None) -> int:
             ("abort_report_tmp", Path(str(abort_report) + ".tmp")),
             ("scope_file", scope_file),
             ("scope_file_tmp", Path(str(scope_file) + ".tmp")),
+            ("local_detail_report", local_detail_report),
+            ("local_detail_report_tmp", Path(str(local_detail_report) + ".tmp")),
         )
+        input_manifest_path, input_manifest_entries = _load_optional_input_manifest(args.input_manifest)
+        cache_manifest_path = cache_dir / "manifest.json"
+        if not cache_manifest_path.is_file():
+            raise RuntimeError("cache_v3 manifest.json missing: " + str(cache_manifest_path))
+        funding_db_sha_before = sha(src_funding_db)
+        cache_manifest_sha_before = sha(cache_manifest_path)
+
+        cache_manifest = json.loads(cache_manifest_path.read_text(encoding="utf-8"))
+        symbols_dict = cache_manifest["symbols"]
+        if requested_symbols:
+            missing_syms = [s for s in requested_symbols if s not in symbols_dict]
+            if missing_syms:
+                raise RuntimeError("requested symbols missing from cache manifest: " + ", ".join(missing_syms))
+            ordered_syms = requested_symbols
+        else:
+            ordered_syms = [inst for inst in symbols_dict.keys() if inst != "USDC-USDT-SWAP"]
+
         fixed_inputs = [
             ("funding-db", src_funding_db),
             ("manifest", manifest_path),
             ("shared-risk", shared_risk_path),
-            ("cache-manifest", cache_dir / "manifest.json"),
+            ("cache-manifest", cache_manifest_path),
             ("registered shared-risk", bound["roles"]["shared_risk"]),
         ]
+        if input_manifest_path is not None:
+            fixed_inputs.append(("input-manifest", input_manifest_path))
         for rel, path in bound["files"].items():
             fixed_inputs.append(("manifest entry " + rel, path))
+        for inst in ordered_syms:
+            fixed_inputs.append(("symbol npz " + inst, (cache_dir / f"{inst}.npz").resolve()))
+
+        # Complete disjoint check AND strict NPZ manifest/SHA/size verification BEFORE any write or cleanup try block
         _verify_output_paths_disjoint(outputs, fixed_inputs)
+        npz_resolved_paths, npz_records_before = _verify_and_record_npz_inputs(
+            ordered_syms, cache_dir, symbols_dict, input_manifest_entries
+        )
 
         try:
             out_dir.mkdir(parents=True, exist_ok=True)
             _atomic_write_text(scope_file, json.dumps(scope_preview, ensure_ascii=False, indent=2) + "\n")
-
-            funding_db_sha_before = sha(src_funding_db)
-            cache_manifest_path = cache_dir / "manifest.json"
-            if not cache_manifest_path.is_file():
-                raise RuntimeError("cache_v3 manifest.json missing: " + str(cache_manifest_path))
-            cache_manifest_sha_before = sha(cache_manifest_path)
 
             _bind_isolated_funding_db(src_funding_db, iso_db, iso_meta)
             loaded = _load_runtime_modules(bound)
@@ -1076,25 +1153,15 @@ def main(argv=None) -> int:
             if not callable(getattr(b6mod, "run_audit_sim_b6", None)):
                 raise RuntimeError("registered b6_sim_portable missing callable run_audit_sim_b6")
 
-            cache_manifest = json.loads(cache_manifest_path.read_text(encoding="utf-8"))
-            symbols_dict = cache_manifest["symbols"]
-            if requested_symbols:
-                missing_syms = [s for s in requested_symbols if s not in symbols_dict]
-                if missing_syms:
-                    raise RuntimeError("requested symbols missing from cache manifest: " + ", ".join(missing_syms))
-                ordered_syms = requested_symbols
-            else:
-                ordered_syms = [inst for inst in symbols_dict.keys() if inst != "USDC-USDT-SWAP"]
-
             fmaps, ov_raw = load_funding_db(iso_db)
             raw = {}
             all_bars_set = set()
             for inst in ordered_syms:
                 info = symbols_dict[inst]
-                npz_path = cache_dir / f"{inst}.npz"
-                if not npz_path.is_file():
-                    raise RuntimeError("symbol npz missing from cache_dir: " + inst)
+                npz_path = npz_resolved_paths[inst]
                 z = np.load(npz_path)
+                if len(z["ts30"]) == 0 or len(z["ts4"]) == 0:
+                    raise RuntimeError("empty timestamp array in symbol npz: " + inst)
                 ts30, o30 = z["ts30"], z["ohlc30"]
                 ts4, o4 = z["ts4"], z["ohlc4"]
                 ts1, o1 = z["ts1"], z["ohlc1"]
@@ -1126,6 +1193,7 @@ def main(argv=None) -> int:
 
             spec = make_sim_spec(args.candidate, tp_pct, sl_pct, ttl_hours, max_slots, risk_per_trade)
             arms = {}
+            local_details_by_scenario = {}
             missing_by_scenario = {}
             for scen in requested_scenarios:
                 dly = SUPPORTED_SCENARIOS[scen]
@@ -1134,6 +1202,9 @@ def main(argv=None) -> int:
                     cands_pre=cands_by_bar, max_lev_pre=max_lev,
                     record_events=True, record_trades_detail=True,
                     fill_mode="cross_1tick", delay_first_bar=dly,
+                )
+                local_details_by_scenario[scen] = build_local_detail_payload(
+                    scen, r, start_ts_ms=start_ts, end_ts_ms=end_ts
                 )
                 miss_events = sorted(e for e in r["events_set"] if e[3] == "miss_8h")
                 if miss_events:
@@ -1145,26 +1216,55 @@ def main(argv=None) -> int:
                         "f_ev_real_8h": r["f_ev_real_8h"],
                         "f_ev_real_non8h": r["f_ev_real_non8h"],
                         "distinct_symbols": len(by_inst),
+                        "min_ts_utc": _ts_ms_to_iso(min(int(e[2]) for e in miss_events)),
+                        "max_ts_utc": _ts_ms_to_iso(max(int(e[2]) for e in miss_events)),
                         "per_symbol_counts": {k: len(v) for k, v in sorted(by_inst.items())},
+                        "full_events_in_local_detail_file": local_detail_report.name,
                     }
                 arms[scen] = summarize_run(r, start_ts_ms=start_ts, end_ts_ms=end_ts)
 
-            if sha(src_funding_db) != funding_db_sha_before or sha(cache_manifest_path) != cache_manifest_sha_before:
+            funding_db_sha_after = sha(src_funding_db)
+            cache_manifest_sha_after = sha(cache_manifest_path)
+            if funding_db_sha_after != funding_db_sha_before or cache_manifest_sha_after != cache_manifest_sha_before:
                 raise RuntimeError("Fixed input modified during run!")
+            for inst, npz_p in npz_resolved_paths.items():
+                if sha(npz_p) != npz_records_before[inst]["sha256"]:
+                    raise RuntimeError("Symbol NPZ modified during run: " + inst)
 
             finished_utc = datetime.now(TZ_UTC).isoformat()
+
+            local_detail_payload = {
+                "public_repo_policy": "LOCAL_OFFLINE_DETAIL_ONLY_DO_NOT_AUTO_PUSH_TO_PUBLIC_REPO",
+                "study_id": "BACKTEST-READINESS-01",
+                "version": "v1.6",
+                "adapter": "run_long_struct_bounded_backtest.py",
+                "candidate": args.candidate,
+                "started_utc": started_utc,
+                "finished_utc": finished_utc,
+                "fixed_inputs_verified": {
+                    "funding_db_sha256": funding_db_sha_after,
+                    "cache_manifest_sha256": cache_manifest_sha_after,
+                    "npz_files_count": len(npz_records_before),
+                    "npz_files": npz_records_before,
+                },
+                "scenarios": local_details_by_scenario,
+            }
+            _atomic_write_text(local_detail_report, json.dumps(local_detail_payload, ensure_ascii=False, indent=2) + "\n")
+
             if missing_by_scenario:
                 _discard_final_report(final_report, fixed_inputs)
                 abort_payload = {
                     "status": "ABORTED_MISSING_FUNDING",
                     "study_id": "BACKTEST-READINESS-01",
-                    "version": "v1.2",
+                    "version": "v1.6",
                     "candidate": args.candidate,
                     "started_utc": started_utc,
                     "finished_utc": finished_utc,
                     "elapsed_sec": round(time.time() - t0, 2),
                     "transport_hits": list(tb.hits),
                     "build_diagnostics": build_diag,
+                    "npz_files_verified_count": len(npz_records_before),
+                    "local_detail_file": local_detail_report.name,
                     "missing_funding_gaps": missing_by_scenario,
                 }
                 _atomic_write_text(abort_report, json.dumps(abort_payload, ensure_ascii=False, indent=2) + "\n")
@@ -1173,7 +1273,7 @@ def main(argv=None) -> int:
             result_payload = {
                 "status": "PASS",
                 "study_id": "BACKTEST-READINESS-01",
-                "version": "v1.2",
+                "version": "v1.6",
                 "candidate": args.candidate,
                 "started_utc": started_utc,
                 "finished_utc": finished_utc,
@@ -1181,10 +1281,12 @@ def main(argv=None) -> int:
                 "transport_hits": list(tb.hits),
                 "scope": scope_preview,
                 "build_diagnostics": build_diag,
+                "npz_files_verified_count": len(npz_records_before),
+                "local_detail_file": local_detail_report.name,
                 "arms": arms,
                 "sha256": {
-                    "funding_db": funding_db_sha_before,
-                    "cache_manifest": cache_manifest_sha_before,
+                    "funding_db": funding_db_sha_after,
+                    "cache_manifest": cache_manifest_sha_after,
                     "manifest": sha(manifest_path),
                     "shared_risk": sha(bound["roles"]["shared_risk"]),
                     "runner": sha(Path(__file__)),

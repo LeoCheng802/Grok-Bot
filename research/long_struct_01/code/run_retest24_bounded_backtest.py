@@ -417,22 +417,43 @@ def inspect_signal_mapping_sample(ohlc4: np.ndarray, tick_sz: float, candidate: 
     }
 
 
-def _load_optional_input_manifest(path_str):
-    if not path_str:
+def _load_optional_input_manifest(manifest_arg: Optional[str]):
+    if not manifest_arg:
         return None, None
-    p = Path(path_str)
+    p = Path(manifest_arg).expanduser().resolve()
     if not p.is_file():
         raise RuntimeError("input manifest missing: " + str(p))
     data = json.loads(p.read_text(encoding="utf-8"))
     if not isinstance(data, dict):
         raise RuntimeError("input manifest must be a JSON object")
-    entries = data.get("files", data.get("symbols", data))
-    if not isinstance(entries, dict):
-        raise RuntimeError("input manifest entries must be a JSON object")
-    return p, entries
+    raw_entries = data.get("files", data.get("symbols", data))
+    if isinstance(raw_entries, list):
+        entries = {}
+        for item in raw_entries:
+            if not isinstance(item, dict):
+                raise RuntimeError("input manifest list entry must be an object")
+            key = item.get("inst_id") or item.get("symbol") or item.get("filename") or item.get("name")
+            if not key:
+                raise RuntimeError("input manifest list entry missing symbol/filename key")
+            entries[str(key)] = item
+        return p, entries
+    if not isinstance(raw_entries, dict):
+        raise RuntimeError("input manifest entries must be a JSON object or list")
+    return p, raw_entries
+
+
+def _is_valid_sha256_hex(val) -> bool:
+    if not isinstance(val, str) or len(val) != 64:
+        return False
+    try:
+        int(val, 16)
+        return True
+    except ValueError:
+        return False
 
 
 def _verify_and_record_npz_inputs(ordered_syms, cache_dir: Path, symbols_dict: dict, input_manifest_entries):
+    import zipfile
     resolved_paths = {}
     records = {}
     for inst in ordered_syms:
@@ -440,6 +461,10 @@ def _verify_and_record_npz_inputs(ordered_syms, cache_dir: Path, symbols_dict: d
         if not npz_path.is_file():
             raise RuntimeError("symbol npz missing from cache_dir: " + inst)
         actual_size = npz_path.stat().st_size
+        if actual_size <= 0:
+            raise RuntimeError("symbol npz is empty (0 bytes): " + inst)
+        if not zipfile.is_zipfile(npz_path):
+            raise RuntimeError("symbol npz invalid archive format: " + inst)
         actual_sha = sha(npz_path)
 
         expected_sha = None
@@ -447,7 +472,7 @@ def _verify_and_record_npz_inputs(ordered_syms, cache_dir: Path, symbols_dict: d
         sym_info = symbols_dict.get(inst, {})
         if isinstance(sym_info, dict):
             expected_sha = sym_info.get("npz_sha256") or sym_info.get("sha256")
-            expected_size = sym_info.get("npz_size_bytes") or sym_info.get("size_bytes")
+            expected_size = sym_info.get("npz_size_bytes") if sym_info.get("npz_size_bytes") is not None else sym_info.get("size_bytes")
 
         if input_manifest_entries is not None:
             m_entry = input_manifest_entries.get(inst) or input_manifest_entries.get(f"{inst}.npz")
@@ -456,22 +481,35 @@ def _verify_and_record_npz_inputs(ordered_syms, cache_dir: Path, symbols_dict: d
             if isinstance(m_entry, str):
                 expected_sha = m_entry
             elif isinstance(m_entry, dict):
-                if m_entry.get("sha256"):
-                    expected_sha = m_entry["sha256"]
+                if m_entry.get("sha256") is not None:
+                    expected_sha = m_entry.get("sha256")
                 if m_entry.get("size_bytes") is not None:
-                    expected_size = int(m_entry["size_bytes"])
+                    expected_size = m_entry.get("size_bytes")
+            else:
+                raise RuntimeError("invalid input_manifest entry type for: " + inst)
 
-        if expected_sha is not None and actual_sha.lower() != str(expected_sha).lower():
+        if not _is_valid_sha256_hex(expected_sha):
+            raise RuntimeError(f"missing or invalid expected sha256 for symbol npz (provide --input-manifest or cache manifest sha256): {inst}")
+        if expected_size is None or isinstance(expected_size, bool):
+            raise RuntimeError(f"missing or invalid expected size_bytes for symbol npz (provide --input-manifest or cache manifest size_bytes): {inst}")
+        try:
+            expected_size_int = int(expected_size)
+        except (TypeError, ValueError):
+            raise RuntimeError(f"non-integer expected size_bytes for symbol npz: {inst}")
+        if expected_size_int <= 0:
+            raise RuntimeError(f"expected size_bytes must be > 0 for symbol npz: {inst}")
+
+        if actual_sha.lower() != expected_sha.lower():
             raise RuntimeError(f"NPZ SHA-256 mismatch for {inst}: expected {expected_sha}, got {actual_sha}")
-        if expected_size is not None and actual_size != int(expected_size):
-            raise RuntimeError(f"NPZ size mismatch for {inst}: expected {expected_size}, got {actual_size}")
+        if actual_size != expected_size_int:
+            raise RuntimeError(f"NPZ size mismatch for {inst}: expected {expected_size_int}, got {actual_size}")
 
         resolved_paths[inst] = npz_path
         records[inst] = {
             "filename": npz_path.name,
             "sha256": actual_sha,
             "size_bytes": actual_size,
-            "manifest_verified": bool(expected_sha is not None),
+            "manifest_verified": True,
         }
     return resolved_paths, records
 
@@ -936,23 +974,45 @@ def main(argv=None) -> int:
             ("local_detail_report.tmp", Path(str(local_detail_report) + ".tmp")),
         ]
         input_manifest_path, input_manifest_entries = _load_optional_input_manifest(args.input_manifest)
+        cache_manifest_path = cache_dir / "manifest.json"
+        if not cache_manifest_path.is_file():
+            raise RuntimeError("cache_v3 manifest.json missing")
+        funding_db_sha_before = sha(src_funding_db)
+        cache_manifest_sha_before = sha(cache_manifest_path)
+
+        cache_manifest = json.loads(cache_manifest_path.read_text(encoding="utf-8"))
+        symbols_dict = cache_manifest["symbols"]
+        if requested_symbols:
+            missing_syms = [s for s in requested_symbols if s not in symbols_dict]
+            if missing_syms:
+                raise RuntimeError("requested symbols missing from cache manifest: " + ", ".join(missing_syms))
+            ordered_syms = requested_symbols
+        else:
+            ordered_syms = [inst for inst in symbols_dict.keys() if inst != "USDC-USDT-SWAP"]
+
         fixed_inputs = [
             ("source funding_db", src_funding_db),
             ("manifest", manifest_path),
             ("retest24_script", retest24_path),
             ("shared_risk", shared_risk_path),
-            ("cache_manifest", cache_dir / "manifest.json"),
+            ("cache_manifest", cache_manifest_path),
         ]
         if input_manifest_path is not None:
             fixed_inputs.append(("input_manifest", input_manifest_path))
         for rel, path in bound["files"].items():
             fixed_inputs.append(("manifest entry " + rel, path))
+        for inst in ordered_syms:
+            fixed_inputs.append(("symbol npz " + inst, (cache_dir / f"{inst}.npz").resolve()))
 
+        # Complete disjoint check AND strict NPZ manifest/SHA/size verification BEFORE any write or cleanup try block
         _verify_output_paths_disjoint(outputs, fixed_inputs)
+        npz_resolved_paths, npz_records_before = _verify_and_record_npz_inputs(
+            ordered_syms, cache_dir, symbols_dict, input_manifest_entries
+        )
 
         scope_preview = {
             "study_id": "BACKTEST-READINESS-01",
-            "version": "v1.3",
+            "version": "v1.6",
             "adapter": "run_retest24_bounded_backtest.py",
             "candidate": args.candidate,
             "opt_01_max_close_pos": OPT_01_MAX_CLOSE_POS if args.candidate == "RETEST24_OPT_01_BEARISH_CLOSE_POS" else None,
@@ -967,30 +1027,6 @@ def main(argv=None) -> int:
         try:
             out_dir.mkdir(parents=True, exist_ok=True)
             _atomic_write_text(scope_file, json.dumps(scope_preview, ensure_ascii=False, indent=2) + "\n")
-
-            funding_db_sha_before = sha(src_funding_db)
-            cache_manifest_path = cache_dir / "manifest.json"
-            if not cache_manifest_path.is_file():
-                raise RuntimeError("cache_v3 manifest.json missing")
-            cache_manifest_sha_before = sha(cache_manifest_path)
-
-            cache_manifest = json.loads(cache_manifest_path.read_text(encoding="utf-8"))
-            symbols_dict = cache_manifest["symbols"]
-
-            if requested_symbols:
-                missing_syms = [s for s in requested_symbols if s not in symbols_dict]
-                if missing_syms:
-                    raise RuntimeError("requested symbols missing from cache manifest: " + ", ".join(missing_syms))
-                ordered_syms = requested_symbols
-            else:
-                ordered_syms = [inst for inst in symbols_dict.keys() if inst != "USDC-USDT-SWAP"]
-
-            npz_resolved_paths, npz_records_before = _verify_and_record_npz_inputs(
-                ordered_syms, cache_dir, symbols_dict, input_manifest_entries
-            )
-            for inst, npz_p in npz_resolved_paths.items():
-                fixed_inputs.append(("symbol npz " + inst, npz_p))
-            _verify_output_paths_disjoint(outputs, fixed_inputs)
 
             _bind_isolated_funding_db(src_funding_db, derived_db, derived_meta)
             loaded = _load_runtime_modules(bound)
