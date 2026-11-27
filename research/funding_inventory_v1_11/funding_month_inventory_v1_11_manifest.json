@@ -163,19 +163,19 @@
     "note": "Estimate only; ZIPs were not downloaded in this inventory run. Mean size taken from the existing 85 official ZIPs (~1347 B)."
   },
   "inputs": {
-    "npz_manifest": "/tmp/pr8b/research/ex_usdc_286_manifests/ex_usdc_286_npz_manifest_v1.json",
-    "npz_dir": "/workspace/r1-r2-opt/snap/src/cache_v3",
-    "frozen_db": "/workspace/long-scope-l1/funding_archive_l1_isolated.sqlite",
+    "npz_manifest": "ex_usdc_286_npz_manifest_v1.json",
+    "npz_dir": "cache_v3",
+    "frozen_db": "funding_archive_l1_isolated.sqlite",
     "frozen_access": "sqlite mode=ro, unmodified",
     "deltas": [
-      "/workspace/research-loop-01/backtest_readiness_01/funding_delta_v1_7/funding_delta_missing16_v1_7.csv.gz",
-      "/workspace/research-loop-01/backtest_readiness_01/funding_delta_v1_9/funding_delta_missing174_v1_9.csv.gz",
-      "/workspace/research-loop-01/backtest_readiness_01/funding_delta_v1_10/funding_delta_full75plus_v1_10.csv.gz",
-      "/workspace/research-loop-01/backtest_readiness_01/funding_delta_v1_11_b1/funding_delta_5sym_v1_11_b1.csv.gz"
+      "funding_delta_missing16_v1_7.csv.gz",
+      "funding_delta_missing174_v1_9.csv.gz",
+      "funding_delta_full75plus_v1_10.csv.gz",
+      "funding_delta_5sym_v1_11_b1.csv.gz"
     ],
     "verified_month_lists": [
-      "/workspace/research-loop-01/backtest_readiness_01/funding_delta_v1_10/funding_source_months_v1_10.json",
-      "/workspace/research-loop-01/backtest_readiness_01/funding_delta_v1_11_b1/funding_source_months_v1_11_b1.json"
+      "funding_source_months_v1_10.json",
+      "funding_source_months_v1_11_b1.json"
     ]
   },
   "files": {
