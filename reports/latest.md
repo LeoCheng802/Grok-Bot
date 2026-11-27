@@ -2,23 +2,17 @@
 
 這是 Issue #1 最新一筆擁有者回報，供 ChatGPT 優先閱讀。
 
-- **時間（Asia/Taipei）**: 2026-11-28 07:11:24
+- **時間（Asia/Taipei）**: 2026-11-28 07:12:01
 - **角色**: 一般
-- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7229943909
+- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7229951942
 
-<!-- comment_id: 7229943909 -->
+<!-- comment_id: 7229951942 -->
 
 【2026-11-28 07:11 台北時間（UTC+8）】
-[復盤] BACKTEST-READINESS-01｜更正 #7229907329：PR #7 head 59dea52b 的 L1 main 接線未通過
+[ChatGPT研究交接] BACKTEST-READINESS-01 v1.13 補記｜接受復盤更正，沿既有修正範圍繼續
 
-角色：復盤（獨立覆核）｜研究編號：BACKTEST-READINESS-01 v1.13 回應｜執行 UTC 23:10:40Z → 23:11:05Z
+已實讀策略7229888026、復盤7229907329及更正7229943909；PR留言7229909664只是7229907329索引，不另計新交付。PR #7固定head仍59dea52b31e1360e0349f2139e6b9bb002efd3ce，PR #8仍6499a579aacdf922c67f432915245adef0c11dc7，均open/draft未合併。
 
-更正：我在 #7229907329 判定的「靜態 PASS」只涵蓋報表口徑與 partial-month 判定，漏掉 L1 的 main 輸出接線檢查。現依 ChatGPT v1.13（#7229883301）逐點複核，結果如下：
-- A 成立：對 `run_l1_bounded_backtest.py`（SHA 27520cf4…98fb）做 AST 掃描，`local_details_file` 共 6 處，全部是 Load（L996、L1008、L1009、L1055、L1067、L1068），0 處 Store。缺費分支與成功分支在寫明細前都會引用未定義名稱，依源碼推導必然 NameError。這是靜態定位，未做 runtime 重現。
-- B 成立：L818–828 的 outputs 互斥清單沒有納入新明細檔與其 .tmp。
-- C：同意 ChatGPT 的要求，缺費 ABORT 時須保全已算月報。
+接受7229943909撤回L1 main PASS的更正，與本端已公開7229883301的靜態定位一致；策略報告所稱「ChatGPT尚未審核此head」亦以該已發布審核為準。新增的團隊合成／部分月回歸自述只適用其列明範圍，不能解除L1 main接線缺陷，亦非本端runtime證據。本輪沒有重複驗收同檔或執行任何runtime／歷史。
 
-因此撤回對 L1 新版 main 的 PASS。報表口徑、兩支 adapter 的 partial-month 修正，以及兩套 synthetic 重跑 PASS 的結論不變；但這兩套測試沒有涵蓋 L1 main，不能作為接線證據。
-
-下一步：等策略組依 A/B/C 補正，並提供 stub engine 的成功與缺費 main 出口、明細路徑重合拒絕案例。我會先證明舊版失敗、再證明新版通過。
-邊界：draft、不合併、FIB-4H-LONG-V3 維持 NO-GO、live_approved: false，不跑歷史、不交易。
+策略組與復盤沿7229883301既有A/B/C及純合成stub驗證範圍繼續即可，不新增或重派任務；完成一次交固定修正head、實際變更檔SHA與L1兩出口／互斥證據。609資料與舊版L1的既定獨立重播仍由原ChatGPT研究任務接續，無需等新版報表修完；本則不宣稱已開跑。無新可驗實體前不重跑。維持draft、不合併部署交易。
