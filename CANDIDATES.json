@@ -1,6 +1,6 @@
 {
-  "schema_version": "CANDIDATE-REGISTRY-01 v1.1",
-  "generated_at_utc8": "2026-11-27T23:58:00+08:00",
+  "schema_version": "CANDIDATE-REGISTRY-01 v1.1.1",
+  "generated_at_utc8": "2026-11-28T00:22:00+08:00",
   "repository": "LeoCheng802/Grok-Bot",
   "repo_visibility": "public",
   "authorization_note": "Per Issue #1 #7222634694 (2026-11-27 23:54 UTC+8), owner 77 directly confirmed to ChatGPT that keeping LeoCheng802/Grok-Bot public for sanitized research candidate scripts, baselines, dependencies, docs, and registries is acceptable, formally lifting the #7222311457 public-push pause (without retroactively validating any earlier externally relayed timestamp). Credentials, API keys, tokens, private trading records, and unauthorized private results remain strictly prohibited from public release, and public indexing does NOT authorize live/demo trading, deployment, or new backtests.",
@@ -19,7 +19,7 @@
     ],
     "new_public_code_pushes_paused": false,
     "public_code_dir_is_complete_repro_pack": false,
-    "chatgpt_acceptance_scope": "ChatGPT verified file sizes, SHA-256 hashes, report consistency, and stop decisions; this does NOT constitute independent replay reproduction of modified public-copy SHAs.",
+    "chatgpt_acceptance_scope": "Per Issue #1 #7223029578 (2026-11-28 00:14 UTC+8), ChatGPT read and accepted the three fixed deliverables from #7222785741 (CANDIDATES.json & CANDIDATES.md at commit c910d18bf2eb7374ae7986237fa5c23d7a8eb713, plus LONG_STRUCT_02_TEMPORAL_SPLIT_DEDUP_PREREG_v1.2.json at commit 5ca80cbcf45ebe9425516f658a7de838882403f1) for file/hash/report verification and stop decisions; this does NOT constitute independent replay reproduction of modified public-copy SHAs.",
     "public_push_pause_status": "本輪已解除（依 Issue #1 #7222634694，2026-11-27 23:54 UTC+8；不追認先前外部轉述時間）",
     "public_scope_limit": "僅限本研究去識別候選腳本、基準、依賴、說明與索引；帳密、API 金鑰、憑證、私人交易紀錄與未授權私人結果仍嚴禁公開；公開入庫非交易／部署／新回測授權。"
   },
@@ -169,27 +169,35 @@
       "category": "proposed_hypothesis",
       "direction": "LONG",
       "purpose": "時序分離式多頭結構假說（預登記規格與去重宣告；禁止未確認前補填進場）",
-      "file_name": "LONG_STRUCT_02_TEMPORAL_SPLIT_DEDUP_PREREG_v1.1.json",
-      "repo_path": "research/long_struct_01/LONG_STRUCT_02_TEMPORAL_SPLIT_DEDUP_PREREG_v1.1.json",
-      "version": "v1.1 (PREREG ONLY; supersedes v1.0)",
-      "commit_sha": "b4f3021995249b6e6734888ef7af0d871fd7caf4",
-      "raw_url": "https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/b4f3021995249b6e6734888ef7af0d871fd7caf4/research/long_struct_01/LONG_STRUCT_02_TEMPORAL_SPLIT_DEDUP_PREREG_v1.1.json",
-      "blob_url": "https://github.com/LeoCheng802/Grok-Bot/blob/b4f3021995249b6e6734888ef7af0d871fd7caf4/research/long_struct_01/LONG_STRUCT_02_TEMPORAL_SPLIT_DEDUP_PREREG_v1.1.json",
-      "bytes": 18883,
-      "sha256": "a074978776176189cfc581537b318e61c190dda9a3d7e7e12ad549c4a68042be",
+      "file_name": "LONG_STRUCT_02_TEMPORAL_SPLIT_DEDUP_PREREG_v1.2.json",
+      "repo_path": "research/long_struct_01/LONG_STRUCT_02_TEMPORAL_SPLIT_DEDUP_PREREG_v1.2.json",
+      "version": "v1.2 (PREREG ONLY; supersedes v1.1 and v1.0)",
+      "commit_sha": "5ca80cbcf45ebe9425516f658a7de838882403f1",
+      "raw_url": "https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/5ca80cbcf45ebe9425516f658a7de838882403f1/research/long_struct_01/LONG_STRUCT_02_TEMPORAL_SPLIT_DEDUP_PREREG_v1.2.json",
+      "blob_url": "https://github.com/LeoCheng802/Grok-Bot/blob/5ca80cbcf45ebe9425516f658a7de838882403f1/research/long_struct_01/LONG_STRUCT_02_TEMPORAL_SPLIT_DEDUP_PREREG_v1.2.json",
+      "bytes": 21344,
+      "sha256": "246cda1c8a23bea5d580b8b1e20bc53393dcd8483db85137fe5389a6d46bb06e",
       "dependencies": [],
       "offline_entrypoint": "尚無可執行策略腳本（僅 JSON 預登記規格檔）",
-      "test_evidence": "已完成 v1.1 預登記規格補正（固定同決策點三階段事件順序、close_utc 與 available_after_utc 分欄並標明歷史名目可用假設、兩條純紙面合成時間線、去重用詞精準化）；尚未編寫腳本，未執行行情掃描、計數或回測。",
-      "limitations": "PROPOSED_NOT_EXECUTED；B24H 與 A60＋量縮去重尚未完成（尚待可讀檔對照，不宣稱完整去重通過）；L1 / LONG-LOOP 僅述書面規則定義不同、不宣稱已證實訊號集合不重疊；不宣稱秒級因果驗證。",
+      "test_evidence": "已完成 v1.2 預登記規格補正並由 ChatGPT 於 #7223029578 結案接受（含 k=6 滾動 24 棒低點自洽紙面案例、歷史名目 pts=bt_confirm／48H TTL 與未來實測 ready PENDING_SEPARATE_REVIEW 口徑分界、同決策點三階段事件順序）；尚未編寫腳本，未執行行情掃描、計數或回測。",
+      "limitations": "PROPOSED_NOT_EXECUTED（has_script=false、live_approved=false）；B24H 與 A60＋量縮同版去重尚未完成（尚待可讀檔對照）；L1 / LONG-LOOP 僅述書面規則定義不同、不宣稱已證實訊號集合不重疊；不啟動新行情實驗。",
       "status": "規格中",
       "status_note": "規格中／尚無腳本",
       "has_script": false,
       "live_approved": false,
       "supersedes": {
-        "version": "v1.0",
-        "commit_sha": "4205912ce0e6e218ceac6573e4a4cef7db722b2b",
-        "sha256": "8f9bf553a9f8cf7feaac45b05d1109b42bf7001dda7a0719a0651c28982284d4",
-        "bytes": 8997
+        "version": "v1.1",
+        "file_name": "LONG_STRUCT_02_TEMPORAL_SPLIT_DEDUP_PREREG_v1.1.json",
+        "commit_sha": "b4f3021995249b6e6734888ef7af0d871fd7caf4",
+        "raw_url": "https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/b4f3021995249b6e6734888ef7af0d871fd7caf4/research/long_struct_01/LONG_STRUCT_02_TEMPORAL_SPLIT_DEDUP_PREREG_v1.1.json",
+        "sha256": "a074978776176189cfc581537b318e61c190dda9a3d7e7e12ad549c4a68042be",
+        "bytes": 18883,
+        "previous_v1_0": {
+          "version": "v1.0",
+          "commit_sha": "4205912ce0e6e218ceac6573e4a4cef7db722b2b",
+          "sha256": "8f9bf553a9f8cf7feaac45b05d1109b42bf7001dda7a0719a0651c28982284d4",
+          "bytes": 8997
+        }
       }
     }
   ],
@@ -382,7 +390,7 @@
       },
       "dry_check_dependencies_and_relocation": {
         "private_pack_complete": true,
-        "private_pack_archive": "RESEARCH-LOOP-01-PACK-v1.1.tar.gz (sha256: 87dc925b86441328b885aa7ef5d8254d1b51f37380876a192a493802f7fdda0d)",
+        "private_pack_archive": "RESEARCH-LOOP-01-PACK-v1.1.tar.gz (sha256: 87dc925b8025c3bcaba87debb4d1bf8a86b794a8e47921f6ac2208b04e17da0d)",
         "public_code_dir_standalone_repro": false,
         "dependencies": [
           {
@@ -407,7 +415,8 @@
             "public_code_dir_status": "sanitized copy exists at research/long_struct_01/code/FIB_4H_Long_v3.py (different path and SHA-256 75891548...aaba)"
           }
         ],
-        "relocation_plan": "Pure documentation plan (no new code pushed): add explicit --manifest and --shared-risk CLI flags (matching existing --orig-long), or split public-directory offline import verification from private-pack --dry-check so public code/ does not hard-couple to PACK_ROOT/scripts/."
+        "relocation_plan": "Pure documentation plan (no new code pushed): add explicit --manifest and --shared-risk CLI flags (matching existing --orig-long), or split public-directory offline import verification from private-pack --dry-check so public code/ does not hard-couple to PACK_ROOT/scripts/.",
+        "private_pack_sha256_correction_note": "v1.1.1 corrected a transcription typo in v1.1 (87dc925b864413...f7fdda0d -> 87dc925b8025c3bcaba87debb4d1bf8a86b794a8e47921f6ac2208b04e17da0d) verified against local RESEARCH-LOOP-01-PACK-v1.1.tar.gz and accepted delivery record (#7217417889); same single archive, not a second build."
       }
     },
     {
@@ -437,7 +446,9 @@
     "#7222026368",
     "#7222274363",
     "#7222311457",
-    "#7222634694"
+    "#7222634694",
+    "#7222785741",
+    "#7223029578"
   ],
   "publication_status": "PUBLISHED"
 }
