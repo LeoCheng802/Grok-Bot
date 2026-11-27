@@ -2,55 +2,49 @@
 
 此檔是「執行」的最新回報。
 
-- **時間（Asia/Taipei）**: 2026-11-28 04:50:23
+- **時間（Asia/Taipei）**: 2026-11-28 05:26:50
 - **角色**: 執行
-- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7227889721
+- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7228451464
 
-<!-- comment_id: 7227889721 -->
+<!-- comment_id: 7228451464 -->
 
-[執行] BACKTEST-READINESS-01 v1.5｜EX_USDC_286 分卷打包與潔淨稽核完成、GitHub Release 權限阻礙如實回報、61 分片重建 SQLite 零差異驗證
+[執行] BACKTEST-READINESS-01 v1.7｜PR #8（3 份 EX_USDC_286 可讀清單）live raw 驗收通過、前後版零差異說明、16 檔資金費官方 API 補齊（本機暫存）與剩餘缺項總表
 
 - **角色**：執行
-- **研究／事件編號**：`BACKTEST-READINESS-01 v1.5`（對應 Issue #1 `#7227820407`）
-- **回報時間**：`2026-11-28 04:50 台北時間（UTC+8）`
-- **本輪執行起迄（UTC）**：`2026-11-27T20:48:08Z` → `2026-11-27T20:49:10Z`（零重抓、零補零、零換母體、零歷史回測、未合併 PR、未部署）
-- **資料截止**：`2026-11-26 20:00 CST`（凍結快取 `v3.0-public-merged`）；資金費 61 分片至 `2026-11-27T00:00:00Z`
+- **研究／事件編號**：`BACKTEST-READINESS-01 v1.7`（對應 Issue #1 `#7228269328`、`#7228325917`）
+- **回報時間**：`2026-11-28 05:27 台北時間（UTC+8）`
+- **本輪執行起迄（UTC）**：
+  - 前後版清單比對：`2026-11-27T21:19:48Z`
+  - 16 檔資金費官方公開 API 補齊：`2026-11-27T21:24:32Z` → `2026-11-27T21:24:55Z`
+  - PR #8 live raw 驗收：`2026-11-27T21:26:14Z`
 
-### 1. `EX_USDC_286`（286 NPZ）潔淨稽核與確定性分卷打包（本機已備妥，尚未上傳 Release）
-- **286/286 NPZ 內容稽核通過**：全數通過 `numpy.load(..., allow_pickle=False)`；286 檔欄位聯集嚴格限於 `['d1_ts', 'frt', 'fts', 'ohlc1', 'ohlc30', 'ohlc4', 'ts1', 'ts30', 'ts4']`，資料型別聯集嚴格限於 `['float64', 'int64']`（零字串、零物件陣列、零帳戶／設定／憑證／私人路徑）。原快取 `manifest.json` 掃描亦為零敏感／零私人路徑。
-- **確定性 `<95 MiB` 分卷與清單（標準 PAX `.tar`，成員相對路徑 `cache_v3/<SYMBOL>.npz`，uid/gid=0、固定 mtime，本機自述暫存、尚未上線）**：
-  - `ex_usdc_286_npz_vol_01_of_03.tar`：`99,594,240` B（`94.98 MiB`，`103` 檔），SHA-256 `82235070b2229dd688946911ba2c5ec3e97441b30882d416bda313840f12a5d7`
-  - `ex_usdc_286_npz_vol_02_of_03.tar`：`98,682,880` B（`94.11 MiB`，`110` 檔），SHA-256 `ec910a3e76a402bcfacc9167c860fe84a86b580b497079b99c9a69bab3ca3495`
-  - `ex_usdc_286_npz_vol_03_of_03.tar`：`75,622,400` B（`72.12 MiB`，`73` 檔），SHA-256 `6f80e79931cc9fa5d9ffad330e95eb91354e04af910fbf685ab84c4e1b77d06f`
-  - `cache_v3_manifest.json`（原快取清單複本）：`98,451` B，SHA-256 `b6b4fde6dc84cc26d72258a38e4b6059ca1fe2fa24bea369f9a792e5e36d71b8`
-  - `ex_usdc_286_npz_manifest_v1.json`（逐檔 286 NPZ 大小／SHA-256）：`63,016` B，SHA-256 `cf0ee7b5bf006ccbe5d2ea64162df7a43411d62cd7049d9313afce1bc12d28c5`
-  - `ex_usdc_286_release_manifest_v1.json`（逐卷大小／SHA-256＋各卷完整檔名清單，建議 tag `research-data-ex-usdc-286-v1`）：`10,401` B，SHA-256 `07e408e86c06ad19c997e3ca4d166974d10d12bcc6192408322a941fadd987ce`
-- **GitHub Release 上傳阻礙（如實回報、不繞過）**：
-  - **被拒／缺口動作**：建立 GitHub Release 與上傳大型二進位 Release 附件（~`261.2 MiB`）。
-  - **實際工具狀態**：GitHub 連接器僅提供唯讀 Release 查詢（`list_releases` / `get_latest_release` / `get_release_by_tag`），無建立 Release 或上傳資產工具；本機 `gh auth status` 回報 `You are not logged into any GitHub hosts`。依規範不在群組發起 `gh auth login`，亦不把大型 `.tar` 塞入 Git 歷史。
-  - **解除條件**：需由 77 於 1:1 對話完成 `gh` 登入授權（或由 77 直接於 `LeoCheng802/Grok-Bot` 建立 `research-data-ex-usdc-286-v1` Release 並掛載上述 6 檔）。如 ChatGPT 需先取得可讀文字版 3 份 manifest JSON，本端可另以獨立 Draft 分支先交純文字清單。
+### 1. 已交可讀連結（Open Draft PR #8，未合併、未部署、`main`／PR #6／PR #7 未動）
+- **PR**：https://github.com/LeoCheng802/Grok-Bot/pull/8 （分支 `research/ex-usdc-286-manifests-draft`，固定 head `6a9463ce2e32e504cac0ed65c664e72def0b9b6b`，Open Draft）
+- **3/3 live raw HTTP 200、位元組／SHA-256 吻合且 `json.loads` 通過**：
+  - `research/ex_usdc_286_manifests/cache_v3_manifest.json`：`98,451` B｜`b6b4fde6dc84cc26d72258a38e4b6059ca1fe2fa24bea369f9a792e5e36d71b8`
+    - blob: https://github.com/LeoCheng802/Grok-Bot/blob/6a9463ce2e32e504cac0ed65c664e72def0b9b6b/research/ex_usdc_286_manifests/cache_v3_manifest.json
+    - raw: https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/6a9463ce2e32e504cac0ed65c664e72def0b9b6b/research/ex_usdc_286_manifests/cache_v3_manifest.json
+  - `research/ex_usdc_286_manifests/ex_usdc_286_npz_manifest_v1.json`：`63,016` B｜`cf0ee7b5bf006ccbe5d2ea64162df7a43411d62cd7049d9313afce1bc12d28c5`
+    - blob: https://github.com/LeoCheng802/Grok-Bot/blob/6a9463ce2e32e504cac0ed65c664e72def0b9b6b/research/ex_usdc_286_manifests/ex_usdc_286_npz_manifest_v1.json
+    - raw: https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/6a9463ce2e32e504cac0ed65c664e72def0b9b6b/research/ex_usdc_286_manifests/ex_usdc_286_npz_manifest_v1.json
+  - `research/ex_usdc_286_manifests/ex_usdc_286_release_manifest_v1.json`：`10,401` B｜`07e408e86c06ad19c997e3ca4d166974d10d12bcc6192408322a941fadd987ce`
+    - blob: https://github.com/LeoCheng802/Grok-Bot/blob/6a9463ce2e32e504cac0ed65c664e72def0b9b6b/research/ex_usdc_286_manifests/ex_usdc_286_release_manifest_v1.json
+    - raw: https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/6a9463ce2e32e504cac0ed65c664e72def0b9b6b/research/ex_usdc_286_manifests/ex_usdc_286_release_manifest_v1.json
 
-### 2. 公開 61 份資金費分片 → 重建 Runner 所需 SQLite 之確切 Schema、映射與零差異驗證
-- **來源**：`LeoCheng802/Grok-Bot` `main` 既公開之 `research/RESEARCH-LOOP-01/funding_archive_v1/manifest.json` 與 `shards/funding_YYYY-MM.csv.gz`（61 檔，`2021-08` ~ `2026-11`，無須重傳；目前公開庫尚無現成重建腳本，以下為完整可重現規格）。
-- **確切目標 SQLite Schema（與各 runner 讀取介面完全一致）**：
-  ```sql
-  CREATE TABLE funding_archive (
-      inst_id TEXT NOT NULL,
-      ts_snapped INTEGER NOT NULL,
-      ts_raw INTEGER NOT NULL,
-      rate REAL NOT NULL,
-      source_ym TEXT NOT NULL,
-      PRIMARY KEY (inst_id, ts_snapped)
-  );
-  ```
-  （註：原庫另含 `fetch_log` 表供當初抓取紀錄，所有回測 runner 僅查詢 `SELECT inst_id, ts_snapped, ts_raw, rate FROM funding_archive`，無須 `fetch_log`。）
-- **CSV 分片欄位 → SQLite 欄位映射**（分片表頭：`inst_id,funding_time_ms,funding_time_utc,ts_snapped_ms,ts_snapped_utc,snap_offset_ms,funding_rate,is_8h_grid,source_ym`）：
-  - `inst_id` → `inst_id` (`TEXT`)
-  - `int(ts_snapped_ms)` → `ts_snapped` (`INTEGER`)
-  - `int(funding_time_ms)` → `ts_raw` (`INTEGER`)
-  - `float(funding_rate)` → `rate` (`REAL`)
-  - `source_ym` → `source_ym` (`TEXT`)
-- **本輪實測重建零差異驗證**：以標準庫 Python 依檔名排序讀取全 61 檔 `.csv.gz` 寫入臨時 SQLite，實測匯入 `829,157` 筆，與本機原 `funding_archive_l1_isolated.sqlite` 逐列比對（雙向 `EXCEPT`）結果為 **`0` 筆差異**（重建檔大小 `72,114,176` B，SHA-256 `05206d201085b262e78b97ec03f16036a70596b6b1a30b7fee19955f573d2c00`；`EX_USDC_286` 中 16 檔在 61 分片原即 0 筆，維持缺列、不補零、不刪標的）。
+### 2. `ex_usdc_286_npz_manifest_v1.json` 前後版大小差異說明（純結構去重，原凍結 NPZ 零變動）
+- 前版 `94,531` B（`bb40453c54f5dcddea8b3fc4c36c9f4bf6ad8831a5dd8afd041a13806e9e87a7`）同時包含 `files`（286 筆）與冗餘重複之 `all_files`（287 筆，含 `USDC-USDT-SWAP.npz`）；已交付版 `63,016` B（`cf0ee7b5…28c5`）僅移除冗餘 `all_files` 陣列，並補上 `relative_path`、`npz_keys_verified`、`npz_dtypes_verified` 與 `cache_v3_manifest` 參考欄位。
+- 逐筆核對兩版 `files`（286 筆 `(filename, size_bytes, sha256)`）為 **100% 完全一致（0 筆差異）**，286 檔原凍結 NPZ 與 `cache_v3_manifest.json` 均未更動。
 
-### 3. 治理狀態
-- `FIB-4H-LONG-V3` 維持 `NO-GO`，所有候選維持 `live_approved: false`；零回測、零合併、零部署、零下單。
+### 3. v1.7 最小必要資金費補齊進度（16 檔原 0 列標的，本機已抓完、尚未推上遠端）
+- **來源**：OKX 官方公開端點 `https://www.okx.com/api/v5/public/funding-rate-history`（僅補原 61 分片中 0 列之 16 檔，截止 `2026-11-26T12:00:00Z`；原凍結 61 分片完全不動，零補零、零插值）。
+- **本機產出（待推上 PR #8 Draft 分支後才算已驗交付）**：
+  - `funding_delta_missing16_v1_7.csv.gz`：`6,748` 筆，`91,491` B，SHA-256 `34743db093b5673233693b0bfd4fa020abeb3928f7d4c0c29603c4d4c01311be`（未壓縮 CSV `873,635` B，SHA-256 `e4c322902f66fbc7a6ea5c9f6a6db7b7e4144f75344ceed37e776e2c3caa435e`）
+  - `funding_delta_missing16_v1_7_manifest.json`：`7,315` B，SHA-256 `cfe952a932f005beb3600907fe3cfc5cb840bc1a9db01380f4931cbf70d56487`
+- **補齊覆蓋與確切殘餘缺口**：12/16 檔降至 `0` 筆 8h 缺口；`BTW`/`QUANT` 各餘 1 筆上市首刻邊界；`DATA`（165 筆）與 `GRVT`（81 筆）觸及 OKX 公開 API 約 90 天保留下限（`2026-08-26T12:00:00Z`），維持缺列記錄。
+
+### 4. 剩餘確切缺項、負責角色與預計交付時間
+1. **`EX_USDC_286` 3 卷 `.tar`（~`261.2 MiB`）上架 GitHub Release `research-data-ex-usdc-286-v1`**：負責角色＝77（於 1:1 完成 `gh` 登入授權或網頁建立 Release）＋執行（上傳與驗收）；預計時間＝取決於 77 操作時點，授權後 `3–5` 分鐘內完成。已將最短步驟集中送交 77 1:1 私訊。
+2. **`funding_delta_missing16_v1_7.csv.gz`＋manifest 推上 PR #8 Open Draft**：負責角色＝執行；預計時間＝下一批維護 `3–5` 分鐘內完成。
+3. **2026-08 以前歷史活躍期資金費缺口**：OKX `/api/v5/public/funding-rate-history` 超過約 90 天返回空陣列，官方月 ZIP CDN 測試回 HTTP 404；目前無官方公開端點可補，維持確切缺口標註、不補零不插值。
+
+- **治理狀態**：`FIB-4H-LONG-V3` 維持 `NO-GO`，所有候選維持 `live_approved: false`；零歷史回測、零合併、零部署、零下單。
