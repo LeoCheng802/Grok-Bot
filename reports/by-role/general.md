@@ -2,29 +2,96 @@
 
 此檔是「一般」的最新回報。
 
-- **時間（Asia/Taipei）**: 2026-11-28 06:13:57
+- **時間（Asia/Taipei）**: 2026-11-28 06:25:16
 - **角色**: 一般
-- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7229143547
+- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7229313133
 
-<!-- comment_id: 7229143547 -->
+<!-- comment_id: 7229313133 -->
 
-【2026-11-28 06:14 台北時間（UTC+8）】
-[復盤] BACKTEST-READINESS-01 v1.8｜純公開資金費 SQLite Release 與 PR #7 說明更新獨立驗收完成
+【2026-11-28 06:24 台北時間（UTC+8）】
+[ChatGPT研究交接] BACKTEST-READINESS-01 v1.9｜本端實際全期基準執行；資料交付接受、缺費事件交回補齊
 
-- **角色／研究編號／版本**：復盤（獨立覆核）／`BACKTEST-READINESS-01`／`v1.8`
-- **獨立驗收執行時間（UTC）**：`2026-11-27T22:13:16Z` ~ `2026-11-27T22:13:18Z`（另於 `22:13Z` 透過 GitHub API 查核 Release 與 PR #7 狀態；全程零真實行情回測、零下單、零部署、零合併）
-- **對應前文**：承接 `#7229005500`（v1.8）與 `#7229117039`（執行組交付）
+承接 #7229005500，已實讀 #7229117039 / #7229143547 與 Release 實體。以下為 ChatGPT 自己環境實測，非轉述團隊 PASS。
 
-1. **GitHub Prerelease `research-data-funding-db-v1`（Release ID `461109242`，`prerelease: true`、`draft: false`）3/3 實體驗收 PASS**：
-   - `funding_archive_l1_public_v1.sqlite`：實測 HTTP 200、`state=uploaded`、`69,222,400` B、SHA-256 `9d620eed73e90d6fbff54ab06260ecc765cb238f54e7e21df52a020f668cee59`（與 GitHub API `digest` 及 `#7229117039` 全吻合）。
-   - `funding_archive_l1_public_manifest_v1.json`：實測 HTTP 200、`state=uploaded`、`2,061` B、SHA-256 `71f73949ea5f01830efec0ec966210e53fe1f22581a9aa15bda60299510cb66d`（合法 JSON、零外洩）。
-   - `funding_archive_61shards_manifest_v1.json`：實測 HTTP 200、`state=uploaded`、`56,529` B、SHA-256 `a1f2c2f878885159a4bd756ddc4b9333b2ab1d696a49dfa2f3964bf02b2a1a02`（合法 JSON、61 分片完整、零外洩）。
-2. **下載後 SQLite 唯讀結構與去識別覆核 PASS**：
-   - `PRAGMA integrity_check` = `ok`、`PRAGMA journal_mode` = `delete`。
-   - `sqlite_master` 僅含單一公開表 `funding_archive (inst_id TEXT NOT NULL, ts_snapped INTEGER NOT NULL, ts_raw INTEGER NOT NULL, rate REAL NOT NULL, source_ym TEXT NOT NULL, PRIMARY KEY (inst_id, ts_snapped))` 與其自動索引；確認無 `fetch_log` 或任何私有表。
-   - 實查 `829,157` 列、`270` 檔 `inst_id`、`ts_snapped` 區間 `1630425600000` ~ `1795737600000`、五欄 `NULL` 數皆 `0`、去識別外洩掃描 `0`。
-   - **覆核備註（不構成資料缺陷）**：`funding_archive_l1_public_manifest_v1.json` 的 `additive_delta_rule.note` 與 Release 內文提及以 `INSERT OR IGNORE` 疊加 `funding_delta_missing16_v1_7.csv.gz`；此處僅為說明文字，實際疊加仍依 `#7229005500` 第 2 點由 ChatGPT 先檢查同複合鍵之 `ts_raw`／`rate` 衝突，不以盲目 `INSERT OR IGNORE` 隱藏差異。
-3. **PR #7 說明統一與治理邊界覆核 PASS**：
-   - 實查 PR #7（`state: open`、`draft: true`、`merged: false`、`commits: 4`、`changed_files: 7`、head `4307a6f3963f58707c1c6afca397db0cfe8bc0b3`），說明頂部已統一為 `Current Live Head (4307a6f3963f58707c1c6afca397db0cfe8bc0b3)`。
-   - 原 `research-data-ex-usdc-286-v1`（6/6 附件）未動；無任何 PR 合併或實盤變更；`FIB-4H-LONG-V3` 維持 `NO-GO`，全部候選維持 `live_approved: false`。
-4. **下一步**：v1.8 所列資金費 SQLite 可讀交付與 PR #7 說明統一均已獨立驗收完成，靜候 ChatGPT 下載核對並推進獨立有界整合與歷史比較。
+1. 接受純公開 SQLite 交付：本端下載 69,222,400 B / SHA256 9d620eed73e90d6fbff54ab06260ecc765cb238f54e7e21df52a020f668cee59；兩 manifest 大小/SHA 亦吻合。唯讀 integrity_check=ok，只有 funding_archive 與其自動索引，829,157 列、270 標的、五欄 NULL=0。原庫逐列等同的說法仍屬團隊來源證據，本端未重抓/重驗61分片。原版保留。
+2. 本端先查同複合鍵 raw/rate 衝突，再加入已驗6,748列增量：重合0、衝突0，衍生庫835,905列、286標的，SHA256 06a0d77a6d81500af520b4d3bee34cef9788588344d637d687255b70fe49639d。沒有用盲目 INSERT OR IGNORE，也沒有補零。
+3. 本端 BNB→SOL 2025-10 整合兩撮合已執行 exit0；「小測彙總與已公開的對照值一致。」實際窗口候選81棒/125訊號，映射200檢查及4價格目標零差異，傳輸命中0。這是新版有界入口及現交資料的整合，不是候選優越證明。
+4. 接續已授權 L1 全期：UTC 2026-11-27T22:21:41.693756 至22:23:46.400167，124.71秒；286標的、2023-01-01至2026-11-26 12:00 UTC、68,425根30m，50000/10x/TP2.5、cross_1tick與delay1bar各一次。固定 L1 runner SHA 26757d866146622176803c05948ed27007b87f9503aad3f4ef89934a74ddccbf，PR7 head4307a6f3963f58707c1c6afca397db0cfe8bc0b3。原公式/引擎未改；本端wrapper加NPZ逐檔前後核對，攔截報表函式保存完整事件與正確月報，沒有修改交易計算。映射3000檢查/4目標零差異，網路命中0、固定輸入不變。
+5. 全期兩組計算結束但最終 exit2 / ABORTED_MISSING_FUNDING，無成功績效報告：cross缺158事件(55標的)，delay缺128(54標的)，聯集174唯一(inst_id,ts)、65標的。abort檔SHA256 7678d88a5b8c7dac78387e6458ef762cf19115c912ba311a6775902aaef0228f。完整未截斷事件已本端保留；不公布/排名缺費淨績效，不把資料交付或可執行當策略通過。
+6. 本端就174鍵查衍生庫：raw或snap精確匹配0；161為前後都有列的區間內缺列，13在庫涵蓋邊界外。都不能直接稱官方應收真缺，歷史頻率/掛牌與映射仍待核。查表輸出SHA256 4a011e01e6db5b20f3115fd949be0441141529021cad83a46427802280cd8785。先前6,748增量未消除此基準的158/128，不能再以補16檔視為全部缺口結案。
+
+接續決策：
+- 資料/執行沿77已授權補資料工作，直接使用下方完整174鍵（取代僅前25樣本），重用已存archive/raw/snap/歷史頻率；先辨映射/本來不應結算/真缺/未知。確實必要缺失者補取最小官方範圍，逐項給來源、時點、raw/snap、率、歷史頻率依據與新SHA；分批交可讀實體，不等全批文件。不重抓已驗6檔61分片、不補零、不刪幣換母體。已取得或已有等效證據直接引用，不重做。無法取得者明列實際嘗試端點/範圍與限制，不將一次404外推所有官方來源不存在。
+- 不派 Grok 任何歷史績效回測。ChatGPT 收到補件或可核映射修正後，自己更新隔離輸入/程式並重測受影響路徑；目前不盲目重跑同版。
+- 策略開發自由繼續。既有PR7說明 head統一已接受，PR7/8均open/draft未合併，不再重派。
+- 同批一般報表補正即可，不阻策略開發：L1仍用舊serializer，by_month空；candidate_*_in_window未過濾窗前48h，小測誤標91/137而實際窗內81/125。本端已從保存完整事件與限定窗口核對，成交路徑未受影響。L1請採PR7真pts/ets/xts月報及完整缺口輸出。兩adapter的is_partial_month目前按23:59:59.999判斷，而CLI end為最後一根30m棒起點（十月23:30），請明示採計區間/棒覆蓋口徑，避免完整1488棒月份誤作不完整月；不需為報表修正重跑歷史。
+- 下一份實質報告給已解/仍未知鍵、可讀補件、負責角色與預計交付或無法估時原因；不用純收件確認。無交易、部署、合併、實盤風控修改；歷史非OOS。
+
+以下僅公開行情資金費查表定位，不含帳戶或實盤交易紀錄；每行時間均UTC：
+```text
+0G-USDT-SWAP: 2025-11-24T16:00Z
+A-USDT-SWAP: 2026-10-18T08:00Z
+ACT-USDT-SWAP: 2026-08-07T16:00Z
+AEVO-USDT-SWAP: 2026-04-30T16:00Z
+AGLD-USDT-SWAP: 2025-08-29T16:00Z, 2025-08-30T00:00Z, 2025-08-30T08:00Z
+ALGO-USDT-SWAP: 2024-08-16T00:00Z, 2024-08-16T08:00Z, 2025-10-28T16:00Z, 2025-10-29T00:00Z, 2025-10-29T08:00Z, 2025-10-29T16:00Z
+ANIME-USDT-SWAP: 2025-08-16T16:00Z, 2025-08-17T00:00Z, 2025-08-17T08:00Z, 2025-08-17T16:00Z, 2025-08-18T00:00Z
+APE-USDT-SWAP: 2025-09-01T00:00Z, 2025-09-01T08:00Z, 2025-09-01T16:00Z
+AVNT-USDT-SWAP: 2026-08-14T08:00Z
+BAND-USDT-SWAP: 2025-03-04T00:00Z
+BICO-USDT-SWAP: 2025-09-15T08:00Z, 2025-09-15T16:00Z
+BOME-USDT-SWAP: 2025-10-07T16:00Z
+BRETT-USDT-SWAP: 2025-09-19T16:00Z
+CHIP-USDT-SWAP: 2026-08-19T00:00Z
+CHZ-USDT-SWAP: 2025-09-01T08:00Z, 2025-12-14T16:00Z, 2025-12-15T00:00Z, 2025-12-15T08:00Z
+DOGE-USDT-SWAP: 2025-07-08T00:00Z, 2025-07-08T08:00Z, 2025-09-15T16:00Z, 2025-09-16T00:00Z, 2025-09-16T08:00Z, 2025-09-16T16:00Z, 2025-09-17T00:00Z, 2025-09-17T08:00Z, 2025-09-17T16:00Z
+ENJ-USDT-SWAP: 2025-09-01T08:00Z
+ETHW-USDT-SWAP: 2025-04-17T16:00Z, 2025-07-29T16:00Z, 2025-07-30T00:00Z, 2025-07-30T08:00Z
+FIL-USDT-SWAP: 2025-02-22T00:00Z, 2025-02-22T08:00Z
+GALA-USDT-SWAP: 2024-11-13T08:00Z, 2024-12-26T16:00Z, 2025-11-13T00:00Z
+GAS-USDT-SWAP: 2024-12-26T08:00Z, 2024-12-26T16:00Z, 2024-12-29T16:00Z, 2024-12-30T00:00Z
+GLM-USDT-SWAP: 2025-04-14T08:00Z, 2025-04-14T16:00Z, 2025-04-15T00:00Z, 2025-04-15T08:00Z
+GPS-USDT-SWAP: 2026-08-14T16:00Z
+GRASS-USDT-SWAP: 2026-03-09T00:00Z
+GRT-USDT-SWAP: 2024-12-16T08:00Z, 2024-12-16T16:00Z, 2024-12-17T00:00Z, 2024-12-17T08:00Z
+HBAR-USDT-SWAP: 2025-11-01T08:00Z, 2025-11-01T16:00Z, 2025-11-02T00:00Z, 2025-11-02T08:00Z, 2025-11-13T00:00Z
+HUMA-USDT-SWAP: 2025-09-28T08:00Z
+INIT-USDT-SWAP: 2025-09-17T08:00Z, 2025-09-17T16:00Z
+INJ-USDT-SWAP: 2025-08-15T16:00Z, 2025-08-16T00:00Z, 2025-08-16T08:00Z, 2025-08-16T16:00Z, 2025-08-17T00:00Z, 2025-08-17T08:00Z, 2025-12-06T00:00Z, 2025-12-06T08:00Z, 2025-12-06T16:00Z
+IOST-USDT-SWAP: 2026-04-15T16:00Z, 2026-04-16T00:00Z
+IOTA-USDT-SWAP: 2024-08-16T00:00Z, 2024-08-16T08:00Z
+JUP-USDT-SWAP: 2026-06-29T00:00Z, 2026-06-29T08:00Z
+KGEN-USDT-SWAP: 2025-12-24T08:00Z
+KSM-USDT-SWAP: 2024-12-29T00:00Z
+LINEA-USDT-SWAP: 2026-04-28T08:00Z, 2026-04-28T16:00Z, 2026-04-29T00:00Z
+LUNA-USDT-SWAP: 2023-10-22T08:00Z, 2025-11-23T16:00Z, 2025-11-24T00:00Z, 2025-11-24T08:00Z, 2025-11-24T16:00Z, 2025-11-25T00:00Z, 2025-11-25T08:00Z, 2025-11-25T16:00Z, 2025-11-26T00:00Z, 2025-11-26T08:00Z, 2025-11-26T16:00Z
+MERL-USDT-SWAP: 2026-06-02T16:00Z
+METIS-USDT-SWAP: 2025-10-22T00:00Z, 2025-10-22T08:00Z, 2025-10-22T16:00Z
+NEAR-USDT-SWAP: 2025-05-24T00:00Z, 2025-05-24T08:00Z, 2025-05-24T16:00Z, 2025-05-25T00:00Z, 2025-05-30T00:00Z
+NMR-USDT-SWAP: 2024-03-12T08:00Z, 2024-03-12T16:00Z
+NOT-USDT-SWAP: 2025-11-12T00:00Z
+ONE-USDT-SWAP: 2024-09-16T00:00Z, 2024-09-16T08:00Z
+OP-USDT-SWAP: 2025-08-06T00:00Z, 2025-08-25T16:00Z
+ORDI-USDT-SWAP: 2025-08-25T08:00Z, 2025-08-25T16:00Z
+PEOPLE-USDT-SWAP: 2025-10-09T08:00Z
+PI-USDT-SWAP: 2026-04-30T08:00Z
+PIPPIN-USDT-SWAP: 2026-08-05T08:00Z, 2026-08-05T16:00Z, 2026-08-06T00:00Z, 2026-08-06T08:00Z
+POL-USDT-SWAP: 2025-10-23T00:00Z
+PYTH-USDT-SWAP: 2025-04-16T00:00Z, 2025-04-16T08:00Z, 2025-04-16T16:00Z, 2025-04-17T00:00Z
+QTUM-USDT-SWAP: 2024-03-08T16:00Z
+RAY-USDT-SWAP: 2026-04-03T00:00Z
+RVN-USDT-SWAP: 2025-08-31T16:00Z, 2025-09-01T00:00Z, 2025-09-01T08:00Z, 2025-09-01T16:00Z
+SAPIEN-USDT-SWAP: 2026-04-04T00:00Z, 2026-04-04T08:00Z
+SHELL-USDT-SWAP: 2026-04-04T16:00Z, 2026-04-23T00:00Z, 2026-04-30T00:00Z, 2026-04-30T08:00Z
+SOON-USDT-SWAP: 2025-07-30T08:00Z, 2025-07-30T16:00Z
+STX-USDT-SWAP: 2024-03-11T00:00Z
+TURBO-USDT-SWAP: 2025-11-19T08:00Z, 2025-11-19T16:00Z
+UNI-USDT-SWAP: 2023-01-30T16:00Z
+WET-USDT-SWAP: 2026-02-24T08:00Z
+WLD-USDT-SWAP: 2023-09-29T16:00Z, 2024-12-09T08:00Z
+WOO-USDT-SWAP: 2024-12-29T16:00Z, 2024-12-30T00:00Z, 2024-12-30T08:00Z, 2026-01-15T16:00Z, 2026-01-16T00:00Z, 2026-01-16T08:00Z, 2026-01-16T16:00Z, 2026-01-17T00:00Z
+XLM-USDT-SWAP: 2025-09-25T08:00Z, 2025-09-25T16:00Z
+XTZ-USDT-SWAP: 2023-12-13T08:00Z
+YGG-USDT-SWAP: 2026-04-27T08:00Z, 2026-04-27T16:00Z, 2026-04-28T00:00Z, 2026-04-28T08:00Z, 2026-04-28T16:00Z, 2026-04-29T00:00Z, 2026-04-29T08:00Z, 2026-04-29T16:00Z
+ZEC-USDT-SWAP: 2026-07-17T00:00Z
+```
