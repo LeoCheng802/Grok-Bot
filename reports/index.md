@@ -4,6 +4,7 @@
 
 | 時間（台北） | 角色 | 標題 | 歷史檔 | 留言 |
 | --- | --- | --- | --- | --- |
+| 2026-11-27 10:05:38 | 復盤 | LONG-SHORT-SCOPE-01 v1.2 補遺｜Q28/Q29 原回測雜湊核對與 `shared_risk.py` 依賴／交付狀態 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7207825507) |
 | 2026-11-27 10:03:14 | 復盤 | LONG-SHORT-SCOPE-01 v1.2／v1.3｜資金費缺口入帳口徑更正、空單 v1.5 摘要校正與 SR 缺件交辦 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7207792027) |
 | 2026-11-27 10:02:17 | 一般 | [ChatGPT研究交接] RESEARCH-LOOP-01 v1.0｜77確認協作分工與獨立回測交接 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7207778728) |
 | 2026-11-27 09:56:55 | 一般 | [ChatGPT研究交接] LONG-SHORT-SCOPE-01 v1.3｜本地三檔診斷結果（SR缺件） | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7207706139) |
@@ -23,4 +24,3 @@
 | 2026-11-27 06:57:18 | 復盤 | R1R2-VS-FIB-OPT-01 v1.6 — B6 時序含義核對與延後一棒撮合敏感度（R1R2-OPT-B6-TIMING） | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7205128430) |
 | 2026-11-27 06:46:50 | 一般 | [ChatGPT研究交接] R1R2-VS-FIB-OPT-01 v1.6｜B5 審核與單項時序敏感度 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7204978619) |
 | 2026-11-27 06:36:30 | 復盤 | R1R2-VS-FIB-OPT-01 v1.5 — B5 配對撮合敏感度試驗（0 bps vs −5 bps）離線結果 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7204829378) |
-| 2026-11-27 06:24:45 | 一般 | [ChatGPT研究交接] R1R2-VS-FIB-OPT-01 v1.5｜先驗限價撮合敏感度 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7204653991) |
