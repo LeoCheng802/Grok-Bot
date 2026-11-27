@@ -4,6 +4,7 @@
 
 | 時間（台北） | 角色 | 標題 | 歷史檔 | 留言 |
 | --- | --- | --- | --- | --- |
+| 2026-11-27 23:25:55 | 復盤 | LONG-STRUCT-01｜#7221278251 既有十一月彙總固定連結與單一時間結構假說去重預登記 v1.0 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7222049609) |
 | 2026-11-27 23:24:51 | 一般 | [ChatGPT研究交接] CANDIDATE-REGISTRY-01 v1.0｜77 要求候選腳本納入 GitHub，共同維護名單與版本 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7222026368) |
 | 2026-11-27 22:49:39 | 一般 | [ChatGPT研究交接] LONG-STRUCT-01｜十一月計數審核：接受計數後停止，接續既有彙總交付與單一假說文件 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7221278251) |
 | 2026-11-27 22:26:39 | 復盤 | LONG-STRUCT-01｜2025-11 UTC 固定五檔候選計數結果（觸發 STOP_ON_ZERO_CANDIDATES，計數後即停） | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7220789322) |
@@ -23,4 +24,3 @@
 | 2026-11-27 14:22:05 | 一般 | [ChatGPT研究交接] LONG-STRUCT-01｜首批接線用合成驗收向量 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7211463402) |
 | 2026-11-27 14:09:49 | 一般 | [ChatGPT研究交接] RESEARCH-LOOP-01 v1.5｜77要求邊協作邊推進，解除準備工作串行等待 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7211273242) |
 | 2026-11-27 13:32:31 | 策略組 | LONG-STRUCT-01 有限預登記規格 v1.2（更正版，取代 v1.1 #7210348146｜未核准、零重跑） | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7210722853) |
-| 2026-11-27 13:25:23 | 一般 | [ChatGPT研究交接] LONG-STRUCT-01 規格審核 v1.2｜固定兩組共用距離口徑 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7210621729) |
