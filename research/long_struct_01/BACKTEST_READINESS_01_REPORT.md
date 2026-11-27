@@ -1,10 +1,16 @@
-# BACKTEST-READINESS-01 v1.1 — Phase A/B/C Offline Wiring & Backtest Readiness Report
+# BACKTEST-READINESS-01 v1.2 — Phase A/B/C Offline Wiring & Backtest Readiness Report
 
-- **Research ID:** `BACKTEST-READINESS-01 v1.1`
-- **Authorization:** [Issue #1 #7225850828](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7225850828) (supersedes `#7225707059`) and `#7226049299`
+- **Research ID:** `BACKTEST-READINESS-01 v1.2`
+- **Authorization:** [Issue #1 #7226128609](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7226128609), alongside `#7225850828` (v1.1) and `#7226049299`. `#7225850828` supersedes `#7225707059`.
 - **Fixed Starting Point:** PR #6 (`research/offline-packaging-hardening-draft`) head `3f67bd87fe5db2ec64d97b543fe780fa2f505f6f`; bounded entry added at `da65fe4dbdd549aa973e4e3f2c69447b53dcb64a`
 - **PR / Deployment Status:** Open Draft on `research/offline-packaging-hardening-draft`. NOT merged to `main`. NOT deployed. Does not overwrite `main` SHAs. Zero live/demo orders.
-- **v1.1 verification owner:** Backtesting is performed independently by **ChatGPT** in an isolated environment. The local Job 1 (Phase B smoke) and Job 2 (Phase C full-replay abort) below ran under **v1.0**, before this v1.1 correction. They are kept as pre-correction audit logs and **do not replace ChatGPT's independent verification or backtests**.
+- **v1.2 verification owner:** Under **v1.2**, backtesting is performed independently by **ChatGPT** in an isolated environment. Local Job 1 (Phase B) and Job 2 (Phase C) are preserved audit logs and **do not replace ChatGPT's independent verification or backtests**.
+- **Three separate timestamps:**
+  - `v1.1` (`#7225850828`) GitHub Issue publication time: `2026-11-27T18:46:16Z`
+  - Worker (`執行`) actual room receipt time (`77｜OKX 交易台` turn): `2026-11-27T18:53Z` (`2026-11-28 02:53 UTC+8`, when `復盤`'s `02:50` relay arrived in `@執行`'s next turn)
+  - Job 1 execution UTC: `2026-11-27T18:50:05.462Z .. 2026-11-27T18:50:05.912Z`
+  - Job 2 execution UTC: `2026-11-27T18:50:19.041Z .. 2026-11-27T18:51:52.493Z`
+- Job 1 and Job 2 both ran **after** the v1.1 GitHub comment was published (`18:46:16Z`) and **before** `@執行` received the relay in the room (`18:53Z`).
 - **Role:** `執行` (de-identified public summary; zero credentials, zero private code/data, zero trade-level traces)
 
 ---
@@ -14,7 +20,7 @@
 | Item | Type | Frozen Version | Status | Script Delivered | Packaging Verified | Real-Engine Smoke (Phase B) | Full Baseline Replay (Phase C) | Known Adapter / Data Gaps |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | `FIB-4H-LONG-V3` | **Baseline** (not a candidate) | v3 (`17b46a4e...`) | **`NO-GO`** (unchanged) | Yes (public PR #6) | Yes (`#7225486769`) | **PASS** (0 diffs vs fixture) | **ABORTED (`EXIT=2`)** on missing 8H funding (`158` / `128` gaps) | Missing historical 8H funding events in isolated DB; historical BBO / MMR / non-8H denominator unknown |
-| `LONG-STRUCT-01` | **Script Candidate #1 (Long)** | v1.2 | **Frozen** | Private pack only | N/A (not in PR #6 code) | Not run (out of baseline scope) | Not run | Requires dedicated offline signal/sizing adapter & full-history funding coverage before any candidate replay |
+| `LONG-STRUCT-01` | **Script Candidate #1 (Long)** | v1.2 | **Frozen** | Yes (public on main `fbe475402ff568eac2684bf4d97f49de579e9a6b`, `long_struct_01_v1_2_isolated.py`, `6,881` B, SHA `4ea731a4...073b`, inherited on PR #6) | N/A (not in PR #6 code) | Not run (out of baseline scope) | Not run | Requires dedicated offline signal/sizing adapter & full-history funding coverage before any candidate replay |
 | `RETEST24-R1-R2` | **Script Candidate #2 (Short)** | v1.5 (`c2b00a98...`) | **Frozen** | Yes (public PR #6) | Yes (`#7225486769`) | Not run (out of baseline scope) | Not run | Short-leg replay requires separate short-side bounded adapter; not mixed into L1 long baseline |
 | `LONG-STRUCT-02` | Spec-only (`has_script: false`) | v1.2 | **Not implemented / Not counted as script candidate** | No | No | N/A | N/A | Explicitly excluded by `#7225707059` |
 
@@ -46,7 +52,7 @@
 
 ## 3. Phase B — New-Version Integration Smoke Test (`minimal_repro_fixture_v1`)
 
-**v1.1:** This section is the local Job 1 log from **v1.0**, kept as a pre-correction audit record. It does **not** replace ChatGPT's independent isolated verification.
+**v1.2:** Under v1.2, ChatGPT performs this check independently in an isolated environment. The rows below are the local Job 1 audit log (`2026-11-27T18:50:05.462Z .. 2026-11-27T18:50:05.912Z`). That window is after v1.1 publication (`2026-11-27T18:46:16Z`) and before `@執行` received the room relay (`2026-11-27T18:53Z`). The log is kept and does **not** replace ChatGPT's independent verification.
 
 - **Fixture Inputs:** `cache_v3_min` (`BNB-USDT-SWAP`, `SOL-USDT-SWAP`; `manifest.json` SHA-256 `3647a3d9b532c1abd7dbfd47713ae55ba7355b319bcf7473c0162bbfda1e24c4`), `funding_min.sqlite` (SHA-256 `ce0805fd3f09d4d83615354370d2e19bb462b7b595a0c54bdea5b7316dc41067`), eval window `2025-10-01T00:00:00Z .. 2025-10-31T23:30:00Z` (warmup from `2025-07-01T00:00:00Z`).
 - **Execution UTC:**
@@ -59,7 +65,7 @@
 
 ## 4. Phase C — Fixed Baseline Full Historical Replay (`EX_USDC_286`, TP2.5% Only)
 
-**v1.1:** This section is the local Job 2 log from **v1.0**, kept as a pre-correction audit record. The `EXIT=2` abort is not deleted. It does **not** replace ChatGPT's independent full backtest.
+**v1.2:** Under v1.2, ChatGPT performs the full backtest independently in an isolated environment. The rows below are the local Job 2 audit log (`2026-11-27T18:50:19.041Z .. 2026-11-27T18:51:52.493Z`). That window is after v1.1 publication (`2026-11-27T18:46:16Z`) and before `@執行` received the room relay (`2026-11-27T18:53Z`). The `EXIT=2` abort is kept and does **not** replace ChatGPT's independent full backtest.
 
 - **Scope:** Full `EX_USDC_286` (`cache_v3/manifest.json` SHA-256 `b6b4fde6dc84cc26d72258a38e4b6059ca1fe2fa24bea369f9a792e5e36d71b8`, 286 symbols excluding `USDC-USDT-SWAP`, historical delisted preserved) + `funding_archive_l1_isolated.sqlite` (SHA-256 `23ebdab561d5fa48ae34394b451d55b97d3e09af4e8a8809eef93422c40783cc`, `829,157` rows, `270` insts), window `2023-01-01T00:00:00Z .. 2026-11-26T12:00:00Z`, ONLY `TP_2.5pct|cross_1tick` and `TP_2.5pct|delay1bar` (no TP4/TP6 sweep).
 - **Execution UTC:** `2026-11-27T18:50:19.041Z .. 2026-11-27T18:51:52.493Z` (`93.45s`).
@@ -73,3 +79,17 @@
   - Historical MMR approximated at `1%`; historical tick size uses snapshot values; non-8H funding settlement denominator completeness remains unverified.
   - `delay1bar` is a sensitivity test, not measured live latency.
   - `FIB-4H-LONG-V3` remains **`NO-GO`** regardless of technical runnability.
+
+---
+
+## 5. Offline Funding Gap Reconciliation (`BACKTEST-READINESS-01 v1.2`)
+
+Read-only UTC window: `2026-11-27T19:05:10Z .. 2026-11-27T19:05:45Z`.
+
+- **Scope:** Checked the saved `l1_bounded_missing_funding_abort.json` (SHA `54037c6f1c44a2db9b5a4e032aafbfd006366eeaba461dfd81ed6725385c6b1e`; symbol counts for all `158` / `128` gaps across `55` / `54` symbols, plus exact timestamps for the `50` saved sample events = 25 per scenario) against read-only `funding_archive_l1_isolated.sqlite`, `funding_archive_b6_isolated.sqlite`, `funding_archive_q38.sqlite`, and the 61 verified monthly shards (`funding_2021-08.csv.gz ..`), with zero OKX calls, zero zero-fill, and zero strategy reruns.
+- **Symbol-level coverage:** `55/55` (`cross_1tick`) and `54/54` (`delay1bar`) affected symbols exist in `L1 DB` (`0` completely missing symbols).
+- **4-category classification of the `50` saved sample events:**
+  - Present in local shards / B6 / q38 but not wired into L1 DB: **`0 / 50`**
+  - Timestamp mapping / snapping mismatch (`ts_raw` vs `ts_snapped`): **`0 / 50`** (`A-USDT-SWAP 2026-10-18T08:00Z` had continuous 4H rows with `ts_raw == ts_snapped` ending at `04:00Z`; the `08:00Z` row is genuinely absent)
+  - Substantiated missing rows during active life (interior multi-week/multi-month gaps spanning `624h–2,188h`, e.g. `ACT`, `AGLD`, `ALGO`, `AEVO`, `ANIME`, plus `A-USDT-SWAP` active 4H break): **`49 / 50`** (`25/25` in `cross_1tick`, `24/25` in `delay1bar`)
+  - Pre-earliest-row boundary / unknown listing-funding onset: **`1 / 50`** (`delay1bar`: `0G-USDT-SWAP 2025-11-24T16:00Z`, 6 days before DB's earliest row `2025-11-30T16:00Z`).
