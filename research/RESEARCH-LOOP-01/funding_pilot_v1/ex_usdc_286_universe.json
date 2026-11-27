@@ -1,0 +1,4302 @@
+{
+  "universe_id": "EX_USDC_286",
+  "source_manifest_sha256": "b6b4fde6dc84cc26d72258a38e4b6059ca1fe2fa24bea369f9a792e5e36d71b8",
+  "window_utc": "2023-01-01 00:00 UTC ~ 2026-11-26 12:00 UTC",
+  "excluded": [
+    "USDC-USDT-SWAP"
+  ],
+  "historical_delisted_preserved": true,
+  "symbol_count": 286,
+  "symbols": {
+    "0G-USDT-SWAP": {
+      "live": true,
+      "listTime": "1758537000238",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 20644,
+      "n4": 2580,
+      "n_fund": 553,
+      "min_ts": 1758537000000,
+      "max_ts": 1795694400000
+    },
+    "1INCH-USDT-SWAP": {
+      "live": true,
+      "listTime": "1608863400000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 103796,
+      "n4": 12974,
+      "n_fund": 276,
+      "min_ts": 1608863400000,
+      "max_ts": 1795694400000
+    },
+    "2Z-USDT-SWAP": {
+      "live": true,
+      "listTime": "1759410600649",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 20159,
+      "n4": 2519,
+      "n_fund": 553,
+      "min_ts": 1759410000000,
+      "max_ts": 1795694400000
+    },
+    "A-USDT-SWAP": {
+      "live": true,
+      "listTime": "1748514600412",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 26212,
+      "n4": 3276,
+      "n_fund": 553,
+      "min_ts": 1748514600000,
+      "max_ts": 1795694400000
+    },
+    "AAVE-USDT-SWAP": {
+      "live": true,
+      "listTime": "1607580000000",
+      "spec": {
+        "tickSz": 0.01,
+        "ctVal": 0.1,
+        "lotSz": 0.1,
+        "maxLever": 50.0
+      },
+      "n30": 104513,
+      "n4": 13064,
+      "n_fund": 276,
+      "min_ts": 1607572800000,
+      "max_ts": 1795694400000
+    },
+    "ACH-USDT-SWAP": {
+      "live": true,
+      "listTime": "1708590301084",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 48393,
+      "n4": 6049,
+      "n_fund": 553,
+      "min_ts": 1708588800000,
+      "max_ts": 1795694400000
+    },
+    "ACT-USDT-SWAP": {
+      "live": true,
+      "listTime": "1731582000644",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 35619,
+      "n4": 4452,
+      "n_fund": 553,
+      "min_ts": 1731582000000,
+      "max_ts": 1795694400000
+    },
+    "ACU-USDT-SWAP": {
+      "live": true,
+      "listTime": "1769151600000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 14747,
+      "n4": 1843,
+      "n_fund": 553,
+      "min_ts": 1769151600000,
+      "max_ts": 1795694400000
+    },
+    "ADA-USDT-SWAP": {
+      "live": true,
+      "listTime": "1582888608000",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 100.0,
+        "lotSz": 0.1,
+        "maxLever": 50.0
+      },
+      "n30": 117703,
+      "n4": 14712,
+      "n_fund": 276,
+      "min_ts": 1583830800000,
+      "max_ts": 1795694400000
+    },
+    "AEON-USDT-SWAP": {
+      "live": true,
+      "listTime": "1785151800000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 5858,
+      "n4": 732,
+      "n_fund": 553,
+      "min_ts": 1785151800000,
+      "max_ts": 1795694400000
+    },
+    "AERO-USDT-SWAP": {
+      "live": true,
+      "listTime": "1751523300260",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 24541,
+      "n4": 3067,
+      "n_fund": 553,
+      "min_ts": 1751522400000,
+      "max_ts": 1795694400000
+    },
+    "AEVO-USDT-SWAP": {
+      "live": true,
+      "listTime": "1710325520298",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 47429,
+      "n4": 5928,
+      "n_fund": 553,
+      "min_ts": 1710324000000,
+      "max_ts": 1795694400000
+    },
+    "AGLD-USDT-SWAP": {
+      "live": true,
+      "listTime": "1631008650016",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 91494,
+      "n4": 11436,
+      "n_fund": 553,
+      "min_ts": 1631007000000,
+      "max_ts": 1795694400000
+    },
+    "AI-USDT-SWAP": {
+      "live": true,
+      "listTime": "1777464000000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 10129,
+      "n4": 1266,
+      "n_fund": 553,
+      "min_ts": 1777464000000,
+      "max_ts": 1795694400000
+    },
+    "AIXBT-USDT-SWAP": {
+      "live": true,
+      "listTime": "1735887600188",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 33227,
+      "n4": 4153,
+      "n_fund": 553,
+      "min_ts": 1735887600000,
+      "max_ts": 1795694400000
+    },
+    "AKE-USDT-SWAP": {
+      "live": true,
+      "listTime": "1789542000000",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 3419,
+      "n4": 427,
+      "n_fund": 449,
+      "min_ts": 1789542000000,
+      "max_ts": 1795694400000
+    },
+    "ALGO-USDT-SWAP": {
+      "live": true,
+      "listTime": "1587463971000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 114642,
+      "n4": 14330,
+      "n_fund": 276,
+      "min_ts": 1589340600000,
+      "max_ts": 1795694400000
+    },
+    "ALLO-USDT-SWAP": {
+      "live": true,
+      "listTime": "1762879500659",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 18232,
+      "n4": 2278,
+      "n_fund": 553,
+      "min_ts": 1762878600000,
+      "max_ts": 1795694400000
+    },
+    "ANIME-USDT-SWAP": {
+      "live": true,
+      "listTime": "1737644401356",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 32251,
+      "n4": 4031,
+      "n_fund": 558,
+      "min_ts": 1737644400000,
+      "max_ts": 1795694400000
+    },
+    "APE-USDT-SWAP": {
+      "live": true,
+      "listTime": "1647522059555",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 0.1,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 82319,
+      "n4": 10289,
+      "n_fund": 276,
+      "min_ts": 1647522000000,
+      "max_ts": 1795694400000
+    },
+    "API3-USDT-SWAP": {
+      "live": true,
+      "listTime": "1646297716213",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 82999,
+      "n4": 10374,
+      "n_fund": 553,
+      "min_ts": 1646298000000,
+      "max_ts": 1795694400000
+    },
+    "APR-USDT-SWAP": {
+      "live": true,
+      "listTime": "1761285601180",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 19117,
+      "n4": 2389,
+      "n_fund": 553,
+      "min_ts": 1761285600000,
+      "max_ts": 1795694400000
+    },
+    "APT-USDT-SWAP": {
+      "live": true,
+      "listTime": "1666142328522",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 71975,
+      "n4": 8996,
+      "n_fund": 276,
+      "min_ts": 1666141200000,
+      "max_ts": 1795694400000
+    },
+    "AR-USDT-SWAP": {
+      "live": true,
+      "listTime": "1676357700186",
+      "spec": {
+        "tickSz": 0.001,
+        "ctVal": 0.1,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 66300,
+      "n4": 8287,
+      "n_fund": 276,
+      "min_ts": 1676356200000,
+      "max_ts": 1795694400000
+    },
+    "ARB-USDT-SWAP": {
+      "live": true,
+      "listTime": "1679580094937",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 0.1,
+        "maxLever": 50.0
+      },
+      "n30": 64509,
+      "n4": 8063,
+      "n_fund": 276,
+      "min_ts": 1679580000000,
+      "max_ts": 1795694400000
+    },
+    "ARKM-USDT-SWAP": {
+      "live": true,
+      "listTime": "1732177800122",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 35288,
+      "n4": 4410,
+      "n_fund": 276,
+      "min_ts": 1732177800000,
+      "max_ts": 1795694400000
+    },
+    "ARX-USDT-SWAP": {
+      "live": true,
+      "listTime": "1782131400000",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 7536,
+      "n4": 941,
+      "n_fund": 553,
+      "min_ts": 1782131400000,
+      "max_ts": 1795694400000
+    },
+    "ASTER-USDT-SWAP": {
+      "live": true,
+      "listTime": "1758517200313",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 20655,
+      "n4": 2581,
+      "n_fund": 553,
+      "min_ts": 1758517200000,
+      "max_ts": 1795694400000
+    },
+    "AT-USDT-SWAP": {
+      "live": true,
+      "listTime": "1761818401453",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 18821,
+      "n4": 2352,
+      "n_fund": 553,
+      "min_ts": 1761818400000,
+      "max_ts": 1795694400000
+    },
+    "ATH-USDT-SWAP": {
+      "live": true,
+      "listTime": "1718250900308",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 43026,
+      "n4": 5378,
+      "n_fund": 553,
+      "min_ts": 1718249400000,
+      "max_ts": 1795694400000
+    },
+    "ATOM-USDT-SWAP": {
+      "live": true,
+      "listTime": "1573557408000",
+      "spec": {
+        "tickSz": 0.001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 114977,
+      "n4": 14372,
+      "n_fund": 276,
+      "min_ts": 1588737600000,
+      "max_ts": 1795694400000
+    },
+    "AUCTION-USDT-SWAP": {
+      "live": true,
+      "listTime": "1701417300613",
+      "spec": {
+        "tickSz": 0.001,
+        "ctVal": 0.1,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 52378,
+      "n4": 6547,
+      "n_fund": 553,
+      "min_ts": 1701415800000,
+      "max_ts": 1795694400000
+    },
+    "AVAX-USDT-SWAP": {
+      "live": true,
+      "listTime": "1600840800000",
+      "spec": {
+        "tickSz": 0.001,
+        "ctVal": 1.0,
+        "lotSz": 0.1,
+        "maxLever": 50.0
+      },
+      "n30": 108257,
+      "n4": 13532,
+      "n_fund": 276,
+      "min_ts": 1600833600000,
+      "max_ts": 1795694400000
+    },
+    "AVNT-USDT-SWAP": {
+      "live": true,
+      "listTime": "1758555000222",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 20634,
+      "n4": 2579,
+      "n_fund": 553,
+      "min_ts": 1758555000000,
+      "max_ts": 1795694400000
+    },
+    "AXIS-USDT-SWAP": {
+      "live": true,
+      "listTime": "1792591200000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 1725,
+      "n4": 215,
+      "n_fund": 261,
+      "min_ts": 1792591200000,
+      "max_ts": 1795694400000
+    },
+    "AXS-USDT-SWAP": {
+      "live": true,
+      "listTime": "1627462800000",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 0.1,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 93466,
+      "n4": 11683,
+      "n_fund": 553,
+      "min_ts": 1627457400000,
+      "max_ts": 1795694400000
+    },
+    "AZTEC-USDT-SWAP": {
+      "live": true,
+      "listTime": "1770805800000",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 13828,
+      "n4": 1728,
+      "n_fund": 553,
+      "min_ts": 1770805800000,
+      "max_ts": 1795694400000
+    },
+    "BABY-USDT-SWAP": {
+      "live": true,
+      "listTime": "1744282800387",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 28563,
+      "n4": 3570,
+      "n_fund": 553,
+      "min_ts": 1744282800000,
+      "max_ts": 1795694400000
+    },
+    "BAND-USDT-SWAP": {
+      "live": true,
+      "listTime": "1599473571000",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 109020,
+      "n4": 13627,
+      "n_fund": 276,
+      "min_ts": 1599460200000,
+      "max_ts": 1795694400000
+    },
+    "BARD-USDT-SWAP": {
+      "live": true,
+      "listTime": "1758196800496",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 20833,
+      "n4": 2604,
+      "n_fund": 625,
+      "min_ts": 1758196800000,
+      "max_ts": 1795694400000
+    },
+    "BASED-USDT-SWAP": {
+      "live": true,
+      "listTime": "1774866600000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 11572,
+      "n4": 1446,
+      "n_fund": 553,
+      "min_ts": 1774866600000,
+      "max_ts": 1795694400000
+    },
+    "BAT-USDT-SWAP": {
+      "live": true,
+      "listTime": "1598609571000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 109499,
+      "n4": 13687,
+      "n_fund": 276,
+      "min_ts": 1598598000000,
+      "max_ts": 1795694400000
+    },
+    "BCH-USDT-SWAP": {
+      "live": true,
+      "listTime": "1573557408000",
+      "spec": {
+        "tickSz": 0.01,
+        "ctVal": 0.1,
+        "lotSz": 0.1,
+        "maxLever": 50.0
+      },
+      "n30": 121225,
+      "n4": 15153,
+      "n_fund": 276,
+      "min_ts": 1577491200000,
+      "max_ts": 1795694400000
+    },
+    "BEAT-USDT-SWAP": {
+      "live": true,
+      "listTime": "1762964100610",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 0.1,
+        "maxLever": 10.0
+      },
+      "n30": 18185,
+      "n4": 2273,
+      "n_fund": 553,
+      "min_ts": 1762963200000,
+      "max_ts": 1795694400000
+    },
+    "BERA-USDT-SWAP": {
+      "live": true,
+      "listTime": "1738850401850",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 0.1,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 31581,
+      "n4": 3947,
+      "n_fund": 558,
+      "min_ts": 1738850400000,
+      "max_ts": 1795694400000
+    },
+    "BICO-USDT-SWAP": {
+      "live": true,
+      "listTime": "1639032617371",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 87042,
+      "n4": 10880,
+      "n_fund": 557,
+      "min_ts": 1639020600000,
+      "max_ts": 1795694400000
+    },
+    "BIGTIME-USDT-SWAP": {
+      "live": true,
+      "listTime": "1697115300862",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 54768,
+      "n4": 6845,
+      "n_fund": 573,
+      "min_ts": 1697113800000,
+      "max_ts": 1795694400000
+    },
+    "BILL-USDT-SWAP": {
+      "live": true,
+      "listTime": "1778054400000",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 9801,
+      "n4": 1225,
+      "n_fund": 553,
+      "min_ts": 1778054400000,
+      "max_ts": 1795694400000
+    },
+    "BIO-USDT-SWAP": {
+      "live": true,
+      "listTime": "1735901100474",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 33220,
+      "n4": 4152,
+      "n_fund": 553,
+      "min_ts": 1735900200000,
+      "max_ts": 1795694400000
+    },
+    "BLEND-USDT-SWAP": {
+      "live": true,
+      "listTime": "1777456800000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 10133,
+      "n4": 1266,
+      "n_fund": 553,
+      "min_ts": 1777456800000,
+      "max_ts": 1795694400000
+    },
+    "BLUR-USDT-SWAP": {
+      "live": true,
+      "listTime": "1676429700181",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 66260,
+      "n4": 8282,
+      "n_fund": 568,
+      "min_ts": 1676428200000,
+      "max_ts": 1795694400000
+    },
+    "BNB-USDT-SWAP": {
+      "live": true,
+      "listTime": "1671778428049",
+      "spec": {
+        "tickSz": 0.01,
+        "ctVal": 0.01,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 68844,
+      "n4": 8605,
+      "n_fund": 276,
+      "min_ts": 1671777000000,
+      "max_ts": 1795694400000
+    },
+    "BOME-USDT-SWAP": {
+      "live": true,
+      "listTime": "1723717202042",
+      "spec": {
+        "tickSz": 1e-07,
+        "ctVal": 1000.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 39989,
+      "n4": 4998,
+      "n_fund": 553,
+      "min_ts": 1723716000000,
+      "max_ts": 1795694400000
+    },
+    "BONK-USDT-SWAP": {
+      "live": true,
+      "listTime": "1704695217299",
+      "spec": {
+        "tickSz": 1e-09,
+        "ctVal": 100000.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 50557,
+      "n4": 6319,
+      "n_fund": 276,
+      "min_ts": 1704693600000,
+      "max_ts": 1795694400000
+    },
+    "BRETT-USDT-SWAP": {
+      "live": true,
+      "listTime": "1725617701730",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 38933,
+      "n4": 4866,
+      "n_fund": 553,
+      "min_ts": 1725616800000,
+      "max_ts": 1795694400000
+    },
+    "BREV-USDT-SWAP": {
+      "live": true,
+      "listTime": "1767099600000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 15887,
+      "n4": 1985,
+      "n_fund": 588,
+      "min_ts": 1767099600000,
+      "max_ts": 1795694400000
+    },
+    "BSB-USDT-SWAP": {
+      "live": true,
+      "listTime": "1775124000000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 11429,
+      "n4": 1428,
+      "n_fund": 553,
+      "min_ts": 1775124000000,
+      "max_ts": 1795694400000
+    },
+    "BTW-USDT-SWAP": {
+      "live": true,
+      "listTime": "1792656000000",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 1689,
+      "n4": 211,
+      "n_fund": 289,
+      "min_ts": 1792656000000,
+      "max_ts": 1795694400000
+    },
+    "CAP-USDT-SWAP": {
+      "live": true,
+      "listTime": "1782477000000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 7344,
+      "n4": 917,
+      "n_fund": 561,
+      "min_ts": 1782477000000,
+      "max_ts": 1795694400000
+    },
+    "CASHCAT-USDT-SWAP": {
+      "live": true,
+      "listTime": "1788406200000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 4050,
+      "n4": 506,
+      "n_fund": 507,
+      "min_ts": 1788406200000,
+      "max_ts": 1795694400000
+    },
+    "CC-USDT-SWAP": {
+      "live": true,
+      "listTime": "1761919200291",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 18765,
+      "n4": 2345,
+      "n_fund": 553,
+      "min_ts": 1761919200000,
+      "max_ts": 1795694400000
+    },
+    "CELO-USDT-SWAP": {
+      "live": true,
+      "listTime": "1632477785202",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 90680,
+      "n4": 11334,
+      "n_fund": 276,
+      "min_ts": 1632472200000,
+      "max_ts": 1795694400000
+    },
+    "CFX-USDT-SWAP": {
+      "live": true,
+      "listTime": "1615539600000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 100089,
+      "n4": 12511,
+      "n_fund": 276,
+      "min_ts": 1615536000000,
+      "max_ts": 1795694400000
+    },
+    "CHIP-USDT-SWAP": {
+      "live": true,
+      "listTime": "1776780000000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 10509,
+      "n4": 1313,
+      "n_fund": 553,
+      "min_ts": 1776780000000,
+      "max_ts": 1795694400000
+    },
+    "CHZ-USDT-SWAP": {
+      "live": true,
+      "listTime": "1615539600000",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 100088,
+      "n4": 12510,
+      "n_fund": 276,
+      "min_ts": 1615537800000,
+      "max_ts": 1795694400000
+    },
+    "CNPY-USDT-SWAP": {
+      "live": true,
+      "listTime": "1788786000000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 3839,
+      "n4": 479,
+      "n_fund": 518,
+      "min_ts": 1788786000000,
+      "max_ts": 1795694400000
+    },
+    "COAI-USDT-SWAP": {
+      "live": true,
+      "listTime": "1760538601123",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 0.1,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 19532,
+      "n4": 2441,
+      "n_fund": 553,
+      "min_ts": 1760538600000,
+      "max_ts": 1795694400000
+    },
+    "COMP-USDT-SWAP": {
+      "live": true,
+      "listTime": "1587463971000",
+      "spec": {
+        "tickSz": 0.01,
+        "ctVal": 0.1,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 112281,
+      "n4": 14035,
+      "n_fund": 276,
+      "min_ts": 1593590400000,
+      "max_ts": 1795694400000
+    },
+    "CORE-USDT-SWAP": {
+      "live": true,
+      "listTime": "1675864514708",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 66574,
+      "n4": 8321,
+      "n_fund": 276,
+      "min_ts": 1675863000000,
+      "max_ts": 1795694400000
+    },
+    "CP-USDT-SWAP": {
+      "live": true,
+      "listTime": "1788363600000",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 4074,
+      "n4": 509,
+      "n_fund": 510,
+      "min_ts": 1788363000000,
+      "max_ts": 1795694400000
+    },
+    "CRO-USDT-SWAP": {
+      "live": true,
+      "listTime": "1617872400000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 98792,
+      "n4": 12348,
+      "n_fund": 276,
+      "min_ts": 1617870600000,
+      "max_ts": 1795694400000
+    },
+    "CRV-USDT-SWAP": {
+      "live": true,
+      "listTime": "1599214371000",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 109164,
+      "n4": 13645,
+      "n_fund": 276,
+      "min_ts": 1599201000000,
+      "max_ts": 1795694400000
+    },
+    "CT-USDT-SWAP": {
+      "live": true,
+      "listTime": "1790766000000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 2739,
+      "n4": 342,
+      "n_fund": 350,
+      "min_ts": 1790766000000,
+      "max_ts": 1795694400000
+    },
+    "CVX-USDT-SWAP": {
+      "live": true,
+      "listTime": "1719303900750",
+      "spec": {
+        "tickSz": 0.001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 42441,
+      "n4": 5305,
+      "n_fund": 553,
+      "min_ts": 1719302400000,
+      "max_ts": 1795694400000
+    },
+    "DASH-USDT-SWAP": {
+      "live": true,
+      "listTime": "1762398000994",
+      "spec": {
+        "tickSz": 0.01,
+        "ctVal": 0.01,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 18499,
+      "n4": 2312,
+      "n_fund": 553,
+      "min_ts": 1762398000000,
+      "max_ts": 1795694400000
+    },
+    "DATA-USDT-SWAP": {
+      "live": true,
+      "listTime": "1782995400000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 7056,
+      "n4": 881,
+      "n_fund": 553,
+      "min_ts": 1782995400000,
+      "max_ts": 1795694400000
+    },
+    "DGAI-USDT-SWAP": {
+      "live": true,
+      "listTime": "1788404400000",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 4051,
+      "n4": 506,
+      "n_fund": 507,
+      "min_ts": 1788404400000,
+      "max_ts": 1795694400000
+    },
+    "DNA-USDT-SWAP": {
+      "live": true,
+      "listTime": "1792152000000",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 1969,
+      "n4": 246,
+      "n_fund": 246,
+      "min_ts": 1792152000000,
+      "max_ts": 1795694400000
+    },
+    "DOGE-USDT-SWAP": {
+      "live": true,
+      "listTime": "1587463971000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 1000.0,
+        "lotSz": 0.01,
+        "maxLever": 50.0
+      },
+      "n30": 111859,
+      "n4": 13982,
+      "n_fund": 276,
+      "min_ts": 1594350000000,
+      "max_ts": 1795694400000
+    },
+    "DOOD-USDT-SWAP": {
+      "live": true,
+      "listTime": "1747051200521",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 1000.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 27025,
+      "n4": 3378,
+      "n_fund": 566,
+      "min_ts": 1747051200000,
+      "max_ts": 1795694400000
+    },
+    "DOS-USDT-SWAP": {
+      "live": true,
+      "listTime": "1786363200000",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 5185,
+      "n4": 648,
+      "n_fund": 553,
+      "min_ts": 1786363200000,
+      "max_ts": 1795694400000
+    },
+    "DOT-USDT-SWAP": {
+      "live": true,
+      "listTime": "1598350371000",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 109648,
+      "n4": 13705,
+      "n_fund": 276,
+      "min_ts": 1598329800000,
+      "max_ts": 1795694400000
+    },
+    "DYDX-USDT-SWAP": {
+      "live": true,
+      "listTime": "1631117510421",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 91433,
+      "n4": 11429,
+      "n_fund": 276,
+      "min_ts": 1631116800000,
+      "max_ts": 1795694400000
+    },
+    "EDEN-USDT-SWAP": {
+      "live": true,
+      "listTime": "1759231801710",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 20258,
+      "n4": 2532,
+      "n_fund": 553,
+      "min_ts": 1759231800000,
+      "max_ts": 1795694400000
+    },
+    "EDGE-USDT-SWAP": {
+      "live": true,
+      "listTime": "1775050200000",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 11470,
+      "n4": 1433,
+      "n_fund": 553,
+      "min_ts": 1775050200000,
+      "max_ts": 1795694400000
+    },
+    "EGLD-USDT-SWAP": {
+      "live": true,
+      "listTime": "1608620400000",
+      "spec": {
+        "tickSz": 0.001,
+        "ctVal": 0.1,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 103933,
+      "n4": 12991,
+      "n_fund": 276,
+      "min_ts": 1608616800000,
+      "max_ts": 1795694400000
+    },
+    "EIGEN-USDT-SWAP": {
+      "live": true,
+      "listTime": "1727764200682",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 37740,
+      "n4": 4717,
+      "n_fund": 553,
+      "min_ts": 1727764200000,
+      "max_ts": 1795694400000
+    },
+    "ENA-USDT-SWAP": {
+      "live": true,
+      "listTime": "1758094200364",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 20890,
+      "n4": 2611,
+      "n_fund": 408,
+      "min_ts": 1758094200000,
+      "max_ts": 1795694400000
+    },
+    "ENJ-USDT-SWAP": {
+      "live": true,
+      "listTime": "1709288701407",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 48005,
+      "n4": 6000,
+      "n_fund": 553,
+      "min_ts": 1709287200000,
+      "max_ts": 1795694400000
+    },
+    "ENS-USDT-SWAP": {
+      "live": true,
+      "listTime": "1636623946265",
+      "spec": {
+        "tickSz": 0.001,
+        "ctVal": 0.1,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 88374,
+      "n4": 11046,
+      "n_fund": 276,
+      "min_ts": 1636623000000,
+      "max_ts": 1795694400000
+    },
+    "ENSO-USDT-SWAP": {
+      "live": true,
+      "listTime": "1761732001294",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 18869,
+      "n4": 2358,
+      "n_fund": 567,
+      "min_ts": 1761732000000,
+      "max_ts": 1795694400000
+    },
+    "ESP-USDT-SWAP": {
+      "live": true,
+      "listTime": "1770739200000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 13865,
+      "n4": 1733,
+      "n_fund": 553,
+      "min_ts": 1770739200000,
+      "max_ts": 1795694400000
+    },
+    "ETC-USDT-SWAP": {
+      "live": true,
+      "listTime": "1573557408000",
+      "spec": {
+        "tickSz": 0.001,
+        "ctVal": 10.0,
+        "lotSz": 0.01,
+        "maxLever": 50.0
+      },
+      "n30": 121081,
+      "n4": 15135,
+      "n_fund": 276,
+      "min_ts": 1577750400000,
+      "max_ts": 1795694400000
+    },
+    "ETHFI-USDT-SWAP": {
+      "live": true,
+      "listTime": "1710764700945",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 47185,
+      "n4": 5898,
+      "n_fund": 553,
+      "min_ts": 1710763200000,
+      "max_ts": 1795694400000
+    },
+    "ETHW-USDT-SWAP": {
+      "live": true,
+      "listTime": "1663311331635",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 0.1,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 73548,
+      "n4": 9193,
+      "n_fund": 553,
+      "min_ts": 1663309800000,
+      "max_ts": 1795694400000
+    },
+    "F-USDT-SWAP": {
+      "live": true,
+      "listTime": "1761379201201",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 19065,
+      "n4": 2383,
+      "n_fund": 553,
+      "min_ts": 1761379200000,
+      "max_ts": 1795694400000
+    },
+    "FARTCOIN-USDT-SWAP": {
+      "live": true,
+      "listTime": "1734685200393",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 33895,
+      "n4": 4236,
+      "n_fund": 553,
+      "min_ts": 1734685200000,
+      "max_ts": 1795694400000
+    },
+    "FET-USDT-SWAP": {
+      "live": true,
+      "listTime": "1788579000000",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 3954,
+      "n4": 494,
+      "n_fund": 495,
+      "min_ts": 1788579000000,
+      "max_ts": 1795694400000
+    },
+    "FIL-USDT-SWAP": {
+      "live": true,
+      "listTime": "1565431971000",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 0.1,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 111318,
+      "n4": 13914,
+      "n_fund": 276,
+      "min_ts": 1595323800000,
+      "max_ts": 1795694400000
+    },
+    "FLOCK-USDT-SWAP": {
+      "live": true,
+      "listTime": "1789207200000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 3605,
+      "n4": 450,
+      "n_fund": 451,
+      "min_ts": 1789207200000,
+      "max_ts": 1795694400000
+    },
+    "FLOKI-USDT-SWAP": {
+      "live": true,
+      "listTime": "1676876100607",
+      "spec": {
+        "tickSz": 1e-08,
+        "ctVal": 100000.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 66012,
+      "n4": 8251,
+      "n_fund": 276,
+      "min_ts": 1676874600000,
+      "max_ts": 1795694400000
+    },
+    "FLOW-USDT-SWAP": {
+      "live": true,
+      "listTime": "1699350900756",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 53526,
+      "n4": 6690,
+      "n_fund": 553,
+      "min_ts": 1699349400000,
+      "max_ts": 1795694400000
+    },
+    "FOGO-USDT-SWAP": {
+      "live": true,
+      "listTime": "1768059900000",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 15354,
+      "n4": 1919,
+      "n_fund": 553,
+      "min_ts": 1768059000000,
+      "max_ts": 1795694400000
+    },
+    "GALA-USDT-SWAP": {
+      "live": true,
+      "listTime": "1632477789599",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 90680,
+      "n4": 11334,
+      "n_fund": 276,
+      "min_ts": 1632472200000,
+      "max_ts": 1795694400000
+    },
+    "GAS-USDT-SWAP": {
+      "live": true,
+      "listTime": "1698141300695",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 54198,
+      "n4": 6774,
+      "n_fund": 553,
+      "min_ts": 1698139800000,
+      "max_ts": 1795694400000
+    },
+    "GIGGLE-USDT-SWAP": {
+      "live": true,
+      "listTime": "1761375601708",
+      "spec": {
+        "tickSz": 0.01,
+        "ctVal": 0.01,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 19067,
+      "n4": 2383,
+      "n_fund": 553,
+      "min_ts": 1761375600000,
+      "max_ts": 1795694400000
+    },
+    "GLM-USDT-SWAP": {
+      "live": true,
+      "listTime": "1715329501418",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 44648,
+      "n4": 5580,
+      "n_fund": 561,
+      "min_ts": 1715329800000,
+      "max_ts": 1795694400000
+    },
+    "GMT-USDT-SWAP": {
+      "live": true,
+      "listTime": "1648803369890",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 81608,
+      "n4": 10200,
+      "n_fund": 553,
+      "min_ts": 1648801800000,
+      "max_ts": 1795694400000
+    },
+    "GMX-USDT-SWAP": {
+      "live": true,
+      "listTime": "1675321542847",
+      "spec": {
+        "tickSz": 0.001,
+        "ctVal": 0.1,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 66875,
+      "n4": 8359,
+      "n_fund": 276,
+      "min_ts": 1675321200000,
+      "max_ts": 1795694400000
+    },
+    "GPS-USDT-SWAP": {
+      "live": true,
+      "listTime": "1741089600468",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 30337,
+      "n4": 3792,
+      "n_fund": 553,
+      "min_ts": 1741089600000,
+      "max_ts": 1795694400000
+    },
+    "GRAM-USDT-SWAP": {
+      "live": true,
+      "listTime": "1781692200000",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 7780,
+      "n4": 972,
+      "n_fund": 553,
+      "min_ts": 1781692200000,
+      "max_ts": 1795694400000
+    },
+    "GRASS-USDT-SWAP": {
+      "live": true,
+      "listTime": "1730125800597",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 36428,
+      "n4": 4553,
+      "n_fund": 553,
+      "min_ts": 1730125800000,
+      "max_ts": 1795694400000
+    },
+    "GRT-USDT-SWAP": {
+      "live": true,
+      "listTime": "1608458400000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 104023,
+      "n4": 13002,
+      "n_fund": 276,
+      "min_ts": 1608454800000,
+      "max_ts": 1795694400000
+    },
+    "GRVT-USDT-SWAP": {
+      "live": true,
+      "listTime": "1785423600000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 5707,
+      "n4": 713,
+      "n_fund": 553,
+      "min_ts": 1785423600000,
+      "max_ts": 1795694400000
+    },
+    "H-USDT-SWAP": {
+      "live": true,
+      "listTime": "1751522400413",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 100.0,
+        "lotSz": 0.1,
+        "maxLever": 10.0
+      },
+      "n30": 24541,
+      "n4": 3067,
+      "n_fund": 553,
+      "min_ts": 1751522400000,
+      "max_ts": 1795694400000
+    },
+    "HBAR-USDT-SWAP": {
+      "live": true,
+      "listTime": "1692165300823",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 100.0,
+        "lotSz": 0.1,
+        "maxLever": 50.0
+      },
+      "n30": 57518,
+      "n4": 7189,
+      "n_fund": 276,
+      "min_ts": 1692163800000,
+      "max_ts": 1795694400000
+    },
+    "HMSTR-USDT-SWAP": {
+      "live": true,
+      "listTime": "1727353800176",
+      "spec": {
+        "tickSz": 1e-07,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 37968,
+      "n4": 4745,
+      "n_fund": 553,
+      "min_ts": 1727353800000,
+      "max_ts": 1795694400000
+    },
+    "HOME-USDT-SWAP": {
+      "live": true,
+      "listTime": "1749809700256",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 25493,
+      "n4": 3186,
+      "n_fund": 553,
+      "min_ts": 1749808800000,
+      "max_ts": 1795694400000
+    },
+    "HUMA-USDT-SWAP": {
+      "live": true,
+      "listTime": "1748266200433",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 26350,
+      "n4": 3293,
+      "n_fund": 570,
+      "min_ts": 1748266200000,
+      "max_ts": 1795694400000
+    },
+    "HYPE-USDT-SWAP": {
+      "live": true,
+      "listTime": "1740121200506",
+      "spec": {
+        "tickSz": 0.001,
+        "ctVal": 0.1,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 30875,
+      "n4": 3859,
+      "n_fund": 276,
+      "min_ts": 1740121200000,
+      "max_ts": 1795694400000
+    },
+    "ICP-USDT-SWAP": {
+      "live": true,
+      "listTime": "1620982800000",
+      "spec": {
+        "tickSz": 0.001,
+        "ctVal": 0.01,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 97065,
+      "n4": 12133,
+      "n_fund": 276,
+      "min_ts": 1620979200000,
+      "max_ts": 1795694400000
+    },
+    "IMX-USDT-SWAP": {
+      "live": true,
+      "listTime": "1637218222034",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 88045,
+      "n4": 11005,
+      "n_fund": 553,
+      "min_ts": 1637215200000,
+      "max_ts": 1795694400000
+    },
+    "INIT-USDT-SWAP": {
+      "live": true,
+      "listTime": "1745494200437",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 27890,
+      "n4": 3486,
+      "n_fund": 574,
+      "min_ts": 1745494200000,
+      "max_ts": 1795694400000
+    },
+    "INJ-USDT-SWAP": {
+      "live": true,
+      "listTime": "1701345300667",
+      "spec": {
+        "tickSz": 0.001,
+        "ctVal": 0.1,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 52418,
+      "n4": 6552,
+      "n_fund": 276,
+      "min_ts": 1701343800000,
+      "max_ts": 1795694400000
+    },
+    "IOST-USDT-SWAP": {
+      "live": true,
+      "listTime": "1587463971000",
+      "spec": {
+        "tickSz": 1e-07,
+        "ctVal": 1000.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 114642,
+      "n4": 14330,
+      "n_fund": 539,
+      "min_ts": 1589340600000,
+      "max_ts": 1795694400000
+    },
+    "IOTA-USDT-SWAP": {
+      "live": true,
+      "listTime": "1587463971000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 114399,
+      "n4": 14299,
+      "n_fund": 276,
+      "min_ts": 1589778000000,
+      "max_ts": 1795694400000
+    },
+    "IRYS-USDT-SWAP": {
+      "live": true,
+      "listTime": "1779880500000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 8787,
+      "n4": 1098,
+      "n_fund": 582,
+      "min_ts": 1779879600000,
+      "max_ts": 1795694400000
+    },
+    "JELLYJELLY-USDT-SWAP": {
+      "live": true,
+      "listTime": "1743004470352",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 29274,
+      "n4": 3659,
+      "n_fund": 553,
+      "min_ts": 1743003000000,
+      "max_ts": 1795694400000
+    },
+    "JTO-USDT-SWAP": {
+      "live": true,
+      "listTime": "1704696900623",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 50556,
+      "n4": 6319,
+      "n_fund": 553,
+      "min_ts": 1704695400000,
+      "max_ts": 1795694400000
+    },
+    "JUP-USDT-SWAP": {
+      "live": true,
+      "listTime": "1706717100211",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 49433,
+      "n4": 6179,
+      "n_fund": 553,
+      "min_ts": 1706716800000,
+      "max_ts": 1795694400000
+    },
+    "KAITO-USDT-SWAP": {
+      "live": true,
+      "listTime": "1740060000331",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 30909,
+      "n4": 3863,
+      "n_fund": 553,
+      "min_ts": 1740060000000,
+      "max_ts": 1795694400000
+    },
+    "KAT-USDT-SWAP": {
+      "live": true,
+      "listTime": "1772451000000",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 12914,
+      "n4": 1614,
+      "n_fund": 553,
+      "min_ts": 1772451000000,
+      "max_ts": 1795694400000
+    },
+    "KGEN-USDT-SWAP": {
+      "live": true,
+      "listTime": "1760761801014",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 19408,
+      "n4": 2425,
+      "n_fund": 553,
+      "min_ts": 1760761800000,
+      "max_ts": 1795694400000
+    },
+    "KII-USDT-SWAP": {
+      "live": true,
+      "listTime": "1790247600000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 3027,
+      "n4": 378,
+      "n_fund": 379,
+      "min_ts": 1790247600000,
+      "max_ts": 1795694400000
+    },
+    "KITE-USDT-SWAP": {
+      "live": true,
+      "listTime": "1775703600000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 11107,
+      "n4": 1388,
+      "n_fund": 553,
+      "min_ts": 1775703600000,
+      "max_ts": 1795694400000
+    },
+    "KMNO-USDT-SWAP": {
+      "live": true,
+      "listTime": "1748575800335",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 26178,
+      "n4": 3272,
+      "n_fund": 553,
+      "min_ts": 1748575800000,
+      "max_ts": 1795694400000
+    },
+    "KSM-USDT-SWAP": {
+      "live": true,
+      "listTime": "1599559971000",
+      "spec": {
+        "tickSz": 0.001,
+        "ctVal": 0.1,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 108970,
+      "n4": 13621,
+      "n_fund": 553,
+      "min_ts": 1599550200000,
+      "max_ts": 1795694400000
+    },
+    "LA-USDT-SWAP": {
+      "live": true,
+      "listTime": "1749808800320",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 25493,
+      "n4": 3186,
+      "n_fund": 563,
+      "min_ts": 1749808800000,
+      "max_ts": 1795694400000
+    },
+    "LAB-USDT-SWAP": {
+      "live": true,
+      "listTime": "1761998401879",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 0.1,
+        "maxLever": 10.0
+      },
+      "n30": 18721,
+      "n4": 2340,
+      "n_fund": 553,
+      "min_ts": 1761998400000,
+      "max_ts": 1795694400000
+    },
+    "LAYER-USDT-SWAP": {
+      "live": true,
+      "listTime": "1739284200817",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 31340,
+      "n4": 3917,
+      "n_fund": 553,
+      "min_ts": 1739284200000,
+      "max_ts": 1795694400000
+    },
+    "LDO-USDT-SWAP": {
+      "live": true,
+      "listTime": "1675321369323",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 66875,
+      "n4": 8359,
+      "n_fund": 276,
+      "min_ts": 1675321200000,
+      "max_ts": 1795694400000
+    },
+    "LIGHT-USDT-SWAP": {
+      "live": true,
+      "listTime": "1765872000000",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 16569,
+      "n4": 2071,
+      "n_fund": 553,
+      "min_ts": 1765872000000,
+      "max_ts": 1795694400000
+    },
+    "LINEA-USDT-SWAP": {
+      "live": true,
+      "listTime": "1756735200376",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 21645,
+      "n4": 2705,
+      "n_fund": 553,
+      "min_ts": 1756735200000,
+      "max_ts": 1795694400000
+    },
+    "LINK-USDT-SWAP": {
+      "live": true,
+      "listTime": "1582888608000",
+      "spec": {
+        "tickSz": 0.001,
+        "ctVal": 1.0,
+        "lotSz": 0.1,
+        "maxLever": 50.0
+      },
+      "n30": 117891,
+      "n4": 14736,
+      "n_fund": 276,
+      "min_ts": 1583492400000,
+      "max_ts": 1795694400000
+    },
+    "LIT-USDT-SWAP": {
+      "live": true,
+      "listTime": "1766547000000",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 16194,
+      "n4": 2024,
+      "n_fund": 553,
+      "min_ts": 1766547000000,
+      "max_ts": 1795694400000
+    },
+    "LPT-USDT-SWAP": {
+      "live": true,
+      "listTime": "1619161200000",
+      "spec": {
+        "tickSz": 0.001,
+        "ctVal": 0.1,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 98077,
+      "n4": 12259,
+      "n_fund": 553,
+      "min_ts": 1619157600000,
+      "max_ts": 1795694400000
+    },
+    "LQTY-USDT-SWAP": {
+      "live": true,
+      "listTime": "1705053300717",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 50358,
+      "n4": 6294,
+      "n_fund": 276,
+      "min_ts": 1705051800000,
+      "max_ts": 1795694400000
+    },
+    "LTC-USDT-SWAP": {
+      "live": true,
+      "listTime": "1573557408000",
+      "spec": {
+        "tickSz": 0.01,
+        "ctVal": 1.0,
+        "lotSz": 0.1,
+        "maxLever": 50.0
+      },
+      "n30": 121225,
+      "n4": 15153,
+      "n_fund": 276,
+      "min_ts": 1577491200000,
+      "max_ts": 1795694400000
+    },
+    "LUNA-USDT-SWAP": {
+      "live": true,
+      "listTime": "1653746082125",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 78862,
+      "n4": 9857,
+      "n_fund": 553,
+      "min_ts": 1653744600000,
+      "max_ts": 1795694400000
+    },
+    "MAGIC-USDT-SWAP": {
+      "live": true,
+      "listTime": "1675321549791",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 66875,
+      "n4": 8359,
+      "n_fund": 553,
+      "min_ts": 1675321200000,
+      "max_ts": 1795694400000
+    },
+    "MANA-USDT-SWAP": {
+      "live": true,
+      "listTime": "1615539600000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 100089,
+      "n4": 12511,
+      "n_fund": 276,
+      "min_ts": 1615536000000,
+      "max_ts": 1795694400000
+    },
+    "MASK-USDT-SWAP": {
+      "live": true,
+      "listTime": "1614841200000",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 100476,
+      "n4": 12559,
+      "n_fund": 276,
+      "min_ts": 1614839400000,
+      "max_ts": 1795694400000
+    },
+    "ME-USDT-SWAP": {
+      "live": true,
+      "listTime": "1733844600107",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 34362,
+      "n4": 4295,
+      "n_fund": 553,
+      "min_ts": 1733844600000,
+      "max_ts": 1795694400000
+    },
+    "MEGA-USDT-SWAP": {
+      "live": true,
+      "listTime": "1777550400000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 10081,
+      "n4": 1260,
+      "n_fund": 553,
+      "min_ts": 1777550400000,
+      "max_ts": 1795694400000
+    },
+    "MEME-USDT-SWAP": {
+      "live": true,
+      "listTime": "1699001700715",
+      "spec": {
+        "tickSz": 1e-07,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 53720,
+      "n4": 6714,
+      "n_fund": 553,
+      "min_ts": 1699000200000,
+      "max_ts": 1795694400000
+    },
+    "MERL-USDT-SWAP": {
+      "live": true,
+      "listTime": "1713522300606",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 45653,
+      "n4": 5706,
+      "n_fund": 553,
+      "min_ts": 1713520800000,
+      "max_ts": 1795694400000
+    },
+    "MET-USDT-SWAP": {
+      "live": true,
+      "listTime": "1760084100254",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 19785,
+      "n4": 2473,
+      "n_fund": 553,
+      "min_ts": 1760083200000,
+      "max_ts": 1795694400000
+    },
+    "METIS-USDT-SWAP": {
+      "live": true,
+      "listTime": "1703757300614",
+      "spec": {
+        "tickSz": 0.001,
+        "ctVal": 0.1,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 51078,
+      "n4": 6384,
+      "n_fund": 553,
+      "min_ts": 1703755800000,
+      "max_ts": 1795694400000
+    },
+    "MEW-USDT-SWAP": {
+      "live": true,
+      "listTime": "1713169500531",
+      "spec": {
+        "tickSz": 1e-07,
+        "ctVal": 1000.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 45849,
+      "n4": 5731,
+      "n_fund": 562,
+      "min_ts": 1713168000000,
+      "max_ts": 1795694400000
+    },
+    "MINA-USDT-SWAP": {
+      "live": true,
+      "listTime": "1623229200000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 95816,
+      "n4": 11976,
+      "n_fund": 553,
+      "min_ts": 1623227400000,
+      "max_ts": 1795694400000
+    },
+    "MMT-USDT-SWAP": {
+      "live": true,
+      "listTime": "1762259401259",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 18576,
+      "n4": 2321,
+      "n_fund": 553,
+      "min_ts": 1762259400000,
+      "max_ts": 1795694400000
+    },
+    "MON-USDT-SWAP": {
+      "live": true,
+      "listTime": "1760083200427",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 19785,
+      "n4": 2473,
+      "n_fund": 553,
+      "min_ts": 1760083200000,
+      "max_ts": 1795694400000
+    },
+    "MOODENG-USDT-SWAP": {
+      "live": true,
+      "listTime": "1727938802849",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 37643,
+      "n4": 4705,
+      "n_fund": 553,
+      "min_ts": 1727938800000,
+      "max_ts": 1795694400000
+    },
+    "MORPHO-USDT-SWAP": {
+      "live": true,
+      "listTime": "1732528800980",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 35093,
+      "n4": 4386,
+      "n_fund": 553,
+      "min_ts": 1732528800000,
+      "max_ts": 1795694400000
+    },
+    "MOVE-USDT-SWAP": {
+      "live": true,
+      "listTime": "1733749202646",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 34415,
+      "n4": 4301,
+      "n_fund": 558,
+      "min_ts": 1733749200000,
+      "max_ts": 1795694400000
+    },
+    "MUBARAK-USDT-SWAP": {
+      "live": true,
+      "listTime": "1748946600286",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 25972,
+      "n4": 3246,
+      "n_fund": 553,
+      "min_ts": 1748946600000,
+      "max_ts": 1795694400000
+    },
+    "NEAR-USDT-SWAP": {
+      "live": true,
+      "listTime": "1608544800000",
+      "spec": {
+        "tickSz": 0.001,
+        "ctVal": 10.0,
+        "lotSz": 0.1,
+        "maxLever": 50.0
+      },
+      "n30": 103976,
+      "n4": 12996,
+      "n_fund": 276,
+      "min_ts": 1608539400000,
+      "max_ts": 1795694400000
+    },
+    "NEIRO-USDT-SWAP": {
+      "live": true,
+      "listTime": "1727939701217",
+      "spec": {
+        "tickSz": 1e-08,
+        "ctVal": 1000.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 37643,
+      "n4": 4705,
+      "n_fund": 553,
+      "min_ts": 1727938800000,
+      "max_ts": 1795694400000
+    },
+    "NEO-USDT-SWAP": {
+      "live": true,
+      "listTime": "1582888608000",
+      "spec": {
+        "tickSz": 0.001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 118172,
+      "n4": 14771,
+      "n_fund": 276,
+      "min_ts": 1582986600000,
+      "max_ts": 1795694400000
+    },
+    "NES-USDT-SWAP": {
+      "live": true,
+      "listTime": "1782307800000",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 7438,
+      "n4": 929,
+      "n_fund": 553,
+      "min_ts": 1782307800000,
+      "max_ts": 1795694400000
+    },
+    "NIGHT-USDT-SWAP": {
+      "live": true,
+      "listTime": "1765279800000",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 16898,
+      "n4": 2112,
+      "n_fund": 553,
+      "min_ts": 1765279800000,
+      "max_ts": 1795694400000
+    },
+    "NMR-USDT-SWAP": {
+      "live": true,
+      "listTime": "1704959700642",
+      "spec": {
+        "tickSz": 0.001,
+        "ctVal": 0.1,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 50410,
+      "n4": 6301,
+      "n_fund": 567,
+      "min_ts": 1704958200000,
+      "max_ts": 1795694400000
+    },
+    "NOT-USDT-SWAP": {
+      "live": true,
+      "listTime": "1715862465350",
+      "spec": {
+        "tickSz": 1e-07,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 44353,
+      "n4": 5544,
+      "n_fund": 553,
+      "min_ts": 1715860800000,
+      "max_ts": 1795694400000
+    },
+    "O-USDT-SWAP": {
+      "live": true,
+      "listTime": "1781713800000",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 7768,
+      "n4": 970,
+      "n_fund": 553,
+      "min_ts": 1781713800000,
+      "max_ts": 1795694400000
+    },
+    "OFC-USDT-SWAP": {
+      "live": true,
+      "listTime": "1775732400000",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 11091,
+      "n4": 1386,
+      "n_fund": 553,
+      "min_ts": 1775732400000,
+      "max_ts": 1795694400000
+    },
+    "OKB-USDT-SWAP": {
+      "live": true,
+      "listTime": "1756951200395",
+      "spec": {
+        "tickSz": 0.01,
+        "ctVal": 0.01,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 21525,
+      "n4": 2690,
+      "n_fund": 553,
+      "min_ts": 1756951200000,
+      "max_ts": 1795694400000
+    },
+    "OL-USDT-SWAP": {
+      "live": true,
+      "listTime": "1761732900938",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 18869,
+      "n4": 2358,
+      "n_fund": 553,
+      "min_ts": 1761732000000,
+      "max_ts": 1795694400000
+    },
+    "ONDO-USDT-SWAP": {
+      "live": true,
+      "listTime": "1722940203957",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 40420,
+      "n4": 5052,
+      "n_fund": 408,
+      "min_ts": 1722940200000,
+      "max_ts": 1795694400000
+    },
+    "ONE-USDT-SWAP": {
+      "live": true,
+      "listTime": "1708426039038",
+      "spec": {
+        "tickSz": 1e-07,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 48484,
+      "n4": 6060,
+      "n_fund": 697,
+      "min_ts": 1708425000000,
+      "max_ts": 1795694400000
+    },
+    "ONT-USDT-SWAP": {
+      "live": true,
+      "listTime": "1587463971000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 114977,
+      "n4": 14372,
+      "n_fund": 553,
+      "min_ts": 1588737600000,
+      "max_ts": 1795694400000
+    },
+    "OP-USDT-SWAP": {
+      "live": true,
+      "listTime": "1654055717137",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 78690,
+      "n4": 9836,
+      "n_fund": 276,
+      "min_ts": 1654054200000,
+      "max_ts": 1795694400000
+    },
+    "OPG-USDT-SWAP": {
+      "live": true,
+      "listTime": "1776934800000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 10423,
+      "n4": 1302,
+      "n_fund": 553,
+      "min_ts": 1776934800000,
+      "max_ts": 1795694400000
+    },
+    "OPN-USDT-SWAP": {
+      "live": true,
+      "listTime": "1771847700000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 13249,
+      "n4": 1656,
+      "n_fund": 553,
+      "min_ts": 1771848000000,
+      "max_ts": 1795694400000
+    },
+    "ORDER-USDT-SWAP": {
+      "live": true,
+      "listTime": "1759245300953",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 20251,
+      "n4": 2531,
+      "n_fund": 573,
+      "min_ts": 1759244400000,
+      "max_ts": 1795694400000
+    },
+    "ORDI-USDT-SWAP": {
+      "live": true,
+      "listTime": "1684662900862",
+      "spec": {
+        "tickSz": 0.001,
+        "ctVal": 0.1,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 61686,
+      "n4": 7710,
+      "n_fund": 553,
+      "min_ts": 1684661400000,
+      "max_ts": 1795694400000
+    },
+    "PARTI-USDT-SWAP": {
+      "live": true,
+      "listTime": "1742909400471",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 29326,
+      "n4": 3665,
+      "n_fund": 557,
+      "min_ts": 1742909400000,
+      "max_ts": 1795694400000
+    },
+    "PENDLE-USDT-SWAP": {
+      "live": true,
+      "listTime": "1758093984811",
+      "spec": {
+        "tickSz": 0.001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 20889,
+      "n4": 2611,
+      "n_fund": 553,
+      "min_ts": 1758096000000,
+      "max_ts": 1795694400000
+    },
+    "PENGU-USDT-SWAP": {
+      "live": true,
+      "listTime": "1734450902264",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 34026,
+      "n4": 4253,
+      "n_fund": 553,
+      "min_ts": 1734449400000,
+      "max_ts": 1795694400000
+    },
+    "PEOPLE-USDT-SWAP": {
+      "live": true,
+      "listTime": "1638427889758",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 87374,
+      "n4": 10921,
+      "n_fund": 276,
+      "min_ts": 1638423000000,
+      "max_ts": 1795694400000
+    },
+    "PEPE-USDT-SWAP": {
+      "live": true,
+      "listTime": "1683086101049",
+      "spec": {
+        "tickSz": 1e-10,
+        "ctVal": 10000000.0,
+        "lotSz": 0.1,
+        "maxLever": 50.0
+      },
+      "n30": 62562,
+      "n4": 7820,
+      "n_fund": 276,
+      "min_ts": 1683084600000,
+      "max_ts": 1795694400000
+    },
+    "PI-USDT-SWAP": {
+      "live": true,
+      "listTime": "1740042000388",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 30919,
+      "n4": 3864,
+      "n_fund": 553,
+      "min_ts": 1740042000000,
+      "max_ts": 1795694400000
+    },
+    "PIEVERSE-USDT-SWAP": {
+      "live": true,
+      "listTime": "1763263801177",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 18018,
+      "n4": 2252,
+      "n_fund": 553,
+      "min_ts": 1763263800000,
+      "max_ts": 1795694400000
+    },
+    "PIPPIN-USDT-SWAP": {
+      "live": true,
+      "listTime": "1764687600000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 17227,
+      "n4": 2153,
+      "n_fund": 553,
+      "min_ts": 1764687600000,
+      "max_ts": 1795694400000
+    },
+    "PLUME-USDT-SWAP": {
+      "live": true,
+      "listTime": "1746689400330",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 27226,
+      "n4": 3403,
+      "n_fund": 553,
+      "min_ts": 1746689400000,
+      "max_ts": 1795694400000
+    },
+    "PNUT-USDT-SWAP": {
+      "live": true,
+      "listTime": "1731382200304",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 35730,
+      "n4": 4466,
+      "n_fund": 553,
+      "min_ts": 1731382200000,
+      "max_ts": 1795694400000
+    },
+    "POL-USDT-SWAP": {
+      "live": true,
+      "listTime": "1727166600128",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 38072,
+      "n4": 4758,
+      "n_fund": 553,
+      "min_ts": 1727166600000,
+      "max_ts": 1795694400000
+    },
+    "PONS-USDT-SWAP": {
+      "live": true,
+      "listTime": "1788577200000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 3955,
+      "n4": 494,
+      "n_fund": 495,
+      "min_ts": 1788577200000,
+      "max_ts": 1795694400000
+    },
+    "POPCAT-USDT-SWAP": {
+      "live": true,
+      "listTime": "1724922000651",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 39319,
+      "n4": 4914,
+      "n_fund": 553,
+      "min_ts": 1724922000000,
+      "max_ts": 1795694400000
+    },
+    "PROS-USDT-SWAP": {
+      "live": true,
+      "listTime": "1777384800000",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 10173,
+      "n4": 1271,
+      "n_fund": 553,
+      "min_ts": 1777384800000,
+      "max_ts": 1795694400000
+    },
+    "PROVE-USDT-SWAP": {
+      "live": true,
+      "listTime": "1760700601003",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 19442,
+      "n4": 2430,
+      "n_fund": 553,
+      "min_ts": 1760700600000,
+      "max_ts": 1795694400000
+    },
+    "PUMP-USDT-SWAP": {
+      "live": true,
+      "listTime": "1752514200381",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 1000.0,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 23990,
+      "n4": 2998,
+      "n_fund": 436,
+      "min_ts": 1752514200000,
+      "max_ts": 1795694400000
+    },
+    "PYTH-USDT-SWAP": {
+      "live": true,
+      "listTime": "1700492100712",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 52892,
+      "n4": 6611,
+      "n_fund": 553,
+      "min_ts": 1700490600000,
+      "max_ts": 1795694400000
+    },
+    "QTUM-USDT-SWAP": {
+      "live": true,
+      "listTime": "1587463971000",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 114739,
+      "n4": 14342,
+      "n_fund": 553,
+      "min_ts": 1589166000000,
+      "max_ts": 1795694400000
+    },
+    "QUANT-USDT-SWAP": {
+      "live": true,
+      "listTime": "1790841600000",
+      "spec": {
+        "tickSz": 0.1,
+        "ctVal": 0.01,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 2697,
+      "n4": 337,
+      "n_fund": 337,
+      "min_ts": 1790841600000,
+      "max_ts": 1795694400000
+    },
+    "RAVE-USDT-SWAP": {
+      "live": true,
+      "listTime": "1765785600000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 0.01,
+        "maxLever": 20.0
+      },
+      "n30": 16617,
+      "n4": 2077,
+      "n_fund": 553,
+      "min_ts": 1765785600000,
+      "max_ts": 1795694400000
+    },
+    "RAY-USDT-SWAP": {
+      "live": true,
+      "listTime": "1710239100609",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 47477,
+      "n4": 5934,
+      "n_fund": 276,
+      "min_ts": 1710237600000,
+      "max_ts": 1795694400000
+    },
+    "RE-USDT-SWAP": {
+      "live": true,
+      "listTime": "1781692200000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 7780,
+      "n4": 972,
+      "n_fund": 553,
+      "min_ts": 1781692200000,
+      "max_ts": 1795694400000
+    },
+    "RECALL-USDT-SWAP": {
+      "live": true,
+      "listTime": "1761819300976",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 18821,
+      "n4": 2352,
+      "n_fund": 553,
+      "min_ts": 1761818400000,
+      "max_ts": 1795694400000
+    },
+    "RENDER-USDT-SWAP": {
+      "live": true,
+      "listTime": "1723105800136",
+      "spec": {
+        "tickSz": 0.001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 40328,
+      "n4": 5040,
+      "n_fund": 553,
+      "min_ts": 1723105800000,
+      "max_ts": 1795694400000
+    },
+    "RESOLV-USDT-SWAP": {
+      "live": true,
+      "listTime": "1749565800438",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 25628,
+      "n4": 3203,
+      "n_fund": 553,
+      "min_ts": 1749565800000,
+      "max_ts": 1795694400000
+    },
+    "RIVER-USDT-SWAP": {
+      "live": true,
+      "listTime": "1767942000000",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 0.1,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 15419,
+      "n4": 1927,
+      "n_fund": 553,
+      "min_ts": 1767942000000,
+      "max_ts": 1795694400000
+    },
+    "RLS-USDT-SWAP": {
+      "live": true,
+      "listTime": "1764688500000",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 17227,
+      "n4": 2153,
+      "n_fund": 553,
+      "min_ts": 1764687600000,
+      "max_ts": 1795694400000
+    },
+    "ROBO-USDT-SWAP": {
+      "live": true,
+      "listTime": "1772206200000",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 13050,
+      "n4": 1631,
+      "n_fund": 553,
+      "min_ts": 1772206200000,
+      "max_ts": 1795694400000
+    },
+    "RSR-USDT-SWAP": {
+      "live": true,
+      "listTime": "1599646371000",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 108918,
+      "n4": 13614,
+      "n_fund": 421,
+      "min_ts": 1599643800000,
+      "max_ts": 1795694400000
+    },
+    "RVN-USDT-SWAP": {
+      "live": false,
+      "listTime": null,
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 97520,
+      "n4": 12189,
+      "n_fund": 0,
+      "min_ts": 1619157600000,
+      "max_ts": 1794691800000
+    },
+    "S-USDT-SWAP": {
+      "live": true,
+      "listTime": "1737450000523",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 32359,
+      "n4": 4044,
+      "n_fund": 553,
+      "min_ts": 1737450000000,
+      "max_ts": 1795694400000
+    },
+    "SAHARA-USDT-SWAP": {
+      "live": true,
+      "listTime": "1750941000359",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 24864,
+      "n4": 3107,
+      "n_fund": 553,
+      "min_ts": 1750941000000,
+      "max_ts": 1795694400000
+    },
+    "SAND-USDT-SWAP": {
+      "live": true,
+      "listTime": "1617354000000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 99082,
+      "n4": 12385,
+      "n_fund": 441,
+      "min_ts": 1617348600000,
+      "max_ts": 1795694400000
+    },
+    "SAPIEN-USDT-SWAP": {
+      "live": true,
+      "listTime": "1762429500524",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 18482,
+      "n4": 2310,
+      "n_fund": 553,
+      "min_ts": 1762428600000,
+      "max_ts": 1795694400000
+    },
+    "SATS-USDT-SWAP": {
+      "live": true,
+      "listTime": "1702889700612",
+      "spec": {
+        "tickSz": 1e-12,
+        "ctVal": 10000000.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 51560,
+      "n4": 6444,
+      "n_fund": 276,
+      "min_ts": 1702888200000,
+      "max_ts": 1795694400000
+    },
+    "SEI-USDT-SWAP": {
+      "live": true,
+      "listTime": "1763105401238",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 18106,
+      "n4": 2263,
+      "n_fund": 553,
+      "min_ts": 1763105400000,
+      "max_ts": 1795694400000
+    },
+    "SENT-USDT-SWAP": {
+      "live": true,
+      "listTime": "1763132401716",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 18091,
+      "n4": 2261,
+      "n_fund": 553,
+      "min_ts": 1763132400000,
+      "max_ts": 1795694400000
+    },
+    "SHELL-USDT-SWAP": {
+      "live": true,
+      "listTime": "1740657600557",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 30577,
+      "n4": 3822,
+      "n_fund": 553,
+      "min_ts": 1740657600000,
+      "max_ts": 1795694400000
+    },
+    "SHIB-USDT-SWAP": {
+      "live": true,
+      "listTime": "1620550800000",
+      "spec": {
+        "tickSz": 1e-09,
+        "ctVal": 1000000.0,
+        "lotSz": 0.1,
+        "maxLever": 50.0
+      },
+      "n30": 97310,
+      "n4": 12163,
+      "n_fund": 276,
+      "min_ts": 1620538200000,
+      "max_ts": 1795694400000
+    },
+    "SIGN-USDT-SWAP": {
+      "live": true,
+      "listTime": "1745839800340",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 27698,
+      "n4": 3462,
+      "n_fund": 553,
+      "min_ts": 1745839800000,
+      "max_ts": 1795694400000
+    },
+    "SKY-USDT-SWAP": {
+      "live": true,
+      "listTime": "1757590200404",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 21170,
+      "n4": 2646,
+      "n_fund": 553,
+      "min_ts": 1757590200000,
+      "max_ts": 1795694400000
+    },
+    "SLX-USDT-SWAP": {
+      "live": true,
+      "listTime": "1780291800000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 8558,
+      "n4": 1069,
+      "n_fund": 553,
+      "min_ts": 1780291800000,
+      "max_ts": 1795694400000
+    },
+    "SNX-USDT-SWAP": {
+      "live": true,
+      "listTime": "1598004771000",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 109840,
+      "n4": 13729,
+      "n_fund": 276,
+      "min_ts": 1597984200000,
+      "max_ts": 1795694400000
+    },
+    "SOL-USDT-SWAP": {
+      "live": true,
+      "listTime": "1611298800000",
+      "spec": {
+        "tickSz": 0.01,
+        "ctVal": 1.0,
+        "lotSz": 0.01,
+        "maxLever": 100.0
+      },
+      "n30": 102444,
+      "n4": 12805,
+      "n_fund": 276,
+      "min_ts": 1611297000000,
+      "max_ts": 1795694400000
+    },
+    "SOON-USDT-SWAP": {
+      "live": true,
+      "listTime": "1747999800456",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 10.0,
+        "lotSz": 0.1,
+        "maxLever": 20.0
+      },
+      "n30": 26498,
+      "n4": 3312,
+      "n_fund": 553,
+      "min_ts": 1747999800000,
+      "max_ts": 1795694400000
+    },
+    "SOPH-USDT-SWAP": {
+      "live": true,
+      "listTime": "1748439000413",
+      "spec": {
+        "tickSz": 1e-07,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 26254,
+      "n4": 3281,
+      "n_fund": 594,
+      "min_ts": 1748439000000,
+      "max_ts": 1795694400000
+    },
+    "SPACE-USDT-SWAP": {
+      "live": true,
+      "listTime": "1769173200000",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 14735,
+      "n4": 1841,
+      "n_fund": 553,
+      "min_ts": 1769173200000,
+      "max_ts": 1795694400000
+    },
+    "SPK-USDT-SWAP": {
+      "live": true,
+      "listTime": "1750156200346",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 25300,
+      "n4": 3162,
+      "n_fund": 553,
+      "min_ts": 1750156200000,
+      "max_ts": 1795694400000
+    },
+    "SPX-USDT-SWAP": {
+      "live": true,
+      "listTime": "1752728400453",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 23871,
+      "n4": 2983,
+      "n_fund": 553,
+      "min_ts": 1752728400000,
+      "max_ts": 1795694400000
+    },
+    "SSV-USDT-SWAP": {
+      "live": true,
+      "listTime": "1700711700717",
+      "spec": {
+        "tickSz": 0.001,
+        "ctVal": 0.1,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 52770,
+      "n4": 6596,
+      "n_fund": 276,
+      "min_ts": 1700710200000,
+      "max_ts": 1795694400000
+    },
+    "STABLE-USDT-SWAP": {
+      "live": true,
+      "listTime": "1765200600000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 16942,
+      "n4": 2117,
+      "n_fund": 553,
+      "min_ts": 1765200600000,
+      "max_ts": 1795694400000
+    },
+    "STRK-USDT-SWAP": {
+      "live": true,
+      "listTime": "1708433700141",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 48480,
+      "n4": 6059,
+      "n_fund": 553,
+      "min_ts": 1708432200000,
+      "max_ts": 1795694400000
+    },
+    "STX-USDT-SWAP": {
+      "live": true,
+      "listTime": "1676969758164",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 10.0,
+        "lotSz": 0.1,
+        "maxLever": 20.0
+      },
+      "n30": 65960,
+      "n4": 8244,
+      "n_fund": 276,
+      "min_ts": 1676968200000,
+      "max_ts": 1795694400000
+    },
+    "SUI-USDT-SWAP": {
+      "live": true,
+      "listTime": "1683258900891",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 62466,
+      "n4": 7808,
+      "n_fund": 276,
+      "min_ts": 1683257400000,
+      "max_ts": 1795694400000
+    },
+    "SUSHI-USDT-SWAP": {
+      "live": true,
+      "listTime": "1599041571000",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 109201,
+      "n4": 13650,
+      "n_fund": 276,
+      "min_ts": 1599134400000,
+      "max_ts": 1795694400000
+    },
+    "SYRUP-USDT-SWAP": {
+      "live": true,
+      "listTime": "1751524200291",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 24540,
+      "n4": 3067,
+      "n_fund": 553,
+      "min_ts": 1751524200000,
+      "max_ts": 1795694400000
+    },
+    "TAO-USDT-SWAP": {
+      "live": true,
+      "listTime": "1726808400182",
+      "spec": {
+        "tickSz": 0.01,
+        "ctVal": 0.01,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 38271,
+      "n4": 4783,
+      "n_fund": 276,
+      "min_ts": 1726808400000,
+      "max_ts": 1795694400000
+    },
+    "THETA-USDT-SWAP": {
+      "live": true,
+      "listTime": "1587463971000",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 10.0,
+        "lotSz": 0.1,
+        "maxLever": 10.0
+      },
+      "n30": 113054,
+      "n4": 14131,
+      "n_fund": 276,
+      "min_ts": 1592199000000,
+      "max_ts": 1795694400000
+    },
+    "TIA-USDT-SWAP": {
+      "live": true,
+      "listTime": "1698776700675",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 53845,
+      "n4": 6730,
+      "n_fund": 553,
+      "min_ts": 1698775200000,
+      "max_ts": 1795694400000
+    },
+    "TRB-USDT-SWAP": {
+      "live": true,
+      "listTime": "1599559971000",
+      "spec": {
+        "tickSz": 0.01,
+        "ctVal": 0.1,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 108970,
+      "n4": 13621,
+      "n_fund": 553,
+      "min_ts": 1599550200000,
+      "max_ts": 1795694400000
+    },
+    "TRIA-USDT-SWAP": {
+      "live": true,
+      "listTime": "1770276600000",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 14122,
+      "n4": 1765,
+      "n_fund": 553,
+      "min_ts": 1770276600000,
+      "max_ts": 1795694400000
+    },
+    "TRUMP-USDT-SWAP": {
+      "live": true,
+      "listTime": "1737264604112",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 0.1,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 32462,
+      "n4": 4057,
+      "n_fund": 553,
+      "min_ts": 1737264600000,
+      "max_ts": 1795694400000
+    },
+    "TRUST-USDT-SWAP": {
+      "live": true,
+      "listTime": "1762342200957",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 18530,
+      "n4": 2316,
+      "n_fund": 553,
+      "min_ts": 1762342200000,
+      "max_ts": 1795694400000
+    },
+    "TRUTH-USDT-SWAP": {
+      "live": true,
+      "listTime": "1764329400000",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 17426,
+      "n4": 2178,
+      "n_fund": 553,
+      "min_ts": 1764329400000,
+      "max_ts": 1795694400000
+    },
+    "TRX-USDT-SWAP": {
+      "live": true,
+      "listTime": "1573557408000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 1000.0,
+        "lotSz": 0.01,
+        "maxLever": 50.0
+      },
+      "n30": 121033,
+      "n4": 15129,
+      "n_fund": 276,
+      "min_ts": 1577836800000,
+      "max_ts": 1795694400000
+    },
+    "TURBO-USDT-SWAP": {
+      "live": true,
+      "listTime": "1702547700612",
+      "spec": {
+        "tickSz": 1e-07,
+        "ctVal": 10000.0,
+        "lotSz": 0.1,
+        "maxLever": 20.0
+      },
+      "n30": 51750,
+      "n4": 6468,
+      "n_fund": 553,
+      "min_ts": 1702546200000,
+      "max_ts": 1795694400000
+    },
+    "UB-USDT-SWAP": {
+      "live": true,
+      "listTime": "1777383000000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 10174,
+      "n4": 1271,
+      "n_fund": 553,
+      "min_ts": 1777383000000,
+      "max_ts": 1795694400000
+    },
+    "UMA-USDT-SWAP": {
+      "live": true,
+      "listTime": "1599214371000",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 0.1,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 109164,
+      "n4": 13645,
+      "n_fund": 553,
+      "min_ts": 1599201000000,
+      "max_ts": 1795694400000
+    },
+    "UNI-USDT-SWAP": {
+      "live": true,
+      "listTime": "1600317000000",
+      "spec": {
+        "tickSz": 0.001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 108545,
+      "n4": 13568,
+      "n_fund": 276,
+      "min_ts": 1600315200000,
+      "max_ts": 1795694400000
+    },
+    "UP-USDT-SWAP": {
+      "live": true,
+      "listTime": "1775646000000",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 11139,
+      "n4": 1392,
+      "n_fund": 553,
+      "min_ts": 1775646000000,
+      "max_ts": 1795694400000
+    },
+    "USELESS-USDT-SWAP": {
+      "live": true,
+      "listTime": "1753437600380",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 23477,
+      "n4": 2934,
+      "n_fund": 553,
+      "min_ts": 1753437600000,
+      "max_ts": 1795694400000
+    },
+    "VANA-USDT-SWAP": {
+      "live": true,
+      "listTime": "1734408000582",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 0.1,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 34049,
+      "n4": 4256,
+      "n_fund": 553,
+      "min_ts": 1734408000000,
+      "max_ts": 1795694400000
+    },
+    "VIRTUAL-USDT-SWAP": {
+      "live": true,
+      "listTime": "1733911200140",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 34325,
+      "n4": 4290,
+      "n_fund": 553,
+      "min_ts": 1733911200000,
+      "max_ts": 1795694400000
+    },
+    "VVV-USDT-SWAP": {
+      "live": true,
+      "listTime": "1783058400000",
+      "spec": {
+        "tickSz": 0.001,
+        "ctVal": 0.1,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 7021,
+      "n4": 877,
+      "n_fund": 553,
+      "min_ts": 1783058400000,
+      "max_ts": 1795694400000
+    },
+    "W-USDT-SWAP": {
+      "live": true,
+      "listTime": "1712147100572",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 46417,
+      "n4": 5802,
+      "n_fund": 553,
+      "min_ts": 1712145600000,
+      "max_ts": 1795694400000
+    },
+    "WAL-USDT-SWAP": {
+      "live": true,
+      "listTime": "1746687600526",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 27227,
+      "n4": 3403,
+      "n_fund": 553,
+      "min_ts": 1746687600000,
+      "max_ts": 1795694400000
+    },
+    "WCT-USDT-SWAP": {
+      "live": true,
+      "listTime": "1744716600433",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 28322,
+      "n4": 3540,
+      "n_fund": 553,
+      "min_ts": 1744716600000,
+      "max_ts": 1795694400000
+    },
+    "WET-USDT-SWAP": {
+      "live": true,
+      "listTime": "1765296000000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 16889,
+      "n4": 2111,
+      "n_fund": 553,
+      "min_ts": 1765296000000,
+      "max_ts": 1795694400000
+    },
+    "WIF-USDT-SWAP": {
+      "live": true,
+      "listTime": "1713173100603",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 45847,
+      "n4": 5730,
+      "n_fund": 553,
+      "min_ts": 1713171600000,
+      "max_ts": 1795694400000
+    },
+    "WLD-USDT-SWAP": {
+      "live": true,
+      "listTime": "1690199721595",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 58610,
+      "n4": 7326,
+      "n_fund": 276,
+      "min_ts": 1690198200000,
+      "max_ts": 1795694400000
+    },
+    "WLFI-USDT-SWAP": {
+      "live": true,
+      "listTime": "1755954000424",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 22079,
+      "n4": 2759,
+      "n_fund": 553,
+      "min_ts": 1755954000000,
+      "max_ts": 1795694400000
+    },
+    "WOO-USDT-SWAP": {
+      "live": true,
+      "listTime": "1676357700337",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 66300,
+      "n4": 8287,
+      "n_fund": 276,
+      "min_ts": 1676356200000,
+      "max_ts": 1795694400000
+    },
+    "XDP-USDT-SWAP": {
+      "live": true,
+      "listTime": "1790604000000",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 2829,
+      "n4": 353,
+      "n_fund": 358,
+      "min_ts": 1790604000000,
+      "max_ts": 1795694400000
+    },
+    "XLM-USDT-SWAP": {
+      "live": true,
+      "listTime": "1587463971000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 100.0,
+        "lotSz": 0.1,
+        "maxLever": 50.0
+      },
+      "n30": 114739,
+      "n4": 14342,
+      "n_fund": 276,
+      "min_ts": 1589166000000,
+      "max_ts": 1795694400000
+    },
+    "XPL-USDT-SWAP": {
+      "live": true,
+      "listTime": "1756378800384",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 21843,
+      "n4": 2730,
+      "n_fund": 553,
+      "min_ts": 1756378800000,
+      "max_ts": 1795694400000
+    },
+    "XRP-USDT-SWAP": {
+      "live": true,
+      "listTime": "1573557408000",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 100.0,
+        "lotSz": 0.01,
+        "maxLever": 100.0
+      },
+      "n30": 121081,
+      "n4": 15135,
+      "n_fund": 276,
+      "min_ts": 1577750400000,
+      "max_ts": 1795694400000
+    },
+    "XTZ-USDT-SWAP": {
+      "live": true,
+      "listTime": "1587463971000",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 115646,
+      "n4": 14455,
+      "n_fund": 276,
+      "min_ts": 1587533400000,
+      "max_ts": 1795694400000
+    },
+    "YB-USDT-SWAP": {
+      "live": true,
+      "listTime": "1760252400368",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 19691,
+      "n4": 2461,
+      "n_fund": 563,
+      "min_ts": 1760252400000,
+      "max_ts": 1795694400000
+    },
+    "YFI-USDT-SWAP": {
+      "live": true,
+      "listTime": "1599041571000",
+      "spec": {
+        "tickSz": 1.0,
+        "ctVal": 0.0001,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 109260,
+      "n4": 13657,
+      "n_fund": 276,
+      "min_ts": 1599028200000,
+      "max_ts": 1795694400000
+    },
+    "YGG-USDT-SWAP": {
+      "live": true,
+      "listTime": "1628240400000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 93033,
+      "n4": 11629,
+      "n_fund": 553,
+      "min_ts": 1628236800000,
+      "max_ts": 1795694400000
+    },
+    "ZAMA-USDT-SWAP": {
+      "live": true,
+      "listTime": "1767969000000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 15404,
+      "n4": 1925,
+      "n_fund": 553,
+      "min_ts": 1767969000000,
+      "max_ts": 1795694400000
+    },
+    "ZBT-USDT-SWAP": {
+      "live": true,
+      "listTime": "1760700600342",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 19442,
+      "n4": 2430,
+      "n_fund": 553,
+      "min_ts": 1760700600000,
+      "max_ts": 1795694400000
+    },
+    "ZEC-USDT-SWAP": {
+      "live": true,
+      "listTime": "1762398900578",
+      "spec": {
+        "tickSz": 0.01,
+        "ctVal": 0.01,
+        "lotSz": 1.0,
+        "maxLever": 75.0
+      },
+      "n30": 18499,
+      "n4": 2312,
+      "n_fund": 276,
+      "min_ts": 1762398000000,
+      "max_ts": 1795694400000
+    },
+    "ZEN-USDT-SWAP": {
+      "live": true,
+      "listTime": "1762149601773",
+      "spec": {
+        "tickSz": 0.001,
+        "ctVal": 0.1,
+        "lotSz": 1.0,
+        "maxLever": 50.0
+      },
+      "n30": 18637,
+      "n4": 2329,
+      "n_fund": 553,
+      "min_ts": 1762149600000,
+      "max_ts": 1795694400000
+    },
+    "ZETA-USDT-SWAP": {
+      "live": true,
+      "listTime": "1706757900607",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 49411,
+      "n4": 6176,
+      "n_fund": 553,
+      "min_ts": 1706756400000,
+      "max_ts": 1795694400000
+    },
+    "ZIL-USDT-SWAP": {
+      "live": true,
+      "listTime": "1599646371000",
+      "spec": {
+        "tickSz": 1e-07,
+        "ctVal": 100.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 108918,
+      "n4": 13614,
+      "n_fund": 553,
+      "min_ts": 1599643800000,
+      "max_ts": 1795694400000
+    },
+    "ZK-USDT-SWAP": {
+      "live": true,
+      "listTime": "1718699100579",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 42777,
+      "n4": 5347,
+      "n_fund": 553,
+      "min_ts": 1718697600000,
+      "max_ts": 1795694400000
+    },
+    "ZKP-USDT-SWAP": {
+      "live": true,
+      "listTime": "1767793500000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 15502,
+      "n4": 1937,
+      "n_fund": 560,
+      "min_ts": 1767792600000,
+      "max_ts": 1795694400000
+    },
+    "ZORA-USDT-SWAP": {
+      "live": true,
+      "listTime": "1760095801229",
+      "spec": {
+        "tickSz": 1e-06,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 19778,
+      "n4": 2472,
+      "n_fund": 559,
+      "min_ts": 1760095800000,
+      "max_ts": 1795694400000
+    },
+    "ZRO-USDT-SWAP": {
+      "live": true,
+      "listTime": "1718886300653",
+      "spec": {
+        "tickSz": 0.0001,
+        "ctVal": 1.0,
+        "lotSz": 1.0,
+        "maxLever": 20.0
+      },
+      "n30": 42673,
+      "n4": 5334,
+      "n_fund": 553,
+      "min_ts": 1718884800000,
+      "max_ts": 1795694400000
+    },
+    "ZRX-USDT-SWAP": {
+      "live": true,
+      "listTime": "1598004771000",
+      "spec": {
+        "tickSz": 1e-05,
+        "ctVal": 10.0,
+        "lotSz": 1.0,
+        "maxLever": 10.0
+      },
+      "n30": 109840,
+      "n4": 13729,
+      "n_fund": 553,
+      "min_ts": 1597984200000,
+      "max_ts": 1795694400000
+    }
+  }
+}

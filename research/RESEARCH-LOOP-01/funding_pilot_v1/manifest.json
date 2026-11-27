@@ -1,0 +1,68 @@
+{
+  "research_id": "RESEARCH-LOOP-01",
+  "version": "v1.1-funding-pilot",
+  "stage": "pilot_single_contract_month_for_schema_and_parser_verification",
+  "worker": "策略組",
+  "created_utc": "2026-11-27T02:13:54.857099+00:00",
+  "original_source_urls": [
+    "https://www.okx.com/cdn/okex/traderecords/fundingrate/monthly/{YYYYMM}/allswap-fundingrate-{YYYY}-{MM}.zip",
+    "https://www.okx.com/api/v5/public/funding-rate-history"
+  ],
+  "full_archive_window_utc": "2023-01-01T00:00:00Z ~ 2026-11-26T12:00:00Z",
+  "pilot_sample_window_utc": "2025-10-01T00:00:00Z ~ 2025-10-31T16:00:00Z",
+  "timezone": "UTC",
+  "columns_and_units": {
+    "inst_id": "OKX USDT-margined perpetual swap instrument ID (string)",
+    "funding_time_ms": "Original OKX fundingTime in Unix epoch milliseconds (UTC)",
+    "funding_time_utc": "ISO-8601 UTC timestamp derived from funding_time_ms",
+    "ts_snapped_ms": "Grid-snapped settlement timestamp in Unix epoch milliseconds (UTC)",
+    "ts_snapped_utc": "ISO-8601 UTC timestamp derived from ts_snapped_ms",
+    "funding_rate": "Per-settlement funding rate as decimal (e.g. 0.0001 = 0.01% = 1 bps)",
+    "is_8h_grid": "Boolean ('true' if ts_snapped_ms % 28800000 == 0, else 'false' for non-8H settlement frequency)",
+    "source_ym": "Origin archive month tag (YYYY-MM) or 'l1_backfill' for public REST backfill"
+  },
+  "universe": {
+    "id": "EX_USDC_286",
+    "symbol_count": 286,
+    "excluded": [
+      "USDC-USDT-SWAP"
+    ],
+    "historical_delisted_preserved": true,
+    "file_relative_path": "research/RESEARCH-LOOP-01/funding_pilot_v1/ex_usdc_286_universe.json"
+  },
+  "source_sqlite_hashes": {
+    "b6_isolated_funding_sqlite_sha256": "dc547b1c6a8031ce730743d542277f11561f95263dd48f22a18017e3f5163c1b",
+    "l1_isolated_funding_sqlite_sha256": "23ebdab561d5fa48ae34394b451d55b97d3e09af4e8a8809eef93422c40783cc",
+    "l1_db_total_rows": 829157,
+    "l1_db_distinct_instruments": 270
+  },
+  "gap_and_dedup_policy": {
+    "primary_key_dedup": "(inst_id, ts_snapped_ms)",
+    "missing_8h_handling": "Missing 8H grid events are recorded as miss_8h, NOT zero-filled, NOT interpolated, and NOT excluded from position holding; missing funding still impacts cashflow so performance is conditional rather than full net performance.",
+    "non_8h_denominator_note": "Cross-frequency (non-8H, e.g. 1H/2H/4H) historical funding schedule denominator completeness is unverified and tracked separately."
+  },
+  "files": [
+    {
+      "role": "pilot_funding_sample",
+      "inst_id": "SOL-USDT-SWAP",
+      "month": "2025-10",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_pilot_v1/SOL-USDT-SWAP_2025-10.csv",
+      "download_url": "https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/main/research/RESEARCH-LOOP-01/funding_pilot_v1/SOL-USDT-SWAP_2025-10.csv",
+      "sha256": "310dcb1719f44e1074ade758af379d44d3da1940fda57d972806aa0f55bc075c",
+      "bytes": 10811,
+      "row_count": 93,
+      "grid_8h_expected": 93,
+      "grid_8h_present": 93,
+      "grid_8h_missing_count": 0,
+      "grid_8h_missing_ms": [],
+      "non_8h_event_count": 0
+    },
+    {
+      "role": "universe_manifest",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_pilot_v1/ex_usdc_286_universe.json",
+      "download_url": "https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/main/research/RESEARCH-LOOP-01/funding_pilot_v1/ex_usdc_286_universe.json",
+      "sha256": "9b417c3c7ebf15f7454cf960ab9f356abdedca120b5201dbe0c4e8f53e0abe69",
+      "bytes": 93579
+    }
+  ]
+}
