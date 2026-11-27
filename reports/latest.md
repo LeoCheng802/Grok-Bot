@@ -2,53 +2,21 @@
 
 這是 Issue #1 最新一筆擁有者回報，供 ChatGPT 優先閱讀。
 
-- **時間（Asia/Taipei）**: 2026-11-27 11:32:55
-- **角色**: 復盤
-- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7209076758
+- **時間（Asia/Taipei）**: 2026-11-27 12:19:22
+- **角色**: 一般
+- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7209704146
 
-<!-- comment_id: 7209076758 -->
+<!-- comment_id: 7209704146 -->
 
-[復盤] RESEARCH-LOOP-01 v1.3｜全庫資金費 61 分片＋持倉名冊已上傳（commit `94348bd5`）、零重跑補正與新多單結構提案
+[ChatGPT研究交接] RESEARCH-LOOP-01 v1.4｜61 分片本端驗收／事件名冊限制／新多單提案決定
+復盤／策略組：已讀 #7209076758，以下為新增本端驗證，不重派已完成工作。
 
-- **角色**：復盤（總召／獨立覆核）
-- **研究編號／版本**：`RESEARCH-LOOP-01 v1.3`（承接 `#7208941231`）｜公開全庫分片 `funding_archive_v1`｜`LONG-LOOP-01 v1.1-corrected`｜新多單結構構想 `LONG-STRUCT-01`（僅提案，未執行）
-- **時間與時區**：2026-11-27 11:34（Asia/Taipei, UTC+8）
-- **資料截止**：資金費歸檔 `2021-08`～`2026-11`（`EX_USDC_286`、`2023-01-01`～`2026-11-26 12:00 UTC` 為本輪研究區間；全程 **0 新增策略 replay**、未重抓資金費、未補零、未公開完整策略／風控碼或憑證）
-- **各交付狀態總覽**：
-  - `funding_pilot_v1`（commit `8bf4c15ed50d5dc3f1f66a01dd3df83f5521b668`）：`ChatGPT 已取得驗證`
-  - `funding_mixed_shard_v1`（commit `9b3d93768c1581b985bf01283af353d59c9f93cc`）：`ChatGPT 已取得驗證`
-  - `funding_archive_v1`（commit `94348bd549b35c1dd9d6f4e91f337c1764d17749`）：`已上傳，待 ChatGPT 取得驗證`
-  - 私人離線包 `RESEARCH-LOOP-01-PACK v1.1`（20 檔，`136,828` bytes，SHA-256 `87dc925b8025c3bcaba87debb4d1bf8a86b794a8e47921f6ac2208b04e17da0d`）：`待收（僅走私人交付，不公開）`
-  - `LONG-LOOP-01`：`四組負結果封存 NO-GO，停止原結構參數掃描；已完成零重跑補正與 BTC 1D 時間可用性稽核`
+1. 已實際下載固定 commit 94348bd549b35c1dd9d6f4e91f337c1764d17749 的全部 61 個 csv.gz，逐檔重算壓縮／解壓 SHA-256、大小與列數均符合 manifest，全部可解析，合計 829157 列、270 標的；跨分片 (inst_id,raw_time) 及 (inst_id,snap_time) 重複鍵均 0。3 份 JSON 大小／SHA 亦符合回報。可標「ChatGPT 已取得並驗證全套交付一致性」，不標完整來源真值、應收費率覆蓋或績效已重現。2021-10／11／12 不在清單，位於本輪 2023 起窗口之外；長期對照要明列，不因本驗收補抓或重跑。
 
----
+2. 本端解析 2026-01 分片 33747 列、15526 筆非 8H 網格；FLOW 639 列，相鄰間隔 604 個 1H、34 個 4H。這證明已交檔觀測間隔，仍不等於歷史官方應有頻率或無漏收。held_position_funding_roster.json 是各臂彙總／部分 top10，沒有可重新匹配的逐事件持倉鍵與時間，不能視作已交完整事件名冊或據此核定覆蓋率；null/unknown 揭露保留。不要求從未保存結果憑空補造或重跑。待同版引擎與離線持倉輸入實體到手，在本端必要重現時一併產出去識別事件鍵、持倉區間、raw/snap 配對與缺口；現有資料如已保存可引用交付，否則列未保存。
 
-### 1. 既有資金費全庫 61 分片＋實際持倉資金費名冊（經復盤獨立驗證 HTTP 200、大小、雜湊與零路徑／憑證洩漏）
-- **固定 Commit**：[`94348bd549b35c1dd9d6f4e91f337c1764d17749`](https://github.com/LeoCheng802/Grok-Bot/commit/94348bd549b35c1dd9d6f4e91f337c1764d17749)（目錄 `research/RESEARCH-LOOP-01/funding_archive_v1/`，共新增 64 檔：61 個月度 `.csv.gz` 分片 `2021-08`～`2026-11` 共 `829,157` 筆、`9.33 MB` ＋ 3 份 JSON；前兩批已驗證試點未更動、未重複上傳）
-- **[manifest.json](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/94348bd549b35c1dd9d6f4e91f337c1764d17749/research/RESEARCH-LOOP-01/funding_archive_v1/manifest.json)**（`56,529` bytes，SHA-256 `a1f2c2f878885159a4bd756ddc4b9333b2ab1d696a49dfa2f3964bf02b2a1a02`；含全部 61 分片 `sha256_gz`／`sha256_csv_uncompressed`／大小／重複鍵／`source_ym` 與間隔分佈）
-- **[held_position_funding_roster.json](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/94348bd549b35c1dd9d6f4e91f337c1764d17749/research/RESEARCH-LOOP-01/funding_archive_v1/held_position_funding_roster.json)**（`5,013` bytes，SHA-256 `0a8df637e2921a2a8e99fb4749ef71c202f8d53da29686036b186fd01e7ae51e`；僅從既有已存輸出彙整 L1 `off` 與 `LONG-LOOP-01` 各臂之 `observed_8h`、`observed_non_8h`、`miss_8h` 與已記錄缺口標的；未序列化欄位標 `null`／`unknown`）
-- **抽樣驗證混合頻率分片**：[funding_2026-01.csv.gz](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/94348bd549b35c1dd9d6f4e91f337c1764d17749/research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2026-01.csv.gz)（`350,638` bytes，SHA-256 `d5bc36bcc1f3fa40920cb5526fa96be970379cee563626e250ded7acdda91930`，`33,747` 筆含 `15,526` 筆非 8H，實際間隔 `1h: 4,451 / 4h: 23,115 / 8h: 5,957`）。所有分片均保留 `funding_time_ms` 與 `ts_snapped_ms`，並區分「8H 網格空格 `miss_8h`」、「已觀測結算事件（8H／非 8H）」與「非 8H 實際應收分母 `unknown`」。
+3. BTC availability JSON 的 9 筆邊界例，本端重算 UTC+8 day、open+24h、close<=signal 算術全部符合。全窗8554筆與實際程式選列仍為對方自述，缺 BTC 原始輸入／同版引擎不能獨立核定；available_after=open+24h 是名目收盤可用假設，不是網路實際收到時間。邊界0ms與腳本至少2秒/confirm檢查不證實零延遲可用，不能拿來抵銷既有首棒撮合敏感度。只保留此限制，不重啟前瞻或新增全期測試。月度／曝險改null可接受為報告修正口徑，完整更正版實體仍待交付，不稱已重現。
 
----
+4. LONG-STRUCT-01 允許先做一份有限預登記規格，不開掃描。逆選擇是待驗假設，0.625R本身不能證明負期望，TP>=1.5SL亦不保證改善。所提「掃尾進場+ATR退出+時間停損」同改多項，請先只定義一個限價進場結構，固定其餘可比條件；ATR退出與時間停損另列未測，不混成單因素改善。明定僅用已可得資料的掃尾/回收判準、限價委託何時生效及到期，不能看到回收確認後倒填先前低點成交。列去重依據與一個固定參數版本，待同版可重現材料到手再核定最小測試，原F4V3負結果基準保留。
 
-### 2. `LONG-LOOP-01` 零重跑補正與 BTC `1D` 時間可用性稽核
-- **更正版輸出（未重跑、保留原檔）**：
-  - 原檔 `long_loop_01_result.json`（`17,678` bytes，SHA-256 `c8e551cc4e9b8f28aa6511762e71762d4ecf4434b2032cd86c216e7f1bc655d8`，未動）
-  - 更正版 `long_loop_01_result_v1_1_corrected.json`（`21,315` bytes，SHA-256 `2f892a1fd18a0823db25c00c076cc005bebff28ec01f16274d2b8ddadf85ad52`）：復盤已確認無法自原檔恢復的 `exposure`、`monthly_summary`、`by_month` 皆已改為 `null` 並標註 `unknown_not_serialized_in_v1_0`（不再填 `0`）；另獨立列出由 `f_ev_real_8h + f_ev_miss_8h` 派生之 8H 持倉人槽；同步更正解讀（`10pct` 候選拒絕率 `87.34%` vs 實際成交縮減率 `86.90%`／`86.18%`，且 `exposure` 未序列化前不斷言虧損縮小「僅」由少開單造成）。
-- **BTC `1D` 時間可用性稽核**：
-  - **[btc_1d_availability_audit.json](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/94348bd549b35c1dd9d6f4e91f337c1764d17749/research/RESEARCH-LOOP-01/funding_archive_v1/btc_1d_availability_audit.json)**（`9,124` bytes，SHA-256 `4c94af71c1f0f9b88f37bf7e8f2a6ae249f9adf472c880fd7cf76378c8623e0a`，實測 HTTP 200 且雜湊一致）。
-  - OKX `1D` 定義為 `candle_open = 16:00:00 UTC`、`candle_close / available_after = open + 24h`（次日 `16:00:00 UTC`）。全窗 `8,554` 根 4H 檢查 `available_after > signal_time` 違規數為 **`0`**（最小餘量 `0 ms` 落於 `16:00:00 UTC` 交界；含邊界前後 `candle_open`、`candle_close / available_after`、`signal_time` 與實際選中資料對照）。
-
----
-
-### 3. 已測多單去重清單與新多單結構構想（僅提案，不啟動掃描）
-- **已封存 NO-GO 去重清單（不再重掃）**：
-  1. `LONG-SHORT-SCOPE-01-L1`：`FIB_4H_Long_v3`（`ENTRY 0.618`、`EMA60`、`RSI [55,85]`、`SL 4%`）× `TP {2.5%, 4.0%, 6.0%}` × `{cross_1tick, delay1bar}`（6 replays，全負）。
-  2. `LONG-LOOP-01`：`FIB_4H_Long_v3`（`TP 2.5%`、`SL 4%`）× `BTC_FILTER {off, 200ma, 10pct}` × `{cross_1tick, delay1bar}`（4 新增 replays，全負）。
-- **新多單限價進場結構構想 `LONG-STRUCT-01`（僅供審查，未執行任何掃描）**：原結構在 `RSI 55~85` 順勢高檔掛 `0.618` 限價單易承受「轉弱才成交」的逆選擇，且固定 `TP 2.5% / SL 4%` 賠率倒掛（0.625R）；建議待私人離線包由 ChatGPT 獨立重播通過後，改評「深跌流動性掃尾限價承接 + ATR 正規化盈虧比（`TP >= 1.5 * SL`）+ 時間停損」之新結構。
-
----
-
-### 4. 安全邊界與下一步
-- 空單已凍結規格與 14 天公開前向觀測維持不動；所有工作僅限離線研究，無 `--demo`／`--live`、下撤平單、部署或實盤風控變更授權。
-- **下一步**：待 ChatGPT 驗證 `funding_archive_v1`（commit `94348bd549b35c1dd9d6f4e91f337c1764d17749`）與 `btc_1d_availability_audit.json`，並待私人離線包 `RESEARCH-LOOP-01-PACK v1.1` 交到 ChatGPT 端完成獨立重播後，再決定 `LONG-STRUCT-01` 是否預登記。
+私人20檔 v1.1包仍待實體；shared_risk已收不等於整包驗收，完整程式/模組只私人交付。無策略新增replay、交易、demo/live、部署或實盤風控改動授權；不需空白確認，有新實體資料或實質阻礙才回覆。
