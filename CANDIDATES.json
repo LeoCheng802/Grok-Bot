@@ -1,9 +1,9 @@
 {
-  "schema_version": "CANDIDATE-REGISTRY-01 v1.0",
-  "generated_at_utc8": "2026-11-27T23:32:00+08:00",
+  "schema_version": "CANDIDATE-REGISTRY-01 v1.1",
+  "generated_at_utc8": "2026-11-27T23:58:00+08:00",
   "repository": "LeoCheng802/Grok-Bot",
   "repo_visibility": "public",
-  "authorization_note": "Owner 77 explicitly authorized uploading sanitized offline strategy and backtest engine code to public repository LeoCheng802/Grok-Bot at 2026-11-27 23:22 UTC+8 for joint offline research and code review.",
+  "authorization_note": "Per Issue #1 #7222634694 (2026-11-27 23:54 UTC+8), owner 77 directly confirmed to ChatGPT that keeping LeoCheng802/Grok-Bot public for sanitized research candidate scripts, baselines, dependencies, docs, and registries is acceptable, formally lifting the #7222311457 public-push pause (without retroactively validating any earlier externally relayed timestamp). Credentials, API keys, tokens, private trading records, and unauthorized private results remain strictly prohibited from public release, and public indexing does NOT authorize live/demo trading, deployment, or new backtests.",
   "governance_rules": {
     "offline_research_only": true,
     "live_or_demo_execution_enabled": false,
@@ -16,7 +16,12 @@
       "待驗",
       "凍結",
       "淘汰"
-    ]
+    ],
+    "new_public_code_pushes_paused": false,
+    "public_code_dir_is_complete_repro_pack": false,
+    "chatgpt_acceptance_scope": "ChatGPT verified file sizes, SHA-256 hashes, report consistency, and stop decisions; this does NOT constitute independent replay reproduction of modified public-copy SHAs.",
+    "public_push_pause_status": "本輪已解除（依 Issue #1 #7222634694，2026-11-27 23:54 UTC+8；不追認先前外部轉述時間）",
+    "public_scope_limit": "僅限本研究去識別候選腳本、基準、依賴、說明與索引；帳密、API 金鑰、憑證、私人交易紀錄與未授權私人結果仍嚴禁公開；公開入庫非交易／部署／新回測授權。"
   },
   "baselines": [
     {
@@ -36,12 +41,31 @@
         "requirements.txt"
       ],
       "offline_entrypoint": "僅供模組匯入／離線語法與條件參照；main() 已硬鎖 SystemExit 停用實盤／模擬盤執行。",
-      "test_evidence": "2025-11 UTC 5 幣對診斷窗（eligible_warmup_bars=900）基準候選數 101；本版已通過語法編譯、零本機路徑／密鑰檢查與 main() 停用驗證。",
-      "limitations": "歷史對照評估已淘汰（NO-GO）；本公開副本不可直接執行下單或連線交易所。",
+      "test_evidence": "公開副本僅通過語法編譯、零本機路徑／密鑰檢查與 main() 退出驗證（新 SHA 行為回歸標為「待驗」）；2025-11 UTC 五檔診斷窗基準候選數 101 係由隔離構建器產出，不可等同本改版副本直接重跑通過。",
+      "limitations": "歷史對照評估已淘汰（NO-GO）；檔內仍保留 urllib.request.urlopen（L206、L241）與 OKX HOST 常數，僅於 main() 層級禁止執行，不可宣稱檔案完全無連線程式碼。",
       "status": "淘汰",
       "status_note": "淘汰／NO-GO",
       "has_script": true,
-      "live_approved": false
+      "live_approved": false,
+      "provenance": {
+        "original_sha256": "c52ea221c70d72ff19b23b568b516eb84d747647a7d7c4249c95054e536cdbe9",
+        "original_bytes": 54085,
+        "public_copy_sha256": "75891548839aa118be25a720a5d4ebc81cd809502f62f7f6c62157e605fdaaba",
+        "public_copy_bytes": 54381,
+        "diff_scope": "Prepended SystemExit guard at first line of main() (L1003); strategy indicators and signal logic unchanged.",
+        "test_source": "Public copy checked only for syntax compile, zero local paths/secrets, and main() immediate exit. 2025-11 baseline count (101) was produced by long_struct_01_v1_2_isolated.py builder, NOT by running this modified SHA.",
+        "new_sha_regression_status": "待驗"
+      },
+      "retained_network_or_client_paths": {
+        "has_retained_network_code": true,
+        "paths": [
+          "L24-L26: urllib.request.urlopen / Request imports",
+          "L29: HOST = 'https://www.okx.com'",
+          "L206, L241: urlopen(req/request, timeout=10) inside HTTP helper functions"
+        ],
+        "current_mitigation": "main() hard-locked with SystemExit at L1003 (prevents CLI execution).",
+        "static_remediation_plan": "Keep main() locked; if future code revision is approved, replace/disable HTTP helper functions to raise RuntimeError('offline_only') so module import cannot trigger network calls."
+      }
     }
   ],
   "candidates": [
@@ -75,12 +99,26 @@
         "test_long_struct_01_v1_2_wiring.py"
       ],
       "offline_entrypoint": "python3 test_long_struct_01_v1_2_wiring.py（離線合成測試 1,2,3,4,6 皆可獨立執行；測試 5 僅於提供環境變數快取時執行，預設跳過）",
-      "test_evidence": "已核准 2025-11 UTC 5 幣對（ADA/DOGE/FIL/SOL/XRP）離線候選計數：eligible_warmup_bars=900，序貫漏斗 1_EMA60=169 -> 2_EMA60+RSI=123 -> 3_sweep=0 -> 6b_final=0，觸發 STOP_ON_ZERO_CANDIDATES（pnl_replay_executed=false）；結果檔見 commit 4205912ce0e6e218ceac6573e4a4cef7db722b2b（research/long_struct_01/long_struct_01_v1_2_candidate_count_2025_11_summary.json），ChatGPT #7221278251 已驗收並拍板凍結。",
-      "limitations": "2025-11 診斷窗 0 候選，未跑 PnL 回測；受單一 4H 柱內高 RSI 與掃低收復同時成立之結構互斥限制，維持凍結不調參。",
+      "test_evidence": "2025-11 UTC 五檔歷史診斷窗（ADA/DOGE/FIL/SOL/XRP，eligible_warmup_bars=900）最終候選數為 0，僅證實「該五檔十一月樣本同棒交集為零」（不升級為普遍邏輯互斥）；ChatGPT 於 #7221278251 接受的是檔案／報表核對與停止決策，並非獨立重現。",
+      "limitations": "已依零候選停止並凍結；結論嚴格限於該五檔十一月樣本同棒交集為零，不回填十月成因，未執行損益回測。",
       "status": "凍結",
       "status_note": "凍結（STOP_ON_ZERO_CANDIDATES）",
       "has_script": true,
-      "live_approved": false
+      "live_approved": false,
+      "provenance": {
+        "original_sha256": "4ea731a4f5b62dfa0b435e5a03a028c5c2bb0b190a6076e03442f5856fca073b",
+        "original_bytes": 6881,
+        "public_copy_sha256": "4ea731a4f5b62dfa0b435e5a03a028c5c2bb0b190a6076e03442f5856fca073b",
+        "public_copy_bytes": 6881,
+        "diff_scope": "Verbatim (no modification between original isolated module and public copy).",
+        "test_source": "6/6 offline wiring/contract tests and 2025-11 5-symbol diagnostic count ran on this exact SHA; companion test_long_struct_01_v1_2_wiring.py was sanitized from 9b532cc4...fe0d (17,969 B) to d7e063a1...3473 (18,417 B) by removing local paths.",
+        "new_sha_regression_status": "已於同 SHA 執行 2025-11 計數（僅檔案／報表核對與停止決策已由 ChatGPT 接受，非獨立重現）"
+      },
+      "retained_network_or_client_paths": {
+        "has_retained_network_code": false,
+        "paths": [],
+        "current_mitigation": "Pure offline candidate builder; zero network or exchange client imports."
+      }
     },
     {
       "research_id": "RETEST24-R1-R2",
@@ -99,12 +137,30 @@
         "requirements.txt"
       ],
       "offline_entrypoint": "僅供模組匯入／離線審計與結構比對；load_config_credentials() 已回傳空憑證且 main() 已硬鎖 SystemExit 停用實盤／模擬盤執行。",
-      "test_evidence": "原版已完成跨 R1/R2 審計修復與回歸驗證；本公開去識別副本已通過語法編譯、零本機路徑／密鑰檢查與 main() 強制退出驗證。",
-      "limitations": "僅為離線研究參考副本，不可直接實盤或模擬盤下單；維持凍結狀態，不得因入庫改為核准上線。",
+      "test_evidence": "原版（949a86f5...c15c）曾通過三角色 24/24＋UNKNOWN-RECOVERY-01 離線審核，但不可等同本公開去識別副本（c48e2928...9d19）已通過同版回歸；新 SHA 副本僅做語法與停用入口檢查，回歸狀態標為「待驗」。",
+      "limitations": "維持凍結（NO-GO，live_approved=false）；檔內仍保留 OkxClient（L419）與 BASE_URL，不可宣稱完全無連線程式碼；14 天前向觀測未啟動。",
       "status": "凍結",
       "status_note": "凍結（離線參考副本）",
       "has_script": true,
-      "live_approved": false
+      "live_approved": false,
+      "provenance": {
+        "original_sha256": "949a86f5a532dacfcf7f15b4a4b9ecbc0d8234662795c541a23469a94783c15c",
+        "original_bytes": 90142,
+        "public_copy_sha256": "c48e2928f69b18a7d8500ed57c6e8a6b9d470c2d790e73feee1de3e961a99d19",
+        "public_copy_bytes": 88198,
+        "diff_scope": "Disabled load_config_credentials() and hard-locked main() with SystemExit; original file unchanged.",
+        "test_source": "Prior tri-role 24/24 + UNKNOWN-RECOVERY-01 offline audit ran on original SHA 949a86f5...c15c, NOT on this sanitized public copy. Public copy only passed syntax compile, zero local paths, and main()/credential-load disable checks.",
+        "new_sha_regression_status": "待驗"
+      },
+      "retained_network_or_client_paths": {
+        "has_retained_network_code": true,
+        "paths": [
+          "L221: BASE_URL = 'https://www.okx.com'",
+          "L419-L422: class OkxClient (requests.Session REST client methods retained)"
+        ],
+        "current_mitigation": "load_config_credentials() (L474) and main() (L1737) disabled; cannot read config.json or run CLI --demo/--live.",
+        "static_remediation_plan": "Keep main() and credential loader disabled; if future code revision is approved, guard OkxClient network request methods to raise RuntimeError('offline_only')."
+      }
     }
   ],
   "proposed_hypotheses": [
@@ -113,22 +169,28 @@
       "category": "proposed_hypothesis",
       "direction": "LONG",
       "purpose": "時序分離式多頭結構假說（預登記規格與去重宣告；禁止未確認前補填進場）",
-      "file_name": "LONG_STRUCT_02_TEMPORAL_SPLIT_DEDUP_PREREG_v1.0.json",
-      "repo_path": "research/long_struct_01/LONG_STRUCT_02_TEMPORAL_SPLIT_DEDUP_PREREG_v1.0.json",
-      "version": "v1.0 (PREREG ONLY)",
-      "commit_sha": "4205912ce0e6e218ceac6573e4a4cef7db722b2b",
-      "raw_url": "https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/4205912ce0e6e218ceac6573e4a4cef7db722b2b/research/long_struct_01/LONG_STRUCT_02_TEMPORAL_SPLIT_DEDUP_PREREG_v1.0.json",
-      "blob_url": "https://github.com/LeoCheng802/Grok-Bot/blob/4205912ce0e6e218ceac6573e4a4cef7db722b2b/research/long_struct_01/LONG_STRUCT_02_TEMPORAL_SPLIT_DEDUP_PREREG_v1.0.json",
-      "bytes": 8997,
-      "sha256": "8f9bf553a9f8cf7feaac45b05d1109b42bf7001dda7a0719a0651c28982284d4",
+      "file_name": "LONG_STRUCT_02_TEMPORAL_SPLIT_DEDUP_PREREG_v1.1.json",
+      "repo_path": "research/long_struct_01/LONG_STRUCT_02_TEMPORAL_SPLIT_DEDUP_PREREG_v1.1.json",
+      "version": "v1.1 (PREREG ONLY; supersedes v1.0)",
+      "commit_sha": "b4f3021995249b6e6734888ef7af0d871fd7caf4",
+      "raw_url": "https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/b4f3021995249b6e6734888ef7af0d871fd7caf4/research/long_struct_01/LONG_STRUCT_02_TEMPORAL_SPLIT_DEDUP_PREREG_v1.1.json",
+      "blob_url": "https://github.com/LeoCheng802/Grok-Bot/blob/b4f3021995249b6e6734888ef7af0d871fd7caf4/research/long_struct_01/LONG_STRUCT_02_TEMPORAL_SPLIT_DEDUP_PREREG_v1.1.json",
+      "bytes": 18883,
+      "sha256": "a074978776176189cfc581537b318e61c190dda9a3d7e7e12ad549c4a68042be",
       "dependencies": [],
       "offline_entrypoint": "尚無可執行策略腳本（僅 JSON 預登記規格檔）",
-      "test_evidence": "已完成去重對照（對比 10 日假跌破收復、L1/LONG-LOOP、B24H、A60＋量縮）與 5 項時序分離防未來函數規則宣告，尚未編寫腳本亦未執行計數或回測。",
-      "limitations": "PROPOSED_NOT_EXECUTED；須經跨方覆核與明確放行後始可實作與測試。",
+      "test_evidence": "已完成 v1.1 預登記規格補正（固定同決策點三階段事件順序、close_utc 與 available_after_utc 分欄並標明歷史名目可用假設、兩條純紙面合成時間線、去重用詞精準化）；尚未編寫腳本，未執行行情掃描、計數或回測。",
+      "limitations": "PROPOSED_NOT_EXECUTED；B24H 與 A60＋量縮去重尚未完成（尚待可讀檔對照，不宣稱完整去重通過）；L1 / LONG-LOOP 僅述書面規則定義不同、不宣稱已證實訊號集合不重疊；不宣稱秒級因果驗證。",
       "status": "規格中",
       "status_note": "規格中／尚無腳本",
       "has_script": false,
-      "live_approved": false
+      "live_approved": false,
+      "supersedes": {
+        "version": "v1.0",
+        "commit_sha": "4205912ce0e6e218ceac6573e4a4cef7db722b2b",
+        "sha256": "8f9bf553a9f8cf7feaac45b05d1109b42bf7001dda7a0719a0651c28982284d4",
+        "bytes": 8997
+      }
     }
   ],
   "offline_engine_dependencies": [
@@ -139,7 +201,7 @@
       "purpose": "可攜式離線回測模擬核心模組",
       "file_name": "engine/b6_sim_portable.py",
       "repo_path": "research/long_struct_01/code/engine/b6_sim_portable.py",
-      "version": "v1 (sanitized)",
+      "version": "v1 (verbatim from private pack v1.1)",
       "commit_sha": "fbe475402ff568eac2684bf4d97f49de579e9a6b",
       "raw_url": "https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/engine/b6_sim_portable.py",
       "blob_url": "https://github.com/LeoCheng802/Grok-Bot/blob/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/engine/b6_sim_portable.py",
@@ -149,12 +211,22 @@
         "requirements.txt"
       ],
       "offline_entrypoint": "由離線研究與回測腳本匯入使用",
-      "test_evidence": "已通過安全掃描（SECURITY_SCAN_HITS=0），並於隔離環境以 minimal_repro_fixture_v1（commit 3cd4fb670eae32c7bc25c78d635d7a1dc8de4051）實測輸出與 expected_baseline_output.json 完全一致（EXACT_MATCH）。",
+      "test_evidence": "SECURITY_SCAN_HITS=0；與私人包 RESEARCH-LOOP-01-PACK-v1.1 內原檔逐位元組相同（未修改）。先前 minimal_repro_fixture_v1（commit 3cd4fb670eae32c7bc25c78d635d7a1dc8de4051）之基準輸出雜湊為 c5a112003a08bc7b93cc60dc6d3a074940ce04716644a55ea08eb7aec39030b1，該結果僅屬私人包原版／煙霧夾具基準，不等同公開 code/ 10 檔整體可獨立重現。",
       "limitations": "純離線研究與對帳用途，無交易所連線或下單邏輯。",
       "status": "已有程式",
-      "status_note": "離線引擎依賴（已驗收 EXACT_MATCH）",
+      "status_note": "離線引擎依賴（與私人包原檔逐位元組相同）",
       "has_script": true,
-      "live_approved": false
+      "live_approved": false,
+      "provenance": {
+        "original_pack_path": "offline_repro/engine/b6_sim_portable.py",
+        "original_sha256": "b4b81446d50173bdd1d503fd3efc049cda3d35de53b7121b31996d3635723972",
+        "original_bytes": 5538,
+        "public_copy_sha256": "b4b81446d50173bdd1d503fd3efc049cda3d35de53b7121b31996d3635723972",
+        "public_copy_bytes": 5538,
+        "diff_scope": "None (byte-for-byte identical to private pack v1.1 original).",
+        "test_source": "Verbatim original covered by private pack v1.1 and minimal_repro_fixture_v1; public code/ directory as a whole is NOT a standalone full-repro pack.",
+        "legacy_baseline_reference_sha256": "c5a112003a08bc7b93cc60dc6d3a074940ce04716644a55ea08eb7aec39030b1"
+      }
     },
     {
       "research_id": "ENGINE-SIM-50K-V3-2-SL-FIX",
@@ -163,7 +235,7 @@
       "purpose": "50k 離線回測引擎（v3.2 止損修復版）",
       "file_name": "engine/sim_50k_v3_2_sl_fix.py",
       "repo_path": "research/long_struct_01/code/engine/sim_50k_v3_2_sl_fix.py",
-      "version": "v3.2_sl_fix",
+      "version": "v3.2_sl_fix (verbatim from private pack v1.1)",
       "commit_sha": "fbe475402ff568eac2684bf4d97f49de579e9a6b",
       "raw_url": "https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/engine/sim_50k_v3_2_sl_fix.py",
       "blob_url": "https://github.com/LeoCheng802/Grok-Bot/blob/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/engine/sim_50k_v3_2_sl_fix.py",
@@ -173,12 +245,22 @@
         "requirements.txt"
       ],
       "offline_entrypoint": "由離線研究與回測腳本匯入使用",
-      "test_evidence": "SECURITY_SCAN_HITS=0；minimal_repro_fixture_v1（commit 3cd4fb670eae32c7bc25c78d635d7a1dc8de4051）隔離實測 EXACT_MATCH。",
+      "test_evidence": "SECURITY_SCAN_HITS=0；與私人包 RESEARCH-LOOP-01-PACK-v1.1 內原檔逐位元組相同（未修改）。先前 minimal_repro_fixture_v1（commit 3cd4fb670eae32c7bc25c78d635d7a1dc8de4051）之基準輸出雜湊為 c5a112003a08bc7b93cc60dc6d3a074940ce04716644a55ea08eb7aec39030b1，僅屬私人包原版／煙霧夾具基準，不等同公開 code/ 10 檔整體可獨立重現。",
       "limitations": "純離線研究用途，無下單邏輯。",
       "status": "已有程式",
-      "status_note": "離線引擎依賴（已驗收 EXACT_MATCH）",
+      "status_note": "離線引擎依賴（與私人包原檔逐位元組相同）",
       "has_script": true,
-      "live_approved": false
+      "live_approved": false,
+      "provenance": {
+        "original_pack_path": "offline_repro/engine/sim_50k_v3_2_sl_fix.py",
+        "original_sha256": "1d2aebf56eafa87820748c688ed778e625c483737fdda3dc714f79f4f67da7ca",
+        "original_bytes": 13996,
+        "public_copy_sha256": "1d2aebf56eafa87820748c688ed778e625c483737fdda3dc714f79f4f67da7ca",
+        "public_copy_bytes": 13996,
+        "diff_scope": "None (byte-for-byte identical to private pack v1.1 original).",
+        "test_source": "Verbatim original covered by private pack v1.1 and minimal_repro_fixture_v1; public code/ directory as a whole is NOT a standalone full-repro pack.",
+        "legacy_baseline_reference_sha256": "c5a112003a08bc7b93cc60dc6d3a074940ce04716644a55ea08eb7aec39030b1"
+      }
     },
     {
       "research_id": "ENGINE-AUDIT-V3-1-FULL",
@@ -197,12 +279,23 @@
         "requirements.txt"
       ],
       "offline_entrypoint": "由離線回測／審計腳本匯入；資料根目錄改由環境變數 OKX_RESEARCH_ROOT 指定（預設模組目錄）",
-      "test_evidence": "SECURITY_SCAN_HITS=0；minimal_repro_fixture_v1（commit 3cd4fb670eae32c7bc25c78d635d7a1dc8de4051）隔離實測 EXACT_MATCH。",
-      "limitations": "需搭配離線歷史快取資料方能執行完整資料窗；運算邏輯與原版一致。",
-      "status": "已有程式",
-      "status_note": "離線引擎依賴（已驗收 EXACT_MATCH）",
+      "test_evidence": "公開改版副本僅具語法／靜態檢查與 SECURITY_SCAN_HITS=0；因先前針對本新 SHA 所做臨時比對之執行紀錄與輸出雜湊未保存，依規定不補跑並標為「待驗」。舊私人包原版（8ef7c513…4173）對應之 expected_baseline_output.json（c5a112003a08bc7b93cc60dc6d3a074940ce04716644a55ea08eb7aec39030b1）僅作舊私人包基準參照，不可等同新 SHA 通過。",
+      "limitations": "需搭配離線歷史快取資料方能執行完整資料窗；公開去路徑改版新 SHA 尚未保存同版執行紀錄與輸出雜湊（待驗）。",
+      "status": "待驗",
+      "status_note": "離線引擎改版副本（新 SHA 待驗；舊私人包基準僅作參照）",
       "has_script": true,
-      "live_approved": false
+      "live_approved": false,
+      "provenance": {
+        "original_pack_path": "offline_repro/engine/audit_v3_1_full.py",
+        "original_sha256": "8ef7c513124b46ba90b57c38591fcf30966f2843c22dcd3281b91df93a834173",
+        "original_bytes": 26896,
+        "public_copy_sha256": "b4b264ef65654d5599221b0f58a399e704cee9e46535d2bd7e3c86e4844d4c02",
+        "public_copy_bytes": 26951,
+        "diff_scope": "Replaced hardcoded Windows ROOT path with OKX_RESEARCH_ROOT env var defaulting to module directory; calculation logic untouched.",
+        "test_source": "Temporary comparison run log and output hash for new SHA were not saved; marked 待驗 without re-running. Original-SHA baseline output is reference only.",
+        "new_sha_status": "待驗",
+        "legacy_baseline_reference_sha256": "c5a112003a08bc7b93cc60dc6d3a074940ce04716644a55ea08eb7aec39030b1"
+      }
     },
     {
       "research_id": "ENGINE-RUN-Q38-AUDIT-01",
@@ -222,12 +315,23 @@
         "engine/audit_v3_1_full.py"
       ],
       "offline_entrypoint": "離線模組／CLI，路徑改由 OKX_RESEARCH_ROOT 控制",
-      "test_evidence": "SECURITY_SCAN_HITS=0；minimal_repro_fixture_v1（commit 3cd4fb670eae32c7bc25c78d635d7a1dc8de4051）隔離實測 EXACT_MATCH。",
-      "limitations": "純離線研究與審計對帳用途。",
-      "status": "已有程式",
-      "status_note": "離線引擎依賴（已驗收 EXACT_MATCH）",
+      "test_evidence": "公開改版副本僅具語法／靜態檢查與 SECURITY_SCAN_HITS=0；因先前針對本新 SHA 所做臨時比對之執行紀錄與輸出雜湊未保存，依規定不補跑並標為「待驗」。舊私人包原版（0cb653f9…efdf）對應之 expected_baseline_output.json（c5a112003a08bc7b93cc60dc6d3a074940ce04716644a55ea08eb7aec39030b1）僅作舊私人包基準參照，不可等同新 SHA 通過。",
+      "limitations": "純離線研究與審計對帳用途；公開去路徑改版新 SHA 尚未保存同版執行紀錄與輸出雜湊（待驗）。",
+      "status": "待驗",
+      "status_note": "離線引擎改版副本（新 SHA 待驗；舊私人包基準僅作參照）",
       "has_script": true,
-      "live_approved": false
+      "live_approved": false,
+      "provenance": {
+        "original_pack_path": "offline_repro/engine/run_q38_audit_01.py",
+        "original_sha256": "0cb653f96e4845f68faf9addfd3800c26230debc39126304fa3510e1d027efdf",
+        "original_bytes": 27953,
+        "public_copy_sha256": "47efa8acf6933172b60e53237277b1adc9ddebf0bab664d22a90b28d5316b142",
+        "public_copy_bytes": 27984,
+        "diff_scope": "Replaced two hardcoded Windows path strings with OKX_RESEARCH_ROOT-relative paths; calculation logic untouched.",
+        "test_source": "Temporary comparison run log and output hash for new SHA were not saved; marked 待驗 without re-running. Original-SHA baseline output is reference only.",
+        "new_sha_status": "待驗",
+        "legacy_baseline_reference_sha256": "c5a112003a08bc7b93cc60dc6d3a074940ce04716644a55ea08eb7aec39030b1"
+      }
     },
     {
       "research_id": "ENGINE-RUN-L1-TP-STUDY",
@@ -249,13 +353,62 @@
         "engine/audit_v3_1_full.py",
         "engine/run_q38_audit_01.py"
       ],
-      "offline_entrypoint": "python3 run_l1_tp_study.py --dry-check（離線檢查；完整重現需配合隔離歷史資料或 minimal_repro_fixture_v1）",
-      "test_evidence": "SECURITY_SCAN_HITS=0；minimal_repro_fixture_v1（commit 3cd4fb670eae32c7bc25c78d635d7a1dc8de4051）隔離實測 EXACT_MATCH。",
-      "limitations": "純離線研究用途，未含交易所下單或即時行情存取。",
-      "status": "已有程式",
-      "status_note": "離線引擎依賴（已驗收 EXACT_MATCH）",
+      "offline_entrypoint": "離線研究驅動腳本（目前公開 code/ 10 檔非可直接執行 --dry-check 或全期重現之完整包；--dry-check 仍依賴私人包目錄結構下之 PACK_ROOT/REPRO_MANIFEST.json、PACK_ROOT/scripts/shared_risk.py 與 PACK_ROOT/scripts/FIB_4H_Long_v3.py）。",
+      "test_evidence": "公開改版副本僅具語法／靜態檢查與 SECURITY_SCAN_HITS=0；因先前針對本新 SHA 所做臨時比對之執行紀錄與輸出雜湊未保存，依規定不補跑並標為「待驗」。舊私人包原版（f98af4eb…6ee9）對應之 expected_baseline_output.json（c5a112003a08bc7b93cc60dc6d3a074940ce04716644a55ea08eb7aec39030b1）僅作舊私人包基準參照，不可等同新 SHA 通過。",
+      "limitations": "非完全無連線程式碼：檔內仍保留 fetch_okx_funding（L217）、urllib.request.urlopen（L223）與缺費聯網補抓路徑 backfill_missing_funding（L242）；另 --dry-check 依賴私人包內之 PACK_ROOT/REPRO_MANIFEST.json（L316）、PACK_ROOT/scripts/shared_risk.py（L324）與 PACK_ROOT/scripts/FIB_4H_Long_v3.py（L24），目前公開 code/ 10 檔不可宣稱為可直接重現之完整包；新 SHA 行為回歸標為「待驗」。",
+      "status": "待驗",
+      "status_note": "離線引擎改版副本（新 SHA 待驗；含保留聯網補費路徑與私人包 --dry-check 依賴）",
       "has_script": true,
-      "live_approved": false
+      "live_approved": false,
+      "provenance": {
+        "original_pack_path": "offline_repro/run_l1_tp_study.py",
+        "original_sha256": "f98af4eb876b415c11d41c62a4a04e0074c6f7db6ba85fa7daca261d48e26ee9",
+        "original_bytes": 23290,
+        "public_copy_sha256": "e5a67230996cc26c9ecf2d9282b04785e6cdd320ecc6190b17a58bc18b806387",
+        "public_copy_bytes": 23270,
+        "diff_scope": "Replaced literal local path assertion inside --dry-check; calculation and funding-fetch paths untouched.",
+        "test_source": "Temporary comparison run log and output hash for new SHA were not saved; marked 待驗 without re-running. Original-SHA baseline output is reference only.",
+        "new_sha_status": "待驗",
+        "legacy_baseline_reference_sha256": "c5a112003a08bc7b93cc60dc6d3a074940ce04716644a55ea08eb7aec39030b1"
+      },
+      "retained_network_paths": {
+        "has_network_code": true,
+        "paths": [
+          "fetch_okx_funding (L217)",
+          "urllib.request.urlopen (L223)",
+          "backfill_missing_funding (L242, missing-funding online fetch path)"
+        ],
+        "static_remediation_plan": "Do not claim zero network code. If future code revision is approved, enforce --offline-only default and raise RuntimeError('offline_only') inside fetch_okx_funding / backfill_missing_funding on missing funding instead of querying OKX."
+      },
+      "dry_check_dependencies_and_relocation": {
+        "private_pack_complete": true,
+        "private_pack_archive": "RESEARCH-LOOP-01-PACK-v1.1.tar.gz (sha256: 87dc925b86441328b885aa7ef5d8254d1b51f37380876a192a493802f7fdda0d)",
+        "public_code_dir_standalone_repro": false,
+        "dependencies": [
+          {
+            "expected_path": "PACK_ROOT/REPRO_MANIFEST.json",
+            "line": 316,
+            "private_pack_location": "REPRO_MANIFEST.json (present, not missing)",
+            "private_pack_sha256": "3dacf887135804560ee45d1e43a6f4162c322ec1a60cf5b5227440ba55399874",
+            "public_code_dir_status": "not included in public research/long_struct_01/code/"
+          },
+          {
+            "expected_path": "PACK_ROOT/scripts/shared_risk.py",
+            "line": 324,
+            "private_pack_location": "scripts/shared_risk.py (present, not missing)",
+            "private_pack_sha256": "3bbb11a84ebd0bfd4fd46093828d2c55ebf696723645b14e325da0fc81802296",
+            "public_code_dir_status": "not included in public research/long_struct_01/code/"
+          },
+          {
+            "expected_path": "PACK_ROOT/scripts/FIB_4H_Long_v3.py",
+            "line": 24,
+            "private_pack_location": "scripts/FIB_4H_Long_v3.py (present, original sha256)",
+            "private_pack_sha256": "c52ea221c70d72ff19b23b568b516eb84d747647a7d7c4249c95054e536cdbe9",
+            "public_code_dir_status": "sanitized copy exists at research/long_struct_01/code/FIB_4H_Long_v3.py (different path and SHA-256 75891548...aaba)"
+          }
+        ],
+        "relocation_plan": "Pure documentation plan (no new code pushed): add explicit --manifest and --shared-risk CLI flags (matching existing --orig-long), or split public-directory offline import verification from private-pack --dry-check so public code/ does not hard-couple to PACK_ROOT/scripts/."
+      }
     },
     {
       "research_id": "ENGINE-REQUIREMENTS",
@@ -272,12 +425,19 @@
       "sha256": "6d0f046253b2fc1b673f4b0e922cd14677dbbcbcefc17977e9caccfefa12bff1",
       "dependencies": [],
       "offline_entrypoint": "pip install -r research/long_struct_01/code/requirements.txt",
-      "test_evidence": "SECURITY_SCAN_HITS=0；已於隔離環境驗證依賴可安裝並重現 EXACT_MATCH。",
+      "test_evidence": "SECURITY_SCAN_HITS=0；離線 Python 套件依賴清單（純清單檔，本身不代表改版引擎新 SHA 已通過回歸）。",
       "limitations": "僅列離線科學計算與測試套件。",
       "status": "已有程式",
       "status_note": "離線環境依賴清單",
       "has_script": true,
       "live_approved": false
     }
-  ]
+  ],
+  "reference_review_comments": [
+    "#7222026368",
+    "#7222274363",
+    "#7222311457",
+    "#7222634694"
+  ],
+  "publication_status": "PUBLISHED"
 }

@@ -1,40 +1,48 @@
-# CANDIDATES — 離線策略候選、基準與回測引擎共維索引 (`CANDIDATE-REGISTRY-01 v1.0`)
+# CANDIDATES Registry (`CANDIDATE-REGISTRY-01 v1.1`)
 
-- **儲存庫**：`LeoCheng802/Grok-Bot`（可見性：`public`）
-- **授權與範圍**：77 已於 `2026-11-27 23:22 UTC+8` 明確授權將**去識別離線策略與回測引擎程式碼**放入本公開庫，供 ChatGPT／Codex 與 Grok Bot 共同檢視與協作。
-- **紅線聲明**：本索引全數檔案皆為**純離線研究用途**，零 API 密鑰／憑證／`config.json`／本機絕對路徑，實盤與模擬盤執行入口皆已停用；**`has_script` 與 `live_approved` 嚴格分離，所有項目 `live_approved: false`，絕不因入庫改為核准實盤。**
-- **程式碼固定 Commit SHA**：`fbe475402ff568eac2684bf4d97f49de579e9a6b`（所有 `research/long_struct_01/code/` 連結皆鎖定此 40 碼 SHA）
-- **統計與預登記固定 Commit SHA**：`4205912ce0e6e218ceac6573e4a4cef7db722b2b`
+> **發布狀態**：`PUBLISHED`（依 [Issue #1 #7222634694](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7222634694) 2026-11-27 23:54 UTC+8，77 已於 ChatGPT 對話直接確認公開範圍，**`#7222311457` 之公開推送暫停本輪已解除**，不追認先前外部轉述時間；公開範圍僅限本研究去識別候選腳本、基準、依賴、說明與索引，帳密／金鑰／憑證／私人交易紀錄與未授權私人結果仍嚴禁公開，且公開入庫非交易／部署／新回測授權；本輪維持零行情掃描／計數／回測／調參／交易／部署）。
+> **對照交接**：`#7222026368`、`#7222274363`、`#7222311457`、`#7222634694`｜**儲存庫**：`LeoCheng802/Grok-Bot`（`public`）｜**實盤核准**：全部項目 **`live_approved: false`**。
+> **審核口徑界線**：ChatGPT 已核對 14 份已交檔案之位元組、SHA-256、報表與停止決策，**不等於**對公開改版新 SHA 完成獨立重現。
 
 ---
 
-## 1. 基準（Baseline）
+## 1. 基準（Baselines）
 
-| 研究 ID | 方向 | 用途 | 檔名與版本 | 固定 Commit 連結 | 大小 / 完整 SHA-256 | 依賴與離線入口 | 測試證據與限制 | 狀態 | `has_script` | `live_approved` |
-|---|---|---|---|---|---:|---|---|---|---:|---:|
-| `FIB-4H-LONG-V3` | `LONG` | 4H Fibonacci 做多基準對照腳本（離線去識別參考副本，供結構去重與訊號對照用） | `FIB_4H_Long_v3.py` (v3 (sanitized offline reference)) | [raw](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/FIB_4H_Long_v3.py) / [blob](https://github.com/LeoCheng802/Grok-Bot/blob/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/FIB_4H_Long_v3.py) | `54381` B<br>`75891548839aa118be25a720a5d4ebc81cd809502f62f7f6c62157e605fdaaba` | 依賴：`requirements.txt`；入口：僅供模組匯入／離線語法與條件參照；main() 已硬鎖 SystemExit 停用實盤／模擬盤執行。 | 證據：2025-11 UTC 5 幣對診斷窗（eligible_warmup_bars=900）基準候選數 101；本版已通過語法編譯、零本機路徑／密鑰檢查與 main() 停用驗證。 限制：歷史對照評估已淘汰（NO-GO）；本公開副本不可直接執行下單或連線交易所。 | **淘汰／NO-GO** | `true` | `false` |
+| 研究 ID | 方向 | 檔名／版本 | 狀態 | `has_script` | `live_approved` | 原版 SHA → 公開副本 SHA | 保留連線路徑與限制 |
+|---|---|---|---|---|---|---|---|
+| `FIB-4H-LONG-V3` | LONG | `FIB_4H_Long_v3.py` (`v3 sanitized`) | **淘汰（NO-GO）**；新 SHA 回歸：**待驗** | `true` | `false` | `c52ea221…dbe9` (`54,085` B) → `75891548…aaba` (`54,381` B)；僅 `main()` L1003 加 `SystemExit` | **保留連線碼**：`urllib.request.urlopen`（L25、L206、L241）與 `HOST='https://www.okx.com'`（L29）。2025-11 基準候選 101 係由隔離構建器產出，非以新 SHA 直接重跑。 |
 
 ## 2. 候選策略（Candidates）
 
-| 研究 ID | 方向 | 用途 | 檔名與版本 | 固定 Commit 連結 | 大小 / 完整 SHA-256 | 依賴與離線入口 | 測試證據與限制 | 狀態 | `has_script` | `live_approved` |
-|---|---|---|---|---|---:|---|---|---|---:|---:|
-| `LONG-STRUCT-01` | `LONG` | 4H 多頭結構假說 v1.2（EMA60 + RSI + Liquidity Sweep + Reclaim + Bullish Close）隔離計數與接線驗證腳本 | `long_struct_01_v1_2_isolated.py` (v1.2) | [raw](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/long_struct_01_v1_2_isolated.py) / [blob](https://github.com/LeoCheng802/Grok-Bot/blob/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/long_struct_01_v1_2_isolated.py) | `6881` B<br>`4ea731a4f5b62dfa0b435e5a03a028c5c2bb0b190a6076e03442f5856fca073b` | 依賴：`requirements.txt, test_long_struct_01_v1_2_wiring.py`；入口：python3 test_long_struct_01_v1_2_wiring.py（離線合成測試 1,2,3,4,6 皆可獨立執行；測試 5 僅於提供環境變數快取時執行，預設跳過） | 證據：已核准 2025-11 UTC 5 幣對（ADA/DOGE/FIL/SOL/XRP）離線候選計數：eligible_warmup_bars=900，序貫漏斗 1_EMA60=169 -> 2_EMA60+RSI=123 -> 3_sweep=0 -> 6b_final=0，觸發 STOP_ON_ZERO_CANDIDATES（pnl_replay_executed=false）；結果檔見 commit 4205912ce0e6e218ceac6573e4a4cef7db722b2b（research/long_struct_01/long_struct_01_v1_2_candidate_count_2025_11_summary.json），ChatGPT #7221278251 已驗收並拍板凍結。 限制：2025-11 診斷窗 0 候選，未跑 PnL 回測；受單一 4H 柱內高 RSI 與掃低收復同時成立之結構互斥限制，維持凍結不調參。 | **凍結（STOP_ON_ZERO_CANDIDATES）** | `true` | `false` |
-| `LONG-STRUCT-01` (附屬測試) | `LONG` | `LONG-STRUCT-01 v1.2` 離線接線與合成回歸測試腳本 | `test_long_struct_01_v1_2_wiring.py` (v1.2) | [raw](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/test_long_struct_01_v1_2_wiring.py) / [blob](https://github.com/LeoCheng802/Grok-Bot/blob/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/test_long_struct_01_v1_2_wiring.py) | `18417` B<br>`d7e063a1fcb1549103352ab9c67c797513b9ab194260af20a24f7db97de43473` | 依賴：`requirements.txt`, `long_struct_01_v1_2_isolated.py`；入口：`python3 test_long_struct_01_v1_2_wiring.py` | 證據：合成測試 1,2,3,4,6 全數 PASS，測試 5 缺環境快取時自動跳過。限制：純離線測試，不執行交易。 | **凍結（附屬測試）** | `true` | `false` |
-| `RETEST24-R1-R2` | `SHORT` | RETEST24 R1/R2 可切換做空候選策略 v1.5 審計修復版（離線去識別參考副本） | `RETEST24_R1_R2_Switchable_v1_5_auditfix.py` (v1.5_auditfix (sanitized offline reference)) | [raw](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/RETEST24_R1_R2_Switchable_v1_5_auditfix.py) / [blob](https://github.com/LeoCheng802/Grok-Bot/blob/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/RETEST24_R1_R2_Switchable_v1_5_auditfix.py) | `88198` B<br>`c48e2928f69b18a7d8500ed57c6e8a6b9d470c2d790e73feee1de3e961a99d19` | 依賴：`requirements.txt`；入口：僅供模組匯入／離線審計與結構比對；load_config_credentials() 已回傳空憑證且 main() 已硬鎖 SystemExit 停用實盤／模擬盤執行。 | 證據：原版已完成跨 R1/R2 審計修復與回歸驗證；本公開去識別副本已通過語法編譯、零本機路徑／密鑰檢查與 main() 強制退出驗證。 限制：僅為離線研究參考副本，不可直接實盤或模擬盤下單；維持凍結狀態，不得因入庫改為核准上線。 | **凍結（離線參考副本）** | `true` | `false` |
+| 研究 ID | 方向 | 檔名／版本 | 狀態 | `has_script` | `live_approved` | 原版 SHA → 公開副本 SHA | 測試證據與限制 |
+|---|---|---|---|---|---|---|---|
+| `LONG-STRUCT-01` | LONG | `long_struct_01_v1_2_isolated.py` (`v1.2`) | **凍結** | `true` | `false` | 原檔未改：`4ea731a4…073b` (`6,881` B)；配套測試檔由 `9b532cc4…fe0d` 改為 `d7e063a1…3473`（僅去本機路徑） | 無連線碼。2025-11 五檔診斷窗（分母 900）最終候選為 0，結論嚴格限於**「該五檔十一月樣本同棒交集為零」**（不升級為普遍邏輯互斥）；ChatGPT 接受的是檔案／報表核對與停止決策，非獨立重現。 |
+| `RETEST24-R1-R2-V1.5` | SHORT | `RETEST24_R1_R2_Switchable_v1_5_auditfix.py` (`v1.5-auditfix sanitized`) | **凍結**；新 SHA 回歸：**待驗** | `true` | `false` | `949a86f5…c15c` (`90,142` B) → `c48e2928…9d19` (`88,198` B)；停用 `load_config_credentials()`（L474）與 `main()`（L1737） | **保留連線碼**：`BASE_URL='https://www.okx.com'`（L221）與 `class OkxClient`（L419、`requests.Session` L422）。先前三角色 24/24＋`UNKNOWN-RECOVERY-01` 審核係針對原版，不等同新 SHA 通過。 |
 
-## 3. 未完成新假說（Proposed / Spec Only）
+## 3. 未完成新假說（Pending Hypotheses）
 
-| 研究 ID | 方向 | 用途 | 檔名與版本 | 固定 Commit 連結 | 大小 / 完整 SHA-256 | 依賴與離線入口 | 測試證據與限制 | 狀態 | `has_script` | `live_approved` |
-|---|---|---|---|---|---:|---|---|---|---:|---:|
-| `LONG-STRUCT-02` | `LONG` | 時序分離式多頭結構假說（預登記規格與去重宣告；禁止未確認前補填進場） | `LONG_STRUCT_02_TEMPORAL_SPLIT_DEDUP_PREREG_v1.0.json` (v1.0 (PREREG ONLY)) | [raw](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/4205912ce0e6e218ceac6573e4a4cef7db722b2b/research/long_struct_01/LONG_STRUCT_02_TEMPORAL_SPLIT_DEDUP_PREREG_v1.0.json) / [blob](https://github.com/LeoCheng802/Grok-Bot/blob/4205912ce0e6e218ceac6573e4a4cef7db722b2b/research/long_struct_01/LONG_STRUCT_02_TEMPORAL_SPLIT_DEDUP_PREREG_v1.0.json) | `8997` B<br>`8f9bf553a9f8cf7feaac45b05d1109b42bf7001dda7a0719a0651c28982284d4` | 依賴：`無`；入口：尚無可執行策略腳本（僅 JSON 預登記規格檔） | 證據：已完成去重對照（對比 10 日假跌破收復、L1/LONG-LOOP、B24H、A60＋量縮）與 5 項時序分離防未來函數規則宣告，尚未編寫腳本亦未執行計數或回測。 限制：PROPOSED_NOT_EXECUTED；須經跨方覆核與明確放行後始可實作與測試。 | **規格中／尚無腳本** | `false` | `false` |
+| 研究 ID | 方向 | 狀態 | `has_script` | `live_approved` | 說明與未完成項 |
+|---|---|---|---|---|---|
+| `LONG-STRUCT-02` | LONG | **規格中／尚無腳本** | `false` | `false` | 單一時間結構假說（掃破收復與動能確認分時點）；**`B24H` 與 `A60＋量縮` 去重尚未完成**（待可讀檔對照），`L1 / LONG-LOOP` 不宣稱已證實訊號集合不重疊；已發布純規格預登記 **v1.1**（`LONG_STRUCT_02_TEMPORAL_SPLIT_DEDUP_PREREG_v1.1.json`，commit `b4f30219…caf4`，`18,883` B，SHA-256 `a0749787…42be`，取代 v1.0 `8f9bf553…84d4`），仍維持 `PROPOSED_NOT_EXECUTED`。 |
 
-## 4. 離線回測引擎依賴（Offline Engine Dependencies，共 6 檔）
+## 4. 離線回測引擎依賴（`research/long_struct_01/code/`，非完整可獨立重現包）
 
-| 研究 ID | 方向 | 用途 | 檔名與版本 | 固定 Commit 連結 | 大小 / 完整 SHA-256 | 依賴與離線入口 | 測試證據與限制 | 狀態 | `has_script` | `live_approved` |
-|---|---|---|---|---|---:|---|---|---|---:|---:|
-| `ENGINE-B6-SIM-PORTABLE` | `NEUTRAL` | 可攜式離線回測模擬核心模組 | `engine/b6_sim_portable.py` (v1 (sanitized)) | [raw](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/engine/b6_sim_portable.py) / [blob](https://github.com/LeoCheng802/Grok-Bot/blob/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/engine/b6_sim_portable.py) | `5538` B<br>`b4b81446d50173bdd1d503fd3efc049cda3d35de53b7121b31996d3635723972` | 依賴：`requirements.txt`；入口：由離線研究與回測腳本匯入使用 | 證據：已通過安全掃描（SECURITY_SCAN_HITS=0），並於隔離環境以 minimal_repro_fixture_v1（commit 3cd4fb670eae32c7bc25c78d635d7a1dc8de4051）實測輸出與 expected_baseline_output.json 完全一致（EXACT_MATCH）。 限制：純離線研究與對帳用途，無交易所連線或下單邏輯。 | **離線引擎依賴（已驗收 EXACT_MATCH）** | `true` | `false` |
-| `ENGINE-SIM-50K-V3-2-SL-FIX` | `NEUTRAL` | 50k 離線回測引擎（v3.2 止損修復版） | `engine/sim_50k_v3_2_sl_fix.py` (v3.2_sl_fix) | [raw](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/engine/sim_50k_v3_2_sl_fix.py) / [blob](https://github.com/LeoCheng802/Grok-Bot/blob/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/engine/sim_50k_v3_2_sl_fix.py) | `13996` B<br>`1d2aebf56eafa87820748c688ed778e625c483737fdda3dc714f79f4f67da7ca` | 依賴：`requirements.txt`；入口：由離線研究與回測腳本匯入使用 | 證據：SECURITY_SCAN_HITS=0；minimal_repro_fixture_v1（commit 3cd4fb670eae32c7bc25c78d635d7a1dc8de4051）隔離實測 EXACT_MATCH。 限制：純離線研究用途，無下單邏輯。 | **離線引擎依賴（已驗收 EXACT_MATCH）** | `true` | `false` |
-| `ENGINE-AUDIT-V3-1-FULL` | `NEUTRAL` | 離線審計與指標／資料載入核心（去硬編碼路徑版） | `engine/audit_v3_1_full.py` (v3.1_full (sanitized)) | [raw](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/engine/audit_v3_1_full.py) / [blob](https://github.com/LeoCheng802/Grok-Bot/blob/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/engine/audit_v3_1_full.py) | `26951` B<br>`b4b264ef65654d5599221b0f58a399e704cee9e46535d2bd7e3c86e4844d4c02` | 依賴：`requirements.txt`；入口：由離線回測／審計腳本匯入；資料根目錄改由環境變數 OKX_RESEARCH_ROOT 指定（預設模組目錄） | 證據：SECURITY_SCAN_HITS=0；minimal_repro_fixture_v1（commit 3cd4fb670eae32c7bc25c78d635d7a1dc8de4051）隔離實測 EXACT_MATCH。 限制：需搭配離線歷史快取資料方能執行完整資料窗；運算邏輯與原版一致。 | **離線引擎依賴（已驗收 EXACT_MATCH）** | `true` | `false` |
-| `ENGINE-RUN-Q38-AUDIT-01` | `NEUTRAL` | Q38 離線回測審計執行模組（去硬編碼路徑版） | `engine/run_q38_audit_01.py` (v1 (sanitized)) | [raw](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/engine/run_q38_audit_01.py) / [blob](https://github.com/LeoCheng802/Grok-Bot/blob/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/engine/run_q38_audit_01.py) | `27984` B<br>`47efa8acf6933172b60e53237277b1adc9ddebf0bab664d22a90b28d5316b142` | 依賴：`requirements.txt, engine/audit_v3_1_full.py`；入口：離線模組／CLI，路徑改由 OKX_RESEARCH_ROOT 控制 | 證據：SECURITY_SCAN_HITS=0；minimal_repro_fixture_v1（commit 3cd4fb670eae32c7bc25c78d635d7a1dc8de4051）隔離實測 EXACT_MATCH。 限制：純離線研究與審計對帳用途。 | **離線引擎依賴（已驗收 EXACT_MATCH）** | `true` | `false` |
-| `ENGINE-RUN-L1-TP-STUDY` | `NEUTRAL` | L1 止盈研究與離線基準驗證驅動腳本（去本機路徑版） | `run_l1_tp_study.py` (v1 (sanitized)) | [raw](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/run_l1_tp_study.py) / [blob](https://github.com/LeoCheng802/Grok-Bot/blob/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/run_l1_tp_study.py) | `23270` B<br>`e5a67230996cc26c9ecf2d9282b04785e6cdd320ecc6190b17a58bc18b806387` | 依賴：`requirements.txt, engine/b6_sim_portable.py, engine/sim_50k_v3_2_sl_fix.py, engine/audit_v3_1_full.py, engine/run_q38_audit_01.py`；入口：python3 run_l1_tp_study.py --dry-check（離線檢查；完整重現需配合隔離歷史資料或 minimal_repro_fixture_v1） | 證據：SECURITY_SCAN_HITS=0；minimal_repro_fixture_v1（commit 3cd4fb670eae32c7bc25c78d635d7a1dc8de4051）隔離實測 EXACT_MATCH。 限制：純離線研究用途，未含交易所下單或即時行情存取。 | **離線引擎依賴（已驗收 EXACT_MATCH）** | `true` | `false` |
-| `ENGINE-REQUIREMENTS` | `NEUTRAL` | 離線策略與回測引擎 Python 套件依賴清單 | `requirements.txt` (v1) | [raw](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/requirements.txt) / [blob](https://github.com/LeoCheng802/Grok-Bot/blob/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/requirements.txt) | `117` B<br>`6d0f046253b2fc1b673f4b0e922cd14677dbbcbcefc17977e9caccfefa12bff1` | 依賴：`無`；入口：pip install -r research/long_struct_01/code/requirements.txt | 證據：SECURITY_SCAN_HITS=0；已於隔離環境驗證依賴可安裝並重現 EXACT_MATCH。 限制：僅列離線科學計算與測試套件。 | **離線環境依賴清單** | `true` | `false` |
+| 檔案 | 原版 SHA（私人包 `v1.1`） | 公開副本 SHA（commit `fbe47540…9a6b`） | 變更範圍 | 新 SHA 狀態 | 保留連線路徑 |
+|---|---|---|---|---|---|
+| `engine/b6_sim_portable.py` | `b4b81446…3972` (`5,538` B) | 同左（原檔未改） | 無 | 與私人包原檔相同 | 無 |
+| `engine/sim_50k_v3_2_sl_fix.py` | `1d2aebf5…da7ca` (`13,996` B) | 同左（原檔未改） | 無 | 與私人包原檔相同 | 無 |
+| `engine/audit_v3_1_full.py` | `8ef7c513…4173` (`26,896` B) | `b4b264ef…4c02` (`26,951` B) | 替換硬編碼 Windows `ROOT` 為 `OKX_RESEARCH_ROOT` 預設模組目錄 | **待驗**（臨時比對紀錄未保存，不補跑） | 無 |
+| `engine/run_q38_audit_01.py` | `0cb653f9…efdf` (`27,953` B) | `47efa8ac…b142` (`27,984` B) | 替換兩處硬編碼 Windows 路徑字串 | **待驗**（臨時比對紀錄未保存，不補跑） | 無 |
+| `run_l1_tp_study.py` | `f98af4eb…6ee9` (`23,290` B) | `e5a67230…6387` (`23,270` B) | 替換 `--dry-check` 內字面本機路徑斷言 | **待驗**（臨時比對紀錄未保存，不補跑） | **保留連線碼**：`fetch_okx_funding`（L217、`urlopen` L223）與 `backfill_missing_funding`（L242 缺費聯網補抓） |
+| `requirements.txt` | `6d0f0462…bff1` (`117` B) | 同左 | 無 | 依賴清單 | 無 |
+
+## 5. `run_l1_tp_study.py --dry-check` 依賴與重定位方案（純文件方案，未推新碼）
+
+- **依賴項目與現有可用位置（私人包內皆齊備，非缺件）**：
+  1. `PACK_ROOT/REPRO_MANIFEST.json`（L316）：存於私人包 `RESEARCH-LOOP-01-PACK-v1.1.tar.gz`（`87dc925b…da0d`）內（`3dacf887…9874`），公開 `code/` 目錄未含。
+  2. `PACK_ROOT/scripts/shared_risk.py`（L324）：存於同私人包內（`3bbb11a8…2296`），公開 `code/` 目錄未含。
+  3. `PACK_ROOT/scripts/FIB_4H_Long_v3.py`（L24 `--orig-long` 預設）：私人包內為原版 `c52ea221…dbe9`；公開 `code/` 目錄下則為去識別副本且位於 `code/FIB_4H_Long_v3.py`（非 `../scripts/`）。
+- **明確界線**：目前公開庫 `research/long_struct_01/code/` 10 檔**不可**宣稱為可直接執行 `--dry-check` 或全期重現之完整包。
+- **重定位與靜態安全修正方案（待 77 直接確認公開範圍與 GPT 核准後再實作）**：
+  1. **重定位**：於 `run_l1_tp_study.py` 補齊顯式 `--manifest`、`--shared-risk` 參數（與 `--orig-long` 一致），或將公開目錄檢核拆為獨立離線 import 檢查，解除對私人包 `PACK_ROOT/scripts/` 結構的硬耦合。
+  2. **靜態防呆**：維持 `FIB` 與 `RETEST24` 禁止執行 `main()`；若後續核准改碼，於 `FIB` HTTP helper、`RETEST24` `OkxClient` 請求方法及 `run_l1_tp_study.py` `backfill_missing_funding` 加上離線硬阻斷（預設 `--offline-only`，遇缺費報錯退出不聯網）。
