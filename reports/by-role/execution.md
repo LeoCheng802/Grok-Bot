@@ -2,43 +2,47 @@
 
 此檔是「執行」的最新回報。
 
-- **時間（Asia/Taipei）**: 2026-11-28 07:25:45
+- **時間（Asia/Taipei）**: 2026-11-28 07:48:35
 - **角色**: 執行
-- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7230133680
+- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7230424846
 
-<!-- comment_id: 7230133680 -->
+<!-- comment_id: 7230424846 -->
 
-[執行] BACKTEST-READINESS-01 v1.11／v1.12 全窗資金費來源月份盤點清單
+[執行] BACKTEST-READINESS-01 v1.11 第 2 批：1,279 份官方月檔＋2026-11 官方 REST 歷史
 
-- 角色：執行｜研究：BACKTEST-READINESS-01｜版本：v1.11-inventory
-- 執行起迄（UTC）：2026-11-27T23:18:01Z ～ 2026-11-27T23:23:02Z（300.86 s）
-- 固定 commit：PR #8 head `eaf46daabfd8fdb80f19ced56640363ebfd64e50`，目錄 `research/funding_inventory_v1_11/`（`313829d6…` 加入清單，`eaf46daa…` 只把 manifest 內的本機路徑改成檔名）
-- 範圍：固定 `EX_USDC_286` 286 個 USDT-SWAP，窗 `2023-01-01T00:00Z`～`2026-11-26T12:00Z`；月份按 UTC+8 切，取自各 NPZ `ts30` 實際有行情的月份
-- 既有列：凍結庫 829,157 列＋v1.7／v1.9／v1.10／v1.11-b1 增量（以 `ts_snapped` 去重）
-- 官方存在性：`market-data-history`（module=3、monthly）列出 7,323 個月；290 個未列出的月份再對 CDN 做 HEAD。85 份已驗 ZIP 不重抓，本輪沒有下載任何新 ZIP。
+- 角色：執行｜研究：BACKTEST-READINESS-01｜版本：v1.11-b2
+- 執行起迄（UTC）：2026-11-27T23:30:19Z 開始；Part A 至 23:41:56Z（第一輪在 900/1,279 中斷，從已存檔續跑）；Part B 至 23:43:00Z；輸出寫入 23:46:11Z～23:46:18Z
+- 固定 commit：PR #8 head `74764f32f6bcdfab8bcc25211eaeed9755fdeffe`，目錄 `research/funding_delta_v1_11_b2/`
+- 窗尾維持 `2026-11-26T12:00:00Z`。沒有補零、插值、繞過 403，也沒有傳送憑證。凍結庫未變（SHA `23ebdab5…0783cc`），85 份已驗 ZIP 不重抓，盤點不重做。
+- 口徑：結論一律來自官方列和既有資料（凍結庫＋v1.7／v1.9／v1.10／v1.11-b1）的逐鍵比對，鍵為 `(inst_id, snap 到整點)`。「確缺」只是優先候選。此批除 2026-11 外，待核月份都還沒逐鍵比對，不算完整。
 
-**分項（共 7,536 個標的×月份）**
+**Part A：候選月份的官方月檔**
+- 1,279/1,279 HTTP 200；0 失敗、0 空檔。官方 174,957 列，鍵皆唯一。
+- 已匹配 5,601；新增 **169,356**（8H 104,157、非 8H 65,199）；衝突 0；官方內重複 0。
 
-| 類別 | 數量 | 說明 |
-|---|---|---|
-| 已存可用（covered_verified） | 85 | 已用官方 ZIP 逐列比過（v1.10 80 份＋v1.11-b1 5 份） |
-| 待核（pending_check） | 5,882 | 官方有月檔；既有列數達到 8H 網格下限，但還沒逐列比過。仍可能缺 1H／4H 結算 |
-| 確缺（confirmed_missing） | 1,279 | 官方有月檔；既有 0 列 1,157，低於 8H 下限 122；涉及 272 個標的 |
-| 官方不可得（official_unavailable） | 290 | 邊界不足 286；404 共 4 |
+**Part B：CST 2026-11 官方 REST `funding-rate-history`**
+- 請求 286 個，完整覆蓋 `[2026-10-31T16:00Z, 2026-11-26T12:00Z]` 的有 285 個。範圍內官方 39,037 列，已匹配 10,037，新增 **29,000**（8H 16,841、非 8H 12,159），衝突 0。新列費率全部取 `realizedRate`，原始回應資料均保留。
+- 285 個標的的分頁軌跡都有記錄（URL、請求 UTC、HTTP 狀態、列數、最小／最大 fundingTime、回應 SHA），也記了實際覆蓋範圍。
+- 未完整：`RVN-USDT-SWAP`。REST 回 HTTP 200、code 51001（Instrument ID doesn't exist），範圍內 0 列，列為待核（`rest_error`）。
 
-- 邊界不足 286：每個標的的 CST 2026-11 都有行情，但這個月的官方月檔要到 2026-12-01 00:00 CST 月結後才會發布（API 未列出、CDN 404）。
-- 404 共 4：CC 2025-10、INJ 2023-11、MEGA 2026-04、ORDER 2025-09。都是在 CST 月底最後幾小時才上市，行情區間內沒有 8H 結算，第一筆結算落在下個月。
-- 確缺最多的標的（月數）：PEPE 13、SHIB 13、SATS 12、FLOKI 11、GAS 11；ARB、ETC、ETHW、FLOW、GMT、SAND、SUI 各 10。
+**合計**：官方唯一鍵 213,994；已匹配 15,638；新增 **198,356**（8H 120,998、非 8H 77,358）；衝突 0。
+
+**4 個 404**：仍是 CC 2025-10、INJ 2023-11、MEGA 2026-04、ORDER 2025-09，都維持 `404_reason_unknown`。官方 instruments 的 `listTime`／`state` 只當證據附上，沒有拿來改分類。
+
+**盤點 r1（7,536 格）**：`covered_verified` 1,364；`covered_verified_rest` 285；`pending_check` 5,883（原 5,882＋RVN 2026-11）；`official_unavailable` 4。
 
 **交付檔（SHA-256）**
-- `funding_month_inventory_v1_11.csv`：771,000 B，`038d59cd74b28859c482aeda1bf7f378ac44728054fdfd134d8647dab2b08e21`。欄位：inst_id, month_cst, npz_bar_first_utc, npz_bar_last_utc, existing_rows, existing_sources, official_listed, http, class, sub_reason
-- `funding_month_inventory_v1_11_manifest.json`（PR 版，已去本機路徑）：6,709 B，`d84d67cb2e0d2dfe3a9deb1a7bb4c4059e58c9b0b299d1aebf0526bc1fba0d8a`
+- `funding_delta_v1_11_b2.csv.gz`：3,035,615 B，198,356 列，`2ef8517fc3d70ff098a0ea65c5ad07ffbc0142befa375cf8996ebb8db962d54b`
+- `funding_source_months_v1_11_b2.json`：1,295,577 B，`1d9d93f8637f87ac9b75d0bba06a5550c88edf4886824bfd06d5ca21316193ae`
+- `funding_conflicts_v1_11_b2.json`：75 B，`154af0034d85c4ceaec4e39560211fe2a91b37af47a46ce15eb5dc3c492bc8c8`
+- `funding_month_inventory_v1_11_r1.csv`：751,576 B，`3a9ef2b8b8adeb163a4ae6fb197006cc99ffca491141b109a51586e6874b2f3e`
+- `funding_delta_v1_11_b2_manifest.json`：10,586 B，`4d907caeac03ec4c7a822941586d14226c6691ad076c96d8e6e98c8fea9a9468`。內含實際輸入的 SHA：凍結庫、先前 4 份增量、原盤點 CSV。
+- `fetch_evidence_v1_11_b2.jsonl`：2,413,395 B，`b54fa9f82cb399b5bb52aa9d7ce8a79a194ed95f54a3372b68e324f96d1baf66`。記錄每個請求的 URL、UTC、狀態、回應 SHA；續跑時只追加不覆寫。
+- `instruments_swap_v1_11_b2.json.gz`：26,245 B，`87020ee68af8e3dd39c7e6482359ff6eb2dcd83276c34c74327d3f8edb97f6f1`
+- 生成程式（可公開版）：`build_delta_v1_11_b2_public.py`，`2ef8e02c…d97c`；`build_inventory_v1_11_public.py`，`47dcd0d0…9d30`
+- 原始資料：`official_monthly_zips/` 1,279 份、`rest_2026_11/` 286 份。
 
-**缺口**
-- 這份是 NPZ 全量清單，不是 ChatGPT 的 2,757 條路徑優先清單（我沒拿到那份清單）。提供後可以直接拿 CSV 篩出來。
-- 5,882 個待核月份只做到列數檢查，還不能說可用。
-- 2026-11 要等官方月結；本輪不處理。
+**缺口**：5,882 個待核月份還沒逐鍵比對，可能仍缺 1H／4H 結算；RVN 2026-11 的 REST 查不到此標的；4 個 404 原因未知。因此不能說資金費資料已完整。
+**下一步**：待核 5,882 份月檔分批抓取並逐鍵比對，估計約 30～40 分鐘，分 2～3 批交。
 
-**下一步（估時）**：確缺加待核共 7,161 份月檔，約 9.6 MB，以約 5 req/s 計約 31～44 分鐘。打算先抓確缺 1,279 份交第 2 批增量，再分批抓待核。每批照 v1.10 格式附原 ZIP、SHA、既有匹配／新增／衝突。
-
-紅線維持：不補零、不插值、不刪幣換母體、不盲目 INSERT OR IGNORE；不擴標的或期間、不抓行情、不跑策略；PR #7／#8 為 draft、不合併；`FIB-4H-LONG-V3` NO-GO，`live_approved: false`。
+紅線維持：不補零、不插值、不刪幣換母體、不盲目 INSERT OR IGNORE；PR #7／#8 為 draft、不合併；`FIB-4H-LONG-V3` NO-GO，`live_approved: false`。
