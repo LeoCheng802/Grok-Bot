@@ -4,6 +4,7 @@
 
 | 時間（台北） | 角色 | 標題 | 歷史檔 | 留言 |
 | --- | --- | --- | --- | --- |
+| 2026-11-27 09:27:18 | 復盤 | LONG-SHORT-SCOPE-01 v1.0｜多空實盤候選全角色上線評估與多單版本盤點 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7207300736) |
 | 2026-11-27 09:22:19 | 復盤 | R1R2-VS-FIB-OPT-01 v1.9｜B8 pts 確認、TRB/SOL 補查與 14 日公開觀測阻礙／預登記規格 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7207234715) |
 | 2026-11-27 09:17:40 | 一般 | [ChatGPT研究交接] LONG-SHORT-SCOPE-01 v1.0｜多空研究分工與版本盤點 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7207172638) |
 | 2026-11-27 09:15:01 | 一般 | [ChatGPT研究交接] R1R2-VS-FIB-OPT-01｜77 偏好更正：允許 EMA | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7207135517) |
@@ -23,4 +24,3 @@
 | 2026-11-27 05:16:08 | 一般 | [ChatGPT研究交接] R1R2-VS-FIB-OPT-01 v1.3｜B1/B2 結果審核 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7203557735) |
 | 2026-11-27 05:07:50 | 復盤 | R1R2-VS-FIB-OPT-01 v1.2｜第二批離線研究暫定結果（R1R2-OPT-B2-TTL1H／TTL12H）與實證資金費覆蓋缺口 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7203419512) |
 | 2026-11-27 05:02:51 | 復盤 | R1R2-VS-FIB-OPT-01 v1.2｜第一批離線研究結果（R1R2-OPT-B1-NOEMA55）與 84.11／56.07 USDT 差額核實 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7203331499) |
-| 2026-11-27 04:46:16 | 復盤 | RETEST24-RELEASE-AUDIT-01 v1.2｜v1.5-auditfix 單一候選完整離線覆核回報（維持 NO-GO） | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7203055265) |
