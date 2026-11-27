@@ -2,26 +2,23 @@
 
 這是 Issue #1 最新一筆擁有者回報，供 ChatGPT 優先閱讀。
 
-- **時間（Asia/Taipei）**: 2026-11-28 07:08:45
+- **時間（Asia/Taipei）**: 2026-11-28 07:11:24
 - **角色**: 一般
-- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7229907329
+- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7229943909
 
-<!-- comment_id: 7229907329 -->
+<!-- comment_id: 7229943909 -->
 
-【2026-11-28 07:08 台北時間（UTC+8）】
-[復盤] BACKTEST-READINESS-01 v1.9 報表更正｜PR #7 head `59dea52b31e1360e0349f2139e6b9bb002efd3ce` 獨立靜態驗收：PASS
+【2026-11-28 07:11 台北時間（UTC+8）】
+[復盤] BACKTEST-READINESS-01｜更正 #7229907329：PR #7 head 59dea52b 的 L1 main 接線未通過
 
-角色：復盤（獨立驗證，非歷史回測）｜實測 UTC `2026-11-27T23:07:53Z` → `23:08:22Z`｜對應 [#7229888026](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7229888026)。PR #7 仍 open/draft 未合併。
+角色：復盤（獨立覆核）｜研究編號：BACKTEST-READINESS-01 v1.13 回應｜執行 UTC 23:10:40Z → 23:11:05Z
 
-1. head `59dea52b…` parent 為 `4307a6f3…`；diff 僅 3 檔（+296/−57）：`run_l1_bounded_backtest.py`、`run_retest24_bounded_backtest.py`、`run_long_struct_bounded_backtest.py`。engine、策略檔、測試檔均未變。
-2. 大小／SHA 與報告一致：L1 46,871 B `27520cf4…98fb`、RETEST24 54,101 B `67094079…f89`、LONG 57,609 B `8db9e3fd…a59`；測試 `eed3bda2…efd2`、`c4788a7a…a8e` 未變。
-3. 變更範圍：L1 移除的行只在 `summarize_run` 與 `main` 的報表輸出（舊 `by_month` 讀 `exit_ts`/`net_pnl_u` 等不存在的欄位）；新增行不含網路／子行程／交易所 API 呼叫，只新增 `import calendar`；成本／杠桿／TP/SL／撮合參數未動。
-4. 自行重跑兩套 synthetic：`ALL_RETEST24_V1_6_SYNTHETIC_TESTS_PASS`、`ALL_LONG_V1_6_SYNTHETIC_TESTS_PASS`。
-5. 隔離回歸（舊版 vs 新版 `_enumerate_scored_utc_months`）：
-   - 2025-10-01T00:00 → 10-31T23:30：舊 `partial=True`（錯）→ 新 `False` ✅
-   - 2025-10-01T00:00 → 10-31T23:00：舊新皆 `True` ✅（少一根仍是部分月）
-   - 2025-12-01 → 2026-01-31T23:30 跨年：舊 2026-01 `True` → 新 `False` ✅
-   RETEST24 與 LONG 兩支結果相同。
-6. 未驗：L1 新月報與 `l1_bounded_local_details.json` 未以真實資料執行（依規不跑團隊歷史），僅做靜態審閱。
+更正：我在 #7229907329 判定的「靜態 PASS」只涵蓋報表口徑與 partial-month 判定，漏掉 L1 的 main 輸出接線檢查。現依 ChatGPT v1.13（#7229883301）逐點複核，結果如下：
+- A 成立：對 `run_l1_bounded_backtest.py`（SHA 27520cf4…98fb）做 AST 掃描，`local_details_file` 共 6 處，全部是 Load（L996、L1008、L1009、L1055、L1067、L1068），0 處 Store。缺費分支與成功分支在寫明細前都會引用未定義名稱，依源碼推導必然 NameError。這是靜態定位，未做 runtime 重現。
+- B 成立：L818–828 的 outputs 互斥清單沒有納入新明細檔與其 .tmp。
+- C：同意 ChatGPT 的要求，缺費 ABORT 時須保全已算月報。
 
-FIB-4H-LONG-V3 維持 NO-GO，live_approved: false；無交易、部署或風控變更。
+因此撤回對 L1 新版 main 的 PASS。報表口徑、兩支 adapter 的 partial-month 修正，以及兩套 synthetic 重跑 PASS 的結論不變；但這兩套測試沒有涵蓋 L1 main，不能作為接線證據。
+
+下一步：等策略組依 A/B/C 補正，並提供 stub engine 的成功與缺費 main 出口、明細路徑重合拒絕案例。我會先證明舊版失敗、再證明新版通過。
+邊界：draft、不合併、FIB-4H-LONG-V3 維持 NO-GO、live_approved: false，不跑歷史、不交易。
