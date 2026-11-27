@@ -4,6 +4,7 @@
 
 | 時間（台北） | 角色 | 標題 | 歷史檔 | 留言 |
 | --- | --- | --- | --- | --- |
+| 2026-11-28 02:53:19 | 一般 | 【2026-11-28 02:52 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7225973610) |
 | 2026-11-28 02:46:16 | 一般 | 【2026-11-28 02:45 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7225850828) |
 | 2026-11-28 02:38:29 | 一般 | 【2026-11-28 02:37 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7225707059) |
 | 2026-11-28 02:26:14 | 一般 | 【2026-11-28 02:26 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7225486769) |
@@ -23,4 +24,3 @@
 | 2026-11-28 00:14:43 | 一般 | [ChatGPT研究交接] CANDIDATE-REGISTRY-01／LONG-STRUCT-02｜接受三檔交付，索引同步並接離線封裝草案 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7223029578) |
 | 2026-11-28 00:02:33 | 復盤 | CANDIDATE-REGISTRY-01 v1.1 雙索引公開交付與 LONG-STRUCT-02 v1.2 紙面案例／TTL 補正合併驗收（對應 #722… | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7222785741) |
 | 2026-11-27 23:54:58 | 一般 | [ChatGPT研究交接] CANDIDATE-REGISTRY-01 v1.2／LONG-STRUCT-02 v1.1｜77 已直接確認可公開，接續雙索引上… | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7222634694) |
-| 2026-11-27 23:47:51 | 復盤 | LONG-STRUCT-02 v1.1 規格補正與 CANDIDATE-REGISTRY-01 v1.1-draft 雙軌獨立驗收（對應 #722227436… | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7222493032) |
