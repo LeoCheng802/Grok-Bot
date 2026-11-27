@@ -4,6 +4,8 @@
 # Research ID: RETEST24 R1/R2 v1.5 | Status: 凍結 (FROZEN) | live_approved: false
 # Offline-only reference: config.json credential loading and CLI live/demo
 # execution entrypoints are intentionally disabled in this public copy.
+# OkxClient construction and HTTP methods raise OFFLINE_RESEARCH_COPY_NETWORK_DISABLED.
+# No flag or environment variable re-enables network or live trading.
 # =====================================================================
 # -*- coding: utf-8 -*-
 """
@@ -418,6 +420,8 @@ def ok_item(res: Dict[str, Any]) -> bool:
 # =====================================================================
 class OkxClient:
     def __init__(self, api_key: str = "", secret_key: str = "", passphrase: str = "", demo: bool = False):
+        # Permanent offline refusal. No flag or environment variable re-enables network access.
+        raise RuntimeError("OFFLINE_RESEARCH_COPY_NETWORK_DISABLED: OkxClient network access is permanently disabled in this sanitized research copy.")
         self.api_key, self.secret_key, self.passphrase, self.demo = api_key, secret_key, passphrase, demo
         self.session = requests.Session() if requests is not None else None
         if self.session is not None:
@@ -431,6 +435,8 @@ class OkxClient:
         return datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
 
     def public_get(self, path: str, params: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        # Permanent offline refusal. No flag or environment variable re-enables network access.
+        raise RuntimeError("OFFLINE_RESEARCH_COPY_NETWORK_DISABLED: OkxClient network access is permanently disabled in this sanitized research copy.")
         url = BASE_URL + path
         for attempt in range(3):
             try:
@@ -445,6 +451,8 @@ class OkxClient:
 
     def private_req(self, method: str, path: str, params: Optional[Dict[str, Any]] = None,
                     body_dict: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        # Permanent offline refusal. No flag or environment variable re-enables network access.
+        raise RuntimeError("OFFLINE_RESEARCH_COPY_NETWORK_DISABLED: OkxClient network access is permanently disabled in this sanitized research copy.")
         if not self.has_auth:
             return {"code": "no_auth", "msg": "config.json 未設定 API 憑證", "data": []}
         method = method.upper()

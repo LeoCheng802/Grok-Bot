@@ -1,0 +1,438 @@
+{
+  "cases": [
+    {
+      "actual": "created",
+      "after": {
+        "l1_db": {
+          "exists": true,
+          "sha256": "7aff5af28ad59bc8dace0549b0acb4804f74009b75fa43f9e089f364fb0d7b39"
+        },
+        "sidecar": {
+          "exists": true,
+          "sha256": "07e31cda7d98affa3ff411cd8f71d90f04ba8ad667c5266de9c5c7f03f2bcb63"
+        },
+        "source_a": {
+          "exists": true,
+          "sha256": "7aff5af28ad59bc8dace0549b0acb4804f74009b75fa43f9e089f364fb0d7b39"
+        }
+      },
+      "before": {
+        "l1_db": {
+          "exists": false,
+          "sha256": null
+        },
+        "sidecar": {
+          "exists": false,
+          "sha256": null
+        },
+        "source_a": {
+          "exists": true,
+          "sha256": "7aff5af28ad59bc8dace0549b0acb4804f74009b75fa43f9e089f364fb0d7b39"
+        }
+      },
+      "exception": null,
+      "expected": "sidecar records source and derived hashes; source_a unchanged",
+      "label": "control_clean_bind_create",
+      "pass": true
+    },
+    {
+      "actual": "reused",
+      "after": {
+        "l1_db": {
+          "exists": true,
+          "sha256": "7aff5af28ad59bc8dace0549b0acb4804f74009b75fa43f9e089f364fb0d7b39"
+        },
+        "sidecar": {
+          "exists": true,
+          "sha256": "07e31cda7d98affa3ff411cd8f71d90f04ba8ad667c5266de9c5c7f03f2bcb63"
+        },
+        "source_a": {
+          "exists": true,
+          "sha256": "7aff5af28ad59bc8dace0549b0acb4804f74009b75fa43f9e089f364fb0d7b39"
+        }
+      },
+      "before": {
+        "l1_db": {
+          "exists": true,
+          "sha256": "7aff5af28ad59bc8dace0549b0acb4804f74009b75fa43f9e089f364fb0d7b39"
+        },
+        "sidecar": {
+          "exists": true,
+          "sha256": "07e31cda7d98affa3ff411cd8f71d90f04ba8ad667c5266de9c5c7f03f2bcb63"
+        },
+        "source_a": {
+          "exists": true,
+          "sha256": "7aff5af28ad59bc8dace0549b0acb4804f74009b75fa43f9e089f364fb0d7b39"
+        }
+      },
+      "exception": null,
+      "expected": "source_a, l1_db, and sidecar exists+sha256 unchanged",
+      "label": "control_clean_bind_reuse",
+      "pass": true
+    },
+    {
+      "actual": "RuntimeError: L1_DB source or content hash does not match the sidecar; refusing to reuse or overwrite",
+      "after": {
+        "l1_db": {
+          "exists": true,
+          "sha256": "7aff5af28ad59bc8dace0549b0acb4804f74009b75fa43f9e089f364fb0d7b39"
+        },
+        "sidecar": {
+          "exists": true,
+          "sha256": "07e31cda7d98affa3ff411cd8f71d90f04ba8ad667c5266de9c5c7f03f2bcb63"
+        },
+        "source_a": {
+          "exists": true,
+          "sha256": "7aff5af28ad59bc8dace0549b0acb4804f74009b75fa43f9e089f364fb0d7b39"
+        },
+        "source_b": {
+          "exists": true,
+          "sha256": "16f3164c85463750652f1fee7443ac3c9b3058cd55c0c8098102277272b9a6d9"
+        }
+      },
+      "before": {
+        "l1_db": {
+          "exists": true,
+          "sha256": "7aff5af28ad59bc8dace0549b0acb4804f74009b75fa43f9e089f364fb0d7b39"
+        },
+        "sidecar": {
+          "exists": true,
+          "sha256": "07e31cda7d98affa3ff411cd8f71d90f04ba8ad667c5266de9c5c7f03f2bcb63"
+        },
+        "source_a": {
+          "exists": true,
+          "sha256": "7aff5af28ad59bc8dace0549b0acb4804f74009b75fa43f9e089f364fb0d7b39"
+        },
+        "source_b": {
+          "exists": true,
+          "sha256": "16f3164c85463750652f1fee7443ac3c9b3058cd55c0c8098102277272b9a6d9"
+        }
+      },
+      "exception": "RuntimeError",
+      "expected": "RuntimeError and watched files unchanged",
+      "label": "source_changed_rejected",
+      "pass": true
+    },
+    {
+      "actual": "RuntimeError: L1_DB source or content hash does not match the sidecar; refusing to reuse or overwrite",
+      "after": {
+        "l1_db": {
+          "exists": true,
+          "sha256": "23ddde2566df128aa44f0734abe55cac4f5acb67dbc8e1856ea15a1a29489d82"
+        },
+        "sidecar": {
+          "exists": true,
+          "sha256": "07e31cda7d98affa3ff411cd8f71d90f04ba8ad667c5266de9c5c7f03f2bcb63"
+        },
+        "source_a": {
+          "exists": true,
+          "sha256": "7aff5af28ad59bc8dace0549b0acb4804f74009b75fa43f9e089f364fb0d7b39"
+        }
+      },
+      "before": {
+        "l1_db": {
+          "exists": true,
+          "sha256": "23ddde2566df128aa44f0734abe55cac4f5acb67dbc8e1856ea15a1a29489d82"
+        },
+        "sidecar": {
+          "exists": true,
+          "sha256": "07e31cda7d98affa3ff411cd8f71d90f04ba8ad667c5266de9c5c7f03f2bcb63"
+        },
+        "source_a": {
+          "exists": true,
+          "sha256": "7aff5af28ad59bc8dace0549b0acb4804f74009b75fa43f9e089f364fb0d7b39"
+        }
+      },
+      "exception": "RuntimeError",
+      "expected": "RuntimeError and watched files unchanged",
+      "label": "stale_sidecar_derived_mutated_rejected",
+      "pass": true
+    },
+    {
+      "actual": "RuntimeError: L1_DB exists without source metadata; refusing to reuse or overwrite a derived DB",
+      "after": {
+        "l1_db": {
+          "exists": true,
+          "sha256": "7aff5af28ad59bc8dace0549b0acb4804f74009b75fa43f9e089f364fb0d7b39"
+        },
+        "sidecar": {
+          "exists": false,
+          "sha256": null
+        },
+        "source_a": {
+          "exists": true,
+          "sha256": "7aff5af28ad59bc8dace0549b0acb4804f74009b75fa43f9e089f364fb0d7b39"
+        }
+      },
+      "before": {
+        "l1_db": {
+          "exists": true,
+          "sha256": "7aff5af28ad59bc8dace0549b0acb4804f74009b75fa43f9e089f364fb0d7b39"
+        },
+        "sidecar": {
+          "exists": false,
+          "sha256": null
+        },
+        "source_a": {
+          "exists": true,
+          "sha256": "7aff5af28ad59bc8dace0549b0acb4804f74009b75fa43f9e089f364fb0d7b39"
+        }
+      },
+      "exception": "RuntimeError",
+      "expected": "RuntimeError and watched files unchanged",
+      "label": "missing_sidecar_rejected",
+      "pass": true
+    },
+    {
+      "actual": "RuntimeError: L1_DB source metadata is unreadable; refusing to overwrite",
+      "after": {
+        "l1_db": {
+          "exists": true,
+          "sha256": "7aff5af28ad59bc8dace0549b0acb4804f74009b75fa43f9e089f364fb0d7b39"
+        },
+        "sidecar": {
+          "exists": true,
+          "sha256": "021fb596db81e6d02bf3d2586ee3981fe519f275c0ac9ca76bbcf2ebb4097d96"
+        },
+        "source_a": {
+          "exists": true,
+          "sha256": "7aff5af28ad59bc8dace0549b0acb4804f74009b75fa43f9e089f364fb0d7b39"
+        }
+      },
+      "before": {
+        "l1_db": {
+          "exists": true,
+          "sha256": "7aff5af28ad59bc8dace0549b0acb4804f74009b75fa43f9e089f364fb0d7b39"
+        },
+        "sidecar": {
+          "exists": true,
+          "sha256": "021fb596db81e6d02bf3d2586ee3981fe519f275c0ac9ca76bbcf2ebb4097d96"
+        },
+        "source_a": {
+          "exists": true,
+          "sha256": "7aff5af28ad59bc8dace0549b0acb4804f74009b75fa43f9e089f364fb0d7b39"
+        }
+      },
+      "exception": "RuntimeError",
+      "expected": "RuntimeError and watched files unchanged",
+      "label": "corrupt_sidecar_rejected",
+      "pass": true
+    },
+    {
+      "actual": "RuntimeError: B6_DB overlaps the derived L1_DB or its sidecar; refusing to copy, reuse, or clean up the fixed source",
+      "after": {
+        "sidecar": {
+          "exists": false,
+          "sha256": null
+        },
+        "source_a": {
+          "exists": true,
+          "sha256": "7aff5af28ad59bc8dace0549b0acb4804f74009b75fa43f9e089f364fb0d7b39"
+        }
+      },
+      "before": {
+        "sidecar": {
+          "exists": false,
+          "sha256": null
+        },
+        "source_a": {
+          "exists": true,
+          "sha256": "7aff5af28ad59bc8dace0549b0acb4804f74009b75fa43f9e089f364fb0d7b39"
+        }
+      },
+      "exception": "RuntimeError",
+      "expected": "RuntimeError and watched files unchanged",
+      "label": "overlap_b6_with_l1_db",
+      "pass": true
+    },
+    {
+      "actual": "RuntimeError: B6_DB overlaps the derived L1_DB or its sidecar; refusing to copy, reuse, or clean up the fixed source",
+      "after": {
+        "l1_db": {
+          "exists": false,
+          "sha256": null
+        },
+        "source_a": {
+          "exists": true,
+          "sha256": "7aff5af28ad59bc8dace0549b0acb4804f74009b75fa43f9e089f364fb0d7b39"
+        }
+      },
+      "before": {
+        "l1_db": {
+          "exists": false,
+          "sha256": null
+        },
+        "source_a": {
+          "exists": true,
+          "sha256": "7aff5af28ad59bc8dace0549b0acb4804f74009b75fa43f9e089f364fb0d7b39"
+        }
+      },
+      "exception": "RuntimeError",
+      "expected": "RuntimeError and watched files unchanged",
+      "label": "overlap_b6_with_sidecar",
+      "pass": true
+    },
+    {
+      "actual": "output path final report overlaps fixed input funding-db; refusing before any copy, write, or cleanup | refusing to delete l1_tp_result.json because it overlaps fixed input funding-db",
+      "after": {
+        "l1_tp_result.json": {
+          "exists": true,
+          "sha256": "e002b5d26e1539448bc6b569f9a8ae64b38877c9e9746e16175cb417fce0e4bd"
+        },
+        "l1_tp_result.json.tmp": {
+          "exists": true,
+          "sha256": "68dedb2473d25ddc36cf14cf4d5d990bef59cb810048594a59f2cafbb13c61b5"
+        },
+        "source_a": {
+          "exists": true,
+          "sha256": "7aff5af28ad59bc8dace0549b0acb4804f74009b75fa43f9e089f364fb0d7b39"
+        }
+      },
+      "before": {
+        "l1_tp_result.json": {
+          "exists": true,
+          "sha256": "e002b5d26e1539448bc6b569f9a8ae64b38877c9e9746e16175cb417fce0e4bd"
+        },
+        "l1_tp_result.json.tmp": {
+          "exists": true,
+          "sha256": "68dedb2473d25ddc36cf14cf4d5d990bef59cb810048594a59f2cafbb13c61b5"
+        },
+        "source_a": {
+          "exists": true,
+          "sha256": "7aff5af28ad59bc8dace0549b0acb4804f74009b75fa43f9e089f364fb0d7b39"
+        }
+      },
+      "exception": "RuntimeError",
+      "expected": "verify and discard each raise RuntimeError; report and tmp exists+sha256 unchanged",
+      "label": "overlap_funding_db_with_final_report",
+      "pass": true
+    },
+    {
+      "actual": "output path final report temp overlaps fixed input funding-db; refusing before any copy, write, or cleanup | refusing to delete l1_tp_result.json.tmp because it overlaps fixed input funding-db",
+      "after": {
+        "l1_tp_result.json": {
+          "exists": true,
+          "sha256": "e002b5d26e1539448bc6b569f9a8ae64b38877c9e9746e16175cb417fce0e4bd"
+        },
+        "l1_tp_result.json.tmp": {
+          "exists": true,
+          "sha256": "68dedb2473d25ddc36cf14cf4d5d990bef59cb810048594a59f2cafbb13c61b5"
+        },
+        "source_a": {
+          "exists": true,
+          "sha256": "7aff5af28ad59bc8dace0549b0acb4804f74009b75fa43f9e089f364fb0d7b39"
+        }
+      },
+      "before": {
+        "l1_tp_result.json": {
+          "exists": true,
+          "sha256": "e002b5d26e1539448bc6b569f9a8ae64b38877c9e9746e16175cb417fce0e4bd"
+        },
+        "l1_tp_result.json.tmp": {
+          "exists": true,
+          "sha256": "68dedb2473d25ddc36cf14cf4d5d990bef59cb810048594a59f2cafbb13c61b5"
+        },
+        "source_a": {
+          "exists": true,
+          "sha256": "7aff5af28ad59bc8dace0549b0acb4804f74009b75fa43f9e089f364fb0d7b39"
+        }
+      },
+      "exception": "RuntimeError",
+      "expected": "verify and discard each raise RuntimeError; report and tmp exists+sha256 unchanged",
+      "label": "overlap_funding_db_with_final_report_tmp",
+      "pass": true
+    },
+    {
+      "actual": "RuntimeError: output path L1_DB overlaps output path final report; refusing before any copy, write, or cleanup",
+      "after": {
+        "same_output": {
+          "exists": true,
+          "sha256": "c818669a0e5af7dc1be2cbf7883dcb16264d7d8f81781cec6c0b9187b18f448c"
+        },
+        "source_a": {
+          "exists": true,
+          "sha256": "7aff5af28ad59bc8dace0549b0acb4804f74009b75fa43f9e089f364fb0d7b39"
+        }
+      },
+      "before": {
+        "same_output": {
+          "exists": true,
+          "sha256": "c818669a0e5af7dc1be2cbf7883dcb16264d7d8f81781cec6c0b9187b18f448c"
+        },
+        "source_a": {
+          "exists": true,
+          "sha256": "7aff5af28ad59bc8dace0549b0acb4804f74009b75fa43f9e089f364fb0d7b39"
+        }
+      },
+      "exception": "RuntimeError",
+      "expected": "RuntimeError and watched files unchanged",
+      "label": "overlap_output_with_output",
+      "pass": true
+    },
+    {
+      "actual": "RuntimeError: output path L1_DB overlaps fixed input funding-db; refusing before any copy, write, or cleanup",
+      "after": {
+        "alias": {
+          "exists": true,
+          "sha256": "7aff5af28ad59bc8dace0549b0acb4804f74009b75fa43f9e089f364fb0d7b39"
+        },
+        "source_a": {
+          "exists": true,
+          "sha256": "7aff5af28ad59bc8dace0549b0acb4804f74009b75fa43f9e089f364fb0d7b39"
+        }
+      },
+      "before": {
+        "alias": {
+          "exists": true,
+          "sha256": "7aff5af28ad59bc8dace0549b0acb4804f74009b75fa43f9e089f364fb0d7b39"
+        },
+        "source_a": {
+          "exists": true,
+          "sha256": "7aff5af28ad59bc8dace0549b0acb4804f74009b75fa43f9e089f364fb0d7b39"
+        }
+      },
+      "exception": "RuntimeError",
+      "expected": "RuntimeError and watched files unchanged",
+      "label": "overlap_symlink_alias_with_fixed_input",
+      "pass": true
+    }
+  ],
+  "finished_utc": "2026-11-27T18:19:53.659008+00:00",
+  "group": "SYN-DB-03",
+  "harness_error": null,
+  "harness_sha256": "e09d98cec0687855f51ba0817aa556de4a7943c1ee2e34a85d06886e8158b161",
+  "line_spans": {
+    "_atomic_write_text": {
+      "lend": 578,
+      "lstart": 570
+    },
+    "_bind_isolated_funding_db": {
+      "lend": 655,
+      "lstart": 597
+    },
+    "_discard_final_report": {
+      "lend": 594,
+      "lstart": 581
+    },
+    "_paths_overlap": {
+      "lend": 520,
+      "lstart": 503
+    },
+    "_verify_output_paths_disjoint": {
+      "lend": 567,
+      "lstart": 549
+    },
+    "sha": {
+      "lend": 130,
+      "lstart": 125
+    }
+  },
+  "module_sentinel_hits": [],
+  "overall": "PASS",
+  "run_l1_tp_study_sha256": "e920b95356db3636cc6083b1b6254042ee1f78fa963d4f7a66e86c52b23c75eb",
+  "scope": "DB-only function layer. SYN-NET-01 and SYN-MANIFEST-02 were not run. Not full main().",
+  "started_utc": "2026-11-27T18:19:53.617964+00:00",
+  "status_note": "FIB-4H-LONG-V3 remains NO-GO. LONG-STRUCT-02 is not implemented. Candidates, strategy rules, costs, and full history remain \u5f85\u9a57.",
+  "transport_blocker_active_entire_run": true,
+  "transport_hits": []
+}
