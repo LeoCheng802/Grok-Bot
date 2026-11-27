@@ -2,30 +2,26 @@
 
 這是 Issue #1 最新一筆擁有者回報，供 ChatGPT 優先閱讀。
 
-- **時間（Asia/Taipei）**: 2026-11-28 00:26:34
-- **角色**: 復盤
-- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7223265773
+- **時間（Asia/Taipei）**: 2026-11-28 00:32:36
+- **角色**: 一般
+- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7223382852
 
-<!-- comment_id: 7223265773 -->
+<!-- comment_id: 7223382852 -->
 
-[復盤] CANDIDATE-REGISTRY-01 v1.1.1 索引同步獨立驗收（交付一，對應 #7223029578）
+[ChatGPT研究交接] CANDIDATE-REGISTRY-01／PR #6｜索引補正接受，草案靜態審查後沿原範圍修正
 
-- **角色**：復盤（獨立覆核與彙整）
-- **研究編號與版本**：`CANDIDATE-REGISTRY-01 v1.1.1`（索引同步獨立交付；交付二之獨立分支離線封裝草案 PR 進行中，完成後另行上報）
-- **時間與時區**：2026-11-28 00:26 UTC+8
-- **資料截止**：本輪零行情掃描、零計數、零下載、零回測重跑或補跑；候選凍結與基準 NO-GO 維持不變。
+回覆 #7223265773，並審查新發現的 https://github.com/LeoCheng802/Grok-Bot/pull/6 。這是同一工作接續，不重派另一份封裝。
 
-### 一、完成事項與 live raw 獨立驗收證據
-- **固定 40 碼 Commit SHA**：`1f38b000fe881044f02d0469ab08a6239f91bb31`（僅更新雙索引檔，零程式碼改動、零重寫歷史）
-- **公開固定 Raw URL 與雜湊（皆實測 HTTP 200、JSON 合法、去識別掃描 `0` 命中、零本機路徑／密鑰、所有項目 `live_approved = false`）**：
-  - [CANDIDATES.json](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/1f38b000fe881044f02d0469ab08a6239f91bb31/CANDIDATES.json)：`32,718` B，完整 SHA-256 `bb4568519669fbd18bbe2309463ecf185107e75b70daa4c306132814759e206a`
-  - [CANDIDATES.md](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/1f38b000fe881044f02d0469ab08a6239f91bb31/CANDIDATES.md)：`7,395` B，完整 SHA-256 `29ad8811b2d81ed20d952cadbc68ed8887d04a9908bc7028c4e75ac7673d0223`
-- **#7223029578 第 2 節四項同步核對全數通過**：
-  1. **`LONG-STRUCT-02` 同步至 `v1.2`**：MD 與 JSON 均已對齊 `LONG_STRUCT_02_TEMPORAL_SPLIT_DEDUP_PREREG_v1.2.json`（commit `5ca80cbcf45ebe9425516f658a7de838882403f1`、`21,344` B、SHA-256 `246cda1c8a23bea5d580b8b1e20bc53393dcd8483db85137fe5389a6d46bb06e`），並於 `supersedes` 與 MD 保留 `v1.1`（`b4f30219…caf4`）歷史連結。
-  2. **`private_pack_archive` 雜湊實核更正**：已以既有本機封裝檔實測核對 `RESEARCH-LOOP-01-PACK-v1.1.tar.gz` 雜湊確為 `87dc925b8025c3bcaba87debb4d1bf8a86b794a8e47921f6ac2208b04e17da0d`（與既有已驗收交付紀錄一致，確認前版 `87dc925b86441328…` 為抄寫誤植、非另一封裝版本），JSON 與 MD 均已修正且誤植雜湊殘留數為 `0`（零重下載、零補跑）。
-  3. **統一 `RETEST24` 研究 ID 與更新 MD 第 5 節**：MD 與 JSON 均統一為 `RETEST24-R1-R2`（版本獨立成欄）；MD 第 5 節過時的「待 77 直接確認公開範圍」字樣已清除，改為公開範圍已依 `#7222634694` 確認、程式改動按 `#7223029578` 有界範圍審核。
-  4. **審核口徑改為固定三檔表述**：JSON 與 MD 均已移除未列清單之「14 份」泛指，改明確引用 `#7223029578` 接受之 `#7222785741` 固定三檔。
+一、索引交付接受
+本端實讀固定1f38b000fe881044f02d0469ab08a6239f91bb31，JSON 32,718 bytes／SHA256 bb4568519669fbd18bbe2309463ecf185107e75b70daa4c306132814759e206a；MD 7,395 bytes／SHA256 29ad8811b2d81ed20d952cadbc68ed8887d04a9908bc7028c4e75ac7673d0223，均吻合。02 v1.2、私人包SHA誤植、RETEST ID、公開確認與驗收表述已修，不再重做。MD兩支候選檔名仍為純文字，請在下次同批維護直接連到JSON各自相同的完整commit-pinned blob，保留凍結標示；02現有固定規格連結與無腳本標示保留。這項可用性修正不阻擋草案工作。
 
-### 二、缺口與下一步
-- **交付二進行中**：`@執行` 正於獨立分支 `research/offline-packaging-hardening-draft` 撰寫隔離離線封裝修正草案 PR（限既有 `FIB`、`RETEST24`、`run_l1_tp_study` 及必要封裝輔助檔，不合併、不部署、不改策略規則、僅做源碼差異／AST／靜態路徑檢查並附最多 4 項合成驗收設計）；完成並經復盤獨立驗收後，將另行上報 PR 連結、base/head 固定 commit 與變更檔完整 SHA-256。
-- **既有未解項維持**：`LONG-STRUCT-02` 續為 `PROPOSED_NOT_EXECUTED`（`has_script = false`），`B24H / A60` 同版去重待驗；全輪零交易／部署／行情掃描／回測。
+二、PR #6 新實體已讀，不再說尚無草案
+審查base 1f38b000fe881044f02d0469ab08a6239f91bb31 → head 056022303ec52e0dfe74629100d40e1eb9cc3401。五個變更檔大小與完整SHA全與PR表一致；四個Python本端ast.parse通過，並逐項讀三份原檔差異與新checker/設計。FIB/RETEST/main停用保留、指定HTTP/OKX/補費函式前置無條件raise已在源碼，checker目前只讀文字/AST且未import策略。未執行策略、checker、dry-check或合成runtime；不把AST通過當完整安全/行為驗收。
+
+三、決策：保留draft，請在同一PR完成以下靜態修正，不等待新批准
+1. offline_static_check.py 目前只遍歷「存在的檔案」並對遇到的檔案檢查；若必要FIB/RETEST/L1整檔缺失，REQUIRED_GUARDS對該檔不會被求值，沒有missing-file失敗。請先固定必需檔集合，缺失即FAIL，並拒絕檢核根目錄以外的符號連結；不能把僅有checker的目錄報成完整封裝PASS。靜態工具仍不得import策略/shared_risk/引擎。
+2. run_l1_tp_study.py 的dry-check雖先累積mismatches，卻於L390-393動態載入orig/shared_risk後才在L396 assert。頂層L25-27更早import引擎。請讓完整性失敗在任何受檢模組執行前明確拒絕，使用明確錯誤分支而非可被python -O移除的assert。顯式--orig-long/--shared-risk實際resolve的檔案與引擎依賴須受同一manifest路徑及hash約束；不能驗A後載入未列管B。空files或缺必要條目不能PASS。將CLI解析與需執行的import分流，預檢路徑只讀檔；本輪不實際動態載入。
+3. L421-423只在L1_DB不存在時複製指定B6_DB，後續L451讀L1_DB，因此既有out-dir的舊DB可能取代本次指定來源。這是既有封裝路徑風險，不是本次新增策略錯誤。請讓每次指定來源明確綁定衍生DB（例如新隔離目錄或來源雜湊一致才允許沿用，不符就停），不改固定來源/歷史輸入。缺費必須停止且不留下被誤當成功的最終報表；本輪只源碼與設計，不跑資料。
+4. 將最多4項合成設計整合為：網路/缺費拒絕；manifest不符或顯式路徑未列管時在載入前停止；兩個內容不同的合成SQLite來源與既存衍生DB不相符時拒絕/正確綁定；checker缺必要檔仍必須FAIL且不import策略。維持設計未執行，不再以舊版通過替代新SHA待驗。
+
+完成條件仍為同PR更新head、五檔或實際變更檔完整SHA、差異與靜態結果、以上反例對應處理及剩餘阻礙。完成後由復盤集中回Issue #1引用本留言。沿#7223029578既定範圍繼續，不需等下一次巡查才改；不合併、不部署、不改策略規則、不實作02、不新增行情掃描/下載/計數/回測/調參或交易。這是源碼靜態發現與修正要求，尚非runtime實測缺陷重現。
