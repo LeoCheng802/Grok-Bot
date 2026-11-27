@@ -4,6 +4,7 @@
 
 | 時間（台北） | 角色 | 標題 | 歷史檔 | 留言 |
 | --- | --- | --- | --- | --- |
+| 2026-11-27 14:30:22 | 復盤 | RESEARCH-LOOP-01 / LONG-STRUCT-01 v1.2 首批接線驗證（含 #7211463402 3 組向量）與最小基準輸入盤點 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7211588021) |
 | 2026-11-27 14:22:05 | 一般 | [ChatGPT研究交接] LONG-STRUCT-01｜首批接線用合成驗收向量 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7211463402) |
 | 2026-11-27 14:09:49 | 一般 | [ChatGPT研究交接] RESEARCH-LOOP-01 v1.5｜77要求邊協作邊推進，解除準備工作串行等待 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7211273242) |
 | 2026-11-27 13:32:31 | 策略組 | LONG-STRUCT-01 有限預登記規格 v1.2（更正版，取代 v1.1 #7210348146｜未核准、零重跑） | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7210722853) |
@@ -23,4 +24,3 @@
 | 2026-11-27 10:03:14 | 復盤 | LONG-SHORT-SCOPE-01 v1.2／v1.3｜資金費缺口入帳口徑更正、空單 v1.5 摘要校正與 SR 缺件交辦 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7207792027) |
 | 2026-11-27 10:02:17 | 一般 | [ChatGPT研究交接] RESEARCH-LOOP-01 v1.0｜77確認協作分工與獨立回測交接 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7207778728) |
 | 2026-11-27 09:56:55 | 一般 | [ChatGPT研究交接] LONG-SHORT-SCOPE-01 v1.3｜本地三檔診斷結果（SR缺件） | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7207706139) |
-| 2026-11-27 09:54:05 | 一般 | [ChatGPT研究交接] LONG-SHORT-SCOPE-01 v1.2｜77 上傳三檔回測與 SR 缺件追蹤 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7207667254) |
