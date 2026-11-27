@@ -12,8 +12,9 @@ Supports:
 
 Strictly preserves:
   - Zero credentials, zero network calls (outer socket/HTTP TransportBlocker
-    active for the entire run + hard refusal on missing funding).
+    active for the entire offline run + hard refusal on missing funding).
   - Zero assert statements; zero top-level strategy/shared_risk/engine imports.
+
   - Read-only fixed inputs; unified output/temp vs input path-disjointness guard
     before any copy/write/cleanup; two-pass _discard_final_report guard.
   - Hard abort (exit 2, NO success report written) on any miss_8h funding gap.
@@ -326,18 +327,152 @@ def _bind_isolated_funding_db(src_db: Path, derived_db: Path, meta_path: Path) -
 
 
 def load_funding_db(db_path: Path):
+    """Exact FIC loader interface: fmaps[inst][ts_snapped] = rate; ov_raw[inst][ts_snapped] = ts_raw."""
     con = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
     try:
-        rows = con.execute("SELECT inst_id, ts_snapped, rate FROM funding_archive").fetchall()
+        rows = con.execute("SELECT inst_id, ts_snapped, ts_raw, rate FROM funding_archive").fetchall()
     finally:
         con.close()
     fmaps = {}
     ov_raw = {}
-    for inst, ts_s, rt in rows:
-        ts_i = int(ts_s)
-        fmaps.setdefault(inst, {})[ts_i] = float(rt)
-        ov_raw.setdefault(inst, set()).add(ts_i)
+    for inst, ts_grid, ts_raw, rt in rows:
+        ts_g = int(ts_grid)
+        fmaps.setdefault(inst, {})[ts_g] = float(rt)
+        ov_raw.setdefault(inst, {})[ts_g] = int(ts_raw)
     return fmaps, ov_raw
+
+
+HISTORICAL_MODEL_VS_DELIVERED_SCRIPT_DIFF = {
+    "object_type": "historical_model_adapter_NOT_full_live_script_execution",
+    "hash_verification_scope": (
+        "Verifies RETEST24_R1_R2_Switchable_v1_5_auditfix.py and shared_risk.py SHA-256 against REPRO_MANIFEST.json, "
+        "but signal generation runs build_cands_retest24() and simulation runs b6_sim_portable.run_audit_sim_b6(); "
+        "RETEST.evaluate_signal and shared_risk.compute_order_plan are NOT invoked live. "
+        "Therefore a matching SHA-256 does NOT prove full v1.5 live script / shared_risk execution equivalence."
+    ),
+    "known_parameter_and_data_diffs": [
+        {
+            "item": "slip_mkt",
+            "historical_model_adapter": 0.0003,
+            "delivered_retest_v1_5_script": 0.0005,
+            "impact": "Delivered RETEST SLIP_MKT=0.0005 is also used inside compute_order_plan risk contract sizing; historical model keeps 0.0003 as control.",
+        },
+        {
+            "item": "ema55_calculation_window",
+            "historical_model_adapter": "Full cached 4H history per symbol",
+            "delivered_retest_v1_5_script": "Live fetch of up to 600 closed 4H bars",
+            "impact": "Minor EMA55 initialization drift possible on symbols with >600 bars.",
+        },
+        {
+            "item": "default_universe_exclusions",
+            "historical_model_adapter": "Excludes USDC-USDT-SWAP only (unless --symbols is passed)",
+            "delivered_retest_v1_5_script": "Applies EXCLUDED_BASES filter in live scanner",
+            "impact": "Universe differs unless ChatGPT passes an explicit aligned --symbols list.",
+        },
+    ],
+    "uncovered_state_machines": [
+        "Live exchange orderbook BBO / post_only maker queue priority",
+        "shared_risk.py live account equity / wallet / margin polling and cross-strategy global slot arbitration",
+        "Live REST/WS order placement, cancel/replace race conditions, partial-fill re-sizing, and exchange error retries",
+    ],
+    "funding_reconciliation_scope_note": (
+        "Prior 158/128 warning counts and 50-event reconciliation are limited-scope clues only "
+        "and cannot be extrapolated as full-event verification."
+    ),
+}
+
+
+def inspect_signal_mapping_sample(ohlc4: np.ndarray, tick_sz: float, candidate: str = "RETEST24_V1_5_FROZEN") -> dict:
+    """Pure offline signal/level inspection helper for independent synthetic mapping checks."""
+    if ohlc4.ndim != 2 or ohlc4.shape[1] < 4:
+        raise ValueError("ohlc4 must have shape (N, 4)")
+    c4 = ohlc4[:, 3].astype(float)
+    ema, rsi = indicators_ema55_rsi14(c4)
+    hits = []
+    for i in range(60, len(c4)):
+        if np.isnan(ema[i]) or np.isnan(rsi[i]):
+            continue
+        hi = float(np.max(ohlc4[i - 23:i + 1, 1]))
+        lo = float(np.min(ohlc4[i - 23:i + 1, 2]))
+        if lo <= 0:
+            continue
+        r24 = (hi - lo) / lo
+        if not (r24 >= 0.08 and c4[i] < ema[i] and rsi[i] <= 45.0):
+            continue
+        if candidate == "RETEST24_OPT_01_BEARISH_CLOSE_POS":
+            bar_rng = float(ohlc4[i, 1] - ohlc4[i, 2])
+            if bar_rng <= 0.0:
+                continue
+            close_pos = float(c4[i] - ohlc4[i, 2]) / bar_rng
+            if close_pos > OPT_01_MAX_CLOSE_POS:
+                continue
+        entry = align_tick(lo + 0.50 * (hi - lo), tick_sz)
+        hits.append({"bar_idx": i, "close": float(c4[i]), "ema55": float(ema[i]), "rsi14": float(rsi[i]), "entry_px": entry})
+    return {
+        "candidate": candidate,
+        "bars_evaluated": len(c4),
+        "signal_count": len(hits),
+        "signals": hits,
+    }
+
+
+def _load_optional_input_manifest(path_str):
+    if not path_str:
+        return None, None
+    p = Path(path_str)
+    if not p.is_file():
+        raise RuntimeError("input manifest missing: " + str(p))
+    data = json.loads(p.read_text(encoding="utf-8"))
+    if not isinstance(data, dict):
+        raise RuntimeError("input manifest must be a JSON object")
+    entries = data.get("files", data.get("symbols", data))
+    if not isinstance(entries, dict):
+        raise RuntimeError("input manifest entries must be a JSON object")
+    return p, entries
+
+
+def _verify_and_record_npz_inputs(ordered_syms, cache_dir: Path, symbols_dict: dict, input_manifest_entries):
+    resolved_paths = {}
+    records = {}
+    for inst in ordered_syms:
+        npz_path = (cache_dir / f"{inst}.npz").resolve()
+        if not npz_path.is_file():
+            raise RuntimeError("symbol npz missing from cache_dir: " + inst)
+        actual_size = npz_path.stat().st_size
+        actual_sha = sha(npz_path)
+
+        expected_sha = None
+        expected_size = None
+        sym_info = symbols_dict.get(inst, {})
+        if isinstance(sym_info, dict):
+            expected_sha = sym_info.get("npz_sha256") or sym_info.get("sha256")
+            expected_size = sym_info.get("npz_size_bytes") or sym_info.get("size_bytes")
+
+        if input_manifest_entries is not None:
+            m_entry = input_manifest_entries.get(inst) or input_manifest_entries.get(f"{inst}.npz")
+            if m_entry is None:
+                raise RuntimeError("symbol npz not listed in input_manifest: " + inst)
+            if isinstance(m_entry, str):
+                expected_sha = m_entry
+            elif isinstance(m_entry, dict):
+                if m_entry.get("sha256"):
+                    expected_sha = m_entry["sha256"]
+                if m_entry.get("size_bytes") is not None:
+                    expected_size = int(m_entry["size_bytes"])
+
+        if expected_sha is not None and actual_sha.lower() != str(expected_sha).lower():
+            raise RuntimeError(f"NPZ SHA-256 mismatch for {inst}: expected {expected_sha}, got {actual_sha}")
+        if expected_size is not None and actual_size != int(expected_size):
+            raise RuntimeError(f"NPZ size mismatch for {inst}: expected {expected_size}, got {actual_size}")
+
+        resolved_paths[inst] = npz_path
+        records[inst] = {
+            "filename": npz_path.name,
+            "sha256": actual_sha,
+            "size_bytes": actual_size,
+            "manifest_verified": bool(expected_sha is not None),
+        }
+    return resolved_paths, records
 
 
 # --- Frozen RETEST24-R1-R2 v1.5 formulas (verbatim from audit_v3_1_full.py) ---
@@ -421,19 +556,19 @@ def build_cands_retest24(raw: dict, start_ts: int, end_ts: int, candidate_mode: 
                 continue
             if int(ts4[i - 1]) != bt - H4:
                 continue
-            cp, ep, rp = float(c4[i - 1]), float(ema[i - 1]), float(rsi[i - 1])
-            if math.isnan(ep) or math.isnan(rp):
+            c, e, r = float(c4[i - 1]), float(ema[i - 1]), float(rsi[i - 1])
+            if math.isnan(e) or math.isnan(r):
                 continue
-            if cp >= ep or not (rlo <= rp <= rhi):
+            if c >= e or not (rlo <= r <= rhi):
                 continue
-            dk = (bt + H8) // DAY * DAY - H8
-            if not all((dk - d * DAY) in d1_set for d in range(1, 61)):
+            day = (bt + H8) // DAY * DAY - H8
+            if not all((day - d * DAY) in d1_set for d in range(1, 61)):
                 continue
             op = float(o4[i, 0])
             if i - 1 - lb < 0:
                 continue
             pl = float(np.min(o4[i - 1 - lb:i - 1, 2]))
-            if not (cp < pl and op < pl):
+            if not (c < pl and op < pl):
                 continue
             raw_px = pl * offset_mult
             dist = (raw_px - op) / op
@@ -450,15 +585,58 @@ def build_cands_retest24(raw: dict, start_ts: int, end_ts: int, candidate_mode: 
                 h_prev = float(o4[i - 1, 1])
                 l_prev = float(o4[i - 1, 2])
                 bar_range = h_prev - l_prev
-                if bar_range <= 0.0 or ((cp - l_prev) / bar_range) > OPT_01_MAX_CLOSE_POS:
+                if bar_range <= 0.0 or ((c - l_prev) / bar_range) > OPT_01_MAX_CLOSE_POS:
                     stats["filtered_by_opt01_close_pos"] += 1
                     continue
 
-            sk = -rp
+            sk = -r
             cands_by_bar.setdefault(bt, []).append((sk, 0, inst, epx, False))
             stats["final_candidates_in_window"] += 1
-
     return cands_by_bar, max_lev, stats
+
+
+def _ts_ms_to_ym(ts_ms):
+    if ts_ms is None:
+        return "UNKNOWN"
+    return datetime.fromtimestamp(int(ts_ms) / 1000.0, tz=TZ_UTC).strftime("%Y-%m")
+
+
+def _ts_ms_to_iso(ts_ms):
+    if ts_ms is None:
+        return None
+    return datetime.fromtimestamp(int(ts_ms) / 1000.0, tz=TZ_UTC).isoformat()
+
+
+def _build_by_year_month(trades: list) -> dict:
+    buckets = {}
+    for t in trades:
+        ts_ref = t.get("exit_ts") or t.get("close_ts") or t.get("ts_exit") or t.get("entry_ts") or t.get("fill_ts")
+        ym = _ts_ms_to_ym(ts_ref)
+        b = buckets.setdefault(ym, {"trades": 0, "wins": 0, "net_pnl_u": 0.0, "fee_u": 0.0, "fund_u": 0.0, "gross_win_u": 0.0, "gross_loss_u": 0.0})
+        net = float(t.get("net", 0.0))
+        fee = float(t.get("fee", t.get("fee_u", 0.0)))
+        fund = float(t.get("fund", t.get("fund_u", 0.0)))
+        b["trades"] += 1
+        if net > 0:
+            b["wins"] += 1
+            b["gross_win_u"] += net
+        else:
+            b["gross_loss_u"] += abs(net)
+        b["net_pnl_u"] += net
+        b["fee_u"] += fee
+        b["fund_u"] += fund
+    out = {}
+    for ym, b in sorted(buckets.items()):
+        out[ym] = {
+            "trades": b["trades"],
+            "wins": b["wins"],
+            "win_rate_pct": round(100.0 * b["wins"] / b["trades"], 2) if b["trades"] else 0.0,
+            "net_pnl_u": round(b["net_pnl_u"], 4),
+            "fee_u": round(b["fee_u"], 4),
+            "fund_u": round(b["fund_u"], 4),
+            "pf": round(b["gross_win_u"] / b["gross_loss_u"], 4) if b["gross_loss_u"] > 0 else None,
+        }
+    return out
 
 
 def summarize_run(r: dict) -> dict:
@@ -468,14 +646,18 @@ def summarize_run(r: dict) -> dict:
     gross_win = sum(t["net"] for t in trades if t["net"] > 0)
     gross_loss = abs(sum(t["net"] for t in trades if t["net"] < 0))
     net_sum = sum(t["net"] for t in trades)
+    fee_sum = sum(float(t.get("fee", t.get("fee_u", 0.0))) for t in trades)
+    fund_sum = sum(float(t.get("fund", t.get("fund_u", 0.0))) for t in trades)
     pf = round(gross_win / gross_loss, 4) if gross_loss > 0 else None
     ol = r.get("_ord_log", [])
-    filled_ol = [o for o in ol if o["outcome"] == "filled"]
+    filled_ol = [o for o in ol if o.get("outcome") == "filled"]
     return {
         "closed_trades": n,
         "open_at_end": len(r.get("_open", [])),
         "win_rate_pct": round(100.0 * wins / n, 2) if n else 0.0,
         "closed_net_u": round(net_sum, 2),
+        "closed_fee_u": round(fee_sum, 4),
+        "closed_fund_u": round(fund_sum, 4),
         "final_eq_u": round(float(r.get("_end_eq_raw", r.get("final_eq", 50000.0))), 2),
         "mtm_mdd_pct": round(float(r.get("mtm_mdd_pct", 0.0)), 2),
         "pf": pf,
@@ -486,9 +668,71 @@ def summarize_run(r: dict) -> dict:
         "real_fund_u": round(float(r.get("_real_fund_raw", 0.0)), 2),
         "orders_placed": len(ol),
         "orders_filled": len(filled_ol),
-        "orders_expired": sum(1 for o in ol if o["outcome"] == "expired"),
-        "orders_margin_rej": sum(1 for o in ol if o["outcome"] == "margin_rej"),
+        "orders_expired": sum(1 for o in ol if o.get("outcome") == "expired"),
+        "orders_margin_rej": sum(1 for o in ol if o.get("outcome") == "margin_rej"),
         "same_bar_sl": int(r.get("_same_bar_sl", 0)),
+        "by_year_month": _build_by_year_month(trades),
+    }
+
+
+def build_local_detail_payload(scenario_name: str, r: dict) -> dict:
+    """Build complete local-only detail artifact (untruncated gaps, first fills, closes, fees/funding, equity/YM)."""
+    trades = r.get("_trades", [])
+    ol = r.get("_ord_log", [])
+    miss_events = sorted(e for e in r.get("events_set", []) if len(e) >= 4 and e[3] == "miss_8h")
+    first_fills = []
+    for idx, o in enumerate(ol):
+        if o.get("outcome") == "filled":
+            fill_ts = o.get("fill_ts") or o.get("ts_fill") or o.get("ts")
+            inst = o.get("inst") or o.get("inst_id") or "UNKNOWN"
+            first_fills.append({
+                "first_fill_id": f"{scenario_name}:{idx}:{inst}:{fill_ts}",
+                "inst_id": inst,
+                "order_ts_ms": o.get("order_ts") or o.get("ts_order") or o.get("sig_ts"),
+                "fill_ts_ms": fill_ts,
+                "fill_ts_utc": _ts_ms_to_iso(fill_ts),
+                "entry_px": o.get("entry_px") or o.get("fill_px") or o.get("px"),
+                "raw_order_record": o,
+            })
+    cum_eq = 50000.0
+    closed_eq_curve = []
+    for idx, t in enumerate(trades):
+        net = float(t.get("net", 0.0))
+        cum_eq += net
+        exit_ts = t.get("exit_ts") or t.get("close_ts") or t.get("ts_exit")
+        closed_eq_curve.append({
+            "trade_seq": idx + 1,
+            "inst_id": t.get("inst") or t.get("inst_id"),
+            "exit_ts_ms": exit_ts,
+            "exit_ts_utc": _ts_ms_to_iso(exit_ts),
+            "net_pnl_u": round(net, 6),
+            "fee_u": round(float(t.get("fee", t.get("fee_u", 0.0))), 6),
+            "fund_u": round(float(t.get("fund", t.get("fund_u", 0.0))), 6),
+            "cum_closed_eq_u": round(cum_eq, 6),
+        })
+    return {
+        "scenario_name": scenario_name,
+        "missing_funding_events_count": len(miss_events),
+        "missing_funding_events_all": [
+            {
+                "leg": e[0],
+                "inst_id": e[1],
+                "ts_ms": int(e[2]),
+                "ts_utc": _ts_ms_to_iso(int(e[2])),
+                "kind": e[3],
+            }
+            for e in miss_events
+        ],
+        "first_fills_count": len(first_fills),
+        "first_fills": first_fills,
+        "closed_trades_count": len(trades),
+        "closed_trades": trades,
+        "open_at_end_count": len(r.get("_open", [])),
+        "open_at_end": r.get("_open", []),
+        "closed_equity_curve": closed_eq_curve,
+        "by_year_month": _build_by_year_month(trades),
+        "final_eq_u": round(float(r.get("_end_eq_raw", r.get("final_eq", 50000.0))), 6),
+        "mtm_mdd_pct": round(float(r.get("mtm_mdd_pct", 0.0)), 6),
     }
 
 
@@ -516,6 +760,7 @@ def parse_args(argv=None):
         choices=CANDIDATE_MODES,
         help="Strategy mode: frozen v1.5 baseline or isolated single-hypothesis RETEST24_OPT_01_BEARISH_CLOSE_POS",
     )
+    p.add_argument("--input-manifest", default="", help="Optional JSON manifest binding per-symbol NPZ sha256/size_bytes")
     p.add_argument("--dry-check", action="store_true", help="Verify manifest bindings only without loading strategy/engine or running backtest")
     return p.parse_args(argv)
 
@@ -550,10 +795,12 @@ def main(argv=None) -> int:
             payload = {
                 "dry_check": "PASS",
                 "study_id": "BACKTEST-READINESS-01",
+                "version": "v1.3",
                 "adapter": "run_retest24_bounded_backtest.py",
                 "candidate": args.candidate,
                 "scenarios": requested_scenarios,
                 "files_verified": bound["files_verified"],
+                "historical_model_vs_delivered_script_diff": HISTORICAL_MODEL_VS_DELIVERED_SCRIPT_DIFF,
                 "transport_blocker_active_entire_run": True,
                 "transport_hits": list(tb.hits),
             }
@@ -566,12 +813,12 @@ def main(argv=None) -> int:
         cache_dir = Path(args.cache_dir)
         src_funding_db = Path(args.funding_db)
         out_dir = Path(args.out_dir)
-
         derived_db = out_dir / "funding_archive_retest24_isolated.sqlite"
         derived_meta = out_dir / "funding_archive_retest24_isolated.meta.json"
         scope_file = out_dir / "retest24_bounded_scope.json"
         final_report = out_dir / "retest24_bounded_result.json"
         abort_report = out_dir / "retest24_bounded_missing_funding_abort.json"
+        local_detail_report = out_dir / "retest24_bounded_local_details.json"
 
         outputs = [
             ("derived_funding_db", derived_db),
@@ -583,7 +830,10 @@ def main(argv=None) -> int:
             ("final_report.tmp", Path(str(final_report) + ".tmp")),
             ("abort_report", abort_report),
             ("abort_report.tmp", Path(str(abort_report) + ".tmp")),
+            ("local_detail_report", local_detail_report),
+            ("local_detail_report.tmp", Path(str(local_detail_report) + ".tmp")),
         ]
+        input_manifest_path, input_manifest_entries = _load_optional_input_manifest(args.input_manifest)
         fixed_inputs = [
             ("source funding_db", src_funding_db),
             ("manifest", manifest_path),
@@ -591,6 +841,8 @@ def main(argv=None) -> int:
             ("shared_risk", shared_risk_path),
             ("cache_manifest", cache_dir / "manifest.json"),
         ]
+        if input_manifest_path is not None:
+            fixed_inputs.append(("input_manifest", input_manifest_path))
         for rel, path in bound["files"].items():
             fixed_inputs.append(("manifest entry " + rel, path))
 
@@ -598,7 +850,7 @@ def main(argv=None) -> int:
 
         scope_preview = {
             "study_id": "BACKTEST-READINESS-01",
-            "version": "v1.1",
+            "version": "v1.3",
             "adapter": "run_retest24_bounded_backtest.py",
             "candidate": args.candidate,
             "opt_01_max_close_pos": OPT_01_MAX_CLOSE_POS if args.candidate == "RETEST24_OPT_01_BEARISH_CLOSE_POS" else None,
@@ -620,12 +872,6 @@ def main(argv=None) -> int:
                 raise RuntimeError("cache_v3 manifest.json missing")
             cache_manifest_sha_before = sha(cache_manifest_path)
 
-            _bind_isolated_funding_db(src_funding_db, derived_db, derived_meta)
-            loaded = _load_runtime_modules(bound)
-            b6mod = loaded["b6_sim_portable"]
-            if not callable(getattr(b6mod, "run_audit_sim_b6", None)):
-                raise RuntimeError("registered b6_sim_portable missing callable run_audit_sim_b6")
-
             cache_manifest = json.loads(cache_manifest_path.read_text(encoding="utf-8"))
             symbols_dict = cache_manifest["symbols"]
 
@@ -637,15 +883,28 @@ def main(argv=None) -> int:
             else:
                 ordered_syms = [inst for inst in symbols_dict.keys() if inst != "USDC-USDT-SWAP"]
 
+            npz_resolved_paths, npz_records_before = _verify_and_record_npz_inputs(
+                ordered_syms, cache_dir, symbols_dict, input_manifest_entries
+            )
+            for inst, npz_p in npz_resolved_paths.items():
+                fixed_inputs.append(("symbol npz " + inst, npz_p))
+            _verify_output_paths_disjoint(outputs, fixed_inputs)
+
+            _bind_isolated_funding_db(src_funding_db, derived_db, derived_meta)
+            loaded = _load_runtime_modules(bound)
+            b6mod = loaded["b6_sim_portable"]
+            if not callable(getattr(b6mod, "run_audit_sim_b6", None)):
+                raise RuntimeError("registered b6_sim_portable missing callable run_audit_sim_b6")
+
             fmaps, ov_raw = load_funding_db(derived_db)
             raw = {}
             all_bars_set = set()
             for inst in ordered_syms:
                 info = symbols_dict[inst]
-                npz_path = cache_dir / f"{inst}.npz"
-                if not npz_path.is_file():
-                    raise RuntimeError("symbol npz missing from cache_dir: " + inst)
+                npz_path = npz_resolved_paths[inst]
                 z = np.load(npz_path)
+                if len(z["ts30"]) == 0 or len(z["ts4"]) == 0:
+                    raise RuntimeError("empty timestamp array in symbol npz: " + inst)
                 ts30, o30 = z["ts30"], z["ohlc30"]
                 ts4, o4 = z["ts4"], z["ohlc4"]
                 ts1, o1 = z["ts1"], z["ohlc1"]
@@ -674,6 +933,7 @@ def main(argv=None) -> int:
             cands_by_bar, max_lev, cand_stats = build_cands_retest24(raw, start_ts, end_ts, args.candidate)
 
             arms = {}
+            local_details_by_scenario = {}
             missing_by_scenario = {}
             for name in requested_scenarios:
                 risk_id, risk_u, dloss_u, dly = FROZEN_SCENARIOS[name]
@@ -690,6 +950,7 @@ def main(argv=None) -> int:
                     fill_mode="cross_1tick",
                     delay_first_bar=dly,
                 )
+                local_details_by_scenario[name] = build_local_detail_payload(name, r)
                 miss_events = sorted(e for e in r["events_set"] if e[3] == "miss_8h")
                 if miss_events:
                     by_inst = {}
@@ -711,6 +972,7 @@ def main(argv=None) -> int:
                             }
                             for (_, inst, t30, kind) in miss_events[:25]
                         ],
+                        "full_events_in_local_detail_file": local_detail_report.name,
                     }
                 arms[name] = summarize_run(r)
 
@@ -718,16 +980,41 @@ def main(argv=None) -> int:
             cache_manifest_sha_after = sha(cache_manifest_path)
             if funding_db_sha_before != funding_db_sha_after or cache_manifest_sha_before != cache_manifest_sha_after:
                 raise RuntimeError("Fixed input modified during run!")
+            for inst, npz_p in npz_resolved_paths.items():
+                if sha(npz_p) != npz_records_before[inst]["sha256"]:
+                    raise RuntimeError("Symbol NPZ modified during run: " + inst)
 
             finished_utc = datetime.now(TZ_UTC).isoformat()
+
+            local_detail_payload = {
+                "public_repo_policy": "LOCAL_OFFLINE_DETAIL_ONLY_DO_NOT_AUTO_PUSH_TO_PUBLIC_REPO",
+                "study_id": "BACKTEST-READINESS-01",
+                "version": "v1.3",
+                "adapter": "run_retest24_bounded_backtest.py",
+                "candidate": args.candidate,
+                "started_utc": started_utc,
+                "finished_utc": finished_utc,
+                "historical_model_vs_delivered_script_diff": HISTORICAL_MODEL_VS_DELIVERED_SCRIPT_DIFF,
+                "fixed_inputs_verified": {
+                    "funding_db_sha256": funding_db_sha_after,
+                    "cache_manifest_sha256": cache_manifest_sha_after,
+                    "npz_files_count": len(npz_records_before),
+                    "npz_files": npz_records_before,
+                },
+                "scenarios": local_details_by_scenario,
+            }
+            _atomic_write_text(local_detail_report, json.dumps(local_detail_payload, ensure_ascii=False, indent=2) + "\n")
 
             if missing_by_scenario:
                 _discard_final_report(final_report, fixed_inputs)
                 abort_payload = {
                     "status": "ABORTED_MISSING_FUNDING",
                     "study_id": "BACKTEST-READINESS-01",
-                    "version": "v1.1",
+                    "version": "v1.3",
                     "adapter": "run_retest24_bounded_backtest.py",
+                    "historical_model_vs_delivered_script_diff": HISTORICAL_MODEL_VS_DELIVERED_SCRIPT_DIFF,
+                    "npz_files_verified_count": len(npz_records_before),
+                    "local_detail_file": local_detail_report.name,
                     "candidate": args.candidate,
                     "started_utc": started_utc,
                     "finished_utc": finished_utc,
@@ -757,8 +1044,11 @@ def main(argv=None) -> int:
             result_payload = {
                 "status": "PASS",
                 "study_id": "BACKTEST-READINESS-01",
-                "version": "v1.1",
+                "version": "v1.3",
                 "adapter": "run_retest24_bounded_backtest.py",
+                "historical_model_vs_delivered_script_diff": HISTORICAL_MODEL_VS_DELIVERED_SCRIPT_DIFF,
+                "npz_files_verified_count": len(npz_records_before),
+                "local_detail_file": local_detail_report.name,
                 "candidate": args.candidate,
                 "started_utc": started_utc,
                 "finished_utc": finished_utc,
