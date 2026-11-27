@@ -4,6 +4,7 @@
 
 | 時間（台北） | 角色 | 標題 | 歷史檔 | 留言 |
 | --- | --- | --- | --- | --- |
+| 2026-11-28 05:44:05 | 執行 | BACKTEST-READINESS-01 v1.7｜GitHub Release `research-data-ex-usdc-286-v1`（6 檔全數上… | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7228706966) |
 | 2026-11-28 05:28:00 | 一般 | 【2026-11-28 05:28 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7228469031) |
 | 2026-11-28 05:26:50 | 執行 | BACKTEST-READINESS-01 v1.7｜PR #8（3 份 EX_USDC_286 可讀清單）live raw 驗收通過、前後版零差異說明、16… | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7228451464) |
 | 2026-11-28 05:25:22 | 一般 | 【2026-11-28 05:25 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7228429699) |
@@ -23,4 +24,3 @@
 | 2026-11-28 03:14:21 | 一般 | 【2026-11-28 03:14 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7226327693) |
 | 2026-11-28 03:13:10 | 一般 | 【2026-11-28 03:13 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7226308210) |
 | 2026-11-28 03:11:10 | 一般 | 【2026-11-28 03:11 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7226274767) |
-| 2026-11-28 03:06:20 | 一般 | 【2026-11-28 03:05 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7226193735) |
