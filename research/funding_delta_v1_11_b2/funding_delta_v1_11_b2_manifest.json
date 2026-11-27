@@ -1,0 +1,250 @@
+{
+  "research_id": "BACKTEST-READINESS-01",
+  "version": "v1.11-batch2",
+  "start_utc": "2026-11-27T23:30:19Z",
+  "resume_utc": "2026-11-27T23:46:11Z",
+  "end_utc": "2026-11-27T23:46:18Z",
+  "elapsed_sec_this_process": 7.13,
+  "wording": {
+    "confirmed_missing": "In the source v1.11 inventory, confirmed_missing is only a priority candidate set (0 existing rows, or fewer than the 8H-grid minimum for the NPZ bar span). It is not a completeness claim.",
+    "pending_check": "pending_check months were not key-compared against official files in this batch and are not described as complete.",
+    "conclusions": "Delta and manifest counts (matched / new / conflicts / intra-official dups) come only from key-by-key comparison of official rows against frozen + v1.7/v1.9/v1.10/v1.11_b1, keyed by (inst_id, snap to nearest hour).",
+    "inventory_r1": "Pairs that were key-compared from official ZIPs and had official rows are covered_verified. Anything still not key-compared that had been confirmed_missing is renamed missing_candidate. The four inventory 404 pairs stay official_unavailable / 404_reason_unknown; official listTime is evidence only and was not used to reclassify. 2026-11 pairs are covered_verified_rest only when official REST history fully covered the window (reached 2026-10-31T16:00:00Z with no request failure). Any 2026-11 symbol not fully covered (403, 429 after backoff, or a retention gap) is pending_check with the concrete limitation. This batch does not describe all 286 REST symbols as delivered — only symbols actually fully fetched."
+  },
+  "inputs_sha256": {
+    "funding_archive_l1_isolated.sqlite": {
+      "bytes": 74924032,
+      "sha256": "23ebdab561d5fa48ae34394b451d55b97d3e09af4e8a8809eef93422c40783cc"
+    },
+    "funding_delta_missing16_v1_7.csv.gz": {
+      "bytes": 91491,
+      "sha256": "34743db093b5673233693b0bfd4fa020abeb3928f7d4c0c29603c4d4c01311be"
+    },
+    "funding_delta_missing174_v1_9.csv.gz": {
+      "bytes": 3547,
+      "sha256": "01ed8da28efa7038d03369b0b02b78f5777d3f21d95e5a95ca1e26221bb3340e"
+    },
+    "funding_delta_full75plus_v1_10.csv.gz": {
+      "bytes": 158227,
+      "sha256": "4fe33c0efe78f1398b02cb231760d3817b13f985de013e51df9c273dec7c999b"
+    },
+    "funding_delta_5sym_v1_11_b1.csv.gz": {
+      "bytes": 8286,
+      "sha256": "2ab89d43188e38c0b34ea04513d9c199eee2fa7fc5bfac891993db2006d48bbb"
+    },
+    "funding_month_inventory_v1_11.csv": {
+      "bytes": 771000,
+      "sha256": "038d59cd74b28859c482aeda1bf7f378ac44728054fdfd134d8647dab2b08e21"
+    }
+  },
+  "instruments": {
+    "url": "https://www.okx.com/api/v5/public/instruments?instType=SWAP",
+    "request_utc": null,
+    "http": 200,
+    "file": "instruments_swap_v1_11_b2.json.gz",
+    "raw_bytes": 26245,
+    "raw_sha256": "87020ee68af8e3dd39c7e6482359ff6eb2dcd83276c34c74327d3f8edb97f6f1",
+    "response_bytes": 599358,
+    "response_sha256": "4324ab57c1d07496332f341aa7168f7cdd2870cd254e88a78cd34704eff908c7",
+    "rows": 554,
+    "reused": true
+  },
+  "official_404_pairs": {
+    "count": 4,
+    "exactly_these_four": true,
+    "cdn_head": [
+      {
+        "inst_id": "CC-USDT-SWAP",
+        "month_cst": "2025-10",
+        "url": "https://static.okx.com/cdn/okex/traderecords/swaprates/monthly/202510/CC-USDT-SWAP-fundingrates-2025-10.zip",
+        "http": 404,
+        "request_utc": "2026-11-27T23:46:11Z"
+      },
+      {
+        "inst_id": "INJ-USDT-SWAP",
+        "month_cst": "2023-11",
+        "url": "https://static.okx.com/cdn/okex/traderecords/swaprates/monthly/202311/INJ-USDT-SWAP-fundingrates-2023-11.zip",
+        "http": 404,
+        "request_utc": "2026-11-27T23:46:12Z"
+      },
+      {
+        "inst_id": "MEGA-USDT-SWAP",
+        "month_cst": "2026-04",
+        "url": "https://static.okx.com/cdn/okex/traderecords/swaprates/monthly/202604/MEGA-USDT-SWAP-fundingrates-2026-04.zip",
+        "http": 404,
+        "request_utc": "2026-11-27T23:46:13Z"
+      },
+      {
+        "inst_id": "ORDER-USDT-SWAP",
+        "month_cst": "2025-09",
+        "url": "https://static.okx.com/cdn/okex/traderecords/swaprates/monthly/202509/ORDER-USDT-SWAP-fundingrates-2025-09.zip",
+        "http": 404,
+        "request_utc": "2026-11-27T23:46:13Z"
+      }
+    ],
+    "instruments_listTime": [
+      {
+        "inst_id": "CC-USDT-SWAP",
+        "month_cst": "2025-10",
+        "state": "live",
+        "listTime_ms": 1761919200291,
+        "listTime_utc": "2025-10-31T14:00:00.291Z",
+        "listTime_in_month_end_no_settlement_window": true,
+        "sub_reason": "404_reason_unknown",
+        "note": "sub_reason remains 404_reason_unknown for all four 404 pairs. Official instruments listTime and state are evidence only and were not used to reclassify."
+      },
+      {
+        "inst_id": "INJ-USDT-SWAP",
+        "month_cst": "2023-11",
+        "state": "live",
+        "listTime_ms": 1701345300667,
+        "listTime_utc": "2023-11-30T11:55:00.667Z",
+        "listTime_in_month_end_no_settlement_window": true,
+        "sub_reason": "404_reason_unknown",
+        "note": "sub_reason remains 404_reason_unknown for all four 404 pairs. Official instruments listTime and state are evidence only and were not used to reclassify."
+      },
+      {
+        "inst_id": "MEGA-USDT-SWAP",
+        "month_cst": "2026-04",
+        "state": "live",
+        "listTime_ms": 1777550400000,
+        "listTime_utc": "2026-04-30T12:00:00.000Z",
+        "listTime_in_month_end_no_settlement_window": true,
+        "sub_reason": "404_reason_unknown",
+        "note": "sub_reason remains 404_reason_unknown for all four 404 pairs. Official instruments listTime and state are evidence only and were not used to reclassify."
+      },
+      {
+        "inst_id": "ORDER-USDT-SWAP",
+        "month_cst": "2025-09",
+        "state": "live",
+        "listTime_ms": 1759245300953,
+        "listTime_utc": "2025-09-30T15:15:00.953Z",
+        "listTime_in_month_end_no_settlement_window": true,
+        "sub_reason": "404_reason_unknown",
+        "note": "sub_reason remains 404_reason_unknown for all four 404 pairs. Official instruments listTime and state are evidence only and were not used to reclassify."
+      }
+    ]
+  },
+  "part_a": {
+    "pairs_total": 1279,
+    "files_ok": 1279,
+    "files_reused_from_first_pass": 1279,
+    "files_failed": 0,
+    "files_empty": 0,
+    "official_rows": 174957,
+    "matched": 5601,
+    "new_rows": 169356,
+    "conflicts": 0,
+    "new_rows_grid": {
+      "8h": 104157,
+      "non_8h": 65199
+    },
+    "note": "Source inventory confirmed_missing was the priority candidate list; counts below are from key-by-key comparison."
+  },
+  "part_b": {
+    "symbols_requested": 286,
+    "fully_covered": 285,
+    "not_fully_covered": 1,
+    "symbols_with_in_range_rows": 285,
+    "files_empty_but_fully_covered": 0,
+    "official_rows_in_range": 39037,
+    "matched": 10037,
+    "new_rows": 29000,
+    "conflicts": 0,
+    "new_rows_grid": {
+      "8h": 16841,
+      "non_8h": 12159
+    },
+    "range_start_utc": "2026-10-31T16:00:00Z",
+    "range_end_utc": "2026-11-26T12:00:00Z",
+    "window_end_unchanged": true,
+    "zero_fill": false,
+    "credentials_sent": false,
+    "http_403_bypassed": false,
+    "not_described_as_all_286_delivered": true,
+    "limitations": [
+      {
+        "inst_id": "RVN-USDT-SWAP",
+        "limitation_code": "rest_error",
+        "limitation": "REST history request failed: http=200 code=51001 msg=Instrument ID, Instrument ID code, or Spread ID doesn't exist.. Window end unchanged, no zero-fill.",
+        "coverage": {
+          "window_start_utc": "2026-10-31T16:00:00Z",
+          "window_end_utc": "2026-11-26T12:00:00Z",
+          "oldest_fetched_utc": null,
+          "newest_fetched_utc": null,
+          "in_range_min_utc": null,
+          "in_range_max_utc": null,
+          "in_range_rows": 0,
+          "reached_window_start": false,
+          "fully_covered": false,
+          "limitation": "REST history request failed: http=200 code=51001 msg=Instrument ID, Instrument ID code, or Spread ID doesn't exist.. Window end unchanged, no zero-fill.",
+          "limitation_code": "rest_error"
+        }
+      }
+    ]
+  },
+  "official_rows_total": 213994,
+  "official_unique_keys": 213994,
+  "already_matched_existing": 15638,
+  "new_rows": 198356,
+  "new_rows_grid": {
+    "8h": 120998,
+    "non_8h": 77358
+  },
+  "conflicts": 0,
+  "conflict_types": {},
+  "conflict_sources": {},
+  "intra_official_dups": 0,
+  "rest_anomalies": 0,
+  "inventory_r1_class_counts": {
+    "covered_verified": 1364,
+    "pending_check": 5883,
+    "covered_verified_rest": 285,
+    "official_unavailable": 4
+  },
+  "inventory_r1_class_sub_reason": {
+    "covered_verified": 1364,
+    "covered_verified_rest": 285,
+    "official_unavailable|404_reason_unknown": 4,
+    "pending_check": 5882,
+    "pending_check|rest_error": 1
+  },
+  "files": {
+    "funding_delta_v1_11_b2.csv.gz": {
+      "bytes": 3035615,
+      "sha256": "2ef8517fc3d70ff098a0ea65c5ad07ffbc0142befa375cf8996ebb8db962d54b",
+      "rows": 198356,
+      "csv_bytes": 41674317,
+      "csv_sha256": "2f80182710cf5de2fb19fb4414dfe779026c9894d68b2c67599b78464bad69b2"
+    },
+    "funding_conflicts_v1_11_b2.json": {
+      "bytes": 75,
+      "sha256": "154af0034d85c4ceaec4e39560211fe2a91b37af47a46ce15eb5dc3c492bc8c8"
+    },
+    "funding_source_months_v1_11_b2.json": {
+      "bytes": 1295577,
+      "sha256": "1d9d93f8637f87ac9b75d0bba06a5550c88edf4886824bfd06d5ca21316193ae"
+    },
+    "funding_month_inventory_v1_11_r1.csv": {
+      "bytes": 751576,
+      "sha256": "3a9ef2b8b8adeb163a4ae6fb197006cc99ffca491141b109a51586e6874b2f3e"
+    },
+    "fetch_evidence_v1_11_b2.jsonl": {
+      "bytes": 2413395,
+      "sha256": "b54fa9f82cb399b5bb52aa9d7ce8a79a194ed95f54a3372b68e324f96d1baf66"
+    },
+    "instruments_swap_v1_11_b2.json.gz": {
+      "bytes": 26245,
+      "sha256": "87020ee68af8e3dd39c7e6482359ff6eb2dcd83276c34c74327d3f8edb97f6f1"
+    },
+    "build_delta_v1_11_b2_public.py": {
+      "bytes": 62206,
+      "sha256": "2ef8e02c0409d567a2aa96aa6e697dcc547cc940bdd0efe490afbd2ed873d97c"
+    },
+    "build_inventory_v1_11_public.py": {
+      "bytes": 33681,
+      "sha256": "47dcd0d01b239979dab61f1dd0ef0886ed2d0890cefdfee0d03d4bb1e5229d30"
+    }
+  },
+  "rule": "Not for blind INSERT OR IGNORE: rows in the delta have zero key overlap with the frozen 829,157-row DB, v1.7, v1.9, v1.10 and v1.11_b1; conflicts are listed separately for review. No zero-fill, no interpolation. pending_check months were not verified in this batch. The v1.11 inventory was not redone and the 85 already-verified official ZIPs were not refetched."
+}
