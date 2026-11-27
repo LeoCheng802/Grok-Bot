@@ -518,7 +518,23 @@ def _discard_final_report(path: Path) -> None:
 
 
 def _bind_isolated_funding_db(b6_db: Path, l1_db: Path, meta_path: Path) -> str:
-    """Reuse L1_DB only when its sidecar records this B6_DB SHA-256."""
+    """Bind a derived L1_DB to the source hash and the derived file's own hash.
+
+    Overlap between the fixed source and the derived path or sidecar aborts
+    before copy, reuse, or cleanup. An existing derived file is reused only
+    when both recorded hashes match the bytes on disk. A mismatch is not
+    overwritten or repaired. A fresh copy prefers an empty derived path.
+    """
+    try:
+        b6_real = b6_db.resolve()
+        l1_real = l1_db.resolve()
+        meta_real = meta_path.resolve()
+    except OSError as exc:
+        raise RuntimeError("funding DB path cannot be resolved") from exc
+    if b6_real == l1_real or b6_real == meta_real:
+        raise RuntimeError(
+            "B6_DB overlaps the derived L1_DB or its sidecar; refusing to copy, reuse, or clean up the fixed source"
+        )
     if not b6_db.is_file():
         raise RuntimeError("B6_DB source is missing")
     source_sha = sha(b6_db)
@@ -526,27 +542,37 @@ def _bind_isolated_funding_db(b6_db: Path, l1_db: Path, meta_path: Path) -> str:
     if l1_db.exists():
         if not meta_path.is_file():
             raise RuntimeError(
-                "L1_DB exists without b6_source_sha256 metadata; refusing to reuse a stale isolated DB"
+                "L1_DB exists without source metadata; refusing to reuse or overwrite a derived DB"
             )
         try:
             meta = json.loads(meta_path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError) as exc:
-            raise RuntimeError("L1_DB source metadata is unreadable") from exc
-        recorded = meta.get("b6_source_sha256") if isinstance(meta, dict) else None
-        if recorded != source_sha:
+            raise RuntimeError("L1_DB source metadata is unreadable; refusing to overwrite") from exc
+        if not isinstance(meta, dict):
+            raise RuntimeError("L1_DB source metadata is malformed; refusing to overwrite")
+        recorded_source = meta.get("b6_source_sha256")
+        recorded_derived = meta.get("derived_l1_db_sha256")
+        if not isinstance(recorded_source, str) or recorded_source == "" or not isinstance(recorded_derived, str) or recorded_derived == "":
             raise RuntimeError(
-                "L1_DB b6_source_sha256 does not match the specified B6_DB; refusing to reuse a stale isolated DB"
+                "L1_DB metadata must contain b6_source_sha256 and derived_l1_db_sha256; refusing to overwrite"
+            )
+        derived_sha = sha(l1_db)
+        if recorded_source != source_sha or recorded_derived != derived_sha:
+            raise RuntimeError(
+                "L1_DB source or content hash does not match the sidecar; refusing to reuse or overwrite"
             )
         return source_sha
     l1_db.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(b6_db, l1_db)
+    derived_sha = sha(l1_db)
     try:
         _atomic_write_text(meta_path, json.dumps({
             "b6_source_sha256": source_sha,
             "b6_source_name": source_name,
+            "derived_l1_db_sha256": derived_sha,
         }, ensure_ascii=False, indent=2))
     except Exception:
-        if l1_db.exists():
+        if l1_db.exists() and l1_db.resolve() != b6_real:
             l1_db.unlink()
         raise
     return source_sha

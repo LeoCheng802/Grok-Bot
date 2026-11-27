@@ -157,19 +157,34 @@ def iter_tree(root):
     return found
 
 
+def required_symlink_component(root, rel):
+    """Return the first symlink on the path from root to rel, or an empty string."""
+    current = root
+    for part in Path(rel).parts:
+        current = current / part
+        if current.is_symlink():
+            return current.relative_to(root).as_posix()
+    return ""
+
+
 def check_required_files(root, failures, notes):
     if not REQUIRED_FILES:
         failures.append("REQUIRED_FILES is empty")
         return
     for rel in REQUIRED_FILES:
-        path = root / rel
-        if path.is_symlink() and symlink_escapes(root, path):
-            failures.append(rel + ": required path symlink escapes check root")
+        link = required_symlink_component(root, rel)
+        if link:
+            failures.append(rel + ": required path component is a symlink: " + link)
             continue
-        if not path.is_file():
+        if not (root / rel).is_file():
             failures.append(rel + ": required file missing")
-    if not any(item.endswith(": required file missing") or item.endswith("escapes check root") or item == "REQUIRED_FILES is empty" for item in failures):
-        notes.append("required files present: " + str(len(REQUIRED_FILES)))
+    blocked = (
+        "REQUIRED_FILES is empty",
+        ": required file missing",
+        ": required path component is a symlink:",
+    )
+    if not any(item == blocked[0] or item.endswith(blocked[1]) or blocked[2] in item for item in failures):
+        notes.append("required files present and no required-path symlink: " + str(len(REQUIRED_FILES)))
 
 
 def function_index(tree):
@@ -352,10 +367,10 @@ def check_tree(rel, tree, text, failures, notes):
         for name in ("_verify_manifest_bindings", "_load_runtime_modules", "_bind_isolated_funding_db"):
             if (name,) not in index:
                 failures.append(rel + ": missing " + name)
-        if "b6_source_sha256" not in text or ".source_meta.json" not in text:
-            failures.append(rel + ": missing L1_DB source-hash binding")
+        if "b6_source_sha256" not in text or "derived_l1_db_sha256" not in text or ".source_meta.json" not in text:
+            failures.append(rel + ": missing L1_DB source and content hash binding")
         if not any(item.startswith(rel + ":") for item in failures):
-            notes.append(rel + ": explicit paths, deferred loaders, no assert, L1_DB source binding")
+            notes.append(rel + ": explicit paths, deferred loaders, no assert, L1_DB source and content binding")
     return seen_network
 
 
@@ -367,6 +382,8 @@ def main():
     patterns = host_patterns()
     network_sites = {}
     escaping = []
+    checked_required_py = set()
+    required_py = [rel for rel in REQUIRED_FILES if rel.endswith(".py")]
     check_required_files(root, failures, notes)
     for path in iter_tree(root):
         rel = path.relative_to(root).as_posix()
@@ -398,12 +415,21 @@ def main():
                 failures.append(rel + ": syntax error line " + str(exc.lineno))
                 continue
             network_sites[rel] = check_tree(rel, tree, text, failures, notes)
+            if rel in required_py:
+                checked_required_py.add(rel)
+    unchecked = [rel for rel in required_py if rel not in checked_required_py]
+    if unchecked:
+        for rel in unchecked:
+            failures.append(rel + ": required python file did not complete AST, leak, and network-guard checks")
     if not escaping:
         notes.append("no symlink escapes the check root")
+    if not unchecked:
+        notes.append("required python files completed AST, leak, and network-guard checks: " + str(len(required_py)))
     result = {
         "result": "PASS" if not failures else "FAIL",
         "root": "research/long_struct_01/code",
         "required_files": list(REQUIRED_FILES),
+        "checked_required_py": sorted(checked_required_py),
         "escaping_symlinks": escaping,
         "files": inventory,
         "network_call_functions": network_sites,

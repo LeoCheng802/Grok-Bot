@@ -47,7 +47,7 @@ Packaging and refusal only. No signal, indicator, ranking, cost, position-sizing
 - The raise in `backfill_missing_funding` is the first statement, so the old `except Exception: return []` path cannot swallow it, zero-fill a gap, or download. That old body is unreachable.
 - Top-level engine imports are gone. `_load_runtime_modules` runs only after `_verify_manifest_bindings` has read the manifest and matched SHA-256. `--dry-check` returns after that read and does not import strategy, `shared_risk`, or engine modules.
 - `--manifest`, `--shared-risk`, and `--orig-long` are all required. `manifest["files"]` must be a non-empty object that contains `scripts/FIB_4H_Long_v3.py`, `scripts/shared_risk.py`, and exactly one `engine/<filename>` entry for each of `audit_v3_1_full.py`, `sim_50k_v3_2_sl_fix.py`, `run_q38_audit_01.py`, and `b6_sim_portable.py`. The explicit CLI paths must resolve to those registered files. A hash mismatch, an empty `files` object, a missing entry, or an unregistered explicit path raises `RuntimeError` before any module load. Integrity checks use `RuntimeError` / `SystemExit`, not `assert`.
-- A derived `L1_DB` is copied from `B6_DB` only when it does not already exist. `<l1_db>.source_meta.json` records `b6_source_sha256` and `b6_source_name`. An existing `L1_DB` without that metadata, or with a different hash, raises `RuntimeError` and does not reuse the file. Fixed historical inputs are unchanged.
+- A fresh derived `L1_DB` is copied from `B6_DB` only when that derived path does not already exist. Before any copy, reuse, or cleanup, `B6_DB`, `L1_DB`, and the sidecar must resolve to different paths. `<l1_db>.source_meta.json` records `b6_source_sha256`, `b6_source_name`, and `derived_l1_db_sha256` from the bytes of the derived file. An existing derived file is reused only when both recorded hashes match the current `B6_DB` and the current `L1_DB` bytes. Missing, malformed, or mismatched metadata raises `RuntimeError` and does not overwrite or repair the files. Fixed historical inputs are unchanged.
 - The final report is written only after funding and simulation steps succeed, via a temp file and `os.replace`. Any exception on that path, including the missing-funding `RuntimeError`, deletes the final report and its temp file before the error propagates.
 - `indicators_180`, `build_cands_fib_long_exact`, scenario TP/SL pairs, slot/risk/TTL constants, and the pass-1/pass-2 study calls are unchanged.
 - `--cache-dir`, `--funding-db`, and `--out-dir` still have their previous pack-relative defaults.
@@ -56,7 +56,8 @@ Packaging and refusal only. No signal, indicator, ranking, cost, position-sizing
 
 - Stdlib only (`ast`, `hashlib`, `json`, `pathlib`, `re`).
 - `REQUIRED_FILES` is a fixed non-empty tuple. A missing required file makes the result `FAIL` and the process exits non-zero.
-- Any symlink in the tree, including a required path, whose target escapes the check root (or is broken) is `FAIL`. The checker does not follow a symlinked directory.
+- Any symlink component on a required file or on a parent directory between the check root and that file is `FAIL`, including an in-root alias and an `engine/` directory symlink. `is_file()` does not accept those links. A symlink anywhere in the tree whose target escapes the check root is also `FAIL`. The checker does not follow a symlinked directory.
+- `PASS` also requires every required `.py` file to be in `checked_required_py` after AST parsing, leak scanning, and network-guard verification. The check is an `if`, not an `assert`.
 - Parses Python with `ast.parse`, scans text for host-path prefixes and secret-shaped literals, checks the network guards above, and prints byte size plus SHA-256. A Windows `C:` or `D:` prefix counts only at a non-identifier boundary.
 - Does not import strategy, `shared_risk`, or engine modules, and does not run `main()` or `--dry-check`.
 
@@ -70,19 +71,30 @@ These four designs use no network and no market data. Status: **UNEXECUTED**, pe
 
 ### SYN-NET-01
 
-After approval, call the FIB HTTP helper (`notify` or `Exchange.call`), construct `OkxClient` or call `public_get` / `private_req`, and call `fetch_okx_funding` and `backfill_missing_funding` with an artificial missing-funding stub. Each call raises `RuntimeError` (`OFFLINE_RESEARCH_COPY_NETWORK_DISABLED` for the network and funding entrypoints). A socket/`urlopen` counter stays at zero. There is no zero-fill. If the study path hits that funding error, no final report file remains.
+**UNEXECUTED.** After approval, call the FIB HTTP helper (`notify` or `Exchange.call`), construct `OkxClient` or call `public_get` / `private_req`, and call `fetch_okx_funding` and `backfill_missing_funding` with an artificial missing-funding stub. Each call raises `RuntimeError` (`OFFLINE_RESEARCH_COPY_NETWORK_DISABLED` for the network and funding entrypoints). A socket/`urlopen` counter stays at zero. There is no zero-fill. If the study path hits that funding error, no final report file remains.
 
 ### SYN-MANIFEST-02
 
-After approval, call `_verify_manifest_bindings` (not `_load_runtime_modules`, and not `main()` past the pre-check) with synthetic files. A SHA-256 mismatch, an empty `manifest["files"]`, a missing required entry, or an explicit `--orig-long` / `--shared-risk` path that is not the registered manifest file raises `RuntimeError` before any strategy or engine module is imported. Repeat under `python -O` and confirm the same `RuntimeError` (no `assert`).
+**UNEXECUTED.** After approval, call `_verify_manifest_bindings` (not `_load_runtime_modules`, and not `main()` past the pre-check) with synthetic files. A SHA-256 mismatch, an empty `manifest["files"]`, a missing required entry, or an explicit `--orig-long` / `--shared-risk` path that is not the registered manifest file raises `RuntimeError` before any strategy or engine module is imported. Repeat under `python -O` and confirm the same `RuntimeError` (no `assert`).
 
 ### SYN-DB-03
 
-After approval, create two synthetic SQLite `B6_DB` files with different bytes and an existing derived `L1_DB` in `out-dir`. Point the run at the second source. The sidecar `b6_source_sha256` does not match, `_bind_isolated_funding_db` raises `RuntimeError`, and the existing database is not reused. No market data is read.
+**UNEXECUTED.** After approval, use two synthetic SQLite files and no market data:
+
+- Point `_bind_isolated_funding_db` at a second `B6_DB` whose bytes differ from the hash recorded for an existing derived `L1_DB`. The call raises `RuntimeError` and does not reuse that file.
+- Same `B6_DB` source and the old sidecar left in place, but the derived `L1_DB` bytes are replaced. `derived_l1_db_sha256` does not match the file on disk, so the call raises `RuntimeError` and does not overwrite or repair either file.
+- The resolved `B6_DB` path is the same as the derived `L1_DB` path, or the same as the sidecar path. The call raises `RuntimeError` before any copy, reuse, or cleanup.
 
 ### SYN-STATIC-04
 
-After approval, run `offline_static_check.py` once with a required file removed and once with a symlink whose target is outside the check root. Both return `FAIL` and exit non-zero. The process does not import strategy, `shared_risk`, or engine modules. Restoring the tree and removing the symlink is a separate static pass/fail observation and still does not clear **待驗**.
+**UNEXECUTED.** After approval, run `offline_static_check.py` and confirm `FAIL` with a non-zero exit for each of these, with zero imports of strategy, `shared_risk`, or engine modules:
+
+- A required file is removed.
+- A symlink target is outside the check root.
+- A required `.py` path is an in-root alias symlink to another file.
+- `engine/` itself is a symlink.
+
+`PASS` is allowed only when every required `.py` file has completed AST, leak, and network-guard checks. Restoring the tree is a separate observation and still does not clear **待驗**.
 
 ## Remaining blockers
 
