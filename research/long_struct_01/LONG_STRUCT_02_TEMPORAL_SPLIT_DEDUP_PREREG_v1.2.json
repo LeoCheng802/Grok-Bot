@@ -1,0 +1,271 @@
+{
+  "document_id": "LONG-STRUCT-02-TEMPORAL-SPLIT-DEDUP-PREREG",
+  "version": "v1.2",
+  "supersedes": {
+    "version": "v1.1",
+    "commit_sha": "b4f3021995249b6e6734888ef7af0d871fd7caf4",
+    "repo_path": "research/long_struct_01/LONG_STRUCT_02_TEMPORAL_SPLIT_DEDUP_PREREG_v1.1.json",
+    "sha256": "a074978776176189cfc581537b318e61c190dda9a3d7e7e12ad549c4a68042be"
+  },
+  "status": "PROPOSED_NOT_EXECUTED",
+  "has_script": false,
+  "live_approved": false,
+  "created_at_taipei": "2026-11-27 23:58 CST",
+  "parent_issue_refs": [
+    "Issue #1 #7220657604",
+    "Issue #1 #7220789322",
+    "Issue #1 #7221278251",
+    "Issue #1 #7222274363",
+    "Issue #1 #7222634694"
+  ],
+  "revision_summary_v1_1": [
+    "固定同決策點三階段事件處理順序（Step A 失效／逾期 -> Step B 確認仍有效舊事件 -> Step C 登記新事件供未來 k>=1），明確 k=6 可確認、k>6 才逾期，並規定舊事件本點已產候選時新事件不得追溯覆寫，每標的每決策點最多 1 候選。",
+    "分欄定義 close_utc 與 available_after_utc，將 close_utc == available_after_utc 明標為「歷史名目可用假設」（非實測收件／訊號 ready），限定 Open_bt 須於已觀測後使用且限價不得早於未來實測 ready 生效，保留 cross 首棒樂觀／未解與 delay 一棒敏感度標籤，不宣稱秒級因果驗證。",
+    "新增兩條純紙面合成時間線（零行情跑測）：① 舊事件於 k=6 確認且同棒出現新事件；② 確認棒 Close < L_ref 導致舊事件先失效。",
+    "精準化去重用詞：L1/LONG-LOOP 僅述規則結構差異、不宣稱已證實訊號集合不重疊；B24H 與 A60＋量縮均明標尚待可讀檔對照，不寫成完整去重通過。"
+  ],
+  "frozen_predecessor_preserved_unchanged": {
+    "spec_id": "LONG-STRUCT-01",
+    "spec_version": "v1.2",
+    "prereg_spec_sha256": "b97fd47ad62e4a4b80ba6b103264e9f72a275c954f887fb160de4bce3faa27b9",
+    "isolated_builder_sha256": "4ea731a4f5b62dfa0b435e5a03a028c5c2bb0b190a6076e03442f5856fca073b",
+    "november_2025_5sym_summary_sha256": "33755e95e401af9af1ba9fa9bd98ada9d64eadcc93c833358cc33f84e85809ae",
+    "frozen_conclusion_scope": "僅限原五檔（ADA/DOGE/FIL/SOL/XRP）2025-11 UTC 歷史診斷窗中同棒交集為零；不升級為普遍邏輯互斥，不回填 2025-10 成因，不改動原版，維持凍結。"
+  },
+  "hypothesis_under_evaluation": {
+    "name_zh": "單一時間結構假說：掃破收復與後續動能確認分成先後時點",
+    "sole_primary_difference_vs_same_bar_v1_2": "保留 LONG-STRUCT-01 v1.2 原版不改；唯一主要差異是將「4H 掃破＋收復＋收陽（結構事件）」與「4H EMA60＋RSI14 [55,85]（動能確認）」拆成先後兩個已收 4H 棒時點，而非強制於同一根 4H 棒同時發生。其餘所有門檻、價格距離與取整、出場、30m 撮合與風控口徑完全不變。"
+  },
+  "step_1_rule_deduplication_assessment": {
+    "comparisons": [
+      {
+        "prior_design": "10 日假跌破收復（外部歷史研究，本機無同版引擎或可讀輸出）",
+        "local_artifact_available": false,
+        "dedup_status": "pending_external_review",
+        "signal_set_non_overlap_proven": false,
+        "family_relation": "共享 sweep -> reclaim -> retest limit 策略家族（非全新家族）。",
+        "rule_differences": "先前研究為 10 日低點＋30m 收盤確認即掛單（無獨立之 4H EMA60＋RSI[55,85] 延遲動能確認階段）＋24H TTL，且屬不同引擎與成本口徑；本假說為 4H 24 棒低點掃破收陽後，於後續 k ∈ {1..6} 根 4H 棒等待原版 EMA60＋RSI[55,85] 確認，再於確認後掛單並採 48H TTL。",
+        "local_verdict": "尚待外部歷史紀錄覆核；未於本端證實等同亦未證實訊號集合不重疊。若 ChatGPT 依既有負證據判定同家族應直接封存，則直接停止不執行。"
+      },
+      {
+        "prior_design": "L1 / LONG-LOOP（LONG-SHORT-SCOPE-01-L1 v1.1 與 LONG-LOOP-01 v1.1_corrected）",
+        "local_artifact_available": true,
+        "dedup_status": "rule_definition_differs_signal_overlap_untested",
+        "signal_set_non_overlap_proven": false,
+        "archived_artifact_hashes": {
+          "l1_tp_result.json": "45a9f3696539b77a7629e0be165cfec41ff4fdb9add0e6b4cea2cc394ac82dbc",
+          "long_loop_01_result_v1_1_corrected.json": "2f892a1fd18a0823db25c00c076cc005bebff28ec01f16274d2b8ddadf85ad52"
+        },
+        "rule_differences": "就書面規則定義而言，L1 / LONG-LOOP 為無結構條件之 FIB_4H_Long_v3（0.618 回撤限價＋調整 TP 或加 BTC 濾網），未包含掃破收復事件與兩階段確認狀態機；兩者皆已封存 NO-GO。",
+        "local_verdict": "規則結構定義不同，但尚未進行同窗訊號對照，明確不宣稱已證實訊號集合不重疊。"
+      },
+      {
+        "prior_design": "B24H",
+        "local_artifact_available": false,
+        "dedup_status": "pending_readable_artifact_comparison",
+        "signal_set_non_overlap_proven": false,
+        "rule_differences": "本機無 B24H 之可讀規則檔、腳本或輸出檔（不編造規格或績效），無法完成去重比對。",
+        "local_verdict": "尚待可讀檔對照，未完成去重通過；若後續可讀紀錄確認為已測同義設計，直接引用既有負證據停止。"
+      },
+      {
+        "prior_design": "A60＋量縮",
+        "local_artifact_available": false,
+        "dedup_status": "pending_readable_artifact_comparison",
+        "signal_set_non_overlap_proven": false,
+        "rule_differences": "保留為 77 指定歷史對照項目；本機無 A60＋量縮之可讀規則檔、腳本或輸出檔（不編造規格或績效）。雖本假說未含成交量收縮條件，但仍欠缺可讀檔正式對照。",
+        "local_verdict": "尚待可讀檔對照，未寫成完整去重通過。"
+      }
+    ],
+    "dedup_branch_decision": "目前僅於書面規則層面確認與同棒版 LONG-STRUCT-01 v1.2 存在單一時間結構差異、與 L1/LONG-LOOP 規則定義不同（未證實訊號集合不重疊）；10 日假跌破、B24H 與 A60＋量縮均尚待外部／可讀檔覆核，故本文件維持未執行（PROPOSED_NOT_EXECUTED）規格狀態，未獲明確核准前絕不執行。"
+  },
+  "step_2_temporal_structure_prereg_specification": {
+    "execution_status": "PROPOSED_NOT_EXECUTED",
+    "1_structure_event_validity_window": {
+      "structure_bar_s_struct": "已收 4H 棒 [t_struct - 4H, t_struct)，滿足 Low < L_ref_event、Close > L_ref_event、Close > Open，其中 L_ref_event = min(Low of prior 24 closed 4H bars [t_struct - 25*4H, t_struct - 4H))，且 s_struct 處須至少有 25 根連續已收 4H 棒。",
+      "validity_horizon_bars_4h": 6,
+      "validity_horizon_hours": 24,
+      "allowed_confirmation_offsets_k": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "expiry_boundary_rule": "k = (bt - t_struct) / 4H；k == 6 仍屬有效視窗內可確認，僅當 k > 6 始判定逾期失效（expired_over_window）。",
+      "k_zero_excluded_note": "k = 0 即同棒版 LONG-STRUCT-01 v1.2（已凍結），故本假說嚴格限定 k ∈ {1, 2, 3, 4, 5, 6}，單一固定常數不做參數掃描。",
+      "early_invalidation_rule": "於等待確認期間（對所有位於 (t_struct, bt] 且已收盤之 4H 棒，包含當下決策棒本身），若任一根出現 Close < L_ref_event，該結構事件於本點 Step A 立即失效（invalidated_close_below_L_ref），不可再進入 Step B 確認。"
+    },
+    "2_fixed_same_bar_event_processing_order": {
+      "description_zh": "在任一已收 4H 決策點 bt（bar_close_utc），單一標的嚴格依以下三階段順序求值，禁止顛倒或跨階段追溯覆寫：",
+      "max_candidates_per_symbol_per_decision_point": 1,
+      "single_active_pending_event_per_symbol": true,
+      "ordered_steps": [
+        {
+          "step": "A_invalidate_or_expire_pending_old_event",
+          "rule_zh": "先以本已收 4H 棒判讀既有等待中舊事件是否逾期或失效：若 k > 6 判 expired_over_window（k == 6 尚未逾期，仍保留至 Step B）；否則若 Close_bar < L_ref_old 判 invalidated_close_below_L_ref。凡逾期或失效即刻結案（pending_event = None）。"
+        },
+        {
+          "step": "B_confirm_still_active_old_event",
+          "rule_zh": "僅當 Step A 結束後舊事件仍有效（1 <= k <= 6 且未失效），才於本點 bt 檢驗完整確認濾網（60 根連續 4H 硬門檻／180 根初始化、60 根連續 UTC+8 1D 因果閘、Close > EMA60、55.0 <= RSI14 <= 85.0）。若濾網通過，該舊事件立即標記 consumed 結案，再以已觀測 Open_bt 檢驗價格距離 [0.0005, 0.10] 與 Decimal ROUND_DOWN tick 對齊（通過則本點產出 1 筆候選；未過則結案為 consumed_price_gate_failed）。若濾網未過，舊事件維持 pending（若本點恰為 k == 6 且未通過確認，則於本點 Step B 結束後自然屆滿結案，不再延續至 k = 7）。"
+        },
+        {
+          "step": "C_register_new_structure_event_for_future_k_ge_1",
+          "rule_zh": "最後檢查本已收 4H 棒 [bt - 4H, bt) 是否構成新結構事件（Low < L_ref_new、Close > L_ref_new、Close > Open）。若構成新事件：(1) 若舊事件已於本點 Step B 確認／產出候選，新事件嚴禁追溯覆寫或取消本點已產出之候選，僅將新事件登記為新的 pending_event 供未來 k_new >= 1（bt + 4H 起）使用；(2) 僅當舊事件於本點尚未確認（仍在等待中或已於 Step A 關閉）時，才以新事件替換等待中舊事件，供未來 k_new >= 1 使用。確保每標的每決策點最多僅產出 1 筆候選。"
+        }
+      ]
+    },
+    "3_timestamp_availability_and_no_backfill_rule": {
+      "separate_fields_required": [
+        "close_utc",
+        "available_after_utc"
+      ],
+      "historical_nominal_availability_assumption": {
+        "relation": "close_utc == available_after_utc",
+        "classification_zh": "歷史名目可用假設（Historical Nominal Availability Assumption）",
+        "non_measured_disclaimer_zh": "明確標註 close_utc == available_after_utc 僅為歷史離線回測之名目假設，並非實測交易所推送收件時間或實測訊號 ready 時間；本規格不宣稱已完成秒級或棒內因果驗證。",
+        "claims_sub_bar_or_second_level_causality": false
+      },
+      "open_bt_and_measured_ready_guard": {
+        "open_bt_observation_rule_zh": "Open_bt 須於 bt 對應新棒開盤已實際觀測後始可使用，嚴禁讀取 [bt, bt + 4H) 之 High/Low/Close。",
+        "future_measured_ready_limit_rule_zh": "若未來接入實測訊號 ready 時間（signal_ready_utc > close_utc），限價單最早生效時點嚴禁早於實測 ready 時點（effective_utc >= max(bt_confirm, signal_ready_utc)）。"
+      },
+      "warmup_causality_rule_zh": "所有納入之 4H 與 UTC+8 1D 暖機棒均須逐棒滿足 close_utc <= bt_confirm 且 available_after_utc <= bt_confirm。",
+      "prohibit_pre_confirmation_fill_backfill": true,
+      "no_backfill_clause_zh": "明文禁止倒填確認前成交：任何發生於 bt_confirm 之前（包含 s_struct 棒內及 [t_struct, bt_confirm) 等待確認期間）的價格觸及或穿價，一律視為不可撮合，嚴禁倒填或追溯成交。"
+    },
+    "4_first_limit_effective_and_ttl_anchor": {
+      "price_gate_unchanged_at_bt_confirm": {
+        "op_ref": "已觀測之 Open_{bt_confirm} (> 0)",
+        "raw_px": "round(L_ref_event, 4)",
+        "dist_raw_literal_float": "0.0005 <= (op - raw_px) / op <= 0.10（嚴格先於 tick 對齊，不因報表取整改入選）",
+        "tick_placement": "Decimal ROUND_DOWN to tickSz，且須 px_d > 0（取整後不回頭重測 dist，排序鍵仍為 -dist）"
+      },
+      "order_placement_anchor_pts": "歷史名目情境固定 pts = bt_confirm（不因 delay 一棒順延）。",
+      "execution_sensitivity_labels": {
+        "cross": {
+          "first_eligible_30m_bar": "[bt_confirm, bt_confirm + 30m)（t30 == bt_confirm）",
+          "label_zh": "首棒樂觀／未解（optimistic_unresolved_first_bar）；不代表已驗證棒內秒級可成交"
+        },
+        "delay": {
+          "first_eligible_30m_bar": "[bt_confirm + 30m, bt_confirm + 60m)（t30 > bt_confirm）",
+          "label_zh": "延遲一棒敏感度（delay1bar_sensitivity）"
+        }
+      },
+      "ttl_anchor": "歷史名目情境固定自 bt_confirm 起算 48H（t30 >= bt_confirm + 48H 到期），不因 delay 一棒順延，亦不回溯自 t_struct 起算。",
+      "future_measured_ready_regime_pending_review": {
+        "status": "PENDING_SEPARATE_REVIEW（待審口徑，非本歷史名目規格現行條款）",
+        "earliest_limit_effective_rule_zh": "未來若導入實測 signal_ready_utc > close_utc，限價單最早生效時點嚴禁早於 max(bt_confirm, signal_ready_utc)。",
+        "pts_and_ttl_alignment_note_zh": "該未來實測 ready 情境下，pts 與 48H TTL 究竟維持固定自 bt_confirm 起算、抑或改自 max(bt_confirm, signal_ready_utc) 起算，須於導入實測延遲前另行提交審核定案，不與本次歷史名目情境（固定 bt_confirm / bt_confirm + 48H）混稱相同。"
+      }
+    },
+    "5_synthetic_paper_timelines_no_market_data": {
+      "disclaimer_zh": "以下兩條均為純紙面合成範例（未讀取任何真實行情、未執行任何計數或回測），僅用於驗證三階段狀態機規則無歧義。",
+      "timeline_1_old_confirms_at_k6_and_same_bar_spawns_new_event": {
+        "scenario_zh": "舊事件於 k = 6 確認且同棒出現新結構事件",
+        "symbol_placeholder": "SYNTH-USDT",
+        "events": [
+          {
+            "bar_close_utc": "2025-11-01T00:00:00Z",
+            "available_after_utc": "2025-11-01T00:00:00Z (historical_nominal_assumption)",
+            "bar_ohlc_synthetic": {
+              "open": 101.0,
+              "high": 102.5,
+              "low": 99.2,
+              "close": 101.8,
+              "L_ref_24": 100.0
+            },
+            "step_A": "無既有 pending_event。",
+            "step_B": "無既有 pending_event。",
+            "step_C": "滿足 Low(99.2) < L_ref(100.0)、Close(101.8) > L_ref(100.0)、Close > Open -> 登記 pending_event_1(t_struct=00:00Z, L_ref=100.0)，供未來 k ∈ {1..6} 使用。",
+            "candidates_emitted_at_bar": 0
+          },
+          {
+            "bar_close_utc": "2025-11-01T04:00:00Z .. 2025-11-01T20:00:00Z (k=1..5)",
+            "available_after_utc": "同 bar_close_utc (historical_nominal_assumption)",
+            "summary_zh": "k=1..5 每根已收棒皆滿足 Low >= 99.2 且 Close >= 100.0（Step A 未失效、未逾期，亦未刷新 24 棒最低點 99.2），但 RSI14 均 < 55（Step B 未通過確認），且未形成新結構事件（Step C 無新事件）；pending_event_1 持續等待。",
+            "candidates_emitted_at_bar": 0
+          },
+          {
+            "bar_close_utc": "2025-11-02T00:00:00Z (k=6)",
+            "available_after_utc": "2025-11-02T00:00:00Z (historical_nominal_assumption)",
+            "bar_ohlc_synthetic": {
+              "open": 103.0,
+              "high": 106.0,
+              "low": 98.8,
+              "close": 105.0,
+              "L_ref_24_new": 99.2,
+              "other_23_lookback_bars_low_min": ">= 99.2",
+              "ema60": 101.0,
+              "rsi14": 62.0,
+              "observed_open_bt": 105.0
+            },
+            "step_A": "k = 6 <= 6（未逾期，僅 k > 6 才逾期）；舊事件中途失效規則僅檢驗已收棒 Close < L_ref_1(100.0)（非 Low），本棒 Close(105.0) >= 100.0 故未失效 -> pending_event_1 保持有效進入 Step B。",
+            "step_B": "Close(105.0) > EMA60(101.0) 且 RSI14(62.0) ∈ [55, 85]，暖機閘全過 -> pending_event_1 標記 consumed 結案；以已觀測 Open_bt(105.0) 計算 dist = (105.0 - 100.0)/105.0 = 0.047619 ∈ [0.0005, 0.10] -> 本點產出 1 筆候選（掛單基準 L_ref_1 = 100.0，歷史名目 pts = 2025-11-02T00:00:00Z，TTL 至 bt_confirm + 48H）。",
+            "step_C": "同棒亦滿足新結構事件：因前 24 根回看窗（含舊結構棒 Low=99.2，其餘 23 根 Low >= 99.2）之 L_ref_24_new = 99.2，本棒 Low(98.8) < 99.2、Close(105.0) > 99.2、Close(105.0) > Open(103.0) -> 因舊事件已於 Step B 產出候選，新事件嚴禁追溯覆寫或取消本點已產出之 1 筆候選，僅登記為 pending_event_2(t_struct=2025-11-02T00:00:00Z, L_ref=99.2) 供未來 k_new ∈ {1..6}（04:00Z 起）使用。",
+            "candidates_emitted_at_bar": 1
+          }
+        ],
+        "lookback_window_consistency_note_zh": "於 k=6（2025-11-02T00:00:00Z）處，前 24 根已收 4H 棒涵蓋舊結構棒（2025-11-01T00:00:00Z，Low = 99.2）；本純紙面案例明定其餘 23 根回看棒之 Low 皆 >= 99.2，因此新事件之滾動 24 棒最低點嚴格為 L_ref_24_new = 99.2。"
+      },
+      "timeline_2_confirmation_bar_close_below_L_ref_invalidates_old_event_first": {
+        "scenario_zh": "確認棒 Close < L_ref 導致舊事件於 Step A 先行失效",
+        "symbol_placeholder": "SYNTH-USDT",
+        "events": [
+          {
+            "bar_close_utc": "2025-11-03T00:00:00Z",
+            "available_after_utc": "2025-11-03T00:00:00Z (historical_nominal_assumption)",
+            "bar_ohlc_synthetic": {
+              "open": 100.5,
+              "high": 102.0,
+              "low": 99.4,
+              "close": 101.2,
+              "L_ref_24": 100.0
+            },
+            "step_A": "無既有 pending_event。",
+            "step_B": "無既有 pending_event。",
+            "step_C": "登記 pending_event_1(t_struct=2025-11-03T00:00:00Z, L_ref=100.0)。",
+            "candidates_emitted_at_bar": 0
+          },
+          {
+            "bar_close_utc": "2025-11-03T04:00:00Z .. 2025-11-03T08:00:00Z (k=1..2)",
+            "available_after_utc": "同 bar_close_utc (historical_nominal_assumption)",
+            "summary_zh": "k=1..2 皆 Close >= 100.0 但 RSI14 < 55，pending_event_1 維持等待。",
+            "candidates_emitted_at_bar": 0
+          },
+          {
+            "bar_close_utc": "2025-11-03T12:00:00Z (k=3)",
+            "available_after_utc": "2025-11-03T12:00:00Z (historical_nominal_assumption)",
+            "bar_ohlc_synthetic": {
+              "open": 100.2,
+              "high": 100.4,
+              "low": 99.0,
+              "close": 99.5,
+              "ema60": 98.0,
+              "rsi14": 56.0
+            },
+            "step_A": "先執行失效判定：Close(99.5) < L_ref_1(100.0) -> 立即標記 invalidated_close_below_L_ref 並關閉（pending_event = None），即使此棒假設性滿足 Close > EMA60 與 RSI14 ∈ [55, 85] 亦不得進入 Step B。",
+            "step_B": "跳過（pending_event 已於 Step A 關閉，不產出候選）。",
+            "step_C": "本棒 Close(99.5) < Open(100.2) 不構成新結構事件 -> pending_event 維持 None。",
+            "candidates_emitted_at_bar": 0
+          }
+        ]
+      }
+    },
+    "unchanged_baseline_components": [
+      "EMA60（60 硬門檻 / 180 初始化）與 RSI14 [55, 85] 不改",
+      "60 根連續 UTC+8 1D 因果有效閘不改",
+      "價格距離 [0.0005, 0.10] literal float、Decimal ROUND_DOWN tick 對齊與 -dist 穩定排序不改",
+      "出場規則（TP 2.5% / SL 4.0%）、費用／滑價、30m 撮合與風控參數（max_slots=24、risk=150U、daily_loss=600U、loss_streak=3/24h）全部不改"
+    ],
+    "governance_and_red_lines": [
+      "本文件為 PROPOSED_NOT_EXECUTED 純規格文件（has_script: false、live_approved: false）；未獲 ChatGPT 明確覆核去重並核准前，禁止任何行情計數、掃描、下載、回測或調參。",
+      "本輪僅提交本份純去識別規格 JSON（依 Issue #1 #7222634694 補正第一紙面案例與 TTL 口徑一致性），不改動既有策略規則、不讀取行情、不重寫歷史。",
+      "零 --demo / --live、零下單／撤單／部署／實盤風控變動；原多單封存、空單與 14 天前向觀測維持凍結。"
+    ]
+  },
+  "revision_summary_v1_2": [
+    "修正第一紙面合成時間線（Timeline 1）滾動 24 根低點自洽性：明列 k=6 回看窗內其餘 23 根已收 4H 棒低點均 >= 99.2，故新事件參考低點 L_ref_24_new = 99.2（涵蓋舊結構棒 Low = 99.2），並將 k=6 棒改為 Open=103.0、High=106.0、Low=98.8、Close=105.0；因舊事件失效僅看 Close < 100.0，故 Step B 仍先確認舊事件並產出 1 筆候選，隨後 Step C 掃破 99.2 並收復 105.0 > 99.2 且收陽可登記新事件供未來 k_new >= 1 使用（未改動任何規則，未讀取行情）。",
+    "釐清歷史名目情境與未來實測 ready 情境之 pts／TTL 口徑分界：本次歷史名目情境一律固定 pts = bt_confirm、TTL 固定 bt_confirm + 48H 且不因 delay 一棒順延；未來若引入實測 signal_ready_utc > close_utc，限價不得早於 max(bt_confirm, signal_ready_utc) 生效，而該情境下 pts／48H TTL 是否改由 max(bt_confirm, signal_ready_utc) 起算則單獨明列為「待審口徑」，避免兩處口徑混寫。"
+  ]
+}
