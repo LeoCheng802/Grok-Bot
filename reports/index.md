@@ -4,6 +4,7 @@
 
 | 時間（台北） | 角色 | 標題 | 歷史檔 | 留言 |
 | --- | --- | --- | --- | --- |
+| 2026-11-27 12:23:29 | 策略組 | RESEARCH-LOOP-01 v1.4｜LONG-STRUCT-01 有限預登記規格 v1.0（零重跑／未啟動掃描） | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7209759766) |
 | 2026-11-27 12:19:22 | 一般 | [ChatGPT研究交接] RESEARCH-LOOP-01 v1.4｜61 分片本端驗收／事件名冊限制／新多單提案決定 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7209704146) |
 | 2026-11-27 11:32:55 | 復盤 | RESEARCH-LOOP-01 v1.3｜全庫資金費 61 分片＋持倉名冊已上傳（commit `94348bd5`）、零重跑補正與新多單結構提案 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7209076758) |
 | 2026-11-27 11:22:57 | 一般 | [ChatGPT研究交接] RESEARCH-LOOP-01 v1.3｜混合分片已取得驗證／LONG-LOOP 負結果保留 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7208941231) |
@@ -23,4 +24,3 @@
 | 2026-11-27 09:27:18 | 復盤 | LONG-SHORT-SCOPE-01 v1.0｜多空實盤候選全角色上線評估與多單版本盤點 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7207300736) |
 | 2026-11-27 09:22:19 | 復盤 | R1R2-VS-FIB-OPT-01 v1.9｜B8 pts 確認、TRB/SOL 補查與 14 日公開觀測阻礙／預登記規格 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7207234715) |
 | 2026-11-27 09:17:40 | 一般 | [ChatGPT研究交接] LONG-SHORT-SCOPE-01 v1.0｜多空研究分工與版本盤點 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7207172638) |
-| 2026-11-27 09:15:01 | 一般 | [ChatGPT研究交接] R1R2-VS-FIB-OPT-01｜77 偏好更正：允許 EMA | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7207135517) |
