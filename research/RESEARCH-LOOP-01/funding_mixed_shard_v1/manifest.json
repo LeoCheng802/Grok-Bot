@@ -1,0 +1,97 @@
+{
+  "research_id": "RESEARCH-LOOP-01",
+  "version": "v1.2-funding-mixed-shard",
+  "stage": "single_shard_non_8h_and_time_normalization_verification",
+  "worker": "策略組",
+  "created_utc": "2026-11-27T02:29:40.418940+00:00",
+  "original_source_urls": [
+    "https://www.okx.com/cdn/okex/traderecords/fundingrate/monthly/{YYYYMM}/allswap-fundingrate-{YYYY}-{MM}.zip",
+    "https://www.okx.com/api/v5/public/funding-rate-history"
+  ],
+  "window_selection_rule": {
+    "timezone": "UTC",
+    "predicate": "ts_snapped_ms >= 2022-12-01T00:00:00Z (1669852800000) AND ts_snapped_ms < 2023-01-01T00:00:00Z (1672531200000)",
+    "source_ym_note": "Rows are selected strictly by UTC settlement timestamp window, NOT filtered by source_ym. Both original funding_time_ms and ts_snapped_ms are preserved side-by-side."
+  },
+  "download_url_template": "https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/<commit_sha>/<relative_path>",
+  "columns_and_units": {
+    "inst_id": "OKX USDT-margined perpetual swap instrument ID (string)",
+    "funding_time_ms": "Original OKX fundingTime in Unix epoch milliseconds (UTC)",
+    "funding_time_utc": "ISO-8601 UTC timestamp derived from funding_time_ms (millisecond precision)",
+    "ts_snapped_ms": "Grid-snapped settlement timestamp in Unix epoch milliseconds (UTC); unchanged from raw when outside snap tolerance",
+    "ts_snapped_utc": "ISO-8601 UTC timestamp derived from ts_snapped_ms",
+    "snap_offset_ms": "funding_time_ms - ts_snapped_ms in milliseconds (signed integer)",
+    "funding_rate": "Per-settlement funding rate as decimal (e.g. 0.0001 = 0.01% = 1 bps)",
+    "is_8h_grid": "Boolean ('true' if ts_snapped_ms % 28800000 == 0, else 'false')",
+    "source_ym": "Origin archive month tag (YYYY-MM) or 'l1_backfill' for public REST backfill"
+  },
+  "source_sqlite_hashes": {
+    "b6_isolated_funding_sqlite_sha256": "dc547b1c6a8031ce730743d542277f11561f95263dd48f22a18017e3f5163c1b",
+    "l1_isolated_funding_sqlite_sha256": "23ebdab561d5fa48ae34394b451d55b97d3e09af4e8a8809eef93422c40783cc"
+  },
+  "gap_and_dedup_policy": {
+    "primary_key_dedup": "(inst_id, ts_snapped_ms)",
+    "missing_8h_handling": "Missing 8H grid events are recorded as miss_8h, NOT zero-filled, NOT interpolated, and NOT excluded from position holding.",
+    "next_batch_note": "After this time-normalized + non-8H + miss_8h shard is verified, remaining shards (including 2025-2026 1H/4H mixed-frequency shards such as FLOW-USDT-SWAP 2026-01) and actual held-position funding roster coverage will follow."
+  },
+  "files": [
+    {
+      "role": "mixed_and_time_normalized_funding_shard",
+      "inst_id": "FIL-USDT-SWAP",
+      "month_utc": "2022-12",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_mixed_shard_v1/FIL-USDT-SWAP_2022-12.csv",
+      "sha256": "a850777c31a9a7887ef497fe943ece919771df6ef0ec023e944b02d0b97aa4c0",
+      "bytes": 11869,
+      "row_count": 93,
+      "unique_raw_funding_time_ms": 93,
+      "unique_ts_snapped_ms": 93,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 92,
+      "snap_offset_ms_min": -43000,
+      "snap_offset_ms_max": 23000,
+      "grid_8h_expected": 93,
+      "grid_8h_present": 91,
+      "grid_8h_missing_count": 2,
+      "grid_8h_missing_ms": [
+        1671350400000,
+        1671379200000
+      ],
+      "grid_8h_missing_utc": [
+        "2022-12-18T08:00:00Z",
+        "2022-12-18T16:00:00Z"
+      ],
+      "non_8h_event_count": 2,
+      "non_8h_events": [
+        {
+          "funding_time_ms": 1671353957000,
+          "funding_time_utc": "2022-12-18T08:59:17Z",
+          "ts_snapped_ms": 1671354000000,
+          "ts_snapped_utc": "2022-12-18T09:00:00Z",
+          "snap_offset_ms": -43000,
+          "funding_rate": 0.0,
+          "source_ym": "2022-12"
+        },
+        {
+          "funding_time_ms": 1671389648000,
+          "funding_time_utc": "2022-12-18T18:54:08Z",
+          "ts_snapped_ms": 1671389648000,
+          "ts_snapped_utc": "2022-12-18T18:54:08Z",
+          "snap_offset_ms": 0,
+          "funding_rate": -3.34874241725e-05,
+          "source_ym": "2022-12"
+        }
+      ],
+      "consecutive_snapped_delta_sec_counts": {
+        "18352": 1,
+        "28800": 89,
+        "32400": 1,
+        "35648": 1
+      },
+      "source_ym_counts": {
+        "2022-12": 92,
+        "2023-01": 1
+      }
+    }
+  ]
+}
