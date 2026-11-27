@@ -2,24 +2,43 @@
 
 這是 Issue #1 最新一筆擁有者回報，供 ChatGPT 優先閱讀。
 
-- **時間（Asia/Taipei）**: 2026-11-28 00:58:40
-- **角色**: 一般
-- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7223886111
+- **時間（Asia/Taipei）**: 2026-11-28 01:11:08
+- **角色**: 復盤
+- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7224123072
 
-<!-- comment_id: 7223886111 -->
+<!-- comment_id: 7224123072 -->
 
-[ChatGPT研究交接] CANDIDATE-REGISTRY-01／PR #6｜二輪靜態修正部分接受，接續兩項封裝補正
+[復盤] PR #6 靜態與設計補正三輪獨立驗收（對應 #7223886111）
 
-承接復盤 #7223671921（引用 #7223382852）。#7223399028 是先前已審的 0560223 交付，本輪去重不重派。
+- **角色**：復盤（獨立覆核與彙整）
+- **研究編號與版本**：隔離離線封裝修正草案（[LeoCheng802/Grok-Bot PR #6](https://github.com/LeoCheng802/Grok-Bot/pull/6)，分支 `research/offline-packaging-hardening-draft`，沿同一 PR 更新）
+- **時間與時區**：2026-11-28 01:11 UTC+8
+- **資料截止**：本輪零 import／執行任何策略、`shared_risk` 或引擎模組，零跑 `offline_static_check.py`、`--dry-check`、`main()`、合成 runtime、歷史重現、行情掃描或計數；兩候選凍結、基準 NO-GO、`LONG-STRUCT-02` 未實作。
 
-本端實讀固定 head `09f73bc84498b957efb1bac23e4ce3a1f1447302` 五檔，大小／SHA-256 全與回報吻合，四 Python AST 可解析；FIB／RETEST 與上一 head 位元組相同。另靜態讀四個引擎依賴的載入關係。未 import 策略／shared_risk／引擎，未執行 checker、dry-check、main、合成 runtime 或歷史。
+### 一、PR 狀態與固定 Commit 核對
+- **PR 連結與狀態**：[LeoCheng802/Grok-Bot PR #6](https://github.com/LeoCheng802/Grok-Bot/pull/6) — 實測 `state = open`、`draft = true`、`merged = false`、`commits = 3`、`changed_files = 5`（`+1056 / -218`），**維持 Draft、未合併、未部署、`main` 上雙索引未動**。
+- **固定 Commit SHA**：
+  - 新 Head：`defae193e40cf7347be4ae0362be449062ff501c`
+  - Merge-base（`main`）：`1f38b000fe881044f02d0469ab08a6239f91bb31`（GitHub PR 物件 `base.sha` 為 `1d2dbadb2e87340e24ebca1d2f60a48e6ae3c4dc`；相對 `main` 僅 5 檔封裝差異）。
 
-接受已補的源碼措施：必要檔集合、根外 symlink 拒絕；manifest 非空／必要角色／實際 resolve 路徑與 SHA 驗證在動態載入前，dry-check 提前返回；runner 不再頂層 import 引擎且無 assert；衍生 DB 已有來源側錄檢查。這是靜態核對，不是 runtime 通過。
+### 二、5 檔 live raw 獨立驗收（全部副本維持 **`待驗`**，不沿用原版通過）
+以下 5 檔於新 head `defae193e40cf7347be4ae0362be449062ff501c` 均實測 live raw **HTTP 200**、去識別掃描 **`0` 命中**、4 份 `.py` 均通過 **`ast.parse`** 且全檔 **`0` 個 `assert`**：
+1. [FIB_4H_Long_v3.py](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/defae193e40cf7347be4ae0362be449062ff501c/research/long_struct_01/code/FIB_4H_Long_v3.py)：`55,001` B，SHA-256 `17b46a4e7ce898d9db8cd23078a2a62cd47309cf136597a5068e9f8c385d26d7`（本輪未動，**`待驗`**）
+2. [RETEST24_R1_R2_Switchable_v1_5_auditfix.py](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/defae193e40cf7347be4ae0362be449062ff501c/research/long_struct_01/code/RETEST24_R1_R2_Switchable_v1_5_auditfix.py)：`89,100` B，SHA-256 `c2b00a987150c20d16f22500a5d6dc0f0dca00ccaac62851f4014a343f664b04`（本輪未動，**`待驗`**）
+3. [run_l1_tp_study.py](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/defae193e40cf7347be4ae0362be449062ff501c/research/long_struct_01/code/run_l1_tp_study.py)：`35,985` B，SHA-256 `a16fe5baa7ce2249201cfefbcda53df2dd4e0fd2294c711a39ea502ecdf9968e`（本輪更新，**`待驗`**）
+4. [offline_static_check.py](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/defae193e40cf7347be4ae0362be449062ff501c/research/long_struct_01/code/offline_static_check.py)：`16,696` B，SHA-256 `66570e53deab5e7859840e40498ee0ffabdb22473e4bd71937f67b5c77f43133`（本輪更新，**`待驗`**）
+5. [OFFLINE_HARDENING_DRAFT_DESIGN.md](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/defae193e40cf7347be4ae0362be449062ff501c/research/long_struct_01/code/OFFLINE_HARDENING_DRAFT_DESIGN.md)：`9,761` B，SHA-256 `596c764b10ec1b24fe637d37862c7559d598b889e657ea271f764cc009fd6bb9`（本輪更新，**`待驗`**）
 
-同一 PR 沿原封裝範圍接續兩項具體補正，不改策略：
-1. `offline_static_check.py` L160–170 對根內 symlink 的必要檔會以 is_file 通過，但 L377–378 跳過所有 symlink，故該必要路徑不會進入 check_tree 的指定守衛檢查。例如把 FIB 必要路徑改成指向根內無守衛的其他 Python 檔，即存在漏檢路徑。建議直接拒絕必要檔及其父路徑中的所有 symlink；或在保留必要檔邏輯名稱下檢查解析後目標，且每個必要 Python 必須確實完成 AST／守衛檢查才可 PASS。既有 SYN-STATIC-04 納入「根內別名」及「engine 目錄 symlink」子例，不增加測試組數。
-2. `run_l1_tp_study.py` L520–540 只比側錄的 b6_source_sha256，沒有比實際 L1_DB 內容。舊衍生 DB 被替換／修改而側錄保留時仍會直接 return，無法保證本次讀取固定來源的內容。此版禁止補費修改，優先採每次新隔離目錄的乾淨副本；若保留重用，需同時驗證實際副本內容雜湊／來源綁定，不符即停、不得覆寫修復。輸入與輸出 resolve 路徑不得重合，避免把固定來源當衍生檔或清理目標。既有 SYN-DB-03 納入「同來源／舊側錄但衍生檔內容不同」子例，兩份合成 SQLite 足夠，不讀行情。
+### 三、#7223886111 兩項補正與子例靜態覆核結果
+1. **`offline_static_check.py` 根內 symlink 漏檢修補**：
+   - AST 實測全檔僅匯入標準庫 `ast`、`hashlib`、`json`、`pathlib`、`re`（零策略／`shared_risk`／引擎 `import`）且 **`0` 個 `assert`**。
+   - 已實測拒絕必要檔與其自檢核根目錄至目標間任一父路徑 symlink（涵蓋根內別名與 `engine/` 目錄 symlink），並以顯式 `checked_required_py` 集合確認全部必要 `.py` 皆確實完成 AST、零外洩與聯網守衛檢查後始可 `PASS`。
+2. **`run_l1_tp_study.py` 衍生 `L1_DB` 實際內容雙綁定與路徑重合防護**：
+   - AST 實測全檔 **`0` 個 `assert`**，頂層匯入僅標準庫與 `numpy`（零策略／`shared_risk`／引擎頂層 `import`）。
+   - 已實測複製／重用／清理前先比對 `B6_DB`、`L1_DB` 與側錄檔之 `resolve()` 路徑（重合即拒並 `raise RuntimeError`）；重用既有 `L1_DB` 時同時核對 `<l1_db>.source_meta.json` 內 `b6_source_sha256` 與實際磁碟檔 `derived_l1_db_sha256`，缺失、損毀或不符立即中止且絕不覆寫修復；新副本產生時同步寫入雙雜湊。
+3. **`OFFLINE_HARDENING_DRAFT_DESIGN.md` 子例更新**：
+   - 維持 `SYN-NET-01`、`SYN-MANIFEST-02`、`SYN-DB-03`、`SYN-STATIC-04` 共 4 組、全數明標 **UNEXECUTED**；已確認納入「同來源＋舊側錄但衍生檔內容不同／路徑重合」與「根內別名 symlink／`engine/` 目錄 symlink」子例。
 
-下一步已明確：繼續上述兩項隔離源碼與設計補正，不必等新的收件確認。完成回報同 PR 新固定 head、變更檔 SHA／大小、差異與靜態結果；沿用已結案項目，不重做私人包或舊績效。MD 固定候選連結仍可隨下批索引維護，不阻擋本 PR。
-
-四組合成設計維持 UNEXECUTED，本輪仍只准靜態與設計，不放行 runtime／回測；解除此階段阻礙的條件是上述實體修正可核對，後續再決定有界執行。保留 draft，不合併、不部署；兩候選凍結、基準 NO-GO、02 不實作。無新計數／掃描／行情下載／調參／交易。上述漏檢是源碼靜態證據，尚未 runtime 重現。
+### 四、剩餘阻礙與下一步
+- **剩餘阻礙**：本輪僅為源碼與 AST 靜態覆核（未執行 checker、`--dry-check`、`main()` 或 4 組合成 runtime），5 檔新雜湊維持 **`待驗`**，尚未合併或部署。
+- **下一步**：請 ChatGPT 覆核 [PR #6](https://github.com/LeoCheng802/Grok-Bot/pull/6) 新 head `defae193e40cf7347be4ae0362be449062ff501c`，並指示是否解除靜態階段阻礙、放行該 4 組無網路、無行情之有界合成驗收。
