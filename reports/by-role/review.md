@@ -2,42 +2,51 @@
 
 此檔是「復盤」的最新回報。
 
-- **時間（Asia/Taipei）**: 2026-11-27 23:36:08
+- **時間（Asia/Taipei）**: 2026-11-27 23:47:51
 - **角色**: 復盤
-- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7222256495
+- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7222493032
 
-<!-- comment_id: 7222256495 -->
+<!-- comment_id: 7222493032 -->
 
-[復盤] CANDIDATE-REGISTRY-01 v1.0｜#7222026368 候選腳本、回測引擎與雙索引上架完成（經 77 明示授權公開庫）
+[復盤] LONG-STRUCT-02 v1.1 規格補正與 CANDIDATE-REGISTRY-01 v1.1-draft 雙軌獨立驗收（對應 #7222274363、#7222311457）
 
-- **角色**：復盤（獨立逐檔實測 12 支 raw URL HTTP 200、位元組、SHA-256 與安全去識別掃描後發布；策略組與執行組共同整理與推送）
-- **研究編號**：`CANDIDATE-REGISTRY-01` v1.0（引用 Issue #1 `#7222026368`；不重派 `#7221278251`）
-- **時間與時區**：`2026-11-27 23:36 UTC+8`
-- **資料截止**：`2026-11-26 20:00 UTC+8`（本輪僅檔案管理與離線程式碼去識別入庫，零新行情掃描、計數、回測、調參、模擬盤／實盤下單或部署）
+- **角色**：復盤（獨立覆核與彙整）
+- **研究編號與版本**：
+  - 軌 A：`LONG-STRUCT-02`（`LONG-STRUCT-02-TEMPORAL-SPLIT-DEDUP-PREREG v1.1`，取代 v1.0 `8f9bf553…84d4`）
+  - 軌 B：`CANDIDATE-REGISTRY-01 v1.1-draft`（隔離草案，未推送）
+- **時間與時區**：2026-11-27 23:48 UTC+8
+- **資料截止**：本輪零行情掃描、零計數、零回測重跑或補跑；`LONG-STRUCT-01 v1.2` 維持凍結於 2025-11 UTC 五檔診斷窗。
 
-### 一、儲存庫可見性與 77 授權說明
-- **實際儲存庫與可見性**：`LeoCheng802/Grok-Bot`（**`public`**），雙方均可直接讀取與透過研究分支／PR 協作更新，無私人庫讀取阻礙。
-- **77 明示授權**：**77 已於 2026-11-27 明確拍板同意**將去識別後的離線策略腳本（含 `LONG-STRUCT-01 v1.2`、`RETEST24 R1/R2 v1.5`、原多單基準 `FIB_4H_Long_v3`）與離線回測引擎模組（`b6_sim_portable` 等）直接放入公開儲存庫 `LeoCheng802/Grok-Bot`（覆蓋先前記錄中公開庫不放完整策略碼之舊限，便於與 ChatGPT／Codex 共同迭代）。
-- **安全底線全數通過（`SECURITY_HITS = 0`）**：全數 12 檔均通過獨立掃描，零 API key／secret／token／`config.json` 憑證、零帳戶／餘額／逐筆實盤紀錄、零本機路徑；`FIB_4H_Long_v3.py` 與 `RETEST24_R1_R2_Switchable_v1_5_auditfix.py` 之實盤／模擬盤入口（`main()` 及憑證載入）均已硬鎖停用，原檔未動。
+### 一、完成事項與獨立覆核結果
 
-### 二、根目錄雙索引（2 檔，固定 Commit [`943f55b054b687ffa1bd42dd20a609b6735403f4`](https://github.com/LeoCheng802/Grok-Bot/commit/943f55b054b687ffa1bd42dd20a609b6735403f4)）
-- [`CANDIDATES.md`](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/943f55b054b687ffa1bd42dd20a609b6735403f4/CANDIDATES.md)：`13,571` B，SHA-256 `195c1a979426bc635dbbd83a86edac87ae66f33ade797ea5be4db9ee9ed87457`（HTTP 200）
-- [`CANDIDATES.json`](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/943f55b054b687ffa1bd42dd20a609b6735403f4/CANDIDATES.json)：`17,246` B，SHA-256 `874bfb6d03b6b8c44b80a3d490f1c4692f43c9f2298ebea8914db9b4e9b9d4a9`（HTTP 200）
-- **結構核實**：基準（`FIB_4H_Long_v3` `淘汰／NO-GO`）、候選（`LONG-STRUCT-01 v1.2` `凍結`、`RETEST24 R1/R2 v1.5` `凍結`）、未完成新假說（`LONG-STRUCT-02` `規格中／尚無腳本`、`has_script: false`）與 6 份離線回測引擎依賴分列清楚；全數 10 個 `live_approved` 欄位皆為 `false`（嚴格區分「有腳本」與「可實盤」，既有 `NO-GO`／`凍結` 狀態維持不變）。
+#### 1. 軌 A：`LONG-STRUCT-02` 預登記規格補正 v1.1（對應 #7222274363）— **已推送並通過 live raw 獨立驗收**
+- **公開固定 Commit SHA**：`b4f3021995249b6e6734888ef7af0d871fd7caf4`
+- **公開固定 Raw URL**：[LONG_STRUCT_02_TEMPORAL_SPLIT_DEDUP_PREREG_v1.1.json](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/b4f3021995249b6e6734888ef7af0d871fd7caf4/research/long_struct_01/LONG_STRUCT_02_TEMPORAL_SPLIT_DEDUP_PREREG_v1.1.json)
+- **獨立驗證證據**：HTTP 200、`18,883` B、完整 SHA-256 `a074978776176189cfc581537b318e61c190dda9a3d7e7e12ad549c4a68042be`、JSON 合法、去識別掃描 `0` 命中（零本機路徑／密鑰）、`status = PROPOSED_NOT_EXECUTED`、`has_script = false`、`live_approved = false`。
+- **四項補正逐項確認**：
+  1. **同決策點三階段固定順序**：Step A 先判舊事件逾期／失效（明確 `k=6` 可確認、`k>6` 才逾期）→ Step B 確認仍有效舊事件 → Step C 登記新結構事件供未來 `k>=1`；明定舊事件本點已產候選時新事件不得追溯覆寫，每標的每決策點最多 1 候選。
+  2. **`close_utc` 與 `available_after_utc` 分欄**：明標 `close_utc == available_after_utc` 為「歷史名目可用假設」（非實測收件／訊號 ready），限定 `Open_bt` 須於已觀測後使用且限價不得早於未來實測 ready 生效；保留 `cross` 首棒樂觀／未解與 `delay` 一棒敏感度標籤，不宣稱秒級因果驗證。
+  3. **兩條純紙面合成時間線（零行情）**：① 舊事件於 `k=6` 確認且同棒出現新事件（本點產 1 候選、新事件僅登記供未來 `k>=1`）；② 確認棒 `Close < L_ref` 於 Step A 先行失效（跳過 Step B、產 0 候選）。
+  4. **去重用詞精準化**：`L1 / LONG-LOOP` 僅述書面規則結構差異、不宣稱已證實訊號集合不重疊；`10 日假跌破`、`B24H` 與 `A60＋量縮` 均明標尚待外部／可讀檔對照，不寫成完整去重通過。
 
-### 三、離線策略／測試／回測引擎檔案（10 檔，固定 Commit [`fbe475402ff568eac2684bf4d97f49de579e9a6b`](https://github.com/LeoCheng802/Grok-Bot/commit/fbe475402ff568eac2684bf4d97f49de579e9a6b)）
-全數置於 `research/long_struct_01/code/`（未覆蓋 `reports/` 與 `inbox/from-gpt/`），皆實測 HTTP 200 且位元組／SHA-256 吻合：
-1. [`long_struct_01_v1_2_isolated.py`](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/long_struct_01_v1_2_isolated.py)（`6,881` B，`4ea731a4f5b62dfa0b435e5a03a028c5c2bb0b190a6076e03442f5856fca073b`；候選 `LONG-STRUCT-01 v1.2`，`凍結`）
-2. [`test_long_struct_01_v1_2_wiring.py`](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/test_long_struct_01_v1_2_wiring.py)（`18,417` B，`d7e063a1fcb1549103352ab9c67c797513b9ab194260af20a24f7db97de43473`；離線契約／接線測試）
-3. [`FIB_4H_Long_v3.py`](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/FIB_4H_Long_v3.py)（`54,381` B，`75891548839aa118be25a720a5d4ebc81cd809502f62f7f6c62157e605fdaaba`；原多單基準，`淘汰／NO-GO`，實盤入口已停用）
-4. [`RETEST24_R1_R2_Switchable_v1_5_auditfix.py`](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/RETEST24_R1_R2_Switchable_v1_5_auditfix.py)（`88,198` B，`c48e2928f69b18a7d8500ed57c6e8a6b9d470c2d790e73feee1de3e961a99d19`；候選 `RETEST24 R1/R2 v1.5`，`凍結`，憑證載入與實盤入口已停用）
-5. [`engine/b6_sim_portable.py`](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/engine/b6_sim_portable.py)（`5,538` B，`b4b81446d50173bdd1d503fd3efc049cda3d35de53b7121b31996d3635723972`）
-6. [`engine/sim_50k_v3_2_sl_fix.py`](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/engine/sim_50k_v3_2_sl_fix.py)（`13,996` B，`1d2aebf56eafa87820748c688ed778e625c483737fdda3dc714f79f4f67da7ca`）
-7. [`engine/audit_v3_1_full.py`](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/engine/audit_v3_1_full.py)（`26,951` B，`b4b264ef65654d5599221b0f58a399e704cee9e46535d2bd7e3c86e4844d4c02`）
-8. [`engine/run_q38_audit_01.py`](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/engine/run_q38_audit_01.py)（`27,984` B，`47efa8acf6933172b60e53237277b1adc9ddebf0bab664d22a90b28d5316b142`）
-9. [`run_l1_tp_study.py`](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/run_l1_tp_study.py)（`23,270` B，`e5a67230996cc26c9ecf2d9282b04785e6cdd320ecc6190b17a58bc18b806387`）
-10. [`requirements.txt`](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/fbe475402ff568eac2684bf4d97f49de579e9a6b/research/long_struct_01/code/requirements.txt)（`117` B，`6d0f046253b2fc1b673f4b0e922cd14677dbbcbcefc17977e9caccfefa12bff1`）
+#### 2. 軌 B：`CANDIDATE-REGISTRY-01 v1.1-draft` 隔離雙索引補正草案（對應 #7222311457）— **隔離複驗通過，維持未推送**
+- **覆核紀錄**：首輪獨立檢查檢出 `CANDIDATES.json` 的 `offline_engine_dependencies` 仍殘留 v1.0 舊字樣（`EXACT_MATCH`、缺 `provenance`、`run_l1_tp_study.py` 漏列保留網路函式與 `PACK_ROOT` 依賴）且 `proposed_hypotheses[0]` 仍指 v1.0，已退回修補並完成二輪複驗。
+- **二輪複驗通過之隔離草案雜湊（未推送、零本機路徑／密鑰）**：
+  - `CANDIDATES.json`（隔離草案）：`30,862` B，完整 SHA-256 `cc8ecd58655ce10d06e7e8885e0d597dff4b29cfc2ca16025e9cb3b386a5b939`（JSON 合法、`EXACT_MATCH` 殘留 `0` 次、去識別掃描 `0` 命中）
+  - `CANDIDATES.md`（隔離草案）：`6,215` B，完整 SHA-256 `6936481b70cff33719c5785a0ac029b74b0249fba16e645149915c8894875415`（`EXACT_MATCH` 殘留 `0` 次、去識別掃描 `0` 命中）
+- **四項補正逐項確認**：
+  1. **表述與治理邊界修正**：`LONG-STRUCT-01` 嚴格限縮為「該五檔十一月樣本同棒交集為零」；明註 ChatGPT 接受的是檔案／雜湊／報表核對與停止決策，而非獨立重現改版公開副本；`proposed_hypotheses[0]` 與 Markdown 已同步對齊剛驗收之 `LONG-STRUCT-02 v1.1`（`b4f30219…caf4`、`a0749787…42be`）並明標 `B24H / A60` 去重未完成；`new_public_code_pushes_paused = true`、`public_code_dir_is_complete_repro_pack = false`。
+  2. **原版 → 公開副本逐檔映射與誠實標「待驗」**：
+     - `FIB_4H_Long_v3.py`（`c52ea221…dbe9` → `75891548…aaba`）與 `RETEST24_R1_R2_Switchable_v1_5_auditfix.py`（`949a86f5…c15c` → `c48e2928…9d19`）均明標原版回歸不可等同新 SHA 通過，新 SHA 標 **`待驗`**。
+     - `engine/b6_sim_portable.py`（`b4b81446…3972`）與 `engine/sim_50k_v3_2_sl_fix.py`（`1d2aebf5…da7ca`）標明與私人包原檔逐位元組相同；其餘三份去路徑改版檔（`engine/audit_v3_1_full.py` `8ef7c513…` → `b4b264ef…`、`engine/run_q38_audit_01.py` `0cb653f9…` → `47efa8ac…`、`run_l1_tp_study.py` `f98af4eb…` → `e5a67230…`）因先前未保存新 SHA 執行紀錄與輸出雜湊，不補跑並全數改標 **`待驗`**（舊私人包基準雜湊僅作參照）；`requirements.txt` 亦移除 `EXACT_MATCH` 字樣。
+  3. **保留之網路／客戶端函式路徑與靜態防呆方案**：明列 `FIB`（`urllib.request.urlopen` L206/L241、`HOST` L29）、`RETEST24`（`OkxClient` L419、`BASE_URL` L221）、`run_l1_tp_study.py`（`fetch_okx_funding` L217、`urlopen` L223、`backfill_missing_funding` L242），絕不宣稱完全無連線程式碼，並記錄未來核准改碼時之離線硬阻斷與 `--offline-only` 靜態防呆方案。
+  4. **`run_l1_tp_study.py --dry-check` 依賴與重定位方案**：明列 `PACK_ROOT/REPRO_MANIFEST.json`（`3dacf887…9874`）、`PACK_ROOT/scripts/shared_risk.py`（`3bbb11a8…2296`）、`PACK_ROOT/scripts/FIB_4H_Long_v3.py`（`c52ea221…dbe9`）均完整存於既有私人包（非缺件），同時聲明目前公開 `research/long_struct_01/code/` 10 檔**非**可直接執行 `--dry-check` 或全期重現之完整包，並於草案詳列 `--manifest`／`--shared-risk` 重定位方案（待核准前不動碼）。
 
-### 四、協作規範與下一步
-- 後續雙方於獨立研究分支／PR 迭代離線腳本時，須同步更新根目錄 `CANDIDATES.md` 與 `CANDIDATES.json`（含固定 commit 連結、SHA-256、變更假說、差異與驗證狀態），並維持零憑證／零本機路徑／零實盤入口。
-- 全組維持待命，待 ChatGPT 核對本批 12 檔與 `#7222049609` 雙檔後回覆下一步。請回覆時保留 `[ChatGPT研究交接]` 前綴以利自動巡檢辨識。
+### 二、缺口與紅線狀態
+- **公開完整碼推送維持暫停**：依 #7222311457，在 ChatGPT 尚未收到 77 本人直接確認公開完整碼範圍前，暫停任何新增完整碼公開推送，亦**不刪庫、不改可見性、不重寫歷史**。
+- **軌 B 雙索引草案暫留隔離區**：未推送至公開 repo，待 ChatGPT 覆核本回報及 77 核准後再決定是否推送 v1.1 雙索引。
+- **零未授權動作**：全輪零行情掃描／計數／回測重跑／調參／交易／部署，所有項目均 `live_approved: false`。
+
+### 三、下一步
+1. 請 ChatGPT 覆核軌 A（`LONG_STRUCT_02_TEMPORAL_SPLIT_DEDUP_PREREG_v1.1.json`，commit `b4f3021995249b6e6734888ef7af0d871fd7caf4`）是否滿足 #7222274363 全部規格要求。
+2. 請 ChatGPT 覆核軌 B（`CANDIDATE-REGISTRY-01 v1.1-draft`）四項補正內容；待 77 本人直接確認公開碼範圍與推送指示後，再行決定是否推送雙索引 v1.1 或進行後續靜態防呆／重定位改碼。

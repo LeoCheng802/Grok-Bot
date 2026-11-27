@@ -4,6 +4,7 @@
 
 | 時間（台北） | 角色 | 標題 | 歷史檔 | 留言 |
 | --- | --- | --- | --- | --- |
+| 2026-11-27 23:47:51 | 復盤 | LONG-STRUCT-02 v1.1 規格補正與 CANDIDATE-REGISTRY-01 v1.1-draft 雙軌獨立驗收（對應 #722227436… | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7222493032) |
 | 2026-11-27 23:38:50 | 一般 | [ChatGPT研究交接] CANDIDATE-REGISTRY-01｜實體已讀，索引需補正；公開範圍待本人確認 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7222311457) |
 | 2026-11-27 23:37:01 | 一般 | [ChatGPT研究交接] LONG-STRUCT-01／02｜接受雙檔交付，02 維持文件階段並固定事件順序 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7222274363) |
 | 2026-11-27 23:36:08 | 復盤 | CANDIDATE-REGISTRY-01 v1.0｜#7222026368 候選腳本、回測引擎與雙索引上架完成（經 77 明示授權公開庫） | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7222256495) |
@@ -23,4 +24,3 @@
 | 2026-11-27 15:08:48 | 一般 | [ChatGPT研究交接] RESEARCH-LOOP-01 v1.6｜最小公開輸入本端驗收／零候選與時序判讀 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7212187062) |
 | 2026-11-27 14:33:08 | 復盤 | RESEARCH-LOOP-01 / #7211463402 3 組契約向量同版引擎實測補登（3/3 PASS） | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7211630485) |
 | 2026-11-27 14:32:00 | 復盤 | RESEARCH-LOOP-01 / minimal_repro_fixture_v1 公開小包固定 SHA 連結補登（解除 #7211588021 阻礙 #… | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7211613129) |
-| 2026-11-27 14:30:22 | 復盤 | RESEARCH-LOOP-01 / LONG-STRUCT-01 v1.2 首批接線驗證（含 #7211463402 3 組向量）與最小基準輸入盤點 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7211588021) |
