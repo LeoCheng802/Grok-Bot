@@ -1,9 +1,10 @@
-# BACKTEST-READINESS-01 v1.0 — Phase A/B/C Offline Wiring & Backtest Readiness Report
+# BACKTEST-READINESS-01 v1.1 — Phase A/B/C Offline Wiring & Backtest Readiness Report
 
-- **Research ID:** `BACKTEST-READINESS-01 v1.0`
-- **Authorization:** [Issue #1 #7225707059](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7225707059)
-- **Fixed Starting Point:** PR #6 (`research/offline-packaging-hardening-draft`) head `3f67bd87fe5db2ec64d97b543fe780fa2f505f6f`
-- **PR / Deployment Status:** Open Draft, NOT merged, NOT deployed. Zero live/demo orders.
+- **Research ID:** `BACKTEST-READINESS-01 v1.1`
+- **Authorization:** [Issue #1 #7225850828](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7225850828) (supersedes `#7225707059`) and `#7226049299`
+- **Fixed Starting Point:** PR #6 (`research/offline-packaging-hardening-draft`) head `3f67bd87fe5db2ec64d97b543fe780fa2f505f6f`; bounded entry added at `da65fe4dbdd549aa973e4e3f2c69447b53dcb64a`
+- **PR / Deployment Status:** Open Draft on `research/offline-packaging-hardening-draft`. NOT merged to `main`. NOT deployed. Does not overwrite `main` SHAs. Zero live/demo orders.
+- **v1.1 verification owner:** Backtesting is performed independently by **ChatGPT** in an isolated environment. The local Job 1 (Phase B smoke) and Job 2 (Phase C full-replay abort) below ran under **v1.0**, before this v1.1 correction. They are kept as pre-correction audit logs and **do not replace ChatGPT's independent verification or backtests**.
 - **Role:** `執行` (de-identified public summary; zero credentials, zero private code/data, zero trade-level traces)
 
 ---
@@ -33,7 +34,7 @@
   - `engine/audit_v3_1_full.py` (`26,951` B, `b4b264ef65654d5599221b0f58a399e704cee9e46535d2bd7e3c86e4844d4c02`): `+2/-1` Windows root path sanitization only (`OKX_RESEARCH_ROOT`).
   - `engine/run_q38_audit_01.py` (`27,984` B, `47efa8acf6933172b60e53237277b1adc9ddebf0bab664d22a90b28d5316b142`): `+3/-2` Windows root/engine path sanitization only.
   - `FIB_4H_Long_v3.py` (`55,001` B, `17b46a4e7ce898d9db8cd23078a2a62cd47309cf136597a5068e9f8c385d26d7`): `+10/-1` offline network/main hard-block only.
-  - `RETEST24_R1_R2_Switchable_v1_5_auditfix.py` (`89,100` B, `c2b00a987150474a57aa0888234a91445d445d4026b49d86cc23a3f03d3c9f72`): `+19/-44` offline network/credential/main hard-block only.
+  - `RETEST24_R1_R2_Switchable_v1_5_auditfix.py` (`89,100` B, `c2b00a987150c20d16f22500a5d6dc0f0dca00ccaac62851f4014a343f664b04`): `+19/-44` offline network/credential/main hard-block only. Working-tree SHA at PR #6 `3f67bd87`; the v1.0 line used a different 64-character string and is corrected here.
 
 ### 2.3 New Bounded Offline Entry Point
 - File: `research/long_struct_01/code/run_l1_bounded_backtest.py` (SHA-256 `26757d866146622176803c05948ed27007b87f9503aad3f4ef89934a74ddccbf`).
@@ -45,6 +46,8 @@
 
 ## 3. Phase B — New-Version Integration Smoke Test (`minimal_repro_fixture_v1`)
 
+**v1.1:** This section is the local Job 1 log from **v1.0**, kept as a pre-correction audit record. It does **not** replace ChatGPT's independent isolated verification.
+
 - **Fixture Inputs:** `cache_v3_min` (`BNB-USDT-SWAP`, `SOL-USDT-SWAP`; `manifest.json` SHA-256 `3647a3d9b532c1abd7dbfd47713ae55ba7355b319bcf7473c0162bbfda1e24c4`), `funding_min.sqlite` (SHA-256 `ce0805fd3f09d4d83615354370d2e19bb462b7b595a0c54bdea5b7316dc41067`), eval window `2025-10-01T00:00:00Z .. 2025-10-31T23:30:00Z` (warmup from `2025-07-01T00:00:00Z`).
 - **Execution UTC:**
   - `B.0 (--dry-check)`: `2026-11-27T18:47:48.970Z` → `EXIT=0`, `files_verified=6`, `modules_executed=false`, `transport_hits=[]`.
@@ -55,6 +58,8 @@
 ---
 
 ## 4. Phase C — Fixed Baseline Full Historical Replay (`EX_USDC_286`, TP2.5% Only)
+
+**v1.1:** This section is the local Job 2 log from **v1.0**, kept as a pre-correction audit record. The `EXIT=2` abort is not deleted. It does **not** replace ChatGPT's independent full backtest.
 
 - **Scope:** Full `EX_USDC_286` (`cache_v3/manifest.json` SHA-256 `b6b4fde6dc84cc26d72258a38e4b6059ca1fe2fa24bea369f9a792e5e36d71b8`, 286 symbols excluding `USDC-USDT-SWAP`, historical delisted preserved) + `funding_archive_l1_isolated.sqlite` (SHA-256 `23ebdab561d5fa48ae34394b451d55b97d3e09af4e8a8809eef93422c40783cc`, `829,157` rows, `270` insts), window `2023-01-01T00:00:00Z .. 2026-11-26T12:00:00Z`, ONLY `TP_2.5pct|cross_1tick` and `TP_2.5pct|delay1bar` (no TP4/TP6 sweep).
 - **Execution UTC:** `2026-11-27T18:50:19.041Z .. 2026-11-27T18:51:52.493Z` (`93.45s`).
