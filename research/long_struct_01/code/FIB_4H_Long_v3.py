@@ -1,5 +1,6 @@
 """[PUBLIC OFFLINE REFERENCE COPY] 4H Fib v3 baseline strategy specification & indicator logic.
 Sanitized for public offline research collaboration: live/demo execution is hard-disabled in main().
+HTTP/OKX helpers raise OFFLINE_RESEARCH_COPY_NETWORK_DISABLED with no flag to re-enable network access.
 """
 """OKX 主帳戶或子帳戶，4H Fib v3 多單。啟動：python FIB_4H_Long_v3.py --live
 直接執行即為實盤；--check 為唯讀；--confirm 可加回 LIVE 二次確認。
@@ -188,7 +189,9 @@ TG_MIN_INTERVAL = 1.2        # 秒；避免連續推送被 Telegram 限流
 
 
 def notify(text):
-    """送出 Telegram 通知；任何失敗都只記錄、不影響交易。"""
+    # Permanent offline refusal. No flag or environment variable re-enables network access.
+    # 送出 Telegram 通知的路徑保留在下方且不可達；任何失敗都不得改為靜默 return。
+    raise RuntimeError('OFFLINE_RESEARCH_COPY_NETWORK_DISABLED: network/OKX HTTP access is permanently disabled in this sanitized research copy.')
     if not TG_ENABLED:
         return
     global _tg_last
@@ -224,6 +227,8 @@ class Exchange:
         self.config = config
 
     def call(self, path, params=None, body=None, private=True):
+        # Permanent offline refusal. No flag or environment variable re-enables network access.
+        raise RuntimeError('OFFLINE_RESEARCH_COPY_NETWORK_DISABLED: network/OKX HTTP access is permanently disabled in this sanitized research copy.')
         route = '/api/v5/' + path
         if params:
             route += '?' + urlencode(params)

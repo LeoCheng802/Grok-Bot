@@ -2,6 +2,13 @@
 """
 Portable entrypoint for LONG-SHORT-SCOPE-01-L1 v1.1 (Single-Factor TP Study).
 Uses relative pack paths, environment variables, or CLI flags — zero hardcoded host paths.
+
+Private-pack --dry-check is separate from the public-directory static verifier
+(offline_static_check.py). --dry-check requires explicit --manifest, --shared-risk,
+and --orig-long pointing at the target copy; manifest hashes must match that copy.
+There is no PACK_ROOT/REPRO_MANIFEST.json or PACK_ROOT/scripts/shared_risk.py default.
+Missing funding is a hard error: fetch/backfill raise OFFLINE_RESEARCH_COPY_NETWORK_DISABLED
+and never zero-fill or download. No flag re-enables network access.
 """
 import argparse, copy, hashlib, importlib.util, json, math, os, shutil, sqlite3, sys, time
 import urllib.request
@@ -19,10 +26,35 @@ import audit_v3_1_full as a
 import run_q38_audit_01 as q38a
 import b6_sim_portable as b6mod
 
+def _explicit_cli_path(raw):
+    """Return a user-supplied path unchanged except for user-home expansion.
+
+    Does not prefix PACK_ROOT and does not append scripts/ or REPRO_MANIFEST.json.
+    """
+    return Path(raw).expanduser()
+
+
 def _parse_args(argv=None):
-    p = argparse.ArgumentParser(description="LONG-SHORT-SCOPE-01-L1 v1.1 portable offline TP study runner")
-    p.add_argument("--orig-long", default=os.getenv("REPRO_ORIG_LONG", str(PACK_ROOT / "scripts" / "FIB_4H_Long_v3.py")),
-                   help="Path to FIB_4H_Long_v3.py baseline script")
+    p = argparse.ArgumentParser(
+        description="LONG-SHORT-SCOPE-01-L1 v1.1 portable offline TP study runner",
+        epilog=(
+            "Private-pack --dry-check requires explicit --manifest, --shared-risk, and "
+            "--orig-long for the target copy. Manifest SHA-256 entries must match that copy; "
+            "relative manifest paths resolve from the manifest file's parent directory. "
+            "This runner does not default those three inputs to PACK_ROOT/REPRO_MANIFEST.json "
+            "or PACK_ROOT/scripts/. Public code/ AST checks are offline_static_check.py and "
+            "do not invoke --dry-check."
+        ),
+    )
+    p.add_argument("--orig-long", default=None,
+                   help="Explicit path to the FIB_4H_Long_v3.py copy under test. Required. "
+                        "No PACK_ROOT/scripts default and no REPRO_ORIG_LONG fallback.")
+    p.add_argument("--manifest", default=None,
+                   help="Explicit path to REPRO_MANIFEST.json for private-pack --dry-check. "
+                        "Required with --dry-check. No PACK_ROOT default. Hashes must match the target copy.")
+    p.add_argument("--shared-risk", default=None,
+                   help="Explicit path to shared_risk.py for private-pack --dry-check. "
+                        "Required with --dry-check. No PACK_ROOT/scripts default. Hashes must match the target copy.")
     p.add_argument("--cache-dir", default=os.getenv("REPRO_CACHE_DIR", str(PACK_ROOT / "data" / "cache_v3")),
                    help="Path to EX_USDC_286 cache_v3 directory containing manifest.json & symbol CSV/NPY files")
     p.add_argument("--funding-db", default=os.getenv("REPRO_FUNDING_DB", str(PACK_ROOT / "data" / "funding_archive_l1_isolated.sqlite")),
@@ -30,8 +62,34 @@ def _parse_args(argv=None):
     p.add_argument("--out-dir", default=os.getenv("REPRO_OUT_DIR", str(PACK_ROOT / "out")),
                    help="Output directory for l1_tp_result.json")
     p.add_argument("--dry-check", action="store_true",
-                   help="Verify clean isolated imports, manifest SHA-256s, and baseline defaults without running backtest")
-    return p.parse_args(argv)
+                   help="Private-pack integrity check. Requires explicit --manifest, --shared-risk, "
+                        "and --orig-long. Does not run the public offline_static_check.py verifier.")
+    args = p.parse_args(argv)
+    if args.orig_long:
+        args.orig_long_path = _explicit_cli_path(args.orig_long)
+        args.orig_long = str(args.orig_long_path)
+    if args.manifest:
+        args.manifest_path = _explicit_cli_path(args.manifest)
+        args.manifest = str(args.manifest_path)
+    if args.shared_risk:
+        args.shared_risk_path = _explicit_cli_path(args.shared_risk)
+        args.shared_risk = str(args.shared_risk_path)
+    missing = []
+    if not args.orig_long:
+        missing.append("--orig-long")
+    if args.dry_check and not args.manifest:
+        missing.append("--manifest")
+    if args.dry_check and not args.shared_risk:
+        missing.append("--shared-risk")
+    if missing:
+        p.error(
+            "explicit path(s) required and missing: "
+            + ", ".join(missing)
+            + ". Private-pack --dry-check requires --manifest, --shared-risk, and --orig-long "
+            "pointing at the target copy (hashes must match that copy). "
+            "This public runner does not assume a private PACK_ROOT/scripts layout."
+        )
+    return args
 
 ARGS = _parse_args()
 ORIG_LONG = Path(ARGS.orig_long)
@@ -215,6 +273,8 @@ def load_funding_db(db_path: Path):
     return fmaps, ov_raw
 
 def fetch_okx_funding(inst: str, min_ts: int, max_ts: int):
+    # Permanent offline refusal. No flag or environment variable re-enables network access.
+    raise RuntimeError("OFFLINE_RESEARCH_COPY_NETWORK_DISABLED: funding fetch/backfill is disabled; missing funding must fail explicitly without zero-fill or network download.")
     rows = []
     after = max_ts + H8
     for _ in range(40):
@@ -240,6 +300,9 @@ def fetch_okx_funding(inst: str, min_ts: int, max_ts: int):
     return rows
 
 def backfill_missing_funding(db_path: Path, miss_events):
+    # Permanent offline refusal. No flag or environment variable re-enables network access.
+    # Missing funding fails here, before any zero-fill or download.
+    raise RuntimeError("OFFLINE_RESEARCH_COPY_NETWORK_DISABLED: funding fetch/backfill is disabled; missing funding must fail explicitly without zero-fill or network download.")
     by_inst = {}
     for (_, inst, t30, kind) in miss_events:
         if kind == "miss_8h":
@@ -313,15 +376,19 @@ def summarize_run(res):
 
 def main():
     if ARGS.dry_check:
-        manifest_path = PACK_ROOT / "REPRO_MANIFEST.json"
+        # Explicit target-copy paths only. Relative manifest hashes resolve beside the
+        # manifest file, not from this script's PACK_ROOT / scripts layout.
+        manifest_path = Path(ARGS.manifest)
+        shared_risk_path = Path(ARGS.shared_risk)
+        target_root = manifest_path.parent
         m = json.loads(manifest_path.read_text(encoding="utf-8"))
         mismatches = []
         for rel, info in m["files"].items():
-            fp = PACK_ROOT / rel
+            fp = target_root / rel
             if not fp.exists() or sha(fp) != info["sha256"]:
                 mismatches.append(rel)
         orig_mod = load_orig_module()
-        sr_spec = importlib.util.spec_from_file_location("shared_risk_chk", str(PACK_ROOT / "scripts" / "shared_risk.py"))
+        sr_spec = importlib.util.spec_from_file_location("shared_risk_chk", str(shared_risk_path))
         sr_mod = importlib.util.module_from_spec(sr_spec)
         sr_spec.loader.exec_module(sr_mod)
         assert hasattr(b6mod, "run_audit_sim_b6") and callable(b6mod.run_audit_sim_b6)
@@ -329,7 +396,10 @@ def main():
         assert not mismatches, f"Manifest SHA-256 mismatches: {mismatches}"
         print(json.dumps({
             "dry_check": "PASS",
-            "pack_root": str(PACK_ROOT),
+            "pack_root": str(target_root),
+            "manifest": str(manifest_path),
+            "shared_risk": str(shared_risk_path),
+            "orig_long": str(ORIG_LONG),
             "files_verified": len(m["files"]),
             "mismatches": 0,
             "workspace_in_sys_path": False,
@@ -338,6 +408,7 @@ def main():
             "baseline_SL_PCT": str(orig_mod.SL_PCT),
             "shared_risk_loaded": True,
             "engine_run_audit_sim_b6_ready": True,
+            "path_note": "explicit --manifest/--shared-risk/--orig-long; hashes match the target copy; no PACK_ROOT/scripts default",
         }, ensure_ascii=False, indent=2))
         return
     OUT_DIR.mkdir(parents=True, exist_ok=True)
