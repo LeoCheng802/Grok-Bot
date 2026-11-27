@@ -1,0 +1,180 @@
+{
+  "research_id": "BACKTEST-READINESS-01",
+  "version": "v1.11-batch2-r1",
+  "supersedes": "v1.11-batch2",
+  "defect": "D1",
+  "start_utc": "2026-11-27T23:52:09Z",
+  "end_utc": "2026-11-27T23:55:40Z",
+  "scan": {
+    "delta_v1_11_b2_rows": 198356,
+    "delta_literal_none": 2,
+    "zip_files": 1279,
+    "zip_rows": 174957,
+    "zip_numeric": 174955,
+    "zip_non_numeric": 2,
+    "rest_rows_unfiltered": 104740,
+    "rest_rows_in_range": 39037,
+    "rest_numeric_in_range": 39037,
+    "rest_non_numeric_in_range": 0,
+    "flagged_official_rate_null": 2,
+    "flagged_rows": [
+      {
+        "inst_id": "OL-USDT-SWAP",
+        "month_cst": "2025-10",
+        "funding_time_utc": "2025-10-24T08:00:00.000Z",
+        "funding_rate_raw": "None",
+        "source_file": "../funding_delta_v1_11_b2/official_monthly_zips/OL-USDT-SWAP-fundingrates-2025-10.zip",
+        "zip_sha256": "3e989693d34dee5c55d1fe0985056b021dc0b6378e9742a064270b86487e3d34"
+      },
+      {
+        "inst_id": "ZK-USDT-SWAP",
+        "month_cst": "2024-06",
+        "funding_time_utc": "2024-06-06T08:00:00.000Z",
+        "funding_rate_raw": "None",
+        "source_file": "../funding_delta_v1_11_b2/official_monthly_zips/ZK-USDT-SWAP-fundingrates-2024-06.zip",
+        "zip_sha256": "989a6dcfa7d84b6a47cdaa3a2f07c51f71492a9987922a9edbe3fd2b66341925"
+      }
+    ],
+    "note": "Full scan of the v1.11-b2 delta, all 1,279 official monthly ZIP CSVs, and all REST history rows (chosen rate, in-range and unfiltered). Only two non-numeric values were found, both the literal string None in official ZIP funding_rate fields. No empty, null, or non-numeric REST rates."
+  },
+  "flagged_months": {
+    "OL-USDT-SWAP|2025-10": {
+      "official_zip_rows": 85,
+      "official_rate_null_rows": 1,
+      "zip_file": "../funding_delta_v1_11_b2/official_monthly_zips/OL-USDT-SWAP-fundingrates-2025-10.zip",
+      "zip_sha256": "3e989693d34dee5c55d1fe0985056b021dc0b6378e9742a064270b86487e3d34",
+      "inventory_class_kept": "covered_verified",
+      "inventory_sub_reason": "official_rate_null",
+      "note": "Not every official row in this month was null; numeric official rows remain in the r1 delta. Class stays covered_verified with sub_reason official_rate_null (not plain covered_verified)."
+    },
+    "ZK-USDT-SWAP|2024-06": {
+      "official_zip_rows": 54,
+      "official_rate_null_rows": 1,
+      "zip_file": "../funding_delta_v1_11_b2/official_monthly_zips/ZK-USDT-SWAP-fundingrates-2024-06.zip",
+      "zip_sha256": "989a6dcfa7d84b6a47cdaa3a2f07c51f71492a9987922a9edbe3fd2b66341925",
+      "inventory_class_kept": "covered_verified",
+      "inventory_sub_reason": "official_rate_null",
+      "note": "Not every official row in this month was null; numeric official rows remain in the r1 delta. Class stays covered_verified with sub_reason official_rate_null (not plain covered_verified)."
+    }
+  },
+  "part_a": {
+    "pairs_total": 1279,
+    "official_rows_numeric": 174955,
+    "official_rate_null_excluded": 2,
+    "matched": 5601,
+    "new_rows": 169354,
+    "conflicts": 0,
+    "new_rows_grid": {
+      "8h": 104155,
+      "non_8h": 65199
+    },
+    "zips_not_duplicated": true,
+    "zip_location": "../funding_delta_v1_11_b2/official_monthly_zips/"
+  },
+  "part_b": {
+    "symbols_requested": 286,
+    "fully_covered": 285,
+    "not_fully_covered": 1,
+    "not_fully_covered_symbol": "RVN-USDT-SWAP",
+    "official_rows_in_range_numeric": 39037,
+    "official_rate_null_excluded": 0,
+    "matched": 10037,
+    "new_rows": 29000,
+    "conflicts": 0,
+    "new_rows_grid": {
+      "8h": 16841,
+      "non_8h": 12159
+    },
+    "range_start_utc": "2026-10-31T16:00:00Z",
+    "range_end_utc": "2026-11-26T12:00:00Z",
+    "window_end_unchanged": true,
+    "zero_fill": false,
+    "rest_evidence_limitation": "REST evidence stores parsed JSON (Python json.loads of the HTTP body), not the raw response bytes. This r1 revision does not refetch; the limitation is documented only."
+  },
+  "official_rows_total_numeric": 213992,
+  "official_unique_keys": 213992,
+  "already_matched_existing": 15638,
+  "matched_unchanged_from_v1_11_b2": true,
+  "new_rows": 198354,
+  "new_rows_expected": 198354,
+  "new_rows_grid": {
+    "8h": 120996,
+    "non_8h": 77358
+  },
+  "conflicts": 0,
+  "intra_official_dups": 0,
+  "inventory_r2_class_counts": {
+    "covered_verified": 1364,
+    "pending_check": 5883,
+    "covered_verified_rest": 285,
+    "official_unavailable": 4
+  },
+  "inventory_r2_class_sub_reason": {
+    "covered_verified": 1362,
+    "covered_verified|official_rate_null": 2,
+    "covered_verified_rest": 285,
+    "official_unavailable|404_reason_unknown": 4,
+    "pending_check": 5882,
+    "pending_check|rest_error": 1
+  },
+  "inputs_sha256": {
+    "funding_archive_l1_isolated.sqlite": {
+      "bytes": 74924032,
+      "sha256": "23ebdab561d5fa48ae34394b451d55b97d3e09af4e8a8809eef93422c40783cc"
+    },
+    "funding_delta_missing16_v1_7.csv.gz": {
+      "bytes": 91491,
+      "sha256": "34743db093b5673233693b0bfd4fa020abeb3928f7d4c0c29603c4d4c01311be"
+    },
+    "funding_delta_missing174_v1_9.csv.gz": {
+      "bytes": 3547,
+      "sha256": "01ed8da28efa7038d03369b0b02b78f5777d3f21d95e5a95ca1e26221bb3340e"
+    },
+    "funding_delta_full75plus_v1_10.csv.gz": {
+      "bytes": 158227,
+      "sha256": "4fe33c0efe78f1398b02cb231760d3817b13f985de013e51df9c273dec7c999b"
+    },
+    "funding_delta_5sym_v1_11_b1.csv.gz": {
+      "bytes": 8286,
+      "sha256": "2ab89d43188e38c0b34ea04513d9c199eee2fa7fc5bfac891993db2006d48bbb"
+    },
+    "funding_delta_v1_11_b2.csv.gz": {
+      "bytes": 3035615,
+      "sha256": "2ef8517fc3d70ff098a0ea65c5ad07ffbc0142befa375cf8996ebb8db962d54b"
+    },
+    "funding_month_inventory_v1_11_r1.csv": {
+      "bytes": 751576,
+      "sha256": "3a9ef2b8b8adeb163a4ae6fb197006cc99ffca491141b109a51586e6874b2f3e"
+    }
+  },
+  "files": {
+    "funding_delta_v1_11_b2_r1.csv.gz": {
+      "bytes": 3035583,
+      "sha256": "ac3890c5de16b7254ef3b51afbb9af7826467a3c14fe193ce3a04ddc583d2e86",
+      "rows": 198354,
+      "csv_bytes": 41673917,
+      "csv_sha256": "ba0805e6715a704d247584e721e77ed62bc78524085b97057c47bac95fa1e01c"
+    },
+    "funding_null_rate_rows_v1_11_b2_r1.csv": {
+      "bytes": 821,
+      "sha256": "6bf5e0aa7db67ee718e57cd5fff558a44d480b6c5ea9eca7f8d1d910582af2e8"
+    },
+    "funding_conflicts_v1_11_b2_r1.json": {
+      "bytes": 86,
+      "sha256": "e1c0bc2bccf31826a531bdf56a14c3fde30c7325b1981bef8b24e446d6fb9f78"
+    },
+    "funding_month_inventory_v1_11_r2.csv": {
+      "bytes": 751612,
+      "sha256": "0d8e34a2a1f759086826c025977dfd690af5355a5477183dd8287e2565dfa085"
+    },
+    "build_delta_v1_11_b2_r1_public.py": {
+      "bytes": 65894,
+      "sha256": "160986a542b9fa5a8c04b40ff438fcc5be3ab5b88b4e30d75951a24331bd957d"
+    },
+    "CHANGELOG.md": {
+      "bytes": 2878,
+      "sha256": "b028fa6b261f8518a4ebf66484d83da1f283d42d3e82c3564c6995c52a90936e"
+    }
+  },
+  "rule": "D1 fix: official rates that are not numeric (including the literal string None) are excluded from the delta and listed in funding_null_rate_rows_v1_11_b2_r1.csv with flag official_rate_null. No zero-fill, no interpolation. Not for blind INSERT OR IGNORE. pending_check months were not key-compared except RVN 2026-11, which remains pending_check because official REST returned code 51001 (instrument does not exist). The 85 already-verified official ZIPs were not refetched. FIB-4H-LONG-V3 remains NO-GO; live_approved is false."
+}
