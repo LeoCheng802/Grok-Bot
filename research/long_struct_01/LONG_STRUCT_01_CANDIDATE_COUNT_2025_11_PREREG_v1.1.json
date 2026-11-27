@@ -1,0 +1,289 @@
+{
+  "plan_id": "LONG-STRUCT-01-CANDIDATE-COUNT-2025-11-PREREG",
+  "version": "v1.1",
+  "supersedes": {
+    "version": "v1.0",
+    "sha256": "07e3be90476c8576e43ed9b08313d853e70626d82fe59a8e03087256517c1174",
+    "issue_comment_ref": "Issue #1 #7219740434"
+  },
+  "status": "PROPOSED_NOT_EXECUTED",
+  "created_at_taipei": "2026-11-27 22:00 CST",
+  "window_role": {
+    "classification": "historical_diagnostic_window",
+    "label_zh": "歷史診斷窗",
+    "is_independent_oos": false,
+    "note": "僅作結構候選稀疏度之歷史診斷窗，不稱為獨立樣本外（OOS）驗證。"
+  },
+  "parent_issue_refs": [
+    "Issue #1 #7211588021",
+    "Issue #1 #7219347260",
+    "Issue #1 #7219446770",
+    "Issue #1 #7219740434",
+    "Issue #1 #7219988550"
+  ],
+  "referenced_public_repo_artifacts_no_reupload": {
+    "minimal_repro_fixture_v1_commit_sha": "3cd4fb670eae32c7bc25c78d635d7a1dc8de4051",
+    "funding_archive_v1_commit_sha": "94348bd549b35c1dd9d6f4e91f337c1764d17749"
+  },
+  "prior_2025_10_per_gate_counts_audit": {
+    "status": "未保存",
+    "checked_artifact_name": "wiring_verification_v1_2.json",
+    "checked_artifact_bytes": 3591,
+    "checked_artifact_sha256": "5ebf20a3b19d7467629576c60aba9a3f4edb6f8fab45db2f164879ab2731520f",
+    "saved_aggregate_fields_only": {
+      "baseline_fib_candidates": 242,
+      "long_struct_01_v1_2_candidates": 0,
+      "overlap_bar_symbol_pairs": 0,
+      "only_in_baseline": 242,
+      "pnl_replay_executed": false
+    },
+    "note": "未留存有效暖機棒、掃破、收復／收陽、EMA、RSI 或距離門檻之逐關淘汰計數；依規定不補跑、不補造。"
+  },
+  "rule_lock": {
+    "spec_id": "LONG-STRUCT-01",
+    "spec_version": "v1.2",
+    "prereg_spec_artifact_name": "LONG_STRUCT_01_PREREG_v1.2.json",
+    "prereg_spec_sha256": "b97fd47ad62e4a4b80ba6b103264e9f72a275c954f887fb160de4bce3faa27b9",
+    "isolated_builder_artifact_name": "long_struct_01_v1_2_isolated.py",
+    "isolated_builder_sha256": "4ea731a4f5b62dfa0b435e5a03a028c5c2bb0b190a6076e03442f5856fca073b",
+    "filter_modifications_allowed": false,
+    "parameters_locked": {
+      "lookback_4h_bars": 24,
+      "ema_period_4h": 60,
+      "rsi_period_4h": 14,
+      "rsi_range_inclusive": [
+        55.0,
+        85.0
+      ],
+      "d1_contiguous_gate_days_utc8": 60,
+      "price_ref": "Open_bt",
+      "raw_limit_anchor": "L_ref (min Low of strictly prior 24 closed 4H bars [bt - 25*4H, bt - 4H), never Low_s)"
+    }
+  },
+  "data_version": {
+    "cache_version": "v3.0-public-merged",
+    "cache_data_hash": "91b7ab2f90442e4317a6a7adc3c01148fa3df98c9724abe78d875294d7944cc2",
+    "manifest_bytes": 98451,
+    "manifest_sha256": "b6b4fde6dc84cc26d72258a38e4b6059ca1fe2fa24bea369f9a792e5e36d71b8",
+    "built_at_taipei": "2026-11-26 20:43:13 CST",
+    "source_cutoff_taipei": "2026-11-26 20:00 CST",
+    "universe_order_reference": {
+      "artifact_name": "ex_usdc_286_universe.json",
+      "sha256": "9b417c3c7ebf15f7454cf960ab9f356abdedca120b5201dbe0c4e8f53e0abe69",
+      "matches_manifest_order": true
+    },
+    "fixed_symbol_order": [
+      "ADA-USDT-SWAP",
+      "DOGE-USDT-SWAP",
+      "FIL-USDT-SWAP",
+      "SOL-USDT-SWAP",
+      "XRP-USDT-SWAP"
+    ],
+    "symbol_npz_hashes_and_min_max_precheck_only": {
+      "note": "以下僅為唯讀快取起訖時間預查，不作為暖機足額或無斷裂之判定依據；執行時須逐棒檢核連續性與 close/available_after <= bt。",
+      "ADA-USDT-SWAP": {
+        "bytes": 2687697,
+        "sha256": "50dbea1d85c532a8be05eb3120c89ddadc0e131c8d3ea53764db311ce861f805",
+        "ts4_min_max_utc": [
+          "2020-03-10T12:00:00Z",
+          "2026-11-26T08:00:00Z"
+        ],
+        "d1_min_max_utc": [
+          "2020-03-09T16:00:00Z",
+          "2026-11-24T16:00:00Z"
+        ]
+      },
+      "DOGE-USDT-SWAP": {
+        "bytes": 3038291,
+        "sha256": "fc3fe19ca5100d6b89a04fbd9739ffe9ce6fbdcc05707d1d20f0ed096896380c",
+        "ts4_min_max_utc": [
+          "2020-07-10T04:00:00Z",
+          "2026-11-26T08:00:00Z"
+        ],
+        "d1_min_max_utc": [
+          "2020-07-09T16:00:00Z",
+          "2026-11-24T16:00:00Z"
+        ]
+      },
+      "FIL-USDT-SWAP": {
+        "bytes": 2063284,
+        "sha256": "fff9d783e9009372660d0bc390f8bc014350faa0cbcf04f24f357c7c2f3925eb",
+        "ts4_min_max_utc": [
+          "2020-07-21T12:00:00Z",
+          "2026-11-26T08:00:00Z"
+        ],
+        "d1_min_max_utc": [
+          "2020-07-20T16:00:00Z",
+          "2026-11-24T16:00:00Z"
+        ]
+      },
+      "SOL-USDT-SWAP": {
+        "bytes": 2157572,
+        "sha256": "db424061ff9cb85a056800d2cd5a166445720cafd0aaf3cd03446ea061934d99",
+        "ts4_min_max_utc": [
+          "2021-01-22T08:00:00Z",
+          "2026-11-26T08:00:00Z"
+        ],
+        "d1_min_max_utc": [
+          "2021-01-21T16:00:00Z",
+          "2026-11-24T16:00:00Z"
+        ]
+      },
+      "XRP-USDT-SWAP": {
+        "bytes": 2666140,
+        "sha256": "302840baea2728a84ca68f87c997d40ca486849e76caae3f683755d0c0bd43bf",
+        "ts4_min_max_utc": [
+          "2019-12-31T00:00:00Z",
+          "2026-11-26T08:00:00Z"
+        ],
+        "d1_min_max_utc": [
+          "2019-12-29T16:00:00Z",
+          "2026-11-24T16:00:00Z"
+        ]
+      }
+    }
+  },
+  "decision_signal_and_causality_boundaries_utc": {
+    "decision_window_bt_inclusive_start": "2025-11-01T00:00:00Z",
+    "decision_window_bt_exclusive_end": "2025-12-01T00:00:00Z",
+    "theoretical_decision_points_per_symbol": 180,
+    "theoretical_decision_points_total_5_symbols": 900,
+    "theoretical_vs_verified_note": "900 為理論決策時點數（5 檔 × 180 個 4H 決策點 bt），並非已驗有效棒數；實際有效棒數須待核准執行後由逐棒連續性與暖機檢核產出。",
+    "no_48h_prewindow_spillover": true,
+    "bar_definitions": {
+      "bt": "決策時點（UTC），即當根 4H 決策／下單棒 [bt, bt + 4H) 之開盤時刻；此棒僅讀取 Open_bt，嚴禁讀取其 High/Low/Close。",
+      "signal_bar_s": "剛收盤之 4H 訊號棒 [bt - 4H, bt)，其 open_utc = bt - 4H、close_utc = bt、available_after_utc = bt（滿足 close_utc / available_after_utc <= bt）。",
+      "prior_lookback_24_bars": "24 根更早之已收 4H 棒 [bt - 25*4H, bt - 4H)，皆滿足 close_utc <= bt - 4H < bt。"
+    },
+    "boundary_examples": {
+      "first_decision_point": {
+        "bt_utc": "2025-11-01T00:00:00Z",
+        "signal_bar_s_open_utc": "2025-10-31T20:00:00Z",
+        "signal_bar_s_close_utc": "2025-11-01T00:00:00Z",
+        "signal_bar_s_available_after_utc": "2025-11-01T00:00:00Z",
+        "price_ref_observed": "Open at 2025-11-01T00:00:00Z (no H/L/C of [2025-11-01T00:00:00Z, 04:00:00Z))"
+      },
+      "last_decision_point": {
+        "bt_utc": "2025-11-30T20:00:00Z",
+        "clarification": "2025-11-30T20:00:00Z 是決策點 bt，不是訊號棒 s；該棒 [2025-11-30T20:00:00Z, 2025-12-01T00:00:00Z) 於 2025-12-01T00:00:00Z 才收盤，因此本窗僅使用其 Open_bt，絕不使用其 High/Low/Close。",
+        "signal_bar_s_open_utc": "2025-11-30T16:00:00Z",
+        "signal_bar_s_close_utc": "2025-11-30T20:00:00Z",
+        "signal_bar_s_available_after_utc": "2025-11-30T20:00:00Z",
+        "price_ref_observed": "Open at 2025-11-30T20:00:00Z only"
+      }
+    },
+    "cross_arm_observability_parity": "Baseline FIB_4H_Long_v3 與 LONG-STRUCT-01 v1.2 共用完全相同之 bt 集合、Open_bt 參考價與 close_utc / available_after_utc <= bt 可觀測時點，禁止任何前瞻。"
+  },
+  "warmup_thresholds_and_verification": {
+    "four_hour_warmup": {
+      "hard_min_contiguous_4h_bars": 60,
+      "hard_min_note": "既有實作硬門檻為 max(60, lookback + 1) = 60 根連續已收 4H 棒 [bt - 60*4H, bt)；不足 60 根則該 bt 淘汰不進入有效分母。",
+      "indicator_init_max_contiguous_4h_bars": 180,
+      "indicator_init_note": "既有 indicators_180() 最多往前抓取 180 根連續已收 4H 棒（遇斷裂即止），以前 60 根 SMA 初始化 EMA60 並逐棒遞推（最多 120 步），以 Wilder 14 初始化並遞推 RSI14；不更動既有規則。",
+      "first_bt_hard_min_60_range_utc": [
+        "2025-10-22T00:00:00Z",
+        "2025-11-01T00:00:00Z"
+      ],
+      "first_bt_full_init_180_range_utc": [
+        "2025-10-02T00:00:00Z",
+        "2025-11-01T00:00:00Z"
+      ],
+      "causality_check_required": "每一根納入之 4H 暖機棒均須以 close_utc (= open_utc + 4H) == available_after_utc <= bt 逐棒核對連續性與存在性，不得只憑快取起訖日推定足額。"
+    },
+    "one_day_utc8_warmup": {
+      "hard_min_contiguous_1d_bars_utc8": 60,
+      "day_boundary_formula": "day = (bt + 8H) // 24H * 24H - 8H（UTC+8 00:00 日界）；檢查 day - 1D .. day - 60D 共 60 根已收 UTC+8 日棒全數存在於 d1_set。",
+      "first_bt_2025_11_01T00_00_00Z": {
+        "current_utc8_day_open_utc": "2025-10-31T16:00:00Z",
+        "last_closed_d1_bar_d1": {
+          "open_utc": "2025-10-30T16:00:00Z",
+          "close_and_available_after_utc": "2025-10-31T16:00:00Z",
+          "satisfies_available_after_le_bt": true
+        },
+        "earliest_d1_bar_d60": {
+          "open_utc": "2025-09-01T16:00:00Z",
+          "close_and_available_after_utc": "2025-09-02T16:00:00Z",
+          "satisfies_available_after_le_bt": true
+        }
+      },
+      "last_bt_2025_11_30T20_00_00Z": {
+        "current_utc8_day_open_utc": "2025-11-30T16:00:00Z",
+        "last_closed_d1_bar_d1": {
+          "open_utc": "2025-11-29T16:00:00Z",
+          "close_and_available_after_utc": "2025-11-30T16:00:00Z",
+          "satisfies_available_after_le_bt": true
+        },
+        "earliest_d1_bar_d60": {
+          "open_utc": "2025-10-01T16:00:00Z",
+          "close_and_available_after_utc": "2025-10-02T16:00:00Z",
+          "satisfies_available_after_le_bt": true
+        }
+      },
+      "causality_check_required": "每一根納入之 1D 暖機棒均須驗證 close_utc (= open_utc + 24H) == available_after_utc <= bt 且 60 根無缺漏，不得只憑快取起訖日推定足額或連續。"
+    }
+  },
+  "price_gate_raw_vs_tick_specification": {
+    "gate_6a_raw_distance_gate": {
+      "order": "STRICTLY BEFORE tick alignment",
+      "steps": [
+        "1. Require op = Open_bt > 0.0 (reject reason: op_non_positive).",
+        "2. raw_px = round(L_ref, 4) (Python float round, matching FIB_4H_Long_v3).",
+        "3. dist = (op - raw_px) / op (literal IEEE-754 float; no epsilon, no Decimal).",
+        "4. Require literal float 0.0005 <= dist <= 0.10 (report formatting/rounding NEVER changes inclusion or exclusion)."
+      ]
+    },
+    "gate_6b_tick_placement_and_post_rounding_rejection": {
+      "order": "STRICTLY AFTER gate_6a passes",
+      "steps": [
+        "1. px_d = (Decimal(str(raw_px)) / Decimal(str(tickSz_str))).to_integral_value(rounding=ROUND_DOWN) * Decimal(str(tickSz_str)).",
+        "2. Explicit post-rounding rejection condition in implementation: reject if px_d <= 0 (reject reason: placed_px_non_positive).",
+        "3. Post-tick distance (op - float(px_d)) / op is audit-only and NEVER triggers rejection; candidate ranking key remains -dist using raw dist."
+      ]
+    }
+  },
+  "planned_output_fields": {
+    "granularity": [
+      "per_symbol (in fixed_symbol_order)",
+      "aggregate_5_symbols"
+    ],
+    "denominator_and_continuity_fields": [
+      "theoretical_decision_points (180 per symbol, 900 total)",
+      "present_window_4h_bars",
+      "pass_4h_hard_min_ge_60",
+      "pass_4h_full_init_eq_180",
+      "pass_d1_warmup_60d_causal",
+      "eligible_warmup_bars (pass_4h_hard_min_ge_60 AND pass_d1_warmup_60d_causal; shared denominator for both arms)"
+    ],
+    "sequential_funnel_on_eligible_warmup_bars": [
+      "1_pass_ema60 (Close_s > EMA60)",
+      "2_pass_ema60_and_rsi (55 <= RSI14 <= 85)",
+      "3_pass_sweep (Low_s < L_ref)",
+      "4_pass_reclaim (Close_s > L_ref)",
+      "5_pass_bullish_reclaim (Close_s > Open_s)",
+      "6a_pass_raw_dist_gate (Open_bt > 0 and literal float 0.0005 <= (Open_bt - round(L_ref, 4)) / Open_bt <= 0.10)",
+      "6b_pass_tick_round_down_gt_zero_final_candidates (Decimal ROUND_DOWN to tickSz and px_d > 0)"
+    ],
+    "independent_marginal_counts_on_same_eligible_warmup_bars": [
+      "indep_pass_ema60",
+      "indep_pass_rsi_55_85",
+      "indep_pass_ema60_and_rsi",
+      "indep_pass_sweep",
+      "indep_pass_sweep_and_reclaim",
+      "indep_pass_sweep_reclaim_bullish"
+    ],
+    "same_denominator_baseline_reference": [
+      "baseline_fib_final_candidates",
+      "overlap_bar_symbol_pairs"
+    ],
+    "audit_flags": [
+      "pnl_replay_executed (locked false)",
+      "data_gap_detected (bool + detail list if any 4H/1D bar missing or <180 4H warmup)"
+    ]
+  },
+  "stop_conditions": [
+    "STOP_ON_DATA_GAP: If per-bar verification finds any missing 4H bar in [2025-11-01T00:00:00Z, 2025-12-01T00:00:00Z), any failure of 60-bar hard 4H warmup, any truncation below 180 contiguous 4H bars, or any missing bar in the 60-bar UTC+8 1D causal warmup (close/available_after <= bt), halt immediately and log exact symbol/timestamp gap without refetching, interpolating, or relaxing warmup.",
+    "STOP_ON_ZERO_CANDIDATES: If aggregate 6b_pass_tick_round_down_gt_zero_final_candidates == 0, stop immediately without running any PnL replay, without relaxing EMA/RSI/lookback/distance filters, and without expanding to other symbols or months; report funnel drop-off only.",
+    "NO_AUTO_REPLAY_ON_NONZERO: Even if final candidates > 0, stop after candidate counting and await explicit ChatGPT approval before any 30m PnL replay.",
+    "GLOBAL_RED_LINES: Zero --demo/--live, zero orders/cancels/deployments/live risk changes; archived long, frozen short, and 14-day public forward observation remain untouched; private full scripts and local paths stay off public repo and Issue."
+  ]
+}
