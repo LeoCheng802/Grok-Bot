@@ -2,22 +2,32 @@
 
 這是 Issue #1 最新一筆擁有者回報，供 ChatGPT 優先閱讀。
 
-- **時間（Asia/Taipei）**: 2026-11-28 03:06:20
+- **時間（Asia/Taipei）**: 2026-11-28 03:11:10
 - **角色**: 一般
-- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7226193735
+- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7226274767
 
-<!-- comment_id: 7226193735 -->
+<!-- comment_id: 7226274767 -->
 
-【2026-11-28 03:05 台北時間（UTC+8）】
-[ChatGPT研究交接] BACKTEST-READINESS-01｜回覆 #7226126359：接受文件交付，沿 v1.2 自主開發接續
+【2026-11-28 03:11 台北時間（UTC+8）】
+[復盤] `BACKTEST-READINESS-01 v1.2`｜PR #6 文件／索引維護批與既有資金費 158／128 筆 `miss_8h` 離線四分類對帳獨立驗收（對應 #7226128609、#7226193735）
 
-已實讀 PR #6 固定 head 1547d62349c94ebea801f2061ee9893d949c5c86 的報告與雙索引。本端重算三檔大小/SHA 全吻合：報告 9995／4d97f5becb7faa078d8152bc9b1a5a55c79d2456bde9b66aafa9803c36e2731b；MD 9486／41117371556722ccf0badc604e53e263fc54511827859b1414bf9e7532c53d2b；JSON 37906／96f616c8daa827f18182922a506545a881bc51c440b0279f1ecbf69153bf8860，JSON 可解析。PR 仍 open/draft、未合併。本輪接受交付與新增分支就緒欄位，不等於本端執行或完整回測通過。
+- **角色**：復盤（獨立覆核與彙整）
+- **研究編號與版本**：`BACKTEST-READINESS-01 v1.2`｜[LeoCheng802/Grok-Bot PR #6](https://github.com/LeoCheng802/Grok-Bot/pull/6)（新固定 head `087e2585d2edb4c9172b06bf4671d8033a1c21c8`，接續 `1547d62349c94ebea801f2061ee9893d949c5c86`）
+- **時間與時區**：2026-11-28 03:11 UTC+8
+- **獨立覆核起迄（UTC）**：`2026-11-27T19:10:10Z` → `2026-11-27T19:10:45Z`（既有資金費唯讀對帳起迄：`2026-11-27T19:05:10Z` → `19:05:45Z`）
+- **PR 狀態**：實測 `state = open`、`draft = true`、`merged = false`、`commits = 10`、`changed_files = 14`（`+4012 / -261`）；零 `.py` 變更、零回測執行、維持 Draft 不合併不部署。
 
-本回報與 #7226128609 幾乎同時發布，不能據此認定團隊已收 v1.2。下一項直接沿該則已授權範圍接續：Grok 自主分析、優化及交候選腳本與專屬 adapter；不必等待單一假說批准或資料對帳完成。ChatGPT負責獨立歷史回測；不把歷史執行再派回團隊。
+### 一、PR #6 3 份文件／索引 live raw 獨立驗收（HTTP 200、SHA 吻合、零外洩）
+1. [BACKTEST_READINESS_01_REPORT.md](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/087e2585d2edb4c9172b06bf4671d8033a1c21c8/research/long_struct_01/BACKTEST_READINESS_01_REPORT.md)：`13,422` B，SHA-256 `597f9be0b8f23ef9dcdde7b6131c874ebaf2244595ef66c758b3d58192ebe39d`（已移除 `Private pack only` 與 `Explicitly excluded by #7225707059`；明確區分 v1.1 發布 `18:46:16Z`／房間收件 `18:53Z`／Job 1-2 執行三組時間戳；統一以引擎 `miss_8h` 警示與離線四分類對帳敘述）。
+2. [CANDIDATES.md](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/087e2585d2edb4c9172b06bf4671d8033a1c21c8/CANDIDATES.md)：`11,596` B，SHA-256 `6d35cee27a73e9aab7ccad0e7bb471ea61474594b90b979a46d19e8611e94fb9`（候選／基準檔名已對齊相同固定 blob 連結）。
+3. [CANDIDATES.json](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/087e2585d2edb4c9172b06bf4671d8033a1c21c8/CANDIDATES.json)：`38,291` B，SHA-256 `2efc3de1d38f99860654404f52685a8537d4329debbab7302de09a05b5e8a0e3`（JSON 有效，14 keys，`draft_documents` 已改指固定 `1547d623…` 實體，不再為佔位字串）。
 
-同批維護文件即可，不另開等待關卡：
-- RETEST 完整 SHA 已修正，接受；報告仍有 LONG-STRUCT-01「Private pack only」與已公開固定檔不符，及 02「Explicitly excluded by #7225707059」、舊禁止開發字樣，依 v1.2 更新為保留舊版、允許新版本開發，實際未產生腳本則仍標無腳本。
-- Job 1/2 是團隊留存紀錄，勿寫成 ChatGPT PASS；「before correction」請分發布／實際收件／執行時間，未保存收件則未知。158/128 仍只稱引擎 miss_8h 警示，按 #7226128609 既有資料對帳分類，不先認定真缺費。
-- JSON 的 draft_documents.commit_sha 現為 draft-follow-up-after-… 佔位字串，blob/raw 為 null。下批直接指本次已存在的 1547d623… 固定報告即可；MD 候選檔名同步連 JSON 相同固定 blob。這是可追溯性補正，不阻候選開發或 adapter 交付。
+### 二、既有資金費 158／128 筆引擎 `miss_8h` 警示離線四分類對帳摘要（不新抓 OKX、不補零、不重跑策略）
+對照既有 `L1 DB`、`B6 DB`、`q38 DB` 與 61 個月度分片；標的層涵蓋全部 55／54 標的，事件層就已保存缺口檔（SHA `54037c6f…`）內 50 筆精確時間戳（每組前 25 筆）分類如下：
+1. **存在未接入（其他 DB／61 分片）**：`0 / 50`（55／54 標的皆已在 `L1 DB`，其餘來源亦無此 50 筆缺列）。
+2. **時間映射落差（`ts_raw` vs `ts_snapped`）**：`0 / 50`（核對 `A-USDT-SWAP 2026-10-18T08:00Z` 屬 4H 結算且 `ts_raw == ts_snapped`，係 `04:00Z` 後中斷缺列）。
+3. **有據應收但缺（活躍期內段中斷）**：`49 / 50`（`cross_1tick` `25/25`、`delay1bar` `24/25`，多為數週至數月內段缺口，跨度 `624h–2,188h`）。
+4. **掛牌前後邊界／頻率未知**：`1 / 50`（`delay1bar` 之 `0G-USDT-SWAP 2025-11-24T16:00Z`，早於該標的起始列 `2025-11-30T16:00Z` 6 天）。
 
-完成條件／下一實質回報：可讀候選或 adapter 的固定 commit/SHA、依賴與資料映射、入口命令、變更理由及具體尚缺項；資料組可獨立交既有費率對帳分類。若仍在進行則沿原範圍繼續，毋須另發純確認。本輪未執行腳本或回測；不合併、不部署、不交易，不擴大私有內容公開範圍。
+### 三、下一步
+- 靜待 ChatGPT 審核 PR #6 head `087e2585d2edb4c9172b06bf4671d8033a1c21c8` 與上述資金費對帳分類；`@策略組` 持續依 v1.2 自主開發候選腳本與離線 adapter（不待對帳或單一假說批准，零回測／掃描）。
