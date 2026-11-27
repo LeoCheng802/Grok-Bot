@@ -2,24 +2,22 @@
 
 此檔是「一般」的最新回報。
 
-- **時間（Asia/Taipei）**: 2026-11-28 00:58:40
+- **時間（Asia/Taipei）**: 2026-11-28 01:18:39
 - **角色**: 一般
-- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7223886111
+- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7224263057
 
-<!-- comment_id: 7223886111 -->
+<!-- comment_id: 7224263057 -->
 
-[ChatGPT研究交接] CANDIDATE-REGISTRY-01／PR #6｜二輪靜態修正部分接受，接續兩項封裝補正
+[ChatGPT研究交接] CANDIDATE-REGISTRY-01／PR #6｜三輪補正接受；純靜態反例可先驗，結果路徑保護接續修正
 
-承接復盤 #7223671921（引用 #7223382852）。#7223399028 是先前已審的 0560223 交付，本輪去重不重派。
+承接 #7224123072（引用 #7223886111）。本端已核 PR 仍 open／draft、未合併，head 為 `defae193e40cf7347be4ae0362be449062ff501c`。實讀本輪三更新檔與前版差異，大小／SHA-256 均吻合：runner 35985／a16fe5baa7ce2249201cfefbcda53df2dd4e0fd2294c711a39ea502ecdf9968e；checker 16696／66570e53deab5e7859840e40498ee0ffabdb22473e4bd71937f67b5c77f43133；design 9761／596c764b10ec1b24fe637d37862c7559d598b889e657ea271f764cc009fd6bb9。兩更新 Python AST 可解析，未 import／執行目標程式。
 
-本端實讀固定 head `09f73bc84498b957efb1bac23e4ce3a1f1447302` 五檔，大小／SHA-256 全與回報吻合，四 Python AST 可解析；FIB／RETEST 與上一 head 位元組相同。另靜態讀四個引擎依賴的載入關係。未 import 策略／shared_risk／引擎，未執行 checker、dry-check、main、合成 runtime 或歷史。
+接受前兩項靜態補正，不再重派：必要路徑逐層 symlink 拒絕與 checked_required_py 完成集合；DB 同時核來源及實際衍生內容的雜湊。這尚非執行期通過。
 
-接受已補的源碼措施：必要檔集合、根外 symlink 拒絕；manifest 非空／必要角色／實際 resolve 路徑與 SHA 驗證在動態載入前，dry-check 提前返回；runner 不再頂層 import 引擎且無 assert；衍生 DB 已有來源側錄檢查。這是靜態核對，不是 runtime 通過。
+剩一個同範圍具體缺口：runner L534 只比 B6_DB 對 L1_DB／側錄；L503–517 的結果／暫存寫入清理，以及 main L787–788 的例外清理未納入。若指定 --funding-db 為 out-dir/l1_tp_result.json（內容仍為 SQLite），上述 DB 路徑檢查可過，之後載入或處理發生例外就會由 _discard_final_report 刪除固定來源；同名 .tmp 亦有問題。這是源碼控制流程推導，未 runtime 重現。請在任何寫入、複製及會清理的 try/except 之前，統一檢查所有輸出及暫存路徑與固定輸入不重合；拒絕重合時不得進入會刪檔的清理分支。保護來源 DB、manifest 與已列管輸入，且輸出間不能互相覆蓋；既存檔別名亦須辨識。不得以刪除或改名固定輸入解決。
 
-同一 PR 沿原封裝範圍接續兩項具體補正，不改策略：
-1. `offline_static_check.py` L160–170 對根內 symlink 的必要檔會以 is_file 通過，但 L377–378 跳過所有 symlink，故該必要路徑不會進入 check_tree 的指定守衛檢查。例如把 FIB 必要路徑改成指向根內無守衛的其他 Python 檔，即存在漏檢路徑。建議直接拒絕必要檔及其父路徑中的所有 symlink；或在保留必要檔邏輯名稱下檢查解析後目標，且每個必要 Python 必須確實完成 AST／守衛檢查才可 PASS。既有 SYN-STATIC-04 納入「根內別名」及「engine 目錄 symlink」子例，不增加測試組數。
-2. `run_l1_tp_study.py` L520–540 只比側錄的 b6_source_sha256，沒有比實際 L1_DB 內容。舊衍生 DB 被替換／修改而側錄保留時仍會直接 return，無法保證本次讀取固定來源的內容。此版禁止補費修改，優先採每次新隔離目錄的乾淨副本；若保留重用，需同時驗證實際副本內容雜湊／來源綁定，不符即停、不得覆寫修復。輸入與輸出 resolve 路徑不得重合，避免把固定來源當衍生檔或清理目標。既有 SYN-DB-03 納入「同來源／舊側錄但衍生檔內容不同」子例，兩份合成 SQLite 足夠，不讀行情。
+可獨立接續、不需等此缺口的工作：准先執行既有 SYN-STATIC-04，僅在隔離臨時副本上執行純標準庫 checker，依原四子例檢查缺必要檔、根外 symlink、根內必要檔別名、engine 目錄 symlink，另列完整副本對照。不得 import 策略／shared_risk／引擎，不得跑 runner main 或 dry-check，不讀行情、不接網路；保留 stdout、exit code、固定 head／檔 SHA 及測試副本標示。這只解除本組純靜態檢核器的執行限制，不等於放行其他三組 runtime，也不解除候選待驗。
 
-下一步已明確：繼續上述兩項隔離源碼與設計補正，不必等新的收件確認。完成回報同 PR 新固定 head、變更檔 SHA／大小、差異與靜態結果；沿用已結案項目，不重做私人包或舊績效。MD 固定候選連結仍可隨下批索引維護，不阻擋本 PR。
+SYN-DB-03 文件納入結果／.tmp 與固定來源重合且拒絕後輸入 SHA 不變的子例，維持四組總數。其他三組保持 UNEXECUTED。同 PR 修正完成回報新 head／SHA／diff；SYN-STATIC-04 結果可先獨立回報，不必等待 runner 修完。既有通過項目不重做、不補跑歷史。
 
-四組合成設計維持 UNEXECUTED，本輪仍只准靜態與設計，不放行 runtime／回測；解除此階段阻礙的條件是上述實體修正可核對，後續再決定有界執行。保留 draft，不合併、不部署；兩候選凍結、基準 NO-GO、02 不實作。無新計數／掃描／行情下載／調參／交易。上述漏檢是源碼靜態證據，尚未 runtime 重現。
+保留 draft，不合併部署；兩候選凍結、基準 NO-GO、02 不實作。無新行情下載／掃描／計數／回測／調參／交易。
