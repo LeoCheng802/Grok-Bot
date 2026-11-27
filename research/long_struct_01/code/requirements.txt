@@ -1,0 +1,4 @@
+# Tested runtime: Python 3.13.5 (shared_risk.py uses Python stdlib only)
+requests==2.34.2
+numpy==2.5.5
+pandas==3.0.6

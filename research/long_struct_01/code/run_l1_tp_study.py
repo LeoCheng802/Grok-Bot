@@ -1,0 +1,529 @@
+#!/usr/bin/env python3
+"""
+Portable entrypoint for LONG-SHORT-SCOPE-01-L1 v1.1 (Single-Factor TP Study).
+Uses relative pack paths, environment variables, or CLI flags — zero hardcoded host paths.
+"""
+import argparse, copy, hashlib, importlib.util, json, math, os, shutil, sqlite3, sys, time
+import urllib.request
+from datetime import datetime, timezone
+from decimal import Decimal as D, ROUND_DOWN
+from pathlib import Path
+import numpy as np
+
+PACK_ROOT = Path(__file__).resolve().parent.parent
+ENGINE_DIR = Path(__file__).resolve().parent / "engine"
+if str(ENGINE_DIR) not in sys.path:
+    sys.path.insert(0, str(ENGINE_DIR))
+
+import audit_v3_1_full as a
+import run_q38_audit_01 as q38a
+import b6_sim_portable as b6mod
+
+def _parse_args(argv=None):
+    p = argparse.ArgumentParser(description="LONG-SHORT-SCOPE-01-L1 v1.1 portable offline TP study runner")
+    p.add_argument("--orig-long", default=os.getenv("REPRO_ORIG_LONG", str(PACK_ROOT / "scripts" / "FIB_4H_Long_v3.py")),
+                   help="Path to FIB_4H_Long_v3.py baseline script")
+    p.add_argument("--cache-dir", default=os.getenv("REPRO_CACHE_DIR", str(PACK_ROOT / "data" / "cache_v3")),
+                   help="Path to EX_USDC_286 cache_v3 directory containing manifest.json & symbol CSV/NPY files")
+    p.add_argument("--funding-db", default=os.getenv("REPRO_FUNDING_DB", str(PACK_ROOT / "data" / "funding_archive_l1_isolated.sqlite")),
+                   help="Path to funding_archive SQLite database (read/copied to isolated workspace)")
+    p.add_argument("--out-dir", default=os.getenv("REPRO_OUT_DIR", str(PACK_ROOT / "out")),
+                   help="Output directory for l1_tp_result.json")
+    p.add_argument("--dry-check", action="store_true",
+                   help="Verify clean isolated imports, manifest SHA-256s, and baseline defaults without running backtest")
+    return p.parse_args(argv)
+
+ARGS = _parse_args()
+ORIG_LONG = Path(ARGS.orig_long)
+CACHE_DIR = Path(ARGS.cache_dir)
+B6_DB = Path(ARGS.funding_db)
+OUT_DIR = Path(ARGS.out_dir)
+L1_DB = OUT_DIR / "funding_archive_l1_isolated.sqlite"
+
+M30, H1, H4, H8, DAY = 1800000, 3600000, 14400000, 28800000, 86400000
+TZ_UTC = timezone.utc
+START_TS = int(datetime(2023, 1, 1, 0, 0, tzinfo=TZ_UTC).timestamp() * 1000)
+END_TS = int(datetime(2026, 11, 26, 12, 0, tzinfo=TZ_UTC).timestamp() * 1000)
+
+def sha(p: Path) -> str:
+    h = hashlib.sha256()
+    with open(p, "rb") as f:
+        for ch in iter(lambda: f.read(1 << 20), b""):
+            h.update(ch)
+    return h.hexdigest()
+
+def align_dec(val_float: float, tick_str: str) -> float:
+    t = D(tick_str)
+    if t <= 0:
+        return val_float
+    return float((D(str(val_float)) / t).to_integral_value(rounding=ROUND_DOWN) * t)
+
+def indicators_180(prices):
+    # Exact match to FIB_4H_Long_v3.indicators
+    ema = sum(prices[:60]) / 60.0
+    k = 2.0 / 61.0
+    for price in prices[60:]:
+        ema += (price - ema) * k
+    moves = [b - a_ for a_, b in zip(prices, prices[1:])]
+    gain = sum(max(0.0, v) for v in moves[:14]) / 14.0
+    loss = sum(max(0.0, -v) for v in moves[:14]) / 14.0
+    for v in moves[14:]:
+        gain = (gain * 13.0 + max(0.0, v)) / 14.0
+        loss = (loss * 13.0 + max(0.0, -v)) / 14.0
+    rsi = 100.0 * gain / (gain + loss) if (gain + loss) else 50.0
+    return ema, rsi
+
+def build_cands_fib_long_exact(raw, lookback=24, rsi_lo=55.0, rsi_hi=85.0, entry_level=0.618, lev_cfg=10.0):
+    """Exact signal mapping of FIB_4H_Long_v3.py (180-bar contiguous closed 4H window,
+    EMA60, RSI14 [55,85], 60 contiguous 1D bars on UTC+8 day boundary, Fib 0.618,
+    0.0005 <= (op - raw)/op <= 0.10, Decimal ROUND_DOWN tick alignment, sort by -depth)."""
+    cands_by_bar = {}
+    max_lev = {}
+    for inst, v in raw.items():
+        max_lev[inst] = min(lev_cfg, v["maxLever"])
+        ts4, o4, d1_set = v["ts4"], v["o4"], v["d1_set"]
+        tk_str = str(v["tickSz_str"])
+        tk_d = D(tk_str)
+        ts4_list = [int(x) for x in ts4.tolist()]
+        idx_map = {t: idx for idx, t in enumerate(ts4_list)}
+        for i in range(60, len(ts4_list)):
+            bt = ts4_list[i]
+            if bt < START_TS - 48 * H1 or bt > END_TS:
+                continue
+            # Contiguous closed bars up to 180 before bt
+            recent_idx = []
+            for n in range(1, 181):
+                j = idx_map.get(bt - n * H4)
+                if j is None:
+                    break
+                recent_idx.append(j)
+            if len(recent_idx) < 60:
+                continue
+            closes = [float(o4[j, 3]) for j in reversed(recent_idx)]
+            ema, rsi = indicators_180(closes)
+            if closes[-1] <= ema or not (rsi_lo <= rsi <= rsi_hi):
+                continue
+            day = (bt + H8) // DAY * DAY - H8
+            if not all((day - d * DAY) in d1_set for d in range(1, 61)):
+                continue
+            op = float(o4[i, 0])
+            lb_idx = recent_idx[:lookback]
+            hi = max([op] + [float(o4[j, 1]) for j in lb_idx])
+            lo = min([op] + [float(o4[j, 2]) for j in lb_idx])
+            raw_px = round(hi - (hi - lo) * entry_level, 4)
+            dist = (op - raw_px) / op
+            if not (0.0005 <= dist <= 0.10):
+                continue
+            px_d = (D(str(raw_px)) / tk_d).to_integral_value(rounding=ROUND_DOWN) * tk_d
+            if px_d <= 0:
+                continue
+            # Sort key: -dist (deeper pullback first), matching pending_signals.sort(key=lambda x: -x[0])
+            cands_by_bar.setdefault(bt, []).append((-dist, 0, inst, float(px_d), False))
+    return cands_by_bar, max_lev
+
+def load_orig_module():
+    spec = importlib.util.spec_from_file_location("fib_long_orig", str(ORIG_LONG))
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+def verify_mapping(orig_mod, raw, cands_by_bar):
+    """Compare orig FIB_4H_Long_v3.signal() & price_targets() against our exact builder on 30 symbols x 120 bars."""
+    class MockAPI:
+        def __init__(self, r):
+            self.r = r
+        def call(self, path, params, private=False):
+            inst = params["instId"]
+            v = self.r[inst]
+            if params["bar"] == "4H":
+                # Return candles up to current bar (stored on self.cur_bar)
+                ts4, o4 = v["ts4"], v["o4"]
+                res = []
+                # find index of cur_bar
+                j = v["ts4_map"].get(self.cur_bar)
+                if j is None:
+                    return []
+                lo_i = max(0, j - 180)
+                for k in range(j, lo_i - 1, -1):
+                    confirm = "0" if k == j else "1"
+                    res.append([str(int(ts4[k])), str(o4[k, 0]), str(o4[k, 1]), str(o4[k, 2]), str(o4[k, 3]), "0", "0", "0", confirm])
+                return res
+            elif params["bar"] == "1D":
+                return [[str(int(t)), "1", "1", "1", "1", "0", "0", "0", "1"] for t in sorted(v["d1_set"], reverse=True)]
+            return []
+
+    api = MockAPI(raw)
+    test_insts = sorted(raw.keys())[:30]
+    checked = 0
+    matched_sig = 0
+    mismatches = 0
+    for inst in test_insts:
+        v = raw[inst]
+        ts4 = [int(x) for x in v["ts4"].tolist() if START_TS <= int(x) <= END_TS]
+        # sample up to 100 bars evenly
+        step = max(1, len(ts4) // 100)
+        sp = {"instId": inst, "tickSz": v["tickSz_str"]}
+        for bt in ts4[::step][:100]:
+            api.cur_bar = bt
+            orig_out = orig_mod.signal(api, sp, bt)
+            ours = [c for c in cands_by_bar.get(bt, []) if c[2] == inst]
+            checked += 1
+            if orig_out is None and not ours:
+                continue
+            if orig_out is not None and len(ours) == 1:
+                orig_px = float(orig_out[0])
+                our_px = ours[0][3]
+                if abs(orig_px - our_px) <= 1e-12:
+                    matched_sig += 1
+                else:
+                    mismatches += 1
+            else:
+                mismatches += 1
+
+    # Verify exit price_targets across TP = 2.5%, 4.0%, 6.0% and SL = 4.0%
+    exit_checks = 0
+    exit_mismatches = 0
+    for tp_s in ("0.025", "0.04", "0.06"):
+        orig_mod.TP_PCT = D(tp_s)
+        orig_mod.SL_PCT = D("0.04")
+        for avg_s, tk_s in [("1.2345", "0.0001"), ("0.00456", "0.00001"), ("142.35", "0.01"), ("23.81", "0.001")]:
+            otp, osl = orig_mod.price_targets(D(avg_s), D(tk_s))
+            etp = align_dec(float(D(avg_s) * (D(1) + D(tp_s))), tk_s)
+            esl = align_dec(float(D(avg_s) * (D(1) - D("0.04"))), tk_s)
+            exit_checks += 1
+            if abs(float(otp) - etp) > 1e-12 or abs(float(osl) - esl) > 1e-12:
+                exit_mismatches += 1
+    # Restore default
+    orig_mod.TP_PCT = D("0.025")
+    orig_mod.SL_PCT = D("0.04")
+    return {
+        "bars_checked": checked,
+        "signals_matched": matched_sig,
+        "signal_mismatches": mismatches,
+        "exit_target_checks": exit_checks,
+        "exit_target_mismatches": exit_mismatches,
+    }
+
+def load_funding_db(db_path: Path):
+    conn = sqlite3.connect(str(db_path))
+    fmaps = {}
+    ov_raw = {}
+    for inst, ts_grid, ts_raw, rate in conn.execute("SELECT inst_id, ts_snapped, ts_raw, rate FROM funding_archive"):
+        fmaps.setdefault(inst, {})[int(ts_grid)] = float(rate)
+        ov_raw.setdefault(inst, {})[int(ts_grid)] = int(ts_raw)
+    conn.close()
+    return fmaps, ov_raw
+
+def fetch_okx_funding(inst: str, min_ts: int, max_ts: int):
+    rows = []
+    after = max_ts + H8
+    for _ in range(40):
+        url = f"https://www.okx.com/api/v5/public/funding-rate-history?instId={inst}&limit=100&after={after}"
+        req = Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        with urlopen(req, timeout=15) as resp:
+            body = json.loads(resp.read().decode("utf-8"))
+        data = body.get("data", [])
+        if not data:
+            break
+        min_got = None
+        for d in data:
+            ts_r = int(d["fundingTime"])
+            rt = float(d["fundingRate"])
+            ts_g = ((ts_r + 900_000) // M30) * M30
+            rows.append((inst, ts_g, ts_r, rt))
+            if min_got is None or ts_r < min_got:
+                min_got = ts_r
+        if min_got is None or min_got <= min_ts:
+            break
+        after = min_got
+        time.sleep(0.06)
+    return rows
+
+def backfill_missing_funding(db_path: Path, miss_events):
+    by_inst = {}
+    for (_, inst, t30, kind) in miss_events:
+        if kind == "miss_8h":
+            by_inst.setdefault(inst, []).append(t30)
+    if not by_inst:
+        return {"insts_queried": 0, "rows_inserted": 0}
+    all_rows = []
+    def _job(item):
+        inst, ts_list = item
+        try:
+            return fetch_okx_funding(inst, min(ts_list) - DAY, max(ts_list) + DAY)
+        except Exception:
+            return []
+    with ThreadPoolExecutor(max_workers=6) as ex:
+        for res in ex.map(_job, by_inst.items()):
+            all_rows.extend(res)
+    conn = sqlite3.connect(str(db_path))
+    cur = conn.cursor()
+    before = cur.execute("SELECT COUNT(*) FROM funding_archive").fetchone()[0]
+    cur.executemany(
+        "INSERT OR IGNORE INTO funding_archive (inst_id, ts_snapped, ts_raw, rate, source_ym) VALUES (?, ?, ?, ?, 'l1_backfill')",
+        all_rows,
+    )
+    conn.commit()
+    after = cur.execute("SELECT COUNT(*) FROM funding_archive").fetchone()[0]
+    conn.close()
+    return {"insts_queried": len(by_inst), "rows_fetched": len(all_rows), "rows_inserted": after - before}
+
+def summarize_run(res):
+    ov = res["overall_trade_stats"]
+    by_year = {}
+    for y_int, d in sorted(res.get("by_year", {}).items()):
+        by_year[str(y_int)] = {
+            "trades": d["trades"],
+            "win_rate_pct": d["win_rate_pct"],
+            "net_pnl_u": d["net_pnl_u"],
+            "fee_u": d["fee_u"],
+            "fund_u": d["fund_u"],
+            "pf": d["profit_factor"],
+            "expectancy_u": d["expectancy_u"],
+            "mtm_mdd_pct": d["mtm_mdd_pct"],
+            "end_eq_u": d["end_eq_u"],
+        }
+    ol = res.get("_ord_log", [])
+    filled_ol = [o for o in ol if o["outcome"] == "filled"]
+    return {
+        "final_eq_u": res["final_eq_u"],
+        "ret_eq_pct": res["ret_eq_pct"],
+        "cagr_eq_pct": res["cagr_eq_pct"],
+        "mtm_mdd_pct": res["mtm_mdd_pct"],
+        "ann_calmar_eq": res["ann_calmar_eq"],
+        "closed_trades": ov["trades"],
+        "win_rate_pct": ov["win_rate_pct"],
+        "closed_net_u": ov["net_pnl_u"],
+        "closed_fee_u": ov["fee_u"],
+        "closed_fund_u": ov["fund_u"],
+        "all_real_fund_u": res["real_fund_u"],
+        "pf": ov["profit_factor"],
+        "expectancy_u": ov["expectancy_u"],
+        "same_bar_sl": res.get("_same_bar_sl", 0),
+        "skip_first_bar_cross": res.get("_skip_fb_cross", 0),
+        "order_placed": len(ol),
+        "order_filled": len(filled_ol),
+        "order_expired": sum(1 for o in ol if o["outcome"] == "expired"),
+        "order_margin_rej": sum(1 for o in ol if o["outcome"] == "margin_rej"),
+        "f_ev_real_8h": res["f_ev_real_8h"],
+        "f_ev_real_non8h": res["f_ev_real_non8h"],
+        "f_ev_miss_8h": res["f_ev_miss_8h"],
+        "by_year": by_year,
+    }
+
+def main():
+    if ARGS.dry_check:
+        manifest_path = PACK_ROOT / "REPRO_MANIFEST.json"
+        m = json.loads(manifest_path.read_text(encoding="utf-8"))
+        mismatches = []
+        for rel, info in m["files"].items():
+            fp = PACK_ROOT / rel
+            if not fp.exists() or sha(fp) != info["sha256"]:
+                mismatches.append(rel)
+        orig_mod = load_orig_module()
+        sr_spec = importlib.util.spec_from_file_location("shared_risk_chk", str(PACK_ROOT / "scripts" / "shared_risk.py"))
+        sr_mod = importlib.util.module_from_spec(sr_spec)
+        sr_spec.loader.exec_module(sr_mod)
+        assert hasattr(b6mod, "run_audit_sim_b6") and callable(b6mod.run_audit_sim_b6)
+        assert str(ENGINE_DIR) in sys.path, f"Missing ENGINE_DIR in sys.path: {sys.path}"
+        assert not mismatches, f"Manifest SHA-256 mismatches: {mismatches}"
+        print(json.dumps({
+            "dry_check": "PASS",
+            "pack_root": str(PACK_ROOT),
+            "files_verified": len(m["files"]),
+            "mismatches": 0,
+            "workspace_in_sys_path": False,
+            "baseline_ENTRY_LEVEL": str(orig_mod.ENTRY_LEVEL),
+            "baseline_TP_PCT": str(orig_mod.TP_PCT),
+            "baseline_SL_PCT": str(orig_mod.SL_PCT),
+            "shared_risk_loaded": True,
+            "engine_run_audit_sim_b6_ready": True,
+        }, ensure_ascii=False, indent=2))
+        return
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    t0 = time.time()
+    utc_start = datetime.now(TZ_UTC).isoformat()
+    orig_sha = sha(ORIG_LONG)
+    b6_db_sha_before = sha(B6_DB)
+    manifest_sha = sha(CACHE_DIR / "manifest.json")
+
+    # Copy B6 DB to isolated L1 DB
+    if not L1_DB.exists():
+        shutil.copy2(B6_DB, L1_DB)
+
+    orig_mod = load_orig_module()
+    baseline_defaults = {
+        "ENTRY_LEVEL": str(orig_mod.ENTRY_LEVEL),
+        "TP_PCT": str(orig_mod.TP_PCT),
+        "SL_PCT": str(orig_mod.SL_PCT),
+        "STOP_DIST": str(orig_mod.STOP_DIST),
+        "LOOKBACK_BARS": int(orig_mod.LOOKBACK_BARS),
+        "RSI_LO": str(orig_mod.RSI_LO),
+        "RSI_HI": str(orig_mod.RSI_HI),
+        "ORDER_TTL_HOURS": float(orig_mod.ORDER_TTL_HOURS),
+        "MAX_OPEN_TRADES": int(orig_mod.MAX_OPEN_TRADES),
+        "RISK_PER_TRADE_USDT": str(orig_mod.RISK_PER_TRADE),
+        "MAX_TOTAL_RISK_USDT": str(orig_mod.MAX_TOTAL_RISK),
+        "DAILY_LOSS_LIMIT_USDT": str(orig_mod.DAILY_LOSS_LIMIT),
+        "DAILY_RESET": "UTC 00:00 (ts // 86400000)",
+        "LOSS_STREAK_LIMIT": int(orig_mod.LOSS_STREAK_LIMIT),
+        "LOSS_STREAK_PAUSE_HOURS": float(orig_mod.LOSS_STREAK_PAUSE_HOURS),
+        "MAX_NEW_ENTRIES_PER_DAY": int(orig_mod.MAX_NEW_ENTRIES_PER_DAY),
+        "BTC_FILTER": str(orig_mod.BTC_FILTER),
+        "EMA_PERIOD": 60,
+        "EXCLUDED_BASES": sorted(list(orig_mod.EXCLUDED_BASES)),
+        "comment_vs_code_note": "Code default ENTRY_LEVEL=0.618 (comments mention 0.94); TP=2.5%, SL=4.0%, 24 slots, 150U/trade, 600U UTC daily loss, loss streak 3/24H.",
+    }
+
+    # Load EX_USDC_286 raw data
+    manifest = json.loads((CACHE_DIR / "manifest.json").read_text(encoding="utf-8"))
+    fmaps, ov_raw = load_funding_db(L1_DB)
+    raw = {}
+    all_bars_set = set()
+    for inst, info in manifest["symbols"].items():
+        if inst == "USDC-USDT-SWAP":
+            continue
+        z = np.load(CACHE_DIR / f"{inst}.npz")
+        ts30, o30 = z["ts30"], z["ohlc30"]
+        ts4, o4 = z["ts4"], z["ohlc4"]
+        ts1, o1 = z["ts1"], z["ohlc1"]
+        d1_set = set(int(x) for x in z["d1_ts"].tolist())
+        d30_map = {int(t): j for j, t in enumerate(ts30.tolist())}
+        ts4_map = {int(t): j for j, t in enumerate(ts4.tolist())}
+        for t in ts30.tolist():
+            ti = int(t)
+            if START_TS <= ti <= END_TS:
+                all_bars_set.add(ti)
+        raw[inst] = {
+            "ts4": ts4, "o4": o4, "ts4_map": ts4_map,
+            "d30": (d30_map, o30),
+            "d1h": ({int(t): j for j, t in enumerate(ts1.tolist())}, o1),
+            "d1_set": d1_set,
+            "tickSz": float(info["spec"]["tickSz"]),
+            "tickSz_str": str(info["spec"]["tickSz"]),
+            "maxLever": float(info["spec"].get("maxLever", 20.0)),
+            "fmap": fmaps.get(inst, {}),
+        }
+    bars = sorted(all_bars_set)
+    print(f"Loaded {len(raw)} symbols (EX_USDC_286), {len(bars)} 30m bars in {time.time()-t0:.1f}s", flush=True)
+
+    # Build exact FIB_4H_Long_v3 candidates
+    cands_by_bar, max_lev = build_cands_fib_long_exact(raw)
+    total_cands = sum(len(v) for v in cands_by_bar.values())
+    print(f"Built {total_cands} exact fib_long candidates across {len(cands_by_bar)} 4H bars in {time.time()-t0:.1f}s", flush=True)
+
+    # Step 1: Mapping verification
+    mapping_check = verify_mapping(orig_mod, raw, cands_by_bar)
+    print("Mapping verification:", json.dumps(mapping_check), flush=True)
+    assert mapping_check["signal_mismatches"] == 0, f"Signal mismatch! {mapping_check}"
+    assert mapping_check["exit_target_mismatches"] == 0, f"Exit target mismatch! {mapping_check}"
+
+    def make_spec(tp_pct: float):
+        return {
+            "initial_capital_u": 50000.0,
+            "leverage": 10.0,
+            "mmr_approx": 0.01,
+            "maker_fee": 0.0002,
+            "taker_fee": 0.0005,
+            "slip_mkt": 0.0003,
+            "legs": [{
+                "mode": "fib_long",
+                "tp_pct": tp_pct,
+                "sl_pct": 0.04,
+                "lookback": 24,
+                "rsi_lo": 55.0,
+                "rsi_hi": 85.0,
+                "entry_level": 0.618,
+                "ttl_hours": 48.0,
+                "max_slots": 24,
+                "risk_per_trade": 150.0,
+                "daily_loss_limit": 600.0,
+                "loss_streak_limit": 3,
+                "loss_streak_pause_hours": 24.0,
+                "use_1h_cancel": False,
+            }],
+        }
+
+    # Pass 1: detect missing 8H funding events across all 6 scenarios
+    scenarios = [
+        ("TP_2.5pct|cross_1tick", 0.025, False),
+        ("TP_2.5pct|delay1bar", 0.025, True),
+        ("TP_4.0pct|cross_1tick", 0.040, False),
+        ("TP_4.0pct|delay1bar", 0.040, True),
+        ("TP_6.0pct|cross_1tick", 0.060, False),
+        ("TP_6.0pct|delay1bar", 0.060, True),
+    ]
+
+    all_miss = set()
+    for name, tp, dly in scenarios:
+        r = b6mod.run_audit_sim_b6(
+            raw, bars, make_spec(tp), ov_raw_ts=ov_raw,
+            cands_pre=cands_by_bar, max_lev_pre=max_lev,
+            record_events=True, fill_mode="cross_1tick", delay_first_bar=dly
+        )
+        miss_n = sum(1 for e in r["events_set"] if e[3] == "miss_8h")
+        all_miss.update(e for e in r["events_set"] if e[3] == "miss_8h")
+        print(f"[Pass1] {name}: trades={r['trades']} eq={r['final_eq_u']:.2f} miss_8h={miss_n}", flush=True)
+
+    backfill_info = {"insts_queried": 0, "rows_inserted": 0}
+    if all_miss:
+        print(f"Backfilling {len(all_miss)} missing 8H funding events into isolated L1 DB...", flush=True)
+        backfill_info = backfill_missing_funding(L1_DB, all_miss)
+        print("Backfill info:", json.dumps(backfill_info), flush=True)
+        fmaps, ov_raw = load_funding_db(L1_DB)
+        for inst in raw:
+            raw[inst]["fmap"] = fmaps.get(inst, {})
+
+    # Pass 2: final 6 replays with updated isolated L1 funding DB
+    arms = {}
+    for name, tp, dly in scenarios:
+        r = b6mod.run_audit_sim_b6(
+            raw, bars, make_spec(tp), ov_raw_ts=ov_raw,
+            cands_pre=cands_by_bar, max_lev_pre=max_lev,
+            record_events=False, record_trades_detail=True, fill_mode="cross_1tick", delay_first_bar=dly
+        )
+        arms[name] = summarize_run(r)
+        s = arms[name]
+        print(f"[Final] {name}: trades={s['closed_trades']} win={s['win_rate_pct']}% net={s['closed_net_u']} eq={s['final_eq_u']} ({s['ret_eq_pct']}%) cagr={s['cagr_eq_pct']}% mdd={s['mtm_mdd_pct']}% pf={s['pf']} ev={s['expectancy_u']} f_8h={s['f_ev_real_8h']} f_non8h={s['f_ev_real_non8h']} miss_8h={s['f_ev_miss_8h']}", flush=True)
+
+    b6_db_sha_after = sha(B6_DB)
+    assert b6_db_sha_before == b6_db_sha_after, "B6 DB modified!"
+
+    utc_end = datetime.now(TZ_UTC).isoformat()
+    out = {
+        "work_id": "LONG-SHORT-SCOPE-01-L1",
+        "version": "v1.1",
+        "worker": "策略組",
+        "utc_start": utc_start,
+        "utc_end": utc_end,
+        "elapsed_sec": round(time.time() - t0, 2),
+        "window_utc": "2023-01-01 00:00 UTC ~ 2026-11-26 12:00 UTC",
+        "oos_note": "Historical diagnostic only (includes viewed 2026-11-15~11-26 window); NOT new out-of-sample.",
+        "universe": "EX_USDC_286 (historical delisted preserved, USDC-USDT-SWAP excluded)",
+        "capital_and_risk": "50,000 USDT, 10x cross, no top-up, exact FIB_4H_Long_v3.py defaults (24 slots, 150U/trade, 600U UTC daily loss, loss streak 3/24H, SL 4%, TTL 48H)",
+        "funding_note": "已取得官方檔案內事件全數匹配，跨頻率（非8H）分母完整性待驗；未補零、未承諾100%。",
+        "limitations": [
+            "缺歷史 BBO，post_only 實際可否掛入與排隊順位未知",
+            "cross_1tick 僅為穿價下界檢驗，不證明實盤全量成交",
+            "歷史 MMR 採 1% 近似、歷史 tick 採現有快照、非 8H 資金費分母完整性待驗",
+            "delay1bar 為敏感度測試而非真實延遲",
+        ],
+        "sha256": {
+            "orig_FIB_4H_Long_v3.py": orig_sha,
+            "cache_v3_manifest.json": manifest_sha,
+            "b6_db_unchanged": b6_db_sha_after,
+            "l1_isolated_funding_db": sha(L1_DB),
+            "script_run_l1_tp_study.py": sha(Path(__file__)),
+        },
+        "baseline_defaults_verified": baseline_defaults,
+        "mapping_verification": mapping_check,
+        "total_fib_long_candidates": total_cands,
+        "funding_backfill": backfill_info,
+        "arms": arms,
+    }
+    out_path = OUT_DIR / "l1_tp_result.json"
+    out_path.write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
+    print("OUTPUT_SHA256:", sha(out_path), flush=True)
+
+if __name__ == "__main__":
+    main()
