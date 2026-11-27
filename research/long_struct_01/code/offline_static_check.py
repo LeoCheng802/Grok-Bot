@@ -15,6 +15,30 @@ import re
 from pathlib import Path
 
 DECLARED_IMPORTS = ("ast", "hashlib", "json", "pathlib", "re")
+REQUIRED_FILES = (
+    "FIB_4H_Long_v3.py",
+    "RETEST24_R1_R2_Switchable_v1_5_auditfix.py",
+    "run_l1_tp_study.py",
+    "offline_static_check.py",
+    "engine/b6_sim_portable.py",
+    "engine/sim_50k_v3_2_sl_fix.py",
+    "engine/audit_v3_1_full.py",
+    "engine/run_q38_audit_01.py",
+    "requirements.txt",
+)
+FORBIDDEN_TOP_LEVEL_IMPORTS = {
+    "FIB_4H_Long_v3",
+    "audit_v3_1_full",
+    "b6_sim_portable",
+    "run_q38_audit_01",
+    "shared_risk",
+    "sim_50k_v3_2_sl_fix",
+}
+DEFERRED_LOADERS = {
+    "_load_registered_module",
+    "_load_runtime_modules",
+    "load_orig_module",
+}
 GUARD_PREFIX = "OFFLINE_RESEARCH_COPY_NETWORK_DISABLED"
 
 FIB_MSG = (
@@ -95,13 +119,57 @@ def host_patterns():
     )
 
 
-def iter_files(root):
-    for path in root.rglob("*"):
+def symlink_escapes(root, path):
+    """True when a symlink is broken or its target is outside root."""
+    if not path.is_symlink():
+        return False
+    root_real = root.resolve()
+    try:
+        target = path.resolve(strict=True)
+    except OSError:
+        return True
+    try:
+        target.relative_to(root_real)
+    except ValueError:
+        return True
+    return False
+
+
+def iter_tree(root):
+    """Yield files and symlinks. Do not descend through symlinked directories."""
+    found = []
+    stack = [root]
+    while stack:
+        current = stack.pop()
+        try:
+            children = list(current.iterdir())
+        except OSError:
+            continue
+        for child in children:
+            if "__pycache__" in child.parts or child.suffix == ".pyc":
+                continue
+            found.append(child)
+            if child.is_symlink():
+                continue
+            if child.is_dir():
+                stack.append(child)
+    found.sort(key=lambda item: item.relative_to(root).as_posix())
+    return found
+
+
+def check_required_files(root, failures, notes):
+    if not REQUIRED_FILES:
+        failures.append("REQUIRED_FILES is empty")
+        return
+    for rel in REQUIRED_FILES:
+        path = root / rel
+        if path.is_symlink() and symlink_escapes(root, path):
+            failures.append(rel + ": required path symlink escapes check root")
+            continue
         if not path.is_file():
-            continue
-        if "__pycache__" in path.parts or path.suffix == ".pyc":
-            continue
-        yield path
+            failures.append(rel + ": required file missing")
+    if not any(item.endswith(": required file missing") or item.endswith("escapes check root") or item == "REQUIRED_FILES is empty" for item in failures):
+        notes.append("required files present: " + str(len(REQUIRED_FILES)))
 
 
 def function_index(tree):
@@ -265,9 +333,29 @@ def check_tree(rel, tree, text, failures, notes):
         for flag in ('"--manifest"', '"--shared-risk"', '"--orig-long"'):
             if flag not in text:
                 failures.append(rel + ": missing explicit CLI flag " + flag)
-        if not failures or not any(item.startswith(rel + ": still hardcodes") for item in failures):
-            if all(flag in text for flag in ('"--manifest"', '"--shared-risk"', '"--orig-long"')):
-                notes.append(rel + ": explicit --manifest/--shared-risk/--orig-long; no hardcoded manifest or shared_risk join")
+        if any(isinstance(node, ast.Assert) for node in ast.walk(tree)):
+            failures.append(rel + ": integrity assert remains and python -O could strip it")
+        top_roots = []
+        for node in tree.body:
+            if isinstance(node, ast.Import):
+                for alias in node.names:
+                    top_roots.append(alias.name.split(".")[0])
+            elif isinstance(node, ast.ImportFrom) and node.module:
+                top_roots.append(node.module.split(".")[0])
+            elif not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+                for sub in ast.walk(node):
+                    if isinstance(sub, ast.Call) and isinstance(sub.func, ast.Name) and sub.func.id in DEFERRED_LOADERS:
+                        failures.append(rel + ": loader called outside a function: " + sub.func.id)
+        banned = sorted(set(top_roots) & FORBIDDEN_TOP_LEVEL_IMPORTS)
+        if banned:
+            failures.append(rel + ": top-level import of " + ", ".join(banned))
+        for name in ("_verify_manifest_bindings", "_load_runtime_modules", "_bind_isolated_funding_db"):
+            if (name,) not in index:
+                failures.append(rel + ": missing " + name)
+        if "b6_source_sha256" not in text or ".source_meta.json" not in text:
+            failures.append(rel + ": missing L1_DB source-hash binding")
+        if not any(item.startswith(rel + ":") for item in failures):
+            notes.append(rel + ": explicit paths, deferred loaders, no assert, L1_DB source binding")
     return seen_network
 
 
@@ -278,8 +366,16 @@ def main():
     inventory = []
     patterns = host_patterns()
     network_sites = {}
-    for path in sorted(iter_files(root), key=lambda item: item.relative_to(root).as_posix()):
+    escaping = []
+    check_required_files(root, failures, notes)
+    for path in iter_tree(root):
         rel = path.relative_to(root).as_posix()
+        if path.is_symlink() and symlink_escapes(root, path):
+            escaping.append(rel)
+            failures.append(rel + ": symlink escapes check root")
+            continue
+        if path.is_symlink() or not path.is_file():
+            continue
         data = path.read_bytes()
         digest = hashlib.sha256(data).hexdigest()
         inventory.append({"path": rel, "bytes": len(data), "sha256": digest})
@@ -302,9 +398,13 @@ def main():
                 failures.append(rel + ": syntax error line " + str(exc.lineno))
                 continue
             network_sites[rel] = check_tree(rel, tree, text, failures, notes)
+    if not escaping:
+        notes.append("no symlink escapes the check root")
     result = {
         "result": "PASS" if not failures else "FAIL",
         "root": "research/long_struct_01/code",
+        "required_files": list(REQUIRED_FILES),
+        "escaping_symlinks": escaping,
         "files": inventory,
         "network_call_functions": network_sites,
         "notes": notes,
