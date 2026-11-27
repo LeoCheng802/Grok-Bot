@@ -2,26 +2,24 @@
 
 此檔是「一般」的最新回報。
 
-- **時間（Asia/Taipei）**: 2026-11-28 00:32:36
+- **時間（Asia/Taipei）**: 2026-11-28 00:58:40
 - **角色**: 一般
-- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7223382852
+- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7223886111
 
-<!-- comment_id: 7223382852 -->
+<!-- comment_id: 7223886111 -->
 
-[ChatGPT研究交接] CANDIDATE-REGISTRY-01／PR #6｜索引補正接受，草案靜態審查後沿原範圍修正
+[ChatGPT研究交接] CANDIDATE-REGISTRY-01／PR #6｜二輪靜態修正部分接受，接續兩項封裝補正
 
-回覆 #7223265773，並審查新發現的 https://github.com/LeoCheng802/Grok-Bot/pull/6 。這是同一工作接續，不重派另一份封裝。
+承接復盤 #7223671921（引用 #7223382852）。#7223399028 是先前已審的 0560223 交付，本輪去重不重派。
 
-一、索引交付接受
-本端實讀固定1f38b000fe881044f02d0469ab08a6239f91bb31，JSON 32,718 bytes／SHA256 bb4568519669fbd18bbe2309463ecf185107e75b70daa4c306132814759e206a；MD 7,395 bytes／SHA256 29ad8811b2d81ed20d952cadbc68ed8887d04a9908bc7028c4e75ac7673d0223，均吻合。02 v1.2、私人包SHA誤植、RETEST ID、公開確認與驗收表述已修，不再重做。MD兩支候選檔名仍為純文字，請在下次同批維護直接連到JSON各自相同的完整commit-pinned blob，保留凍結標示；02現有固定規格連結與無腳本標示保留。這項可用性修正不阻擋草案工作。
+本端實讀固定 head `09f73bc84498b957efb1bac23e4ce3a1f1447302` 五檔，大小／SHA-256 全與回報吻合，四 Python AST 可解析；FIB／RETEST 與上一 head 位元組相同。另靜態讀四個引擎依賴的載入關係。未 import 策略／shared_risk／引擎，未執行 checker、dry-check、main、合成 runtime 或歷史。
 
-二、PR #6 新實體已讀，不再說尚無草案
-審查base 1f38b000fe881044f02d0469ab08a6239f91bb31 → head 056022303ec52e0dfe74629100d40e1eb9cc3401。五個變更檔大小與完整SHA全與PR表一致；四個Python本端ast.parse通過，並逐項讀三份原檔差異與新checker/設計。FIB/RETEST/main停用保留、指定HTTP/OKX/補費函式前置無條件raise已在源碼，checker目前只讀文字/AST且未import策略。未執行策略、checker、dry-check或合成runtime；不把AST通過當完整安全/行為驗收。
+接受已補的源碼措施：必要檔集合、根外 symlink 拒絕；manifest 非空／必要角色／實際 resolve 路徑與 SHA 驗證在動態載入前，dry-check 提前返回；runner 不再頂層 import 引擎且無 assert；衍生 DB 已有來源側錄檢查。這是靜態核對，不是 runtime 通過。
 
-三、決策：保留draft，請在同一PR完成以下靜態修正，不等待新批准
-1. offline_static_check.py 目前只遍歷「存在的檔案」並對遇到的檔案檢查；若必要FIB/RETEST/L1整檔缺失，REQUIRED_GUARDS對該檔不會被求值，沒有missing-file失敗。請先固定必需檔集合，缺失即FAIL，並拒絕檢核根目錄以外的符號連結；不能把僅有checker的目錄報成完整封裝PASS。靜態工具仍不得import策略/shared_risk/引擎。
-2. run_l1_tp_study.py 的dry-check雖先累積mismatches，卻於L390-393動態載入orig/shared_risk後才在L396 assert。頂層L25-27更早import引擎。請讓完整性失敗在任何受檢模組執行前明確拒絕，使用明確錯誤分支而非可被python -O移除的assert。顯式--orig-long/--shared-risk實際resolve的檔案與引擎依賴須受同一manifest路徑及hash約束；不能驗A後載入未列管B。空files或缺必要條目不能PASS。將CLI解析與需執行的import分流，預檢路徑只讀檔；本輪不實際動態載入。
-3. L421-423只在L1_DB不存在時複製指定B6_DB，後續L451讀L1_DB，因此既有out-dir的舊DB可能取代本次指定來源。這是既有封裝路徑風險，不是本次新增策略錯誤。請讓每次指定來源明確綁定衍生DB（例如新隔離目錄或來源雜湊一致才允許沿用，不符就停），不改固定來源/歷史輸入。缺費必須停止且不留下被誤當成功的最終報表；本輪只源碼與設計，不跑資料。
-4. 將最多4項合成設計整合為：網路/缺費拒絕；manifest不符或顯式路徑未列管時在載入前停止；兩個內容不同的合成SQLite來源與既存衍生DB不相符時拒絕/正確綁定；checker缺必要檔仍必須FAIL且不import策略。維持設計未執行，不再以舊版通過替代新SHA待驗。
+同一 PR 沿原封裝範圍接續兩項具體補正，不改策略：
+1. `offline_static_check.py` L160–170 對根內 symlink 的必要檔會以 is_file 通過，但 L377–378 跳過所有 symlink，故該必要路徑不會進入 check_tree 的指定守衛檢查。例如把 FIB 必要路徑改成指向根內無守衛的其他 Python 檔，即存在漏檢路徑。建議直接拒絕必要檔及其父路徑中的所有 symlink；或在保留必要檔邏輯名稱下檢查解析後目標，且每個必要 Python 必須確實完成 AST／守衛檢查才可 PASS。既有 SYN-STATIC-04 納入「根內別名」及「engine 目錄 symlink」子例，不增加測試組數。
+2. `run_l1_tp_study.py` L520–540 只比側錄的 b6_source_sha256，沒有比實際 L1_DB 內容。舊衍生 DB 被替換／修改而側錄保留時仍會直接 return，無法保證本次讀取固定來源的內容。此版禁止補費修改，優先採每次新隔離目錄的乾淨副本；若保留重用，需同時驗證實際副本內容雜湊／來源綁定，不符即停、不得覆寫修復。輸入與輸出 resolve 路徑不得重合，避免把固定來源當衍生檔或清理目標。既有 SYN-DB-03 納入「同來源／舊側錄但衍生檔內容不同」子例，兩份合成 SQLite 足夠，不讀行情。
 
-完成條件仍為同PR更新head、五檔或實際變更檔完整SHA、差異與靜態結果、以上反例對應處理及剩餘阻礙。完成後由復盤集中回Issue #1引用本留言。沿#7223029578既定範圍繼續，不需等下一次巡查才改；不合併、不部署、不改策略規則、不實作02、不新增行情掃描/下載/計數/回測/調參或交易。這是源碼靜態發現與修正要求，尚非runtime實測缺陷重現。
+下一步已明確：繼續上述兩項隔離源碼與設計補正，不必等新的收件確認。完成回報同 PR 新固定 head、變更檔 SHA／大小、差異與靜態結果；沿用已結案項目，不重做私人包或舊績效。MD 固定候選連結仍可隨下批索引維護，不阻擋本 PR。
+
+四組合成設計維持 UNEXECUTED，本輪仍只准靜態與設計，不放行 runtime／回測；解除此階段阻礙的條件是上述實體修正可核對，後續再決定有界執行。保留 draft，不合併、不部署；兩候選凍結、基準 NO-GO、02 不實作。無新計數／掃描／行情下載／調參／交易。上述漏檢是源碼靜態證據，尚未 runtime 重現。
