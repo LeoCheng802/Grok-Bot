@@ -219,9 +219,9 @@
       "dependencies": [],
       "offline_entrypoint": "尚無可執行策略腳本（僅 JSON 預登記規格檔）",
       "test_evidence": "已完成 v1.2 預登記規格補正並由 ChatGPT 於 #7223029578 結案接受（含 k=6 滾動 24 棒低點自洽紙面案例、歷史名目 pts=bt_confirm／48H TTL 與未來實測 ready PENDING_SEPARATE_REVIEW 口徑分界、同決策點三階段事件順序）；尚未編寫腳本，未執行行情掃描、計數或回測。",
-      "limitations": "PROPOSED_NOT_EXECUTED（has_script=false、live_approved=false）；B24H 與 A60＋量縮同版去重尚未完成（尚待可讀檔對照）；L1 / LONG-LOOP 僅述書面規則定義不同、不宣稱已證實訊號集合不重疊；不啟動新行情實驗。",
+      "limitations": "PROPOSED_NOT_EXECUTED（has_script=false、live_approved=false）。#7226128609 起舊版規格保留供對照，新版開發已允許；腳本交付前仍 has_script=false，不算腳本候選。B24H 與 A60＋量縮同版去重尚未完成（尚待可讀檔對照）。L1 / LONG-LOOP 僅述書面規則定義不同、不宣稱已證實訊號集合不重疊。",
       "status": "規格中",
-      "status_note": "規格中／尚無腳本",
+      "status_note": "規格中／尚無腳本；舊版保留，新版開發已允許",
       "has_script": false,
       "live_approved": false,
       "supersedes": {
@@ -241,7 +241,7 @@
       "readiness": {
         "script_delivered": false,
         "packaging_verified": false,
-        "real_engine_integration": "不適用（缺 B24H 與 A60+量縮 規則去重，禁止實作）",
+        "real_engine_integration": "舊版保留供對照；#7226128609 允許新版開發。B24H 與 A60+量縮去重仍未完成。腳本交付前 has_script 維持 false",
         "full_backtest": "不適用"
       }
     }
@@ -520,11 +520,13 @@
     "state": "open_draft",
     "merged_to_main": false,
     "overwrites_main_sha": false,
-    "study": "BACKTEST-READINESS-01 v1.1",
+    "study": "BACKTEST-READINESS-01 v1.2",
     "references": [
       "#7225486769",
       "#7225850828",
-      "#7226049299"
+      "#7226049299",
+      "#7226128609",
+      "#7226193735"
     ],
     "independent_backtests": "ChatGPT isolated environment; pre-v1.1 local Job 1/Job 2 logs do not replace them",
     "script_candidate_count": 2,
@@ -543,17 +545,16 @@
       "purpose": "BACKTEST-READINESS-01 v1.1 de-identified readiness report on the PR #6 draft branch.",
       "file_name": "BACKTEST_READINESS_01_REPORT.md",
       "repo_path": "research/long_struct_01/BACKTEST_READINESS_01_REPORT.md",
-      "version": "v1.1",
-      "commit_sha": "draft-follow-up-after-da65fe4dbdd549aa973e4e3f2c69447b53dcb64a",
-      "raw_url": null,
-      "blob_url": null,
+      "version": "v1.1 pin at 1547d62; later wording is a later draft commit",
+      "commit_sha": "1547d62349c94ebea801f2061ee9893d949c5c86",
+      "raw_url": "https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/1547d62349c94ebea801f2061ee9893d949c5c86/research/long_struct_01/BACKTEST_READINESS_01_REPORT.md",
+      "blob_url": "https://github.com/LeoCheng802/Grok-Bot/blob/1547d62349c94ebea801f2061ee9893d949c5c86/research/long_struct_01/BACKTEST_READINESS_01_REPORT.md",
       "bytes": 9995,
       "sha256": "4d97f5becb7faa078d8152bc9b1a5a55c79d2456bde9b66aafa9803c36e2731b",
       "has_script": false,
       "live_approved": false,
       "status": "待驗",
-      "status_note": "Branch-scoped document. Not merged to main. Pre-v1.1 local logs do not replace ChatGPT verification.",
-      "commit_sha_note": "File content is updated in the same draft commit that publishes this registry row; commit_sha is the parent bounded-entry commit until this follow-up lands.",
+      "status_note": "Fixed pin of the v1.1 report blob at 1547d62349c94ebea801f2061ee9893d949c5c86. Not merged to main.",
       "parent_bounded_entry_commit": "da65fe4dbdd549aa973e4e3f2c69447b53dcb64a"
     }
   ]

@@ -1,7 +1,7 @@
 # BACKTEST-READINESS-01 v1.2 — Phase A/B/C Offline Wiring & Backtest Readiness Report
 
 - **Research ID:** `BACKTEST-READINESS-01 v1.2`
-- **Authorization:** [Issue #1 #7226128609](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7226128609), alongside `#7225850828` (v1.1) and `#7226049299`. `#7225850828` supersedes `#7225707059`.
+- **Authorization:** [Issue #1 #7226128609](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7226128609) and `#7226193735`, alongside `#7225850828` (v1.1) and `#7226049299`. `#7225850828` supersedes `#7225707059`.
 - **Fixed Starting Point:** PR #6 (`research/offline-packaging-hardening-draft`) head `3f67bd87fe5db2ec64d97b543fe780fa2f505f6f`; bounded entry added at `da65fe4dbdd549aa973e4e3f2c69447b53dcb64a`
 - **PR / Deployment Status:** Open Draft on `research/offline-packaging-hardening-draft`. NOT merged to `main`. NOT deployed. Does not overwrite `main` SHAs. Zero live/demo orders.
 - **v1.2 verification owner:** Under **v1.2**, backtesting is performed independently by **ChatGPT** in an isolated environment. Local Job 1 (Phase B) and Job 2 (Phase C) are preserved audit logs and **do not replace ChatGPT's independent verification or backtests**.
@@ -19,10 +19,10 @@
 
 | Item | Type | Frozen Version | Status | Script Delivered | Packaging Verified | Real-Engine Smoke (Phase B) | Full Baseline Replay (Phase C) | Known Adapter / Data Gaps |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| `FIB-4H-LONG-V3` | **Baseline** (not a candidate) | v3 (`17b46a4e...`) | **`NO-GO`** (unchanged) | Yes (public PR #6) | Yes (`#7225486769`) | **PASS** (0 diffs vs fixture) | **ABORTED (`EXIT=2`)** on missing 8H funding (`158` / `128` gaps) | Missing historical 8H funding events in isolated DB; historical BBO / MMR / non-8H denominator unknown |
+| `FIB-4H-LONG-V3` | **Baseline** (not a candidate) | v3 (`17b46a4e...`) | **`NO-GO`** (unchanged) | Yes (public PR #6) | Yes (`#7225486769`) | Local v1.0 audit log: 0 diffs vs fixture. Not a ChatGPT PASS. | Local v1.0 audit log: `EXIT=2` after engine `miss_8h` alerts (`引擎 miss_8h 警示`) `158` / `128`. Not a ChatGPT PASS, and not confirmed exchange-level missing funding. | Historical BBO / MMR / non-8H denominator unknown; offline reconciliation of those engine alerts is in Section 5 |
 | `LONG-STRUCT-01` | **Script Candidate #1 (Long)** | v1.2 | **Frozen** | Yes (public on main `fbe475402ff568eac2684bf4d97f49de579e9a6b`, `long_struct_01_v1_2_isolated.py`, `6,881` B, SHA `4ea731a4...073b`, inherited on PR #6) | N/A (not in PR #6 code) | Not run (out of baseline scope) | Not run | Requires dedicated offline signal/sizing adapter & full-history funding coverage before any candidate replay |
 | `RETEST24-R1-R2` | **Script Candidate #2 (Short)** | v1.5 (`c2b00a98...`) | **Frozen** | Yes (public PR #6) | Yes (`#7225486769`) | Not run (out of baseline scope) | Not run | Short-leg replay requires separate short-side bounded adapter; not mixed into L1 long baseline |
-| `LONG-STRUCT-02` | Spec-only (`has_script: false`) | v1.2 | **Not implemented / Not counted as script candidate** | No | No | N/A | N/A | Explicitly excluded by `#7225707059` |
+| `LONG-STRUCT-02` | Spec-only (`has_script: false` until a script is delivered) | v1.2 (`#7226128609`) | **Not counted as a script candidate** | No | No | N/A | N/A | Old version is retained for comparison. New-version development is now allowed. Still `has_script: false` until a script is delivered. |
 
 ---
 
@@ -71,9 +71,9 @@
 - **Execution UTC:** `2026-11-27T18:50:19.041Z .. 2026-11-27T18:51:52.493Z` (`93.45s`).
 - **Outcome:** **`ABORTED_MISSING_FUNDING` (`EXIT=2`)** — hard offline refusal triggered cleanly; **NO** `l1_bounded_result.json` success report written; zero zero-fill, zero interpolation, zero window shrinkage, zero network calls (`transport_hits=[]`, `inputs_unchanged=True`).
 - **Pre-abort verification:** `symbols_loaded=286`, `bars_30m_in_window=68,425`, `candidate_bars_in_window=8,130`, `candidate_signals_in_window=267,734`, `mapping_verification`: `3,000` bars checked, `521` signals matched, **`0` signal mismatches**, `4` exit target checks, **`0` exit target mismatches**.
-- **Exact Missing 8H Funding Event Gaps (Local Abort Report SHA-256 `54037c6f1c44a2db9b5a4e032aafbfd006366eeaba461dfd81ed6725385c6b1e`):**
-  - `TP_2.5pct|cross_1tick`: **`miss_8h_count = 158`** across **55 distinct symbols** (`2023-09-29T16:00:00Z .. 2026-10-18T08:00:00Z`); matched `f_ev_real_8h = 6,415`, `f_ev_real_non8h = 1,228`.
-  - `TP_2.5pct|delay1bar`: **`miss_8h_count = 128`** across **54 distinct symbols** (`2023-01-30T16:00:00Z .. 2026-08-14T16:00:00Z`); matched `f_ev_real_8h = 6,171`, `f_ev_real_non8h = 961`.
+- **Engine `miss_8h` alerts (`引擎 miss_8h 警示`) in the local abort log (SHA-256 `54037c6f1c44a2db9b5a4e032aafbfd006366eeaba461dfd81ed6725385c6b1e`).** These counts are engine alerts later classified by the Section 5 offline reconciliation. They are not a claim of confirmed exchange-level missing funding.
+  - `TP_2.5pct|cross_1tick`: **`158` engine `miss_8h` alerts** across **55 distinct symbols** (`2023-09-29T16:00:00Z .. 2026-10-18T08:00:00Z`); matched `f_ev_real_8h = 6,415`, `f_ev_real_non8h = 1,228`.
+  - `TP_2.5pct|delay1bar`: **`128` engine `miss_8h` alerts** across **54 distinct symbols** (`2023-01-30T16:00:00Z .. 2026-08-14T16:00:00Z`); matched `f_ev_real_8h = 6,171`, `f_ev_real_non8h = 961`.
 - **Known Data & Modeling Limitations:**
   - Missing historical BBO (`post_only` queue priority & fillability unknown); `cross_1tick` is a lower-bound crossing check, not proof of live fillability.
   - Historical MMR approximated at `1%`; historical tick size uses snapshot values; non-8H funding settlement denominator completeness remains unverified.
@@ -86,7 +86,7 @@
 
 Read-only UTC window: `2026-11-27T19:05:10Z .. 2026-11-27T19:05:45Z`.
 
-- **Scope:** Checked the saved `l1_bounded_missing_funding_abort.json` (SHA `54037c6f1c44a2db9b5a4e032aafbfd006366eeaba461dfd81ed6725385c6b1e`; symbol counts for all `158` / `128` gaps across `55` / `54` symbols, plus exact timestamps for the `50` saved sample events = 25 per scenario) against read-only `funding_archive_l1_isolated.sqlite`, `funding_archive_b6_isolated.sqlite`, `funding_archive_q38.sqlite`, and the 61 verified monthly shards (`funding_2021-08.csv.gz ..`), with zero OKX calls, zero zero-fill, and zero strategy reruns.
+- **Scope:** Checked the saved `l1_bounded_missing_funding_abort.json` (SHA `54037c6f1c44a2db9b5a4e032aafbfd006366eeaba461dfd81ed6725385c6b1e`; symbol counts for all `158` / `128` engine `miss_8h` alerts (`引擎 miss_8h 警示`) across `55` / `54` symbols, plus exact timestamps for the `50` saved sample events = 25 per scenario) against read-only `funding_archive_l1_isolated.sqlite`, `funding_archive_b6_isolated.sqlite`, `funding_archive_q38.sqlite`, and the 61 verified monthly shards (`funding_2021-08.csv.gz ..`), with zero OKX calls, zero zero-fill, and zero strategy reruns. The classification below does not assert confirmed exchange-level missing funding.
 - **Symbol-level coverage:** `55/55` (`cross_1tick`) and `54/54` (`delay1bar`) affected symbols exist in `L1 DB` (`0` completely missing symbols).
 - **4-category classification of the `50` saved sample events:**
   - Present in local shards / B6 / q38 but not wired into L1 DB: **`0 / 50`**
