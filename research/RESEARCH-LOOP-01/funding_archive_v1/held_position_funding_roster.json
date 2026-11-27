@@ -1,0 +1,129 @@
+{
+  "research_id": "RESEARCH-LOOP-01",
+  "version": "v1.3-held-position-funding-roster",
+  "created_utc": "2026-11-27T03:29:33.304029+00:00",
+  "method_note": "Compiled strictly from existing saved offline result artifacts without running any new strategy replay. Unserialized per-trade/per-symbol breakdown fields are explicitly marked null/unknown.",
+  "source_artifacts": {
+    "l1_tp_result.json": "45a9f3696539b77a7629e0be165cfec41ff4fdb9add0e6b4cea2cc394ac82dbc",
+    "long_loop_01_result.json": "c8e551cc4e9b8f28aa6511762e71762d4ecf4434b2032cd86c216e7f1bc655d8",
+    "l1_isolated_funding_sqlite": "23ebdab561d5fa48ae34394b451d55b97d3e09af4e8a8809eef93422c40783cc",
+    "b6_isolated_funding_sqlite": "dc547b1c6a8031ce730743d542277f11561f95263dd48f22a18017e3f5163c1b"
+  },
+  "l1_tp25_baseline_off": {
+    "TP_2.5pct|cross_1tick": {
+      "closed_trades": 4535,
+      "observed_8h_events": 6415,
+      "observed_non_8h_events": 1228,
+      "grid_8h_missing_events_miss_8h": 158,
+      "expected_non_8h_events": null,
+      "expected_non_8h_status": "unknown",
+      "per_symbol_miss_8h_breakdown": null,
+      "per_symbol_miss_8h_status": "unknown_not_serialized_in_l1_tp_result_json"
+    },
+    "TP_2.5pct|delay1bar": {
+      "closed_trades": 4297,
+      "observed_8h_events": 6171,
+      "observed_non_8h_events": 961,
+      "grid_8h_missing_events_miss_8h": 128,
+      "expected_non_8h_events": null,
+      "expected_non_8h_status": "unknown",
+      "per_symbol_miss_8h_breakdown": null,
+      "per_symbol_miss_8h_status": "unknown_not_serialized_in_l1_tp_result_json"
+    }
+  },
+  "long_loop_01_btc_filter_arms": {
+    "BTC_200ma|cross_1tick": {
+      "closed_trades": 3570,
+      "observed_8h_events": 4974,
+      "observed_non_8h_events": 659,
+      "grid_8h_missing_events_miss_8h": 76,
+      "miss_8h_unique_instruments": 30,
+      "miss_8h_top10_instruments": {
+        "DOGE-USDT-SWAP": 7,
+        "INJ-USDT-SWAP": 6,
+        "ANIME-USDT-SWAP": 5,
+        "AGLD-USDT-SWAP": 4,
+        "GAS-USDT-SWAP": 4,
+        "GRT-USDT-SWAP": 4,
+        "NEAR-USDT-SWAP": 4,
+        "AT-USDT-SWAP": 3,
+        "ETHW-USDT-SWAP": 3,
+        "GRVT-USDT-SWAP": 3
+      },
+      "miss_8h_remaining_instruments_status": "truncated_to_top10_in_v1_0_json",
+      "expected_non_8h_events": null,
+      "expected_non_8h_status": "unknown"
+    },
+    "BTC_200ma|delay1bar": {
+      "closed_trades": 3391,
+      "observed_8h_events": 4802,
+      "observed_non_8h_events": 543,
+      "grid_8h_missing_events_miss_8h": 66,
+      "miss_8h_unique_instruments": 26,
+      "miss_8h_top10_instruments": {
+        "DOGE-USDT-SWAP": 7,
+        "INJ-USDT-SWAP": 6,
+        "ANIME-USDT-SWAP": 5,
+        "GAS-USDT-SWAP": 4,
+        "GRT-USDT-SWAP": 4,
+        "NEAR-USDT-SWAP": 4,
+        "AT-USDT-SWAP": 3,
+        "ETHW-USDT-SWAP": 3,
+        "METIS-USDT-SWAP": 3,
+        "WOO-USDT-SWAP": 3
+      },
+      "miss_8h_remaining_instruments_status": "truncated_to_top10_in_v1_0_json",
+      "expected_non_8h_events": null,
+      "expected_non_8h_status": "unknown"
+    },
+    "BTC_10pct|cross_1tick": {
+      "closed_trades": 594,
+      "observed_8h_events": 580,
+      "observed_non_8h_events": 80,
+      "grid_8h_missing_events_miss_8h": 23,
+      "miss_8h_unique_instruments": 11,
+      "miss_8h_top10_instruments": {
+        "ACH-USDT-SWAP": 4,
+        "NOT-USDT-SWAP": 4,
+        "AVAX-USDT-SWAP": 2,
+        "ETHFI-USDT-SWAP": 2,
+        "INJ-USDT-SWAP": 2,
+        "PEOPLE-USDT-SWAP": 2,
+        "SPACE-USDT-SWAP": 2,
+        "STX-USDT-SWAP": 2,
+        "CAP-USDT-SWAP": 1,
+        "GALA-USDT-SWAP": 1
+      },
+      "miss_8h_remaining_instruments_status": "truncated_to_top10_in_v1_0_json",
+      "expected_non_8h_events": null,
+      "expected_non_8h_status": "unknown"
+    },
+    "BTC_10pct|delay1bar": {
+      "closed_trades": 594,
+      "observed_8h_events": 580,
+      "observed_non_8h_events": 80,
+      "grid_8h_missing_events_miss_8h": 23,
+      "miss_8h_unique_instruments": 11,
+      "miss_8h_top10_instruments": {
+        "ACH-USDT-SWAP": 4,
+        "NOT-USDT-SWAP": 4,
+        "AVAX-USDT-SWAP": 2,
+        "ETHFI-USDT-SWAP": 2,
+        "INJ-USDT-SWAP": 2,
+        "PEOPLE-USDT-SWAP": 2,
+        "SPACE-USDT-SWAP": 2,
+        "STX-USDT-SWAP": 2,
+        "CAP-USDT-SWAP": 1,
+        "GALA-USDT-SWAP": 1
+      },
+      "miss_8h_remaining_instruments_status": "truncated_to_top10_in_v1_0_json",
+      "expected_non_8h_events": null,
+      "expected_non_8h_status": "unknown"
+    }
+  },
+  "terminology_distinction": {
+    "grid_8h_missing_miss_8h": "8H calendar grid slot during an open position with no matching funding record in archive; NOT zero-filled, NOT interpolated, NOT excluded.",
+    "observed_settlement_events": "Records actually present in archive matched to open positions (split into 8H grid vs non-8H).",
+    "unknown": "True historical non-8H settlement schedule denominator (when OKX changed specific contracts to 1H/2H/4H) and unserialized per-symbol/per-trade rows not saved in v1.0 artifacts."
+  }
+}

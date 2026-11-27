@@ -1,0 +1,1564 @@
+{
+  "research_id": "RESEARCH-LOOP-01",
+  "version": "v1.3-funding-archive-full",
+  "stage": "complete_existing_funding_cache_monthly_shards_and_held_roster",
+  "worker": "策略組",
+  "created_utc": "2026-11-27T03:29:33.453881+00:00",
+  "prior_verified_pilots_not_duplicated": [
+    {
+      "name": "funding_pilot_v1 (SOL-USDT-SWAP 2025-10 + EX_USDC_286)",
+      "commit_sha": "8bf4c15ed50d5dc3f1f66a01dd3df83f5521b668",
+      "manifest_url": "https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/8bf4c15ed50d5dc3f1f66a01dd3df83f5521b668/research/RESEARCH-LOOP-01/funding_pilot_v1/manifest.json"
+    },
+    {
+      "name": "funding_mixed_shard_v1 (FIL-USDT-SWAP 2022-12)",
+      "commit_sha": "9b3d93768c1581b985bf01283af353d59c9f93cc",
+      "manifest_url": "https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/9b3d93768c1581b985bf01283af353d59c9f93cc/research/RESEARCH-LOOP-01/funding_mixed_shard_v1/manifest.json"
+    }
+  ],
+  "original_source_urls": [
+    "https://www.okx.com/cdn/okex/traderecords/fundingrate/monthly/{YYYYMM}/allswap-fundingrate-{YYYY}-{MM}.zip",
+    "https://www.okx.com/api/v5/public/funding-rate-history"
+  ],
+  "window_selection_rule": "Each monthly shard funding_YYYY-MM.csv.gz contains all rows with ts_snapped_ms in [YYYY-MM-01T00:00:00Z, next_month_01T00:00:00Z), strictly by UTC settlement timestamp, NOT filtered by source_ym. Both funding_time_ms and ts_snapped_ms are preserved.",
+  "download_url_template": "https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/<commit_sha>/<relative_path>",
+  "source_sqlite_hashes": {
+    "b6_isolated_funding_sqlite_sha256": "dc547b1c6a8031ce730743d542277f11561f95263dd48f22a18017e3f5163c1b",
+    "l1_isolated_funding_sqlite_sha256": "23ebdab561d5fa48ae34394b451d55b97d3e09af4e8a8809eef93422c40783cc"
+  },
+  "totals": {
+    "shard_count": 61,
+    "month_range_utc": "2021-08 ~ 2026-11",
+    "total_rows": 829157,
+    "total_gz_bytes": 9785235,
+    "months_with_non_8h_events": 30
+  },
+  "held_position_funding_roster": {
+    "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/held_position_funding_roster.json",
+    "sha256": "0a8df637e2921a2a8e99fb4749ef71c202f8d53da29686036b186fd01e7ae51e",
+    "bytes": 5013
+  },
+  "shards": [
+    {
+      "month_utc": "2021-08",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2021-08.csv.gz",
+      "sha256_gz": "3690f6b123772ce49eb856c0d66ed0e5a8d551841d886d760a37980ff81e407d",
+      "bytes_gz": 803,
+      "sha256_csv_uncompressed": "8d0426eb43dc1e6c2acbafc1a4b2aa9c5ebcb94a6b522c3fbe28c63cb2242dd7",
+      "bytes_csv_uncompressed": 6033,
+      "row_count": 49,
+      "distinct_instruments": 49,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 0,
+      "observed_8h_events": 49,
+      "observed_non_8h_events": 0,
+      "calendar_8h_slots_per_inst": 93,
+      "observed_interval_buckets": {},
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2021-09": 49
+      }
+    },
+    {
+      "month_utc": "2021-09",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2021-09.csv.gz",
+      "sha256_gz": "680b784a3c19e20fcf07551f4543b7491932b8c853af50b1b48c3185a587e56b",
+      "bytes_gz": 47865,
+      "sha256_csv_uncompressed": "785e70a30d8a9b965e2ef6053f8ad70083b6dc967603bd1bac9e32a75b3564ac",
+      "bytes_csv_uncompressed": 524601,
+      "row_count": 4361,
+      "distinct_instruments": 49,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 0,
+      "observed_8h_events": 4361,
+      "observed_non_8h_events": 0,
+      "calendar_8h_slots_per_inst": 90,
+      "observed_interval_buckets": {
+        "8h": 4312
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2021-09": 4361
+      }
+    },
+    {
+      "month_utc": "2022-01",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2022-01.csv.gz",
+      "sha256_gz": "7d382cb75d1fe6443846ea58a5f488d1b33b03602f650366328131519e86f3f0",
+      "bytes_gz": 28697,
+      "sha256_csv_uncompressed": "fde6221771e66b937eedd71602a9d9da64bfe657408c5e58a42cb7567b741914",
+      "bytes_csv_uncompressed": 316269,
+      "row_count": 2626,
+      "distinct_instruments": 62,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 0,
+      "observed_8h_events": 2626,
+      "observed_non_8h_events": 0,
+      "calendar_8h_slots_per_inst": 93,
+      "observed_interval_buckets": {
+        "8h": 2564
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2022-01": 2565,
+        "2022-02": 61
+      }
+    },
+    {
+      "month_utc": "2022-02",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2022-02.csv.gz",
+      "sha256_gz": "27f08118c1e6648d869db6f2d1c3a803be97ced8a3bc140dbc7169a63ad189d3",
+      "bytes_gz": 51711,
+      "sha256_csv_uncompressed": "64bf7440cf6d4a5c8be2779e3b659115ee18f7bb0740ab9e5f2dde3866a4b278",
+      "bytes_csv_uncompressed": 581506,
+      "row_count": 4855,
+      "distinct_instruments": 62,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 49,
+      "observed_8h_events": 4855,
+      "observed_non_8h_events": 0,
+      "calendar_8h_slots_per_inst": 84,
+      "observed_interval_buckets": {
+        "8h": 4732,
+        "other": 61
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2022-02": 4798,
+        "2022-03": 57
+      }
+    },
+    {
+      "month_utc": "2022-03",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2022-03.csv.gz",
+      "sha256_gz": "11443b7491031af6088d227b0fe2c7718d1d77cefa2f776282fa49781e19e837",
+      "bytes_gz": 86059,
+      "sha256_csv_uncompressed": "0615c449ab58bd4992ab01f103aac58d5b356ae41e570d652272601767da35c7",
+      "bytes_csv_uncompressed": 670761,
+      "row_count": 5304,
+      "distinct_instruments": 62,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 4918,
+      "observed_8h_events": 5304,
+      "observed_non_8h_events": 0,
+      "calendar_8h_slots_per_inst": 93,
+      "observed_interval_buckets": {
+        "8h": 5242
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2022-03": 5244,
+        "2022-04": 60
+      }
+    },
+    {
+      "month_utc": "2022-04",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2022-04.csv.gz",
+      "sha256_gz": "e05fbf1b696ae0d5b0561fadcee334bd48ac666d71b573261bb1ff2704e59e4b",
+      "bytes_gz": 86029,
+      "sha256_csv_uncompressed": "c6c0db4614998e18d8f56ac8260de720295c5ab8e463fbb1ddfdc6dbc86b12dc",
+      "bytes_csv_uncompressed": 681520,
+      "row_count": 5397,
+      "distinct_instruments": 64,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 4791,
+      "observed_8h_events": 5397,
+      "observed_non_8h_events": 0,
+      "calendar_8h_slots_per_inst": 90,
+      "observed_interval_buckets": {
+        "8h": 5333
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2022-04": 5340,
+        "2022-05": 57
+      }
+    },
+    {
+      "month_utc": "2022-05",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2022-05.csv.gz",
+      "sha256_gz": "4d61b9fe27832b66b6f5e7772656a2d171cdb17b52aa2d633b568ccd85a1db6a",
+      "bytes_gz": 85501,
+      "sha256_csv_uncompressed": "7c9f5439ccf4ea43aa62837381b117e5b5855351288556cab77a0d9b052b6240",
+      "bytes_csv_uncompressed": 672889,
+      "row_count": 5309,
+      "distinct_instruments": 65,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 4661,
+      "observed_8h_events": 5309,
+      "observed_non_8h_events": 0,
+      "calendar_8h_slots_per_inst": 93,
+      "observed_interval_buckets": {
+        "8h": 5244
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2022-05": 5244,
+        "2022-06": 65
+      }
+    },
+    {
+      "month_utc": "2022-06",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2022-06.csv.gz",
+      "sha256_gz": "ede75c4af3145c2a25027f094a5652bd16421ed0779e76507270ca7cbb79e064",
+      "bytes_gz": 98505,
+      "sha256_csv_uncompressed": "7d4d1cde92c4970b071d37c18399eb05e37248e4fe21c3b9156610d06123703c",
+      "bytes_csv_uncompressed": 741311,
+      "row_count": 5848,
+      "distinct_instruments": 66,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 5447,
+      "observed_8h_events": 5848,
+      "observed_non_8h_events": 0,
+      "calendar_8h_slots_per_inst": 90,
+      "observed_interval_buckets": {
+        "8h": 5782
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2022-06": 5785,
+        "2022-07": 63
+      }
+    },
+    {
+      "month_utc": "2022-07",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2022-07.csv.gz",
+      "sha256_gz": "e6dcf9f3db99904729a0b7a0c9640f70eacaa8d8c027e27d937f25d944145fcd",
+      "bytes_gz": 101590,
+      "sha256_csv_uncompressed": "6b1373b74d31805583cc7979a99096e146df66d84ae91f533cfa8ec0e2cdb8cb",
+      "bytes_csv_uncompressed": 742315,
+      "row_count": 5863,
+      "distinct_instruments": 67,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 5458,
+      "observed_8h_events": 5863,
+      "observed_non_8h_events": 0,
+      "calendar_8h_slots_per_inst": 93,
+      "observed_interval_buckets": {
+        "8h": 5796
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2022-07": 5796,
+        "2022-08": 67
+      }
+    },
+    {
+      "month_utc": "2022-08",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2022-08.csv.gz",
+      "sha256_gz": "fa625d026bcc6c3f52b9daa384f3597d2a4f397ea0fe21f12d3d101a0dfe9eb6",
+      "bytes_gz": 109147,
+      "sha256_csv_uncompressed": "9895093233a5e84f52bb7333336cee628e6403aa7f812e268cf8698fa70e09a2",
+      "bytes_csv_uncompressed": 787812,
+      "row_count": 6225,
+      "distinct_instruments": 67,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 5779,
+      "observed_8h_events": 6225,
+      "observed_non_8h_events": 0,
+      "calendar_8h_slots_per_inst": 93,
+      "observed_interval_buckets": {
+        "8h": 6158
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2022-08": 6164,
+        "2022-09": 61
+      }
+    },
+    {
+      "month_utc": "2022-09",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2022-09.csv.gz",
+      "sha256_gz": "74099d2f3986f93d038f407891e539c247e42e32de978355da369c3c1a3dcb6f",
+      "bytes_gz": 95446,
+      "sha256_csv_uncompressed": "39ad0b707705a2d4021e5abf455cc758750fcfe9ff355ce9e8805c94cfab3a74",
+      "bytes_csv_uncompressed": 694611,
+      "row_count": 5494,
+      "distinct_instruments": 67,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 5018,
+      "observed_8h_events": 5494,
+      "observed_non_8h_events": 0,
+      "calendar_8h_slots_per_inst": 90,
+      "observed_interval_buckets": {
+        "8h": 5427
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2022-09": 5429,
+        "2022-10": 65
+      }
+    },
+    {
+      "month_utc": "2022-10",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2022-10.csv.gz",
+      "sha256_gz": "716a7c3e6448e3c169cc98c281a61f853c39dd555663753ce60cd83003089761",
+      "bytes_gz": 108259,
+      "sha256_csv_uncompressed": "789adcdecb776d7326087101edc2a92a555a662d823d1cd3251397bb98c74c52",
+      "bytes_csv_uncompressed": 764781,
+      "row_count": 6046,
+      "distinct_instruments": 67,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 5617,
+      "observed_8h_events": 6046,
+      "observed_non_8h_events": 0,
+      "calendar_8h_slots_per_inst": 93,
+      "observed_interval_buckets": {
+        "8h": 5979
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2022-10": 5980,
+        "2022-11": 66
+      }
+    },
+    {
+      "month_utc": "2022-11",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2022-11.csv.gz",
+      "sha256_gz": "eaec2e920d7885a2cb8804a21aa0b581e15f85b5f9a6b0592d414cf4b5fb4cf5",
+      "bytes_gz": 112838,
+      "sha256_csv_uncompressed": "2b80c05e02fec76f520007472c3eca97e1ac08853e68536162968e71cf9aa344",
+      "bytes_csv_uncompressed": 752510,
+      "row_count": 5938,
+      "distinct_instruments": 68,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 5868,
+      "observed_8h_events": 5938,
+      "observed_non_8h_events": 0,
+      "calendar_8h_slots_per_inst": 90,
+      "observed_interval_buckets": {
+        "8h": 5870
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2022-11": 5874,
+        "2022-12": 64
+      }
+    },
+    {
+      "month_utc": "2022-12",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2022-12.csv.gz",
+      "sha256_gz": "521af4ca3dbda751e4d2e05fc4c3fd7646d49a7d25cb9dced0749331729e7b27",
+      "bytes_gz": 118504,
+      "sha256_csv_uncompressed": "917f2b8f3dd8d250dc1e371885953d6174b03f65b13c8cdb3e1a7c1ef6d54e52",
+      "bytes_csv_uncompressed": 754801,
+      "row_count": 5954,
+      "distinct_instruments": 69,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 5829,
+      "observed_8h_events": 5826,
+      "observed_non_8h_events": 128,
+      "calendar_8h_slots_per_inst": 93,
+      "observed_interval_buckets": {
+        "8h": 5693,
+        "other": 192
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2022-12": 5888,
+        "2023-01": 66
+      }
+    },
+    {
+      "month_utc": "2023-01",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2023-01.csv.gz",
+      "sha256_gz": "6472cb6fe68bb2d1bbde1049f1cab686d784845d543fd0f5f0dd793453b38af9",
+      "bytes_gz": 120616,
+      "sha256_csv_uncompressed": "7f2bb9226a22d4e6a2c70bd5482ce01ecf3428fbaffe9126460474d4f73d2c23",
+      "bytes_csv_uncompressed": 781449,
+      "row_count": 6142,
+      "distinct_instruments": 70,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 6137,
+      "observed_8h_events": 6142,
+      "observed_non_8h_events": 0,
+      "calendar_8h_slots_per_inst": 93,
+      "observed_interval_buckets": {
+        "8h": 6072
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2023-01": 6072,
+        "2023-02": 70
+      }
+    },
+    {
+      "month_utc": "2023-02",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2023-02.csv.gz",
+      "sha256_gz": "0b95f138b8dffb2393da7cd96cf08fdf7fb73760a34a9f20998c991cf183a0fc",
+      "bytes_gz": 113600,
+      "sha256_csv_uncompressed": "96baf0980090a316452ec40c12d6ae95ec03b329f1d1ceb40727da61526e44dc",
+      "bytes_csv_uncompressed": 748441,
+      "row_count": 5879,
+      "distinct_instruments": 70,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 5875,
+      "observed_8h_events": 5879,
+      "observed_non_8h_events": 0,
+      "calendar_8h_slots_per_inst": 84,
+      "observed_interval_buckets": {
+        "8h": 5809
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2023-02": 5810,
+        "2023-03": 69
+      }
+    },
+    {
+      "month_utc": "2023-03",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2023-03.csv.gz",
+      "sha256_gz": "a54fee555e47d9232adc8edcd4fbc65ab9c19950588c9169ccca0cd35e49bc69",
+      "bytes_gz": 123582,
+      "sha256_csv_uncompressed": "c0bd1b04984aff0e3b74c3c2ee1de83da47afe2f72be3f3720a7747fa27b175b",
+      "bytes_csv_uncompressed": 814979,
+      "row_count": 6425,
+      "distinct_instruments": 77,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 6386,
+      "observed_8h_events": 6425,
+      "observed_non_8h_events": 0,
+      "calendar_8h_slots_per_inst": 93,
+      "observed_interval_buckets": {
+        "8h": 6348
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2023-03": 6348,
+        "2023-04": 77
+      }
+    },
+    {
+      "month_utc": "2023-04",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2023-04.csv.gz",
+      "sha256_gz": "6886b95c98e631ba5488e31c6abc4e08cf16e353eeee00c28182deb9b5a590a0",
+      "bytes_gz": 134911,
+      "sha256_csv_uncompressed": "d30e85965ddc80b0520c58a0c0a2cccbcfdfbca851b9883fb19fa71ba027730e",
+      "bytes_csv_uncompressed": 878625,
+      "row_count": 6933,
+      "distinct_instruments": 80,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 6894,
+      "observed_8h_events": 6933,
+      "observed_non_8h_events": 0,
+      "calendar_8h_slots_per_inst": 90,
+      "observed_interval_buckets": {
+        "8h": 6853
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2023-04": 6853,
+        "2023-05": 80
+      }
+    },
+    {
+      "month_utc": "2023-05",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2023-05.csv.gz",
+      "sha256_gz": "0d8b999be3a631c1f32336a8b2254295f2c600a6bad22d0f5fdf598e9c20bbfe",
+      "bytes_gz": 143522,
+      "sha256_csv_uncompressed": "9b7aa4e66c4337f88dfbd1bbd2a40e53a1633fd4033c6f2ada3b3939dc6c7148",
+      "bytes_csv_uncompressed": 942172,
+      "row_count": 7438,
+      "distinct_instruments": 80,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 7365,
+      "observed_8h_events": 7438,
+      "observed_non_8h_events": 0,
+      "calendar_8h_slots_per_inst": 93,
+      "observed_interval_buckets": {
+        "8h": 7358
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2023-05": 7360,
+        "2023-06": 78
+      }
+    },
+    {
+      "month_utc": "2023-06",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2023-06.csv.gz",
+      "sha256_gz": "9fb4a275c9c3b10397dafa62a0b3eb5aa3cd5c1a47f151bcd6880acc91a1803a",
+      "bytes_gz": 134029,
+      "sha256_csv_uncompressed": "72bf7a1967018c63e4af70c1cc314d71c6a413a2e27a6abfccc21746d5232c72",
+      "bytes_csv_uncompressed": 890305,
+      "row_count": 7024,
+      "distinct_instruments": 83,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 6944,
+      "observed_8h_events": 7024,
+      "observed_non_8h_events": 0,
+      "calendar_8h_slots_per_inst": 90,
+      "observed_interval_buckets": {
+        "8h": 6941
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2023-06": 6942,
+        "2023-07": 82
+      }
+    },
+    {
+      "month_utc": "2023-07",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2023-07.csv.gz",
+      "sha256_gz": "3420e7ea1c67dae9509722d859d40b14a62bee756bcf7fa4c061cffc2801adb3",
+      "bytes_gz": 146708,
+      "sha256_csv_uncompressed": "ecf5557e1516968e259a3d3099e5565a5e803945edf2227f976a4488e49c5456",
+      "bytes_csv_uncompressed": 966536,
+      "row_count": 7626,
+      "distinct_instruments": 83,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 7600,
+      "observed_8h_events": 7626,
+      "observed_non_8h_events": 0,
+      "calendar_8h_slots_per_inst": 93,
+      "observed_interval_buckets": {
+        "8h": 7543
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2023-07": 7544,
+        "2023-08": 82
+      }
+    },
+    {
+      "month_utc": "2023-08",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2023-08.csv.gz",
+      "sha256_gz": "327ffd5e67665b95be85234d38925250a4e92a240e03a0701632ad47374702bf",
+      "bytes_gz": 147127,
+      "sha256_csv_uncompressed": "918b0427460d27154ed9ca7884d473918825e3caf11342f318ee315aebe8e914",
+      "bytes_csv_uncompressed": 967373,
+      "row_count": 7627,
+      "distinct_instruments": 83,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 7623,
+      "observed_8h_events": 7627,
+      "observed_non_8h_events": 0,
+      "calendar_8h_slots_per_inst": 93,
+      "observed_interval_buckets": {
+        "8h": 7544
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2023-08": 7544,
+        "2023-09": 83
+      }
+    },
+    {
+      "month_utc": "2023-09",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2023-09.csv.gz",
+      "sha256_gz": "ff45bf91ffd30e6eca777fd58577c200b3a7addac2c38aade3aa27172679e6a2",
+      "bytes_gz": 141136,
+      "sha256_csv_uncompressed": "48b192a729ee1b5080fc9e65e1055b7f4c112acc90d5112567e14ae5b9496e06",
+      "bytes_csv_uncompressed": 946989,
+      "row_count": 7470,
+      "distinct_instruments": 85,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 7461,
+      "observed_8h_events": 7470,
+      "observed_non_8h_events": 0,
+      "calendar_8h_slots_per_inst": 90,
+      "observed_interval_buckets": {
+        "8h": 7385
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2023-09": 7387,
+        "2023-10": 83
+      }
+    },
+    {
+      "month_utc": "2023-10",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2023-10.csv.gz",
+      "sha256_gz": "5391c2bd865b51cd2dc100aa7e24e3234a43acbfb8404ff7cda9a7cbcfeaf8a4",
+      "bytes_gz": 141755,
+      "sha256_csv_uncompressed": "32f982e64f0c9d4af1b9cd9ce5eebf912ae30343a658d34388fc92aa9b04d5b7",
+      "bytes_csv_uncompressed": 977242,
+      "row_count": 7720,
+      "distinct_instruments": 85,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 7718,
+      "observed_8h_events": 7720,
+      "observed_non_8h_events": 0,
+      "calendar_8h_slots_per_inst": 93,
+      "observed_interval_buckets": {
+        "8h": 7635
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2023-10": 7636,
+        "2023-11": 84
+      }
+    },
+    {
+      "month_utc": "2023-11",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2023-11.csv.gz",
+      "sha256_gz": "b247697e2a618188ba19ec0e46825b420a7f63b0810da239c7e07038b8db7d07",
+      "bytes_gz": 137981,
+      "sha256_csv_uncompressed": "75e384121f52ef8129c07076b67de958b827877e7df0084c654f242f7280d492",
+      "bytes_csv_uncompressed": 956049,
+      "row_count": 7557,
+      "distinct_instruments": 86,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 7547,
+      "observed_8h_events": 7557,
+      "observed_non_8h_events": 0,
+      "calendar_8h_slots_per_inst": 90,
+      "observed_interval_buckets": {
+        "8h": 7471
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2023-11": 7476,
+        "2023-12": 81
+      }
+    },
+    {
+      "month_utc": "2023-12",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2023-12.csv.gz",
+      "sha256_gz": "3fb4cacae5f06ec6a184db15d207ca7f487fb9ecbff7d00c1aa98210b0621b69",
+      "bytes_gz": 138906,
+      "sha256_csv_uncompressed": "04c5b287b44f0b93e675da43502a8705ab23fbbe00f1011527b27649700d6f18",
+      "bytes_csv_uncompressed": 954837,
+      "row_count": 7543,
+      "distinct_instruments": 93,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 7541,
+      "observed_8h_events": 7543,
+      "observed_non_8h_events": 0,
+      "calendar_8h_slots_per_inst": 93,
+      "observed_interval_buckets": {
+        "8h": 7450
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2023-12": 7452,
+        "2024-01": 91
+      }
+    },
+    {
+      "month_utc": "2024-01",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2024-01.csv.gz",
+      "sha256_gz": "86e08ee9a3a88bbe5080f31cca1baaf0b85e6422207cda8b4c72125c28ea6f5f",
+      "bytes_gz": 137013,
+      "sha256_csv_uncompressed": "81c26d38847d9f1fcab02e484a412f4e0eab55be2992d0f34f803b15bb217733",
+      "bytes_csv_uncompressed": 1059340,
+      "row_count": 8464,
+      "distinct_instruments": 95,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 4550,
+      "observed_8h_events": 8464,
+      "observed_non_8h_events": 0,
+      "calendar_8h_slots_per_inst": 93,
+      "observed_interval_buckets": {
+        "8h": 8369
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2024-01": 8372,
+        "2024-02": 92
+      }
+    },
+    {
+      "month_utc": "2024-02",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2024-02.csv.gz",
+      "sha256_gz": "ec7937e9b7a263dc4d3a09c4b02831f6b47fc73c01d62055f2a5aa407f49eddb",
+      "bytes_gz": 100438,
+      "sha256_csv_uncompressed": "cddab619d1f547ed4caf0202d70eb901f0a8fb9fe5b3a52e5d2f64b848eb841f",
+      "bytes_csv_uncompressed": 988376,
+      "row_count": 8004,
+      "distinct_instruments": 100,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 0,
+      "observed_8h_events": 8004,
+      "observed_non_8h_events": 0,
+      "calendar_8h_slots_per_inst": 87,
+      "observed_interval_buckets": {
+        "8h": 7904
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2024-02": 7912,
+        "2024-03": 92
+      }
+    },
+    {
+      "month_utc": "2024-03",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2024-03.csv.gz",
+      "sha256_gz": "29662864b85fe363978ea8c307ad8a6600f31298b42de18102e4b921b1dd6b36",
+      "bytes_gz": 107597,
+      "sha256_csv_uncompressed": "d5b01cf6edb8bd522a47f31c3459110b7e8cc886a5e31abb639d0188706c09a9",
+      "bytes_csv_uncompressed": 1058933,
+      "row_count": 8567,
+      "distinct_instruments": 106,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 0,
+      "observed_8h_events": 8567,
+      "observed_non_8h_events": 0,
+      "calendar_8h_slots_per_inst": 93,
+      "observed_interval_buckets": {
+        "8h": 8461
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2024-03": 8464,
+        "2024-04": 103
+      }
+    },
+    {
+      "month_utc": "2024-04",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2024-04.csv.gz",
+      "sha256_gz": "f30d303bff7f5f96d863c48334c3864a01cb5b904a7607055ca562aee60f6d2e",
+      "bytes_gz": 119675,
+      "sha256_csv_uncompressed": "a4420eb509775bc60d8a598cd9451058e4564bcdbf8fbff542fcbbbfe0caeee0",
+      "bytes_csv_uncompressed": 1145793,
+      "row_count": 9273,
+      "distinct_instruments": 110,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 0,
+      "observed_8h_events": 9273,
+      "observed_non_8h_events": 0,
+      "calendar_8h_slots_per_inst": 90,
+      "observed_interval_buckets": {
+        "8h": 9163
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2024-04": 9167,
+        "2024-05": 106
+      }
+    },
+    {
+      "month_utc": "2024-05",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2024-05.csv.gz",
+      "sha256_gz": "af8020b11742ca935cb5ffd470d656b93f10e631bffd8215a84b0ebb604bacfd",
+      "bytes_gz": 127431,
+      "sha256_csv_uncompressed": "64f7981b3c05093d41b97a1d265424adc85cd7d3ff87a55e35f855df81c399c4",
+      "bytes_csv_uncompressed": 1217309,
+      "row_count": 9864,
+      "distinct_instruments": 113,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 0,
+      "observed_8h_events": 9864,
+      "observed_non_8h_events": 0,
+      "calendar_8h_slots_per_inst": 93,
+      "observed_interval_buckets": {
+        "8h": 9751
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2024-05": 9752,
+        "2024-06": 112
+      }
+    },
+    {
+      "month_utc": "2024-06",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2024-06.csv.gz",
+      "sha256_gz": "208a72ddefe8e5d59897e064a19efa0788393bd8b52846da3d36c3166341b8b6",
+      "bytes_gz": 130230,
+      "sha256_csv_uncompressed": "ed202f00434b519d0a93f3a2a18cd403c2eb948d3be37b8fddb5bd432321229f",
+      "bytes_csv_uncompressed": 1244270,
+      "row_count": 10079,
+      "distinct_instruments": 116,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 0,
+      "observed_8h_events": 10079,
+      "observed_non_8h_events": 0,
+      "calendar_8h_slots_per_inst": 90,
+      "observed_interval_buckets": {
+        "8h": 9963
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2024-06": 9968,
+        "2024-07": 111
+      }
+    },
+    {
+      "month_utc": "2024-07",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2024-07.csv.gz",
+      "sha256_gz": "34f5857930acb006bc5f3d613869a713ae563e57697892f13fe876d7606f25d6",
+      "bytes_gz": 136936,
+      "sha256_csv_uncompressed": "9dce4669ca5c3373c3c181b35f43ef3a2cf19f7ef42fc2c02cc85d5a5fd85f63",
+      "bytes_csv_uncompressed": 1287175,
+      "row_count": 10425,
+      "distinct_instruments": 119,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 0,
+      "observed_8h_events": 10324,
+      "observed_non_8h_events": 101,
+      "calendar_8h_slots_per_inst": 93,
+      "observed_interval_buckets": {
+        "4h": 198,
+        "8h": 10108
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2024-07": 10309,
+        "2024-08": 116
+      }
+    },
+    {
+      "month_utc": "2024-08",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2024-08.csv.gz",
+      "sha256_gz": "72656ec474e82eca4fe760c49aaf933de539bb50093e0eddc61c64dd51fa502e",
+      "bytes_gz": 144241,
+      "sha256_csv_uncompressed": "5557b28e8913f810c3a63bdce16fc67dfa521da4654bee19ac27d0b3d2b526f1",
+      "bytes_csv_uncompressed": 1333437,
+      "row_count": 10787,
+      "distinct_instruments": 118,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 0,
+      "observed_8h_events": 10416,
+      "observed_non_8h_events": 371,
+      "calendar_8h_slots_per_inst": 93,
+      "observed_interval_buckets": {
+        "4h": 738,
+        "8h": 9931
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2024-08": 10672,
+        "2024-09": 115
+      }
+    },
+    {
+      "month_utc": "2024-09",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2024-09.csv.gz",
+      "sha256_gz": "13031571d66b6a24447d81bd0a2240a521418e6432b79338ce981b9c35790087",
+      "bytes_gz": 137791,
+      "sha256_csv_uncompressed": "8a153b5e6b3653bb740b4730ca202c39552109b0784cfd53ec344f34bb53fb1f",
+      "bytes_csv_uncompressed": 1279041,
+      "row_count": 10359,
+      "distinct_instruments": 123,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 0,
+      "observed_8h_events": 10089,
+      "observed_non_8h_events": 270,
+      "calendar_8h_slots_per_inst": 90,
+      "observed_interval_buckets": {
+        "4h": 536,
+        "8h": 9700
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2024-09": 10235,
+        "2024-10": 124
+      }
+    },
+    {
+      "month_utc": "2024-10",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2024-10.csv.gz",
+      "sha256_gz": "752fb228164dc6a453698a61a6408274312134406340489e6f51b8623af92ae5",
+      "bytes_gz": 152363,
+      "sha256_csv_uncompressed": "a8be81ecce6611a19a47b2241996763732ec0f3cac4705123e34f6f1c88352a2",
+      "bytes_csv_uncompressed": 1424336,
+      "row_count": 11525,
+      "distinct_instruments": 125,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 0,
+      "observed_8h_events": 11244,
+      "observed_non_8h_events": 281,
+      "calendar_8h_slots_per_inst": 93,
+      "observed_interval_buckets": {
+        "4h": 556,
+        "8h": 10844
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2024-10": 11408,
+        "2024-11": 117
+      }
+    },
+    {
+      "month_utc": "2024-11",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2024-11.csv.gz",
+      "sha256_gz": "74152fbe617da622488740a883590493a3a49df2894a2d7102479be715b9c241",
+      "bytes_gz": 137667,
+      "sha256_csv_uncompressed": "98658f5d33e4a1c15045f855708aef02e2213f8e2e8985693fc2fa0e9fa15916",
+      "bytes_csv_uncompressed": 1303658,
+      "row_count": 10546,
+      "distinct_instruments": 128,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 0,
+      "observed_8h_events": 10092,
+      "observed_non_8h_events": 454,
+      "calendar_8h_slots_per_inst": 90,
+      "observed_interval_buckets": {
+        "4h": 899,
+        "8h": 9519
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2024-11": 10413,
+        "2024-12": 133
+      }
+    },
+    {
+      "month_utc": "2024-12",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2024-12.csv.gz",
+      "sha256_gz": "ae705186a6fe40ca082773be5fdd861e8d1b6681393de8f806edaa5e2cbd6f13",
+      "bytes_gz": 166548,
+      "sha256_csv_uncompressed": "aac3773c376f1b3eb9ad21bc677dc0334619c4f3c7023482d027e360e61d819f",
+      "bytes_csv_uncompressed": 1531803,
+      "row_count": 12376,
+      "distinct_instruments": 134,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 0,
+      "observed_8h_events": 11538,
+      "observed_non_8h_events": 838,
+      "calendar_8h_slots_per_inst": 93,
+      "observed_interval_buckets": {
+        "4h": 1666,
+        "8h": 10576
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2024-12": 12236,
+        "2025-01": 140
+      }
+    },
+    {
+      "month_utc": "2025-01",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2025-01.csv.gz",
+      "sha256_gz": "44bf243d828c75981f9a7e3ee438135d95c87bf1d48c383752e17e81ef656c40",
+      "bytes_gz": 177886,
+      "sha256_csv_uncompressed": "6651766174b6026dbaac3fbd91f9c0ac267631a68e6361e07abf7b0a3ea32c38",
+      "bytes_csv_uncompressed": 1618776,
+      "row_count": 13090,
+      "distinct_instruments": 141,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 0,
+      "observed_8h_events": 12092,
+      "observed_non_8h_events": 998,
+      "calendar_8h_slots_per_inst": 93,
+      "observed_interval_buckets": {
+        "4h": 1982,
+        "8h": 10967
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2025-01": 12944,
+        "2025-02": 146
+      }
+    },
+    {
+      "month_utc": "2025-02",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2025-02.csv.gz",
+      "sha256_gz": "df383dd5a2d2f81305643780ae0fa642784c60a5842c3a814f041ba9003995d5",
+      "bytes_gz": 171953,
+      "sha256_csv_uncompressed": "37980d83d9403becf2a8843a6f77245d4719cdbe6b2a29e1ee1708aee7ee9d81",
+      "bytes_csv_uncompressed": 1542987,
+      "row_count": 12447,
+      "distinct_instruments": 145,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 0,
+      "observed_8h_events": 11092,
+      "observed_non_8h_events": 1355,
+      "calendar_8h_slots_per_inst": 84,
+      "observed_interval_buckets": {
+        "4h": 2689,
+        "8h": 9613
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2025-02": 12292,
+        "2025-03": 155
+      }
+    },
+    {
+      "month_utc": "2025-03",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2025-03.csv.gz",
+      "sha256_gz": "28210e45c6ce693bf0e590c45badf1e711d45a00280373a04c195352bd381f46",
+      "bytes_gz": 204634,
+      "sha256_csv_uncompressed": "6a5935211be0978bd588183de5610266b1efba4700f36d715e9edd2501db4efc",
+      "bytes_csv_uncompressed": 1808928,
+      "row_count": 14589,
+      "distinct_instruments": 148,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 0,
+      "observed_8h_events": 12645,
+      "observed_non_8h_events": 1944,
+      "calendar_8h_slots_per_inst": 93,
+      "observed_interval_buckets": {
+        "2h": 265,
+        "4h": 3463,
+        "8h": 10713
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2025-03": 14428,
+        "2025-04": 161
+      }
+    },
+    {
+      "month_utc": "2025-04",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2025-04.csv.gz",
+      "sha256_gz": "0f457bea13743a7a5a3a5b6cf32e0abb1a4e275217341a69255aa6f41c52562d",
+      "bytes_gz": 187080,
+      "sha256_csv_uncompressed": "6c1d8bd410a5e2ecbe6e0ccf539d9b6255aff1d78646da06dd0992324abf6b21",
+      "bytes_csv_uncompressed": 1776566,
+      "row_count": 14604,
+      "distinct_instruments": 155,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 0,
+      "observed_8h_events": 11988,
+      "observed_non_8h_events": 2616,
+      "calendar_8h_slots_per_inst": 90,
+      "observed_interval_buckets": {
+        "2h": 1190,
+        "4h": 3411,
+        "8h": 9848
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2025-04": 14411,
+        "2025-05": 193
+      }
+    },
+    {
+      "month_utc": "2025-05",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2025-05.csv.gz",
+      "sha256_gz": "f6bdaa9625bea4efa77cb3712ee814ff61b851be0767bf0f11de429561c9a777",
+      "bytes_gz": 168514,
+      "sha256_csv_uncompressed": "e0acef0ed521ccb885e70c8e0c016b3b56b32830d2d3a557e91a417b5bf3dd38",
+      "bytes_csv_uncompressed": 2176762,
+      "row_count": 18756,
+      "distinct_instruments": 156,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 0,
+      "observed_8h_events": 14034,
+      "observed_non_8h_events": 4722,
+      "calendar_8h_slots_per_inst": 93,
+      "observed_interval_buckets": {
+        "1h": 35,
+        "2h": 1302,
+        "4h": 7358,
+        "8h": 9905
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2025-05": 18540,
+        "2025-06": 216
+      }
+    },
+    {
+      "month_utc": "2025-06",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2025-06.csv.gz",
+      "sha256_gz": "5bc25c6c824b18a54e9ca32d67751d9530131dc2fb57031102de1989fdc7c4c7",
+      "bytes_gz": 202289,
+      "sha256_csv_uncompressed": "9916a0b7a3b7191ee98a7d300f97b283a76221fd92a41e915738b192b9a1e362",
+      "bytes_csv_uncompressed": 2299477,
+      "row_count": 19438,
+      "distinct_instruments": 163,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 0,
+      "observed_8h_events": 12778,
+      "observed_non_8h_events": 6660,
+      "calendar_8h_slots_per_inst": 90,
+      "observed_interval_buckets": {
+        "1h": 719,
+        "4h": 11982,
+        "8h": 6574
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2025-06": 19224,
+        "2025-07": 214
+      }
+    },
+    {
+      "month_utc": "2025-07",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2025-07.csv.gz",
+      "sha256_gz": "31f59f58fb3738451aff2e9adf11b3a21cd65f78115feb98296e649c2ca46018",
+      "bytes_gz": 160889,
+      "sha256_csv_uncompressed": "eef79fb32b4738f2bb3d51614641e7708dcfa4a6a539679d6c061269e5c228b9",
+      "bytes_csv_uncompressed": 2290992,
+      "row_count": 19905,
+      "distinct_instruments": 170,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 0,
+      "observed_8h_events": 13037,
+      "observed_non_8h_events": 6868,
+      "calendar_8h_slots_per_inst": 93,
+      "observed_interval_buckets": {
+        "1h": 568,
+        "2h": 199,
+        "4h": 12355,
+        "8h": 6613
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2025-07": 19660,
+        "2025-08": 245
+      }
+    },
+    {
+      "month_utc": "2025-08",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2025-08.csv.gz",
+      "sha256_gz": "ba04cb9215d54de5fb698fe57ee8d2eaded0c70beea4b250c6cb2fe41134d3e5",
+      "bytes_gz": 187768,
+      "sha256_csv_uncompressed": "89a0c1c963035951950e00b54e6f989da627967a687514e45dcc83b38f279e75",
+      "bytes_csv_uncompressed": 2653710,
+      "row_count": 23031,
+      "distinct_instruments": 176,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 0,
+      "observed_8h_events": 14593,
+      "observed_non_8h_events": 8438,
+      "calendar_8h_slots_per_inst": 93,
+      "observed_interval_buckets": {
+        "2h": 878,
+        "4h": 15463,
+        "8h": 6514
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2025-08": 22786,
+        "2025-09": 245
+      }
+    },
+    {
+      "month_utc": "2025-09",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2025-09.csv.gz",
+      "sha256_gz": "a4132c61e81b17cf1152990b6dbe582144c72ff2ae1ff71dd1e2824fdf1cbd17",
+      "bytes_gz": 169255,
+      "sha256_csv_uncompressed": "af2b6123376343af0cd7dd46bff626be6f8908fe9bcd194efaee07e04a6b705c",
+      "bytes_csv_uncompressed": 2512400,
+      "row_count": 21910,
+      "distinct_instruments": 181,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 0,
+      "observed_8h_events": 13420,
+      "observed_non_8h_events": 8490,
+      "calendar_8h_slots_per_inst": 90,
+      "observed_interval_buckets": {
+        "1h": 79,
+        "2h": 1642,
+        "4h": 14279,
+        "8h": 5729
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2025-09": 21648,
+        "2025-10": 262
+      }
+    },
+    {
+      "month_utc": "2025-10",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2025-10.csv.gz",
+      "sha256_gz": "94e1f964fb6982b86909fcdfb3b6af5e7da438f6ce50b057f83c674a04aeddf6",
+      "bytes_gz": 254314,
+      "sha256_csv_uncompressed": "292715bf25e73cf42c8387867e551fe714d8e2101e768e7be41301d8ea397c33",
+      "bytes_csv_uncompressed": 2896303,
+      "row_count": 24625,
+      "distinct_instruments": 180,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 0,
+      "observed_8h_events": 14789,
+      "observed_non_8h_events": 9836,
+      "calendar_8h_slots_per_inst": 93,
+      "observed_interval_buckets": {
+        "1h": 1434,
+        "2h": 932,
+        "4h": 15660,
+        "8h": 6419
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2025-10": 24358,
+        "2025-11": 267
+      }
+    },
+    {
+      "month_utc": "2025-11",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2025-11.csv.gz",
+      "sha256_gz": "57c1bea759372ca08f76d8f22d4b8356c1ddf95a6d95c9cb4e0295f468e29644",
+      "bytes_gz": 275431,
+      "sha256_csv_uncompressed": "c284766d2078e83354e9ceff2bf90da2a21c8dc305be6f1192c1a39d3770f430",
+      "bytes_csv_uncompressed": 2989687,
+      "row_count": 25237,
+      "distinct_instruments": 198,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 0,
+      "observed_8h_events": 14514,
+      "observed_non_8h_events": 10723,
+      "calendar_8h_slots_per_inst": 90,
+      "observed_interval_buckets": {
+        "1h": 2988,
+        "4h": 16099,
+        "8h": 5952
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2025-11": 24915,
+        "2025-12": 322
+      }
+    },
+    {
+      "month_utc": "2025-12",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2025-12.csv.gz",
+      "sha256_gz": "158e0bff5186158ea11919bbdbe1bdb2219a3559c3ecb41507fa9f13a7c4b5dd",
+      "bytes_gz": 324888,
+      "sha256_csv_uncompressed": "7e8c552377219e74c7e80e6a279c172d0bddda1747aa90f6041b9bc4cc2d63cf",
+      "bytes_csv_uncompressed": 3531443,
+      "row_count": 29869,
+      "distinct_instruments": 220,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 0,
+      "observed_8h_events": 17216,
+      "observed_non_8h_events": 12653,
+      "calendar_8h_slots_per_inst": 93,
+      "observed_interval_buckets": {
+        "1h": 2707,
+        "4h": 20424,
+        "8h": 6518
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2025-12": 29514,
+        "2026-01": 355
+      }
+    },
+    {
+      "month_utc": "2026-01",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2026-01.csv.gz",
+      "sha256_gz": "d5bc36bcc1f3fa40920cb5526fa96be970379cee563626e250ded7acdda91930",
+      "bytes_gz": 350638,
+      "sha256_csv_uncompressed": "bfc48b6cf0e5ddb37f658641e88fd32e1fd15a517a54d21465e7dfbadae47eba",
+      "bytes_csv_uncompressed": 3964832,
+      "row_count": 33747,
+      "distinct_instruments": 224,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 0,
+      "observed_8h_events": 18221,
+      "observed_non_8h_events": 15526,
+      "calendar_8h_slots_per_inst": 93,
+      "observed_interval_buckets": {
+        "1h": 4451,
+        "4h": 23115,
+        "8h": 5957
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2026-01": 33424,
+        "2026-02": 323
+      }
+    },
+    {
+      "month_utc": "2026-02",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2026-02.csv.gz",
+      "sha256_gz": "38615033e135c269000b10858214e42933244c0c378c88618acf95cbc7b2834f",
+      "bytes_gz": 331898,
+      "sha256_csv_uncompressed": "40bf9dbacff26ee494bc34fa53ec501b4154d93e376a68c118b76af7d3ae5f3d",
+      "bytes_csv_uncompressed": 3700881,
+      "row_count": 31456,
+      "distinct_instruments": 228,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 0,
+      "observed_8h_events": 15892,
+      "observed_non_8h_events": 15564,
+      "calendar_8h_slots_per_inst": 84,
+      "observed_interval_buckets": {
+        "1h": 6282,
+        "4h": 19975,
+        "8h": 4971
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2026-02": 31069,
+        "2026-03": 387
+      }
+    },
+    {
+      "month_utc": "2026-03",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2026-03.csv.gz",
+      "sha256_gz": "aad554e63e1894ddc51899466020c03be11cbf32cddf964102ad828176f02448",
+      "bytes_gz": 408438,
+      "sha256_csv_uncompressed": "7dbe3e260eaf3613117af58e43ff65161c873dceec18ae31901fe06497e1d8c2",
+      "bytes_csv_uncompressed": 4490591,
+      "row_count": 38080,
+      "distinct_instruments": 225,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 0,
+      "observed_8h_events": 19040,
+      "observed_non_8h_events": 19040,
+      "calendar_8h_slots_per_inst": 93,
+      "observed_interval_buckets": {
+        "1h": 7249,
+        "4h": 25234,
+        "8h": 5372
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2026-03": 37759,
+        "2026-04": 321
+      }
+    },
+    {
+      "month_utc": "2026-04",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2026-04.csv.gz",
+      "sha256_gz": "f82d39be373f43f6e86f2c158b39993d4c8825199cdd6be45876b32f4a3a3e16",
+      "bytes_gz": 290540,
+      "sha256_csv_uncompressed": "6d120bf2852efb01fad32fef18b03a0b8eb3c131fc0e2c2608befd5e036609c1",
+      "bytes_csv_uncompressed": 3511556,
+      "row_count": 30017,
+      "distinct_instruments": 231,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 0,
+      "observed_8h_events": 16226,
+      "observed_non_8h_events": 13791,
+      "calendar_8h_slots_per_inst": 90,
+      "observed_interval_buckets": {
+        "1h": 2868,
+        "2h": 148,
+        "4h": 22181,
+        "8h": 4589
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2026-04": 29670,
+        "2026-05": 347
+      }
+    },
+    {
+      "month_utc": "2026-05",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2026-05.csv.gz",
+      "sha256_gz": "d75f0c3f9b51b6d8da07dbd1b38cf36eae3bb2bd6d2ae58cd28d5fd7eea83119",
+      "bytes_gz": 282055,
+      "sha256_csv_uncompressed": "93abed52d528737c5d33b7cada21f9971ca7d196ae5042a2fb396cdb27f0b496",
+      "bytes_csv_uncompressed": 3761715,
+      "row_count": 32384,
+      "distinct_instruments": 244,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 0,
+      "observed_8h_events": 19171,
+      "observed_non_8h_events": 13213,
+      "calendar_8h_slots_per_inst": 93,
+      "observed_interval_buckets": {
+        "2h": 28,
+        "4h": 26214,
+        "8h": 5898
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2026-05": 32010,
+        "2026-06": 374
+      }
+    },
+    {
+      "month_utc": "2026-06",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2026-06.csv.gz",
+      "sha256_gz": "14149b79f532a76e3e5968b655781abe058ee66497ddf178ae82e8229ac7fdea",
+      "bytes_gz": 311020,
+      "sha256_csv_uncompressed": "9f03c7aa755769defbf654056c0284f47792549900681557673904d002c06eb2",
+      "bytes_csv_uncompressed": 3996148,
+      "row_count": 34208,
+      "distinct_instruments": 252,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 0,
+      "observed_8h_events": 19714,
+      "observed_non_8h_events": 14494,
+      "calendar_8h_slots_per_inst": 90,
+      "observed_interval_buckets": {
+        "1h": 547,
+        "2h": 240,
+        "4h": 27490,
+        "8h": 5679
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2026-06": 33818,
+        "2026-07": 390
+      }
+    },
+    {
+      "month_utc": "2026-07",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2026-07.csv.gz",
+      "sha256_gz": "506889f59cccfd0a1347925948866f8888033a7be25c32f778ad13ea404a9999",
+      "bytes_gz": 300467,
+      "sha256_csv_uncompressed": "972c17b390b5326904e0b9335603a5f776f7aa7d6e129cc19a4e6244e7aedcf5",
+      "bytes_csv_uncompressed": 4124559,
+      "row_count": 35606,
+      "distinct_instruments": 253,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 0,
+      "observed_8h_events": 20713,
+      "observed_non_8h_events": 14893,
+      "calendar_8h_slots_per_inst": 93,
+      "observed_interval_buckets": {
+        "1h": 140,
+        "2h": 149,
+        "4h": 29134,
+        "8h": 5930
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2026-07": 35260,
+        "2026-08": 346
+      }
+    },
+    {
+      "month_utc": "2026-08",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2026-08.csv.gz",
+      "sha256_gz": "5e9e41506feaa6b8fcfc49604ec402ac4cff8494f22a486e31ea15201daea318",
+      "bytes_gz": 263813,
+      "sha256_csv_uncompressed": "9441fc20b4800df62a2037e624e6f5ed694ccc362dbd9e0f6ae73c0e7490e243",
+      "bytes_csv_uncompressed": 3805104,
+      "row_count": 32931,
+      "distinct_instruments": 236,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 0,
+      "observed_8h_events": 18792,
+      "observed_non_8h_events": 14139,
+      "calendar_8h_slots_per_inst": 93,
+      "observed_interval_buckets": {
+        "1h": 104,
+        "2h": 63,
+        "4h": 27804,
+        "8h": 4724
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2026-08": 31801,
+        "l1_backfill": 1130
+      }
+    },
+    {
+      "month_utc": "2026-09",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2026-09.csv.gz",
+      "sha256_gz": "fb281c3e584f27608daabde2baf0876c4d073fd4eca8c7b2e72602c5ff0e1e92",
+      "bytes_gz": 167284,
+      "sha256_csv_uncompressed": "0da47a4357dbfb372c9efdbe97c9f106b68e1bb0c0ee558cf1a9f3ec90b1af5d",
+      "bytes_csv_uncompressed": 2487270,
+      "row_count": 20963,
+      "distinct_instruments": 161,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 0,
+      "observed_8h_events": 12113,
+      "observed_non_8h_events": 8850,
+      "calendar_8h_slots_per_inst": 90,
+      "observed_interval_buckets": {
+        "1h": 192,
+        "2h": 86,
+        "4h": 17112,
+        "8h": 3412
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2026-10": 2,
+        "l1_backfill": 20961
+      }
+    },
+    {
+      "month_utc": "2026-10",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2026-10.csv.gz",
+      "sha256_gz": "dea40c4004b4c16c3342a9f90372f2a5ca8f30236380250de6f31f398f73f18e",
+      "bytes_gz": 174033,
+      "sha256_csv_uncompressed": "f6b2891fcf6909cf2711b655e914de6994471415172aba4e93f1b2c71a3c29cc",
+      "bytes_csv_uncompressed": 2383752,
+      "row_count": 19950,
+      "distinct_instruments": 170,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 0,
+      "observed_8h_events": 11380,
+      "observed_non_8h_events": 8570,
+      "calendar_8h_slots_per_inst": 93,
+      "observed_interval_buckets": {
+        "2h": 100,
+        "4h": 16860,
+        "8h": 2820
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "2026-10": 184,
+        "l1_backfill": 19766
+      }
+    },
+    {
+      "month_utc": "2026-11",
+      "relative_path": "research/RESEARCH-LOOP-01/funding_archive_v1/shards/funding_2026-11.csv.gz",
+      "sha256_gz": "6ba99a78b3341d7c977d8eb903dbf8e79364118ad89691eb4c8210a505723ef6",
+      "bytes_gz": 67391,
+      "sha256_csv_uncompressed": "218c34cdd93519c528ba313354250d562ff5964df65412a6f80b0804f6cbe8c6",
+      "bytes_csv_uncompressed": 888274,
+      "row_count": 7392,
+      "distinct_instruments": 89,
+      "duplicate_raw_keys": 0,
+      "duplicate_snapped_keys": 0,
+      "snapped_diff_count": 0,
+      "observed_8h_events": 4070,
+      "observed_non_8h_events": 3322,
+      "calendar_8h_slots_per_inst": 90,
+      "observed_interval_buckets": {
+        "1h": 5,
+        "2h": 63,
+        "4h": 6474,
+        "8h": 761
+      },
+      "expected_non_8h_denominator_status": "unknown",
+      "source_ym_counts": {
+        "l1_backfill": 7392
+      }
+    }
+  ]
+}
