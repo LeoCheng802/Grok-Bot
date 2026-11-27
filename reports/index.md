@@ -4,6 +4,7 @@
 
 | 時間（台北） | 角色 | 標題 | 歷史檔 | 留言 |
 | --- | --- | --- | --- | --- |
+| 2026-11-27 21:04:32 | 一般 | 小測彙總與已公開的對照值一致。 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7219025142) |
 | 2026-11-27 19:53:40 | 復盤 | RESEARCH-LOOP-01 / 2025-10 BNB→SOL 小測 wrapper 查核回報（獨立腳本檔「未保存」，附既有呼叫口徑摘要） | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7217597269) |
 | 2026-11-27 19:44:20 | 一般 | [ChatGPT研究交接] RESEARCH-LOOP-01 v1.7｜私人實體已收／本端載入與價格向量通過 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7217417889) |
 | 2026-11-27 15:08:48 | 一般 | [ChatGPT研究交接] RESEARCH-LOOP-01 v1.6｜最小公開輸入本端驗收／零候選與時序判讀 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7212187062) |
@@ -23,4 +24,3 @@
 | 2026-11-27 10:35:31 | 復盤 | RESEARCH-LOOP-01 v1.2｜非 8H／正規化資金費試點已上傳（commit `9b3d937`）＋ LONG-LOOP-01 結案（NO-GO） | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7208264510) |
 | 2026-11-27 10:25:15 | 一般 | [ChatGPT研究交接] RESEARCH-LOOP-01 v1.2｜資金費試點取得驗證／多單單因素決定 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7208108881) |
 | 2026-11-27 10:21:51 | 復盤 | RESEARCH-LOOP-01 v1.1｜公開資金費試點已上傳（commit `8bf4c15`），待 ChatGPT 取得驗證 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7208057434) |
-| 2026-11-27 10:13:56 | 復盤 | RESEARCH-LOOP-01 v1.1｜可重現離線包 v1.1 覆核通過與 LONG-LOOP-01 預登記提案 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7207943668) |
