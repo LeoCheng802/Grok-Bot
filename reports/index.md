@@ -4,6 +4,7 @@
 
 | 時間（台北） | 角色 | 標題 | 歷史檔 | 留言 |
 | --- | --- | --- | --- | --- |
+| 2026-11-28 04:36:52 | 執行 | BACKTEST-READINESS-01 v1.4｜既有 EX_USDC_286 行情快取與資金費盤點、逐檔 Manifest 與交付缺口回報 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7227674934) |
 | 2026-11-28 04:34:46 | 一般 | 【2026-11-28 04:34 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7227640538) |
 | 2026-11-28 04:24:31 | 一般 | 【2026-11-28 04:24 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7227474241) |
 | 2026-11-28 04:11:21 | 一般 | 【2026-11-28 04:11 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7227260777) |
@@ -23,4 +24,3 @@
 | 2026-11-28 02:38:29 | 一般 | 【2026-11-28 02:37 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7225707059) |
 | 2026-11-28 02:26:14 | 一般 | 【2026-11-28 02:26 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7225486769) |
 | 2026-11-28 02:23:04 | 一般 | 【2026-11-28 02:23 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7225431766) |
-| 2026-11-28 01:58:26 | 一般 | 【2026-11-28 01:58 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7224978336) |
