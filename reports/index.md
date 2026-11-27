@@ -4,6 +4,7 @@
 
 | 時間（台北） | 角色 | 標題 | 歷史檔 | 留言 |
 | --- | --- | --- | --- | --- |
+| 2026-11-28 07:56:52 | 執行 | v1.11-b2 r1 D1 修正 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7230527499) |
 | 2026-11-28 07:55:02 | 一般 | 【2026-11-28 07:54 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7230504858) |
 | 2026-11-28 07:51:10 | 一般 | 【2026-11-28 07:51 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7230456720) |
 | 2026-11-28 07:48:35 | 執行 | BACKTEST-READINESS-01 v1.11 第 2 批：1,279 份官方月檔＋2026-11 官方 REST 歷史 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7230424846) |
@@ -23,4 +24,3 @@
 | 2026-11-28 07:06:57 | 一般 | 【2026-11-28 07:06 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7229883301) |
 | 2026-11-28 07:04:07 | 一般 | 【2026-11-28 07:03 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7229844373) |
 | 2026-11-28 07:01:37 | 一般 | 【2026-11-28 07:02 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7229811424) |
-| 2026-11-28 06:59:38 | 執行 | BACKTEST-READINESS-01 v1.11 第 1 批：5 標的官方月檔資金費增量 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7229783504) |

@@ -2,47 +2,66 @@
 
 此檔是「執行」的最新回報。
 
-- **時間（Asia/Taipei）**: 2026-11-28 07:48:35
+- **時間（Asia/Taipei）**: 2026-11-28 07:56:52
 - **角色**: 執行
-- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7230424846
+- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7230527499
 
-<!-- comment_id: 7230424846 -->
+<!-- comment_id: 7230527499 -->
 
-[執行] BACKTEST-READINESS-01 v1.11 第 2 批：1,279 份官方月檔＋2026-11 官方 REST 歷史
+[執行] v1.11-b2 r1 D1 修正
+【2026-11-28 07:56 台北時間（UTC+8）】
 
-- 角色：執行｜研究：BACKTEST-READINESS-01｜版本：v1.11-b2
-- 執行起迄（UTC）：2026-11-27T23:30:19Z 開始；Part A 至 23:41:56Z（第一輪在 900/1,279 中斷，從已存檔續跑）；Part B 至 23:43:00Z；輸出寫入 23:46:11Z～23:46:18Z
-- 固定 commit：PR #8 head `74764f32f6bcdfab8bcc25211eaeed9755fdeffe`，目錄 `research/funding_delta_v1_11_b2/`
-- 窗尾維持 `2026-11-26T12:00:00Z`。沒有補零、插值、繞過 403，也沒有傳送憑證。凍結庫未變（SHA `23ebdab5…0783cc`），85 份已驗 ZIP 不重抓，盤點不重做。
-- 口徑：結論一律來自官方列和既有資料（凍結庫＋v1.7／v1.9／v1.10／v1.11-b1）的逐鍵比對，鍵為 `(inst_id, snap 到整點)`。「確缺」只是優先候選。此批除 2026-11 外，待核月份都還沒逐鍵比對，不算完整。
+角色：執行
+任務：BACKTEST-READINESS-01 v1.11-b2 r1（D1）
+倉庫：LeoCheng802/Grok-Bot
+PR：#8（draft，branch `research/ex-usdc-286-manifests-draft`，未合併、未 force-push）
+新 head：`08ff3d5bdb02c8b28ed0170d234bf1f02e8cc0ca`（父 commit `74764f32`）
+執行時間（UTC）：2026-11-27T23:52:09Z – 2026-11-27T23:56:28Z
 
-**Part A：候選月份的官方月檔**
-- 1,279/1,279 HTTP 200；0 失敗、0 空檔。官方 174,957 列，鍵皆唯一。
-- 已匹配 5,601；新增 **169,356**（8H 104,157、非 8H 65,199）；衝突 0；官方內重複 0。
+## D1 驗證掃描
 
-**Part B：CST 2026-11 官方 REST `funding-rate-history`**
-- 請求 286 個，完整覆蓋 `[2026-10-31T16:00Z, 2026-11-26T12:00Z]` 的有 285 個。範圍內官方 39,037 列，已匹配 10,037，新增 **29,000**（8H 16,841、非 8H 12,159），衝突 0。新列費率全部取 `realizedRate`，原始回應資料均保留。
-- 285 個標的的分頁軌跡都有記錄（URL、請求 UTC、HTTP 狀態、列數、最小／最大 fundingTime、回應 SHA），也記了實際覆蓋範圍。
-- 未完整：`RVN-USDT-SWAP`。REST 回 HTTP 200、code 51001（Instrument ID doesn't exist），範圍內 0 列，列為待核（`rest_error`）。
+全量掃描結果：官方 `funding_rate` 為 literal `None` / null / 空 / 非數字的列，**恰好 2 筆**，沒有更多：
+1. OL-USDT-SWAP 2025-10，funding_time 1761292800000 = 2025-10-24T08:00:00.000Z，ZIP SHA `3e989693d34dee5c55d1fe0985056b021dc0b6378e9742a064270b86487e3d34`
+2. ZK-USDT-SWAP 2024-06，funding_time 1717660800000 = 2024-06-06T08:00:00.000Z，ZIP SHA `989a6dcfa7d84b6a47cdaa3a2f07c51f71492a9987922a9edbe3fd2b66341925`
 
-**合計**：官方唯一鍵 213,994；已匹配 15,638；新增 **198,356**（8H 120,998、非 8H 77,358）；衝突 0。
+掃描範圍：
+- `funding_delta_v1_11_b2.csv.gz` 198,356 列：numeric 198,354 + literal_none 2
+- 全部 1,279 個官方月 ZIP CSV：174,957 列，literal_none 2（即上述兩筆），其餘皆 numeric
+- REST：未篩選 chosen rate 104,740 全部 numeric；視窗內 39,037 全部 numeric
 
-**4 個 404**：仍是 CC 2025-10、INJ 2023-11、MEGA 2026-04、ORDER 2025-09，都維持 `404_reason_unknown`。官方 instruments 的 `listTime`／`state` 只當證據附上，沒有拿來改分類。
+兩個月都不是整月皆為 None（OL 2025-10：1/85；ZK 2024-06：1/54），class 維持 `covered_verified`，並設 `sub_reason=official_rate_null`，不是 plain `covered_verified`。
 
-**盤點 r1（7,536 格）**：`covered_verified` 1,364；`covered_verified_rest` 285；`pending_check` 5,883（原 5,882＋RVN 2026-11）；`official_unavailable` 4。
+## 修正
 
-**交付檔（SHA-256）**
-- `funding_delta_v1_11_b2.csv.gz`：3,035,615 B，198,356 列，`2ef8517fc3d70ff098a0ea65c5ad07ffbc0142befa375cf8996ebb8db962d54b`
-- `funding_source_months_v1_11_b2.json`：1,295,577 B，`1d9d93f8637f87ac9b75d0bba06a5550c88edf4886824bfd06d5ca21316193ae`
-- `funding_conflicts_v1_11_b2.json`：75 B，`154af0034d85c4ceaec4e39560211fe2a91b37af47a46ce15eb5dc3c492bc8c8`
-- `funding_month_inventory_v1_11_r1.csv`：751,576 B，`3a9ef2b8b8adeb163a4ae6fb197006cc99ffca491141b109a51586e6874b2f3e`
-- `funding_delta_v1_11_b2_manifest.json`：10,586 B，`4d907caeac03ec4c7a822941586d14226c6691ad076c96d8e6e98c8fea9a9468`。內含實際輸入的 SHA：凍結庫、先前 4 份增量、原盤點 CSV。
-- `fetch_evidence_v1_11_b2.jsonl`：2,413,395 B，`b54fa9f82cb399b5bb52aa9d7ce8a79a194ed95f54a3372b68e324f96d1baf66`。記錄每個請求的 URL、UTC、狀態、回應 SHA；續跑時只追加不覆寫。
-- `instruments_swap_v1_11_b2.json.gz`：26,245 B，`87020ee68af8e3dd39c7e6482359ff6eb2dcd83276c34c74327d3f8edb97f6f1`
-- 生成程式（可公開版）：`build_delta_v1_11_b2_public.py`，`2ef8e02c…d97c`；`build_inventory_v1_11_public.py`，`47dcd0d0…9d30`
-- 原始資料：`official_monthly_zips/` 1,279 份、`rest_2026_11/` 286 份。
+- 從 delta 移除上述 2 列，不補 0、不內插；另存 `funding_null_rate_rows_v1_11_b2_r1.csv`，flag `official_rate_null`（含原始 ts、inst、raw rate 字串、來源 ZIP 與 ZIP SHA）。
+- 以既存官方 ZIP / REST 重建（未重新抓取）。
+- 新資料夾 `research/funding_delta_v1_11_b2_r1/`（不複製 1,279 個 ZIP）；舊 b2 檔保留，r1 為 D1 後的 supersede 產物。
+- 公開產生腳本 `build_delta_v1_11_b2_r1_public.py` 改為拒絕非數字 rate 並寫入 flagged file。
 
-**缺口**：5,882 個待核月份還沒逐鍵比對，可能仍缺 1H／4H 結算；RVN 2026-11 的 REST 查不到此標的；4 個 404 原因未知。因此不能說資金費資料已完整。
-**下一步**：待核 5,882 份月檔分批抓取並逐鍵比對，估計約 30～40 分鐘，分 2～3 批交。
+## 計數
 
-紅線維持：不補零、不插值、不刪幣換母體、不盲目 INSERT OR IGNORE；PR #7／#8 為 draft、不合併；`FIB-4H-LONG-V3` NO-GO，`live_approved: false`。
+- 新 delta：**198,354**（ZIP 169,354 + REST 29,000）
+- 8H / 非 8H：120,996 / 77,358
+- matched 既有鍵：**15,638 不變**（ZIP 5,601 + REST 10,037）
+- conflicts：0；intra-official dups：0
+- official numeric unique keys：213,992
+- Inventory r2 class 不變：covered_verified 1,364、covered_verified_rest 285、pending_check 5,883、official_unavailable 4；其中 covered_verified|official_rate_null = 2。
+
+## 檔案 SHA-256
+
+- `funding_delta_v1_11_b2_r1.csv.gz`：`ac3890c5de16b7254ef3b51afbb9af7826467a3c14fe193ce3a04ddc583d2e86`（3,035,583 B；解壓 CSV SHA `ba0805e6715a704d247584e721e77ed62bc78524085b97057c47bac95fa1e01c`）
+- `funding_null_rate_rows_v1_11_b2_r1.csv`：`6bf5e0aa7db67ee718e57cd5fff558a44d480b6c5ea9eca7f8d1d910582af2e8`
+- `funding_conflicts_v1_11_b2_r1.json`：`e1c0bc2bccf31826a531bdf56a14c3fde30c7325b1981bef8b24e446d6fb9f78`
+- `funding_month_inventory_v1_11_r2.csv`：`0d8e34a2a1f759086826c025977dfd690af5355a5477183dd8287e2565dfa085`
+- `funding_delta_v1_11_b2_r1_manifest.json`：`fc61b31d0eff6614808659d4a94b62636b2ec7dee3ed4346b2215d8e694154ed`
+- `build_delta_v1_11_b2_r1_public.py`：`160986a542b9fa5a8c04b40ff438fcc5be3ab5b88b4e30d75951a24331bd957d`
+- `CHANGELOG.md`：`b028fa6b261f8518a4ebf66484d83da1f283d42d3e82c3564c6995c52a90936e`
+
+## 剩餘缺口與限制
+
+- pending_check 仍為 5,883 個月，含 RVN-USDT-SWAP 2026-11（official REST code 51001，instrument ID 不存在）。
+- 4 個官方 ZIP 404 維持 `official_unavailable` / `404_reason_unknown`（CC 2025-10、INJ 2023-11、MEGA 2026-04、ORDER 2025-09）。
+- REST evidence 存的是解析後的 JSON，不是 raw HTTP bytes（復盤已指出；本次不重新抓取，僅記錄此限制）。
+
+FIB-4H-LONG-V3 維持 NO-GO。live_approved = false。
+離線研究資料修正，未交易、未模擬、未擴窗、未補值。
