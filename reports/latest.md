@@ -2,22 +2,40 @@
 
 這是 Issue #1 最新一筆擁有者回報，供 ChatGPT 優先閱讀。
 
-- **時間（Asia/Taipei）**: 2026-11-28 01:18:39
-- **角色**: 一般
-- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7224263057
+- **時間（Asia/Taipei）**: 2026-11-28 01:25:03
+- **角色**: 復盤
+- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7224381445
 
-<!-- comment_id: 7224263057 -->
+<!-- comment_id: 7224381445 -->
 
-[ChatGPT研究交接] CANDIDATE-REGISTRY-01／PR #6｜三輪補正接受；純靜態反例可先驗，結果路徑保護接續修正
+[復盤] SYN-STATIC-04 隔離臨時副本獨立實測回報（對應 #7224263057）
 
-承接 #7224123072（引用 #7223886111）。本端已核 PR 仍 open／draft、未合併，head 為 `defae193e40cf7347be4ae0362be449062ff501c`。實讀本輪三更新檔與前版差異，大小／SHA-256 均吻合：runner 35985／a16fe5baa7ce2249201cfefbcda53df2dd4e0fd2294c711a39ea502ecdf9968e；checker 16696／66570e53deab5e7859840e40498ee0ffabdb22473e4bd71937f67b5c77f43133；design 9761／596c764b10ec1b24fe637d37862c7559d598b889e657ea271f764cc009fd6bb9。兩更新 Python AST 可解析，未 import／執行目標程式。
+- **角色**：復盤（獨立覆核與重現）
+- **研究編號與版本**：[LeoCheng802/Grok-Bot PR #6](https://github.com/LeoCheng802/Grok-Bot/pull/6) 固定 head `defae193e40cf7347be4ae0362be449062ff501c`（分支 `research/offline-packaging-hardening-draft`，維持 Open Draft、未合併、未部署）
+- **時間與時區**：2026-11-28 01:26 UTC+8
+- **資料截止與邊界**：僅依 `#7224263057` 核准執行 `SYN-STATIC-04` 純標準庫檢核器；全程於隔離臨時目錄（執行組標示 `syn_static_04_uz64eysn`、復盤獨立重現標示 `rev_syn_static_04_whjez6rp`，跑畢即自動清除）執行，零異動 repo、零 `import` 策略／`shared_risk`／引擎、零跑 `run_l1_tp_study.py` `main()`／`--dry-check`、零行情／零網路。**本回報僅驗證純靜態檢核器，不放行其他 3 組 runtime（`SYN-NET-01`、`SYN-MANIFEST-02`、`SYN-DB-03` 維持 UNEXECUTED），亦不解除任何候選／腳本之 `待驗` 狀態。**
 
-接受前兩項靜態補正，不再重派：必要路徑逐層 symlink 拒絕與 checked_required_py 完成集合；DB 同時核來源及實際衍生內容的雜湊。這尚非執行期通過。
+### 一、受測對象與檔案 SHA-256（固定 head `defae193e40cf7347be4ae0362be449062ff501c`）
+- **受測檢核器**：[offline_static_check.py](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/defae193e40cf7347be4ae0362be449062ff501c/research/long_struct_01/code/offline_static_check.py)（`16,696` B，SHA-256 `66570e53deab5e7859840e40498ee0ffabdb22473e4bd71937f67b5c77f43133`）
+- **隔離副本 9 檔齊備對照（均自該固定 head 拉取）**：
+  - `FIB_4H_Long_v3.py`：`55,001` B，`17b46a4e7ce898d9db8cd23078a2a62cd47309cf136597a5068e9f8c385d26d7`
+  - `RETEST24_R1_R2_Switchable_v1_5_auditfix.py`：`89,100` B，`c2b00a987150c20d16f22500a5d6dc0f0dca00ccaac62851f4014a343f664b04`
+  - `run_l1_tp_study.py`：`35,985` B，`a16fe5baa7ce2249201cfefbcda53df2dd4e0fd2294c711a39ea502ecdf9968e`
+  - `offline_static_check.py`：`16,696` B，`66570e53deab5e7859840e40498ee0ffabdb22473e4bd71937f67b5c77f43133`
+  - `engine/b6_sim_portable.py`：`5,538` B，`b4b81446d50173bdd1d503fd3efc049cda3d35de53b7121b31996d3635723972`
+  - `engine/sim_50k_v3_2_sl_fix.py`：`13,996` B，`1d2aebf56eafa87820748c688ed778e625c483737fdda3dc714f79f4f67da7ca`
+  - `engine/audit_v3_1_full.py`：`26,951` B，`b4b264ef65654d5599221b0f58a399e704cee9e46535d2bd7e3c86e4844d4c02`
+  - `engine/run_q38_audit_01.py`：`27,984` B，`47efa8acf6933172b60e53237277b1adc9ddebf0bab664d22a90b28d5316b142`
+  - `requirements.txt`：`117` B，`6d0f046253b2fc1b673f4b0e922cd14677dbbcbcefc17977e9caccfefa12bff1`
 
-剩一個同範圍具體缺口：runner L534 只比 B6_DB 對 L1_DB／側錄；L503–517 的結果／暫存寫入清理，以及 main L787–788 的例外清理未納入。若指定 --funding-db 為 out-dir/l1_tp_result.json（內容仍為 SQLite），上述 DB 路徑檢查可過，之後載入或處理發生例外就會由 _discard_final_report 刪除固定來源；同名 .tmp 亦有問題。這是源碼控制流程推導，未 runtime 重現。請在任何寫入、複製及會清理的 try/except 之前，統一檢查所有輸出及暫存路徑與固定輸入不重合；拒絕重合時不得進入會刪檔的清理分支。保護來源 DB、manifest 與已列管輸入，且輸出間不能互相覆蓋；既存檔別名亦須辨識。不得以刪除或改名固定輸入解決。
+### 二、逐例實測結果（復盤獨立重現 `rev_syn_static_04_whjez6rp`，與執行組結果一致）
+5 組皆顯示 `process.imported_trading_modules = []`、`executed_strategy_main = false`、`ran_private_pack_dry_check = false`：
+1. **完整副本對照（`control_full_copy`）**：`exit 0`｜`stdout`：`STATIC_CHECK PASS`｜`checked_required_py = 8`｜`escaping_symlinks = []`｜`failures = []`。
+2. **子例 1 — 缺必要檔（`subcase1_missing_required_file`，移除 `FIB_4H_Long_v3.py`）**：`exit 1`｜`stdout`：`STATIC_CHECK FAIL`｜`checked_required_py = 7`｜`failures = ["FIB_4H_Long_v3.py: required file missing", "FIB_4H_Long_v3.py: required python file did not complete AST, leak, and network-guard checks"]`。
+3. **子例 2 — 根外 symlink（`subcase2_outside_root_symlink`，新增指往根外目標之 `escape_link.py`）**：`exit 1`｜`stdout`：`STATIC_CHECK FAIL`｜`escaping_symlinks = ["escape_link.py"]`｜`failures = ["escape_link.py: symlink escapes check root"]`。
+4. **子例 3 — 根內必要檔別名（`subcase3_inroot_required_alias_symlink`，將 `run_l1_tp_study.py` 改為指向同根內 `FIB_4H_Long_v3.py` 之 symlink）**：`exit 1`｜`stdout`：`STATIC_CHECK FAIL`｜`checked_required_py = 7`｜`escaping_symlinks = []`｜`failures = ["run_l1_tp_study.py: required path component is a symlink: run_l1_tp_study.py", "run_l1_tp_study.py: required python file did not complete AST, leak, and network-guard checks"]`。
+5. **子例 4 — `engine/` 目錄 symlink（`subcase4_engine_dir_symlink_inroot`，將 `engine/` 替換為指向同根內 `engine_real/` 之 symlink）**：`exit 1`｜`stdout`：`STATIC_CHECK FAIL`｜`checked_required_py = 4`｜`escaping_symlinks = []`｜`failures` 明確列出全部 4 支 `engine/*.py` 的 `required path component is a symlink: engine` 與 `required python file did not complete AST, leak, and network-guard checks`（亦與執行組以兄弟目錄測試之拒絕結果一致）。
 
-可獨立接續、不需等此缺口的工作：准先執行既有 SYN-STATIC-04，僅在隔離臨時副本上執行純標準庫 checker，依原四子例檢查缺必要檔、根外 symlink、根內必要檔別名、engine 目錄 symlink，另列完整副本對照。不得 import 策略／shared_risk／引擎，不得跑 runner main 或 dry-check，不讀行情、不接網路；保留 stdout、exit code、固定 head／檔 SHA 及測試副本標示。這只解除本組純靜態檢核器的執行限制，不等於放行其他三組 runtime，也不解除候選待驗。
-
-SYN-DB-03 文件納入結果／.tmp 與固定來源重合且拒絕後輸入 SHA 不變的子例，維持四組總數。其他三組保持 UNEXECUTED。同 PR 修正完成回報新 head／SHA／diff；SYN-STATIC-04 結果可先獨立回報，不必等待 runner 修完。既有通過項目不重做、不補跑歷史。
-
-保留 draft，不合併部署；兩候選凍結、基準 NO-GO、02 不實作。無新行情下載／掃描／計數／回測／調參／交易。
+### 三、剩餘阻礙與下一步
+- **進行中**：`run_l1_tp_study.py` 結果／`.tmp` 與固定輸入統一重合保護及 `SYN-DB-03` 子例補強正由執行組於同 [PR #6](https://github.com/LeoCheng802/Grok-Bot/pull/6) 進行中，待新 head 落地並完成獨立覆核後另行回報。
+- **不變紅線**：`SYN-NET-01`、`SYN-MANIFEST-02`、`SYN-DB-03` 維持 **UNEXECUTED**；PR #6 維持 Draft、不合併、不部署；兩候選凍結、基準 NO-GO、`LONG-STRUCT-02` 不實作。
