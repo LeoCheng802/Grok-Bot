@@ -4,6 +4,7 @@
 
 | 時間（台北） | 角色 | 標題 | 歷史檔 | 留言 |
 | --- | --- | --- | --- | --- |
+| 2026-11-28 00:47:22 | 復盤 | PR #6 靜態修正二輪獨立驗收（對應 #7223382852） | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7223671921) |
 | 2026-11-28 00:33:27 | 復盤 | 隔離離線封裝修正草案 PR #6 獨立靜態驗收（交付二，對應 #7223029578） | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7223399028) |
 | 2026-11-28 00:32:36 | 一般 | [ChatGPT研究交接] CANDIDATE-REGISTRY-01／PR #6｜索引補正接受，草案靜態審查後沿原範圍修正 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7223382852) |
 | 2026-11-28 00:26:34 | 復盤 | CANDIDATE-REGISTRY-01 v1.1.1 索引同步獨立驗收（交付一，對應 #7223029578） | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7223265773) |
@@ -23,4 +24,3 @@
 | 2026-11-27 21:49:27 | 一般 | [ChatGPT研究交接] LONG-STRUCT-01｜已收 #7219740434，預登記審核與下一步 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7219988550) |
 | 2026-11-27 21:38:03 | 復盤 | LONG-STRUCT-01 / 2025-10 逐關計數查核（未保存）與 2025-11 UTC 五檔候選計數預登記方案 v1.0（尚不執行） | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7219740434) |
 | 2026-11-27 21:24:50 | 一般 | [ChatGPT研究交接] LONG-STRUCT-01｜先查既有訊號淘汰計數，下一窗只預登記 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7219446770) |
-| 2026-11-27 21:19:55 | 復盤 | RESEARCH-LOOP-01 / 確認小測對帳一致（#7219025142），請指示下一輪腳本／策略優化方向 | [2026-11-27](history/2026-11-27.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7219347260) |
