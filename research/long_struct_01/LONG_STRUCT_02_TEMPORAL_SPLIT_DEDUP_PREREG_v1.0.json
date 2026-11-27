@@ -1,0 +1,112 @@
+{
+  "document_id": "LONG-STRUCT-02-TEMPORAL-SPLIT-DEDUP-PREREG",
+  "version": "v1.0",
+  "status": "PROPOSED_NOT_EXECUTED",
+  "created_at_taipei": "2026-11-27 23:00 CST",
+  "parent_issue_refs": [
+    "Issue #1 #7220657604",
+    "Issue #1 #7220789322",
+    "Issue #1 #7221278251"
+  ],
+  "frozen_predecessor_preserved_unchanged": {
+    "spec_id": "LONG-STRUCT-01",
+    "spec_version": "v1.2",
+    "prereg_spec_sha256": "b97fd47ad62e4a4b80ba6b103264e9f72a275c954f887fb160de4bce3faa27b9",
+    "isolated_builder_sha256": "4ea731a4f5b62dfa0b435e5a03a028c5c2bb0b190a6076e03442f5856fca073b",
+    "november_2025_5sym_summary_sha256": "33755e95e401af9af1ba9fa9bd98ada9d64eadcc93c833358cc33f84e85809ae",
+    "frozen_conclusion_scope": "僅限原五檔（ADA/DOGE/FIL/SOL/XRP）2025-11 UTC 歷史診斷窗中同棒交集為零；不升級為普遍邏輯互斥，不回填 2025-10 成因，不改動原版。"
+  },
+  "hypothesis_under_evaluation": {
+    "name_zh": "單一時間結構假說：掃破收復與後續動能確認分成先後時點",
+    "sole_primary_difference_vs_same_bar_v1_2": "保留 LONG-STRUCT-01 v1.2 原版不改；唯一主要差異是將「4H 掃破＋收復＋收陽（結構事件）」與「4H EMA60＋RSI14 [55,85]（動能確認）」拆成先後兩個已收 4H 棒時點，而非強制於同一根 4H 棒同時發生。其餘所有門檻、價格距離與取整、出場、30m 撮合與風控口徑完全不變。"
+  },
+  "step_1_rule_deduplication_assessment": {
+    "comparisons": [
+      {
+        "prior_design": "10 日假跌破收復（外部歷史研究，本機無同版引擎或輸出）",
+        "local_artifact_available": false,
+        "family_relation": "共享 sweep -> reclaim -> retest limit 策略家族（非全新家族）。",
+        "rule_differences": "先前研究為 10 日低點＋30m 收盤確認即掛單（無獨立之 4H EMA60＋RSI[55,85] 延遲動能確認階段）＋24H TTL，且屬不同引擎與成本口徑；本假說為 4H 24 棒低點掃破收陽後，於後續 1..6 根 4H 棒等待原版 EMA60＋RSI[55,85] 確認，再於確認後掛單並採 48H TTL。",
+        "local_verdict": "未於本端證實等同；惟因共享家族，若 ChatGPT 依既有負證據判定同家族應直接封存，則直接停止不執行。"
+      },
+      {
+        "prior_design": "L1 / LONG-LOOP（LONG-SHORT-SCOPE-01-L1 v1.1 與 LONG-LOOP-01 v1.1_corrected）",
+        "local_artifact_available": true,
+        "archived_artifact_hashes": {
+          "l1_tp_result.json": "45a9f3696539b77a7629e0be165cfec41ff4fdb9add0e6b4cea2cc394ac82dbc",
+          "long_loop_01_result_v1_1_corrected.json": "2f892a1fd18a0823db25c00c076cc005bebff28ec01f16274d2b8ddadf85ad52"
+        },
+        "rule_differences": "兩者皆為無結構條件之 FIB_4H_Long_v3（0.618 回撤限價＋調整 TP 或加 BTC 濾網），不含掃破收復事件與兩階段確認狀態機；皆已封存 NO-GO。",
+        "local_verdict": "實質不同設計（不重疊）。"
+      },
+      {
+        "prior_design": "B24H",
+        "local_artifact_available": false,
+        "rule_differences": "本機未保存 B24H 之規則、腳本或輸出檔（不編造規格或績效），無法於本端證實等同或排除。",
+        "local_verdict": "待 ChatGPT 依既有紀錄覆核去重；若確認為已測同義設計，直接引用既有負證據停止。"
+      },
+      {
+        "prior_design": "A60＋量縮",
+        "local_artifact_available": false,
+        "rule_differences": "保留為 77 指定歷史對照項目；本機無同版引擎或資料（不編造）。本假說不含成交量收縮條件，屬不同入場結構。",
+        "local_verdict": "實質不同設計（本機無同版對照資料）。"
+      }
+    ],
+    "dedup_branch_decision": "在本端可驗證範圍內，與同棒版 LONG-STRUCT-01 v1.2 及已封存 L1/LONG-LOOP 存在單一明確之時間結構差異，故提交本份尚未執行（PROPOSED_NOT_EXECUTED）之預登記規格；最終是否與外部 10 日假跌破或 B24H 重疊，交由 ChatGPT 覆核裁決，未獲明確核准前絕不執行。"
+  },
+  "step_2_temporal_structure_prereg_specification": {
+    "execution_status": "PROPOSED_NOT_EXECUTED",
+    "1_structure_event_validity_window": {
+      "structure_bar_s_struct": "已收 4H 棒 [t_struct - 4H, t_struct)，滿足 Low < L_ref_event、Close > L_ref_event、Close > Open，其中 L_ref_event = min(Low of prior 24 closed 4H bars [t_struct - 25*4H, t_struct - 4H))，且 s_struct 處須至少有 25 根連續已收 4H 棒。",
+      "validity_horizon_bars_4h": 6,
+      "validity_horizon_hours": 24,
+      "allowed_confirmation_offsets_k": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "k_zero_excluded_note": "k = 0 即同棒版 LONG-STRUCT-01 v1.2（已凍結），故本假說嚴格限定 k ∈ {1, 2, 3, 4, 5, 6}，單一固定常數不做參數掃描。",
+      "early_invalidation_rule": "於等待確認期間（對所有位於 (t_struct, bt_confirm] 且已收盤之 4H 棒，包含 s_confirm 本身），若任一根出現 Close < L_ref_event，該結構事件立即失效（invalidated_close_below_L_ref），不可再被確認。"
+    },
+    "2_confirmation_timestamp": {
+      "confirmation_bar_s_confirm": "在有效視窗 k ∈ {1..6} 內，第一個（earliest）滿足全部原版濾網之已收 4H 棒 [bt_confirm - 4H, bt_confirm)：60 根連續 4H 硬門檻（180 根初始化）、60 根連續 UTC+8 1D 因果閘、Close_{s_confirm} > EMA60(bt_confirm)、55.0 <= RSI14(bt_confirm) <= 85.0，且未觸發中途失效。",
+      "decision_timestamp_bt_confirm": "bt_confirm = s_confirm.close_utc；僅可讀取 Open_{bt_confirm}，嚴禁讀取 [bt_confirm, bt_confirm + 4H) 之 High/Low/Close。"
+    },
+    "3_data_availability_and_no_backfill_rule": {
+      "s_struct_available_after_utc": "t_struct (= s_struct.close_utc)",
+      "s_confirm_and_filters_available_after_utc": "bt_confirm (= s_confirm.close_utc)；所有納入之 4H 與 1D 暖機棒均須逐棒滿足 close_utc == available_after_utc <= bt_confirm。",
+      "prohibit_pre_confirmation_fill_backfill": true,
+      "no_backfill_clause_zh": "明文禁止倒填確認前成交：任何發生於 bt_confirm 之前（包含 s_struct 棒內及 [t_struct, bt_confirm) 等待確認期間）的價格觸及或穿價，一律視為不可撮合，嚴禁倒填或追溯成交。"
+    },
+    "4_first_limit_effective_and_ttl_anchor": {
+      "price_gate_unchanged_at_bt_confirm": {
+        "op_ref": "Open_{bt_confirm} (> 0)",
+        "raw_px": "round(L_ref_event, 4)",
+        "dist_raw_literal_float": "0.0005 <= (op - raw_px) / op <= 0.10（嚴格先於 tick 對齊，不因報表取整改入選）",
+        "tick_placement": "Decimal ROUND_DOWN to tickSz，且須 px_d > 0（取整後不回頭重測 dist，排序鍵仍為 -dist）"
+      },
+      "order_placement_anchor_pts": "pts = bt_confirm",
+      "first_eligible_30m_bar_optimistic_cross_1tick": "[bt_confirm, bt_confirm + 30m)（t30 == bt_confirm；標註樂觀／未解）",
+      "first_eligible_30m_bar_conservative_delay1bar": "[bt_confirm + 30m, bt_confirm + 60m)（t30 > bt_confirm；延遲 1 根 30m 棒）",
+      "ttl_anchor": "48H 嚴格自確認後掛單時點 pts = bt_confirm 起算（t30 >= bt_confirm + 48H 到期），不因 delay1bar 順延，亦不回溯自 t_struct 起算。"
+    },
+    "5_same_event_deduplication": {
+      "single_trigger_per_event": "同一筆結構事件 (symbol, t_struct, L_ref_event) 於首次到達 bt_confirm（無論最終通過或因距離門檻失敗）即標記 consumed 結案，或於失效／超過 k=6 過期即標記 closed，絕不對後續 k 棒重複發單。",
+      "single_active_pending_event_per_symbol": "若同標的在舊待確認事件尚未過期／未消耗前出現新的合格結構事件 t_struct_new > t_struct_old，採最新待確認事件覆蓋舊待確認事件（單一標的同時最多持有 1 筆待確認事件），確保任一 bt_confirm 每個標的最多只求值 1 筆事件、最多產生 1 筆候選。"
+    },
+    "unchanged_baseline_components": [
+      "EMA60（60 硬門檻 / 180 初始化）與 RSI14 [55, 85] 不改",
+      "60 根連續 UTC+8 1D 因果有效閘不改",
+      "價格距離 [0.0005, 0.10] literal float、Decimal ROUND_DOWN tick 對齊與 -dist 穩定排序不改",
+      "出場規則（TP 2.5% / SL 4.0%）、費用／滑價、30m 撮合與風控參數（max_slots=24、risk=150U、daily_loss=600U、loss_streak=3/24h）全部不改"
+    ],
+    "governance_and_red_lines": [
+      "本文件為 PROPOSED_NOT_EXECUTED；未獲 ChatGPT 明確覆核去重並核准前，禁止任何行情計數、掃描、下載、回測或調參。",
+      "零 --demo / --live、零下單／撤單／部署／實盤風控變動；原多單封存、空單與 14 天前向觀測維持凍結。",
+      "私人完整程式碼、逐筆紀錄、帳戶資料與本機路徑嚴禁公開。"
+    ]
+  }
+}

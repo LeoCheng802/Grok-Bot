@@ -1,0 +1,254 @@
+{
+  "result_id": "LONG-STRUCT-01-CANDIDATE-COUNT-2025-11-SUMMARY",
+  "version": "v1.0",
+  "executed_at_taipei": "2026-11-27 22:26 CST",
+  "approved_by_issue_comment": "Issue #1 #7220657604",
+  "prereg_reference": {
+    "plan_id": "LONG-STRUCT-01-CANDIDATE-COUNT-2025-11-PREREG",
+    "version": "v1.1",
+    "commit_sha": "e10f4f8d4534139f5394d3ff0c517eddb39c085a",
+    "sha256": "605e28538323a815eb3bf045e1bdf28c66a90d00ddc499f17561c15b2e19016a"
+  },
+  "window_role": {
+    "classification": "historical_diagnostic_window",
+    "label_zh": "歷史診斷窗",
+    "is_independent_oos": false
+  },
+  "window_utc": {
+    "decision_window_bt_inclusive_start": "2025-11-01T00:00:00Z",
+    "decision_window_bt_exclusive_end": "2025-12-01T00:00:00Z",
+    "last_decision_bar_bt": "2025-11-30T20:00:00Z",
+    "no_48h_prewindow_spillover": true
+  },
+  "fixed_symbol_order": [
+    "ADA-USDT-SWAP",
+    "DOGE-USDT-SWAP",
+    "FIL-USDT-SWAP",
+    "SOL-USDT-SWAP",
+    "XRP-USDT-SWAP"
+  ],
+  "precheck": {
+    "all_input_hashes_verified": true,
+    "manifest_vs_universe_order_exact_match": true,
+    "per_bar_4h_and_1d_continuity_causality_verified": true,
+    "data_gap_detected": false,
+    "data_gaps": [],
+    "verified_input_hashes": {
+      "manifest.json": "b6b4fde6dc84cc26d72258a38e4b6059ca1fe2fa24bea369f9a792e5e36d71b8",
+      "ex_usdc_286_universe.json": "9b417c3c7ebf15f7454cf960ab9f356abdedca120b5201dbe0c4e8f53e0abe69",
+      "long_struct_01_v1_2_isolated.py": "4ea731a4f5b62dfa0b435e5a03a028c5c2bb0b190a6076e03442f5856fca073b",
+      "LONG_STRUCT_01_PREREG_v1.2.json": "b97fd47ad62e4a4b80ba6b103264e9f72a275c954f887fb160de4bce3faa27b9",
+      "ADA-USDT-SWAP.npz": "50dbea1d85c532a8be05eb3120c89ddadc0e131c8d3ea53764db311ce861f805",
+      "DOGE-USDT-SWAP.npz": "fc3fe19ca5100d6b89a04fbd9739ffe9ce6fbdcc05707d1d20f0ed096896380c",
+      "FIL-USDT-SWAP.npz": "fff9d783e9009372660d0bc390f8bc014350faa0cbcf04f24f357c7c2f3925eb",
+      "SOL-USDT-SWAP.npz": "db424061ff9cb85a056800d2cd5a166445720cafd0aaf3cd03446ea061934d99",
+      "XRP-USDT-SWAP.npz": "302840baea2728a84ca68f87c997d40ca486849e76caae3f683755d0c0bd43bf"
+    },
+    "baseline_builder_version": {
+      "function": "build_cands_fib_long_exact",
+      "module_artifact_name": "long_struct_01_v1_2_isolated.py",
+      "module_sha256": "4ea731a4f5b62dfa0b435e5a03a028c5c2bb0b190a6076e03442f5856fca073b",
+      "parity_reference_artifact": "FIB_4H_Long_v3.py",
+      "parity_reference_sha256": "c52ea221c70d72ff19b23b568b516eb84d747647a7d7c4249c95054e536cdbe9",
+      "note": "Exact parity port of FIB_4H_Long_v3.py candidate builder with explicit deterministic symbol_order."
+    },
+    "tickSz_source_and_version": {
+      "source_artifact": "cache_v3 manifest.json (symbols[inst].spec.tickSz)",
+      "cache_version": "v3.0-public-merged",
+      "cache_data_hash": "91b7ab2f90442e4317a6a7adc3c01148fa3df98c9724abe78d875294d7944cc2",
+      "manifest_sha256": "b6b4fde6dc84cc26d72258a38e4b6059ca1fe2fa24bea369f9a792e5e36d71b8",
+      "built_at_taipei": "2026-11-26 20:43:13 CST",
+      "point_in_time_historical_tickSz": false,
+      "caveat_zh": "固定快取快照近似，非逐時點歷史 tickSz。",
+      "values_used": {
+        "ADA-USDT-SWAP": "0.0001",
+        "DOGE-USDT-SWAP": "1e-05",
+        "FIL-USDT-SWAP": "0.0001",
+        "SOL-USDT-SWAP": "0.01",
+        "XRP-USDT-SWAP": "0.0001"
+      }
+    }
+  },
+  "aggregate_5_symbols": {
+    "denominator_and_continuity": {
+      "theoretical_decision_points": 900,
+      "present_window_4h_bars": 900,
+      "pass_4h_hard_min_ge_60": 900,
+      "pass_4h_full_init_eq_180": 900,
+      "pass_d1_warmup_60d_causal": 900,
+      "eligible_warmup_bars": 900
+    },
+    "sequential_funnel": {
+      "1_pass_ema60": 169,
+      "2_pass_ema60_and_rsi": 123,
+      "3_pass_sweep": 0,
+      "4_pass_reclaim": 0,
+      "5_pass_bullish_reclaim": 0,
+      "6a_pass_raw_dist_gate": 0,
+      "6b_pass_tick_round_down_gt_zero_final_candidates": 0
+    },
+    "independent_marginal_counts": {
+      "indep_pass_ema60": 169,
+      "indep_pass_rsi_55_85": 153,
+      "indep_pass_ema60_and_rsi": 123,
+      "indep_pass_sweep": 109,
+      "indep_pass_sweep_and_reclaim": 60,
+      "indep_pass_sweep_reclaim_bullish": 33
+    },
+    "baseline_fib_final_candidates": 101,
+    "overlap_bar_symbol_pairs": 0
+  },
+  "per_symbol": {
+    "ADA-USDT-SWAP": {
+      "denominator_and_continuity": {
+        "theoretical_decision_points": 180,
+        "present_window_4h_bars": 180,
+        "pass_4h_hard_min_ge_60": 180,
+        "pass_4h_full_init_eq_180": 180,
+        "pass_d1_warmup_60d_causal": 180,
+        "eligible_warmup_bars": 180
+      },
+      "sequential_funnel": {
+        "1_pass_ema60": 14,
+        "2_pass_ema60_and_rsi": 13,
+        "3_pass_sweep": 0,
+        "4_pass_reclaim": 0,
+        "5_pass_bullish_reclaim": 0,
+        "6a_pass_raw_dist_gate": 0,
+        "6b_pass_tick_round_down_gt_zero_final_candidates": 0
+      },
+      "independent_marginal_counts": {
+        "indep_pass_ema60": 14,
+        "indep_pass_rsi_55_85": 23,
+        "indep_pass_ema60_and_rsi": 13,
+        "indep_pass_sweep": 24,
+        "indep_pass_sweep_and_reclaim": 12,
+        "indep_pass_sweep_reclaim_bullish": 8
+      },
+      "baseline_fib_final_candidates": 13,
+      "overlap_bar_symbol_pairs": 0
+    },
+    "DOGE-USDT-SWAP": {
+      "denominator_and_continuity": {
+        "theoretical_decision_points": 180,
+        "present_window_4h_bars": 180,
+        "pass_4h_hard_min_ge_60": 180,
+        "pass_4h_full_init_eq_180": 180,
+        "pass_d1_warmup_60d_causal": 180,
+        "eligible_warmup_bars": 180
+      },
+      "sequential_funnel": {
+        "1_pass_ema60": 28,
+        "2_pass_ema60_and_rsi": 26,
+        "3_pass_sweep": 0,
+        "4_pass_reclaim": 0,
+        "5_pass_bullish_reclaim": 0,
+        "6a_pass_raw_dist_gate": 0,
+        "6b_pass_tick_round_down_gt_zero_final_candidates": 0
+      },
+      "independent_marginal_counts": {
+        "indep_pass_ema60": 28,
+        "indep_pass_rsi_55_85": 30,
+        "indep_pass_ema60_and_rsi": 26,
+        "indep_pass_sweep": 23,
+        "indep_pass_sweep_and_reclaim": 13,
+        "indep_pass_sweep_reclaim_bullish": 6
+      },
+      "baseline_fib_final_candidates": 26,
+      "overlap_bar_symbol_pairs": 0
+    },
+    "FIL-USDT-SWAP": {
+      "denominator_and_continuity": {
+        "theoretical_decision_points": 180,
+        "present_window_4h_bars": 180,
+        "pass_4h_hard_min_ge_60": 180,
+        "pass_4h_full_init_eq_180": 180,
+        "pass_d1_warmup_60d_causal": 180,
+        "eligible_warmup_bars": 180
+      },
+      "sequential_funnel": {
+        "1_pass_ema60": 46,
+        "2_pass_ema60_and_rsi": 28,
+        "3_pass_sweep": 0,
+        "4_pass_reclaim": 0,
+        "5_pass_bullish_reclaim": 0,
+        "6a_pass_raw_dist_gate": 0,
+        "6b_pass_tick_round_down_gt_zero_final_candidates": 0
+      },
+      "independent_marginal_counts": {
+        "indep_pass_ema60": 46,
+        "indep_pass_rsi_55_85": 28,
+        "indep_pass_ema60_and_rsi": 28,
+        "indep_pass_sweep": 18,
+        "indep_pass_sweep_and_reclaim": 10,
+        "indep_pass_sweep_reclaim_bullish": 4
+      },
+      "baseline_fib_final_candidates": 9,
+      "overlap_bar_symbol_pairs": 0
+    },
+    "SOL-USDT-SWAP": {
+      "denominator_and_continuity": {
+        "theoretical_decision_points": 180,
+        "present_window_4h_bars": 180,
+        "pass_4h_hard_min_ge_60": 180,
+        "pass_4h_full_init_eq_180": 180,
+        "pass_d1_warmup_60d_causal": 180,
+        "eligible_warmup_bars": 180
+      },
+      "sequential_funnel": {
+        "1_pass_ema60": 22,
+        "2_pass_ema60_and_rsi": 19,
+        "3_pass_sweep": 0,
+        "4_pass_reclaim": 0,
+        "5_pass_bullish_reclaim": 0,
+        "6a_pass_raw_dist_gate": 0,
+        "6b_pass_tick_round_down_gt_zero_final_candidates": 0
+      },
+      "independent_marginal_counts": {
+        "indep_pass_ema60": 22,
+        "indep_pass_rsi_55_85": 30,
+        "indep_pass_ema60_and_rsi": 19,
+        "indep_pass_sweep": 20,
+        "indep_pass_sweep_and_reclaim": 10,
+        "indep_pass_sweep_reclaim_bullish": 5
+      },
+      "baseline_fib_final_candidates": 19,
+      "overlap_bar_symbol_pairs": 0
+    },
+    "XRP-USDT-SWAP": {
+      "denominator_and_continuity": {
+        "theoretical_decision_points": 180,
+        "present_window_4h_bars": 180,
+        "pass_4h_hard_min_ge_60": 180,
+        "pass_4h_full_init_eq_180": 180,
+        "pass_d1_warmup_60d_causal": 180,
+        "eligible_warmup_bars": 180
+      },
+      "sequential_funnel": {
+        "1_pass_ema60": 59,
+        "2_pass_ema60_and_rsi": 37,
+        "3_pass_sweep": 0,
+        "4_pass_reclaim": 0,
+        "5_pass_bullish_reclaim": 0,
+        "6a_pass_raw_dist_gate": 0,
+        "6b_pass_tick_round_down_gt_zero_final_candidates": 0
+      },
+      "independent_marginal_counts": {
+        "indep_pass_ema60": 59,
+        "indep_pass_rsi_55_85": 42,
+        "indep_pass_ema60_and_rsi": 37,
+        "indep_pass_sweep": 24,
+        "indep_pass_sweep_and_reclaim": 15,
+        "indep_pass_sweep_reclaim_bullish": 10
+      },
+      "baseline_fib_final_candidates": 34,
+      "overlap_bar_symbol_pairs": 0
+    }
+  },
+  "audit_flags": {
+    "cross_check_against_isolated_builders_exact_match": true,
+    "pnl_replay_executed": false,
+    "october_2025_rerun_executed": false,
+    "stop_condition_triggered": "STOP_ON_ZERO_CANDIDATES"
+  }
+}
