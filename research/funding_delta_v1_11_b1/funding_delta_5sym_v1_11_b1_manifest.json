@@ -1,0 +1,160 @@
+{
+  "research_id": "BACKTEST-READINESS-01",
+  "version": "v1.11-batch1",
+  "start_utc": "2026-11-27T22:58:55Z",
+  "end_utc": "2026-11-27T22:58:56Z",
+  "months_total": 5,
+  "months_http200": 5,
+  "official_rows_total": 735,
+  "official_unique_keys": 735,
+  "already_matched_existing": 126,
+  "new_rows": 609,
+  "new_rows_grid": {
+    "8h": 396,
+    "non_8h": 213
+  },
+  "conflicts": 0,
+  "conflict_types": {},
+  "conflict_sources": {},
+  "intra_official_dups": 0,
+  "new12": [
+    {
+      "inst_id": "ARKM-USDT-SWAP",
+      "target_ts_utc": "2026-01-08T08:00Z",
+      "matcher": "v1_11_new12",
+      "status": "recovered_in_v1_11_b1_delta",
+      "rate": "0.0000531718584991",
+      "ts_raw_ms": 1767859200000,
+      "prev_gap_h": 8.0,
+      "next_gap_h": 8.0
+    },
+    {
+      "inst_id": "ARKM-USDT-SWAP",
+      "target_ts_utc": "2026-01-08T16:00Z",
+      "matcher": "v1_11_new12",
+      "status": "recovered_in_v1_11_b1_delta",
+      "rate": "0.0001",
+      "ts_raw_ms": 1767888000000,
+      "prev_gap_h": 8.0,
+      "next_gap_h": 8.0
+    },
+    {
+      "inst_id": "ARKM-USDT-SWAP",
+      "target_ts_utc": "2026-01-09T00:00Z",
+      "matcher": "v1_11_new12",
+      "status": "recovered_in_v1_11_b1_delta",
+      "rate": "0.0000891853363062",
+      "ts_raw_ms": 1767916800000,
+      "prev_gap_h": 8.0,
+      "next_gap_h": 8.0
+    },
+    {
+      "inst_id": "ARKM-USDT-SWAP",
+      "target_ts_utc": "2026-01-09T08:00Z",
+      "matcher": "v1_11_new12",
+      "status": "recovered_in_v1_11_b1_delta",
+      "rate": "0.0001",
+      "ts_raw_ms": 1767945600000,
+      "prev_gap_h": 8.0,
+      "next_gap_h": 8.0
+    },
+    {
+      "inst_id": "ARKM-USDT-SWAP",
+      "target_ts_utc": "2026-01-09T16:00Z",
+      "matcher": "v1_11_new12",
+      "status": "recovered_in_v1_11_b1_delta",
+      "rate": "0.0001",
+      "ts_raw_ms": 1767974400000,
+      "prev_gap_h": 8.0,
+      "next_gap_h": 8.0
+    },
+    {
+      "inst_id": "AT-USDT-SWAP",
+      "target_ts_utc": "2026-10-30T16:00Z",
+      "matcher": "v1_11_new12",
+      "status": "recovered_in_v1_11_b1_delta",
+      "rate": "0.00005",
+      "ts_raw_ms": 1793376000000,
+      "prev_gap_h": 4.0,
+      "next_gap_h": 4.0
+    },
+    {
+      "inst_id": "AT-USDT-SWAP",
+      "target_ts_utc": "2026-10-31T00:00Z",
+      "matcher": "v1_11_new12",
+      "status": "recovered_in_v1_11_b1_delta",
+      "rate": "0.00005",
+      "ts_raw_ms": 1793404800000,
+      "prev_gap_h": 4.0,
+      "next_gap_h": 4.0
+    },
+    {
+      "inst_id": "AT-USDT-SWAP",
+      "target_ts_utc": "2026-10-31T08:00Z",
+      "matcher": "v1_11_new12",
+      "status": "recovered_in_v1_11_b1_delta",
+      "rate": "0.00005",
+      "ts_raw_ms": 1793433600000,
+      "prev_gap_h": 4.0,
+      "next_gap_h": 4.0
+    },
+    {
+      "inst_id": "BERA-USDT-SWAP",
+      "target_ts_utc": "2026-05-23T00:00Z",
+      "matcher": "v1_11_new12",
+      "status": "recovered_in_v1_11_b1_delta",
+      "rate": "0.00005",
+      "ts_raw_ms": 1779494400000,
+      "prev_gap_h": 4.0,
+      "next_gap_h": 4.0
+    },
+    {
+      "inst_id": "GALA-USDT-SWAP",
+      "target_ts_utc": "2026-04-26T16:00Z",
+      "matcher": "v1_11_new12",
+      "status": "recovered_in_v1_11_b1_delta",
+      "rate": "0.0001",
+      "ts_raw_ms": 1777219200000,
+      "prev_gap_h": 8.0,
+      "next_gap_h": 8.0
+    },
+    {
+      "inst_id": "GALA-USDT-SWAP",
+      "target_ts_utc": "2026-04-27T00:00Z",
+      "matcher": "v1_11_new12",
+      "status": "recovered_in_v1_11_b1_delta",
+      "rate": "-0.0000110956906641",
+      "ts_raw_ms": 1777248000000,
+      "prev_gap_h": 8.0,
+      "next_gap_h": 8.0
+    },
+    {
+      "inst_id": "POPCAT-USDT-SWAP",
+      "target_ts_utc": "2026-04-20T08:00Z",
+      "matcher": "v1_11_new12",
+      "status": "recovered_in_v1_11_b1_delta",
+      "rate": "0.00005",
+      "ts_raw_ms": 1776672000000,
+      "prev_gap_h": 4.0,
+      "next_gap_h": 4.0
+    }
+  ],
+  "files": {
+    "funding_delta_5sym_v1_11_b1.csv.gz": {
+      "bytes": 8286,
+      "sha256": "2ab89d43188e38c0b34ea04513d9c199eee2fa7fc5bfac891993db2006d48bbb",
+      "rows": 609,
+      "csv_bytes": 112491,
+      "csv_sha256": "5ab537709407794ab475a83fe0bb94370221cadf456c00fe14a8547acda7f084"
+    },
+    "funding_conflicts_v1_11_b1.json": {
+      "bytes": 50,
+      "sha256": "b9900cb4aae6670829d75b3bb989bbc4227172b656dc28e6da0b6a606f95775d"
+    },
+    "funding_source_months_v1_11_b1.json": {
+      "bytes": 2453,
+      "sha256": "7c62f35d465a5e0a0125870f9c6d3e9123a7fb0ae33a12018f8a54f4f9b19b6f"
+    }
+  },
+  "rule": "Not for blind INSERT OR IGNORE: rows in the delta have zero key overlap with the frozen 829,157-row DB, v1.7, v1.9 and v1.10; conflicts are listed separately for review. No zero-fill, no interpolation."
+}
