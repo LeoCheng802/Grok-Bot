@@ -2,50 +2,36 @@
 
 此檔是「一般」的最新回報。
 
-- **時間（Asia/Taipei）**: 2026-11-28 02:53:19
+- **時間（Asia/Taipei）**: 2026-11-28 02:57:49
 - **角色**: 一般
-- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7225973610
+- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7226049299
 
-<!-- comment_id: 7225973610 -->
+<!-- comment_id: 7226049299 -->
 
-【2026-11-28 02:52 台北時間（UTC+8）】
-[策略組] BACKTEST-READINESS-01 v1.1｜首輪候選優先排序、負證據分析、具體阻礙與下一步提案
+【2026-11-28 02:58 台北時間（UTC+8）】
+[復盤] `BACKTEST-READINESS-01 v1.1`｜PR #6 A 段有界離線入口獨立驗收、v1.0 更正前作業留存稽核與阻礙彙整（對應 #7225850828，併參 #7225973610）
 
-- **角色**：策略組
-- **研究／事件編號**：`BACKTEST-READINESS-01`（對應 [Issue #1 #7225850828](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7225850828)）
-- **版本**：`v1.1`（策略組首輪分析與阻礙盤點；純靜態審查，未改動策略碼、未執行行情掃描／歷史計數／回測）
-- **時間與時區**：2026-11-28 02:52 台北時間（UTC+8）｜靜態分析起迄（UTC）：`2026-11-27T18:50:00Z` → `2026-11-27T18:52:33Z`
-- **固定對照基準**：
-  - `main`：`1f38b000fe881044f02d0469ab08a6239f91bb31`（`CANDIDATES.md` / `CANDIDATES.json`）
-  - [PR #6](https://github.com/LeoCheng802/Grok-Bot/pull/6)（Open Draft）：`3f67bd87fe5db2ec64d97b543fe780fa2f505f6f`
-  - `LONG-STRUCT-02` 預登記 `v1.2`：`5ca80cbcf45ebe9425516f658a7de838882403f1`（SHA-256 `246cda1c8a23bea5d580b8b1e20bc53393dcd8483db85137fe5389a6d46bb06e`）
+- **角色**：復盤（獨立覆核與彙整）
+- **研究編號與版本**：`BACKTEST-READINESS-01 v1.1`｜[LeoCheng802/Grok-Bot PR #6](https://github.com/LeoCheng802/Grok-Bot/pull/6)（分支 `research/offline-packaging-hardening-draft`，新固定 head `da65fe4dbdd549aa973e4e3f2c69447b53dcb64a`）
+- **時間與時區**：2026-11-28 02:58 UTC+8
+- **獨立覆核起迄（UTC）**：`2026-11-27T18:56:40Z` → `2026-11-27T18:57:30Z`
+- **治理邊界**：PR #6 實測 `state = open`、`draft = true`、`merged = false`、`commits = 7`、`changed_files = 12`（`+3822 / -218`），維持 Draft、不合併、不部署、`main` 未動。本端與執行／策略組已依 v1.1 全面停止新增回測／行情掃描／歷史計數作業；**所有基準與候選皆維持「尚未由 ChatGPT 獨立回測」，`FIB-4H-LONG-V3` 維持 `NO-GO`，`LONG-STRUCT-01 v1.2` 與 `RETEST24-R1-R2 v1.5` 維持凍結，`LONG-STRUCT-02` 不實作**。
 
-### 一、既有候選與基準現況、負證據與首輪優先排序
-1. **基準 `FIB-4H-LONG-V3`（淘汰 `NO-GO`，僅作接線驗證對照）**
-   - 檔案：`research/long_struct_01/code/FIB_4H_Long_v3.py`（PR #6 `3f67bd87`，SHA-256 `17b46a4e7ce898d9db8cd23078a2a62cd47309cf136597a5068e9f8c385d26d7`）
-   - 現有 adapter：`run_l1_tp_study.py`（`e920b95356db3636cc6083b1b6254042ee1f78fa963d4f7a66e86c52b23c75eb`；執行組正依 v1.1 A 段整理有界入口）
-   - 結論：`L1` 與 `LONG-LOOP-01` 負證據已確立，維持 `NO-GO`、停止原多單結構續調，僅供 ChatGPT 驗證離線接線與撮合／成本口徑。
+### 一、PR #6 新增 2 檔 live raw 獨立驗收（HTTP 200、SHA 吻合、零外洩）
+接續 `3f67bd87fe5db2ec64d97b543fe780fa2f505f6f` 僅新增 2 檔，原 `run_l1_tp_study.py` 與先前 10 檔零異動：
+1. [run_l1_bounded_backtest.py](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/da65fe4dbdd549aa973e4e3f2c69447b53dcb64a/research/long_struct_01/code/run_l1_bounded_backtest.py)：`37,538` B，SHA-256 `26757d866146622176803c05948ed27007b87f9503aad3f4ef89934a74ddccbf`（AST 通過、`0` `assert`、頂層 18 項全為標準庫與 `numpy`，零策略／`shared_risk`／引擎 import，零路徑或憑證外洩）。提供有界參數（`--symbols` / `--start-utc` / `--end-utc` / `--scenarios` 限已凍結 TP2.5% 兩情境 / `--dry-check`），全程外層禁網、唯讀輸入、遇缺費硬拒絕（`EXIT=2`）。
+2. [BACKTEST_READINESS_01_REPORT.md](https://raw.githubusercontent.com/LeoCheng802/Grok-Bot/da65fe4dbdd549aa973e4e3f2c69447b53dcb64a/research/long_struct_01/BACKTEST_READINESS_01_REPORT.md)（註：正確 URL 對應 head `da65fe4dbdd549aa973e4e3f2c69447b53dcb64a`）：`8,961` B，SHA-256 `7bc66df46e127c0f168ff86a1eca97e046638024511543b5a362a4ac4ea9da5a`（零路徑或憑證外洩）。**口徑註記**：該報告於接獲 v1.1 更正前即送出提交，標題與授權欄仍標 `v1.0`／`#7225707059`；實際以本則與 `#7225850828`（v1.1）為準，報告中已執行之 B/C 紀錄僅作更正前留存稽核，**絕不替代 ChatGPT 獨立回測**。
 
-2. **第一優先（P1，空單凍結候選）：`RETEST24-R1-R2 v1.5`**
-   - 檔案：`research/long_struct_01/code/RETEST24_R1_R2_Switchable_v1_5_auditfix.py`（PR #6 `3f67bd87`，SHA-256 `c2b00a987150c20d16f22500a5d6dc0f0dca00ccaac62851f4014a343f664b04`）
-   - 既有研究去重與負證據：`R1`／`R2` 屬同訊號倉位對照；既有 `B1–B8` 已測試維度含去 `EMA55`（B1）、`TTL`（B2）、`RSI` 區間（B3）、進場 offset（B4）、觸價 vs 穿價 1 tick（B5）、1-bar 延遲進場（B6）、tick 與出場順序敏感度（B7/B8），後續優化不得重複堆疊這些軸線。核心負證據為保守延遲進場（`delay1bar_cross_1tick`）下邊際優勢翻負，顯示原始訊號對進場時效高度敏感。
-   - **具體缺口**：目前公開庫 PR #6 僅含底層 `engine/` 4 支模組，**尚無 `RETEST24-R1-R2 v1.5` 的獨立離線有界回測 adapter**（`run_l1_tp_study.py` 僅接 `FIB-4H-LONG-V3`）。
+### 二、v1.1 更正到達前已結束之既有作業留存摘要（不刪、不續跑、不稱本端驗證完成）
+- **Job 1（v1.0 B 段接線小測，UTC `2026-11-27T18:50:05.462Z` → `18:50:05.912Z`）**：既有最小 fixture 正常跑 `EXIT=0`（`0` diffs、`transport_hits=[]`、`inputs_unchanged=True`，輸出 SHA `8c298135…`）；缺費負向測試 `EXIT=2`（無成功報表，診斷 SHA `a4775396…`）。
+- **Job 2（v1.0 C 段全期基準跑，UTC `2026-11-27T18:50:19.041Z` → `18:51:52.493Z`）**：`EX_USDC_286` 全窗 `2023-01-01T00:00Z..2026-11-26T12:00Z` 僅 TP2.5% 兩組，於既有 `funding_archive_l1_isolated.sqlite`（`23ebdab5…`）觸發缺費硬拒絕 **`ABORTED_MISSING_FUNDING`（`EXIT=2`）**，未寫成功報表、未補零／插值／縮窗／連線（`transport_hits=[]`、`inputs_unchanged=True`）：
+  - `TP_2.5pct|cross_1tick`：缺 `158` 筆 8H 費率（55 標的，`2023-09-29T16:00Z..2026-10-18T08:00Z`；已匹配 `6,415` 筆 8H + `1,228` 筆非 8H）。
+  - `TP_2.5pct|delay1bar`：缺 `128` 筆 8H 費率（54 標的，`2023-01-30T16:00Z..2026-08-14T16:00Z`；已匹配 `6,171` 筆 8H + `961` 筆非 8H）。
+  - 完整缺口事件明細留存於私有範圍（SHA `54037c6f1c44a2db9b5a4e032aafbfd006366eeaba461dfd81ed6725385c6b1e`），未公開。
 
-3. **第二優先（P2，多單凍結候選）：`LONG-STRUCT-01 v1.2`**
-   - 檔案：`research/long_struct_01/code/long_struct_01_v1_2_isolated.py`（commit `fbe475402ff568eac2684bf4d97f49de579e9a6b`，SHA-256 `4ea731a4f5b62dfa0b435e5a03a028c5c2bb0b190a6076e03442f5856fca073b`）
-   - 負證據保留：2025-11 五檔診斷窗（分母 900 棒）中，獨立通過 `EMA60`（169）、`EMA60+RSI(55–85)`（123）與獨立通過 `sweep`（109）皆非零，但同棒交集為 `0`。完整保留負證據，**不採放寬門檻換取交易量**。
-   - **具體缺口**：目前僅有訊號構建器與接線測試，尚無對應離線回測 adapter；且問題核心為同棒結構碰撞，不建議對 `v1.2` 做純參數微調。
-
-4. **第三優先（P3，多單結構假說，受阻待去重）：`LONG-STRUCT-02 v1.2`**
-   - 檔案：`research/long_struct_01/LONG_STRUCT_02_TEMPORAL_SPLIT_DEDUP_PREREG_v1.2.json`（`PROPOSED_NOT_EXECUTED`，`has_script: false`）
-   - 核心假說：維持多單限價與 EMA 允許前提，將掃破收復（`t_sweep`）與動能確認（`t_confirm`，`k∈[1,6]`）分時點解耦，對症處理 `LONG-STRUCT-01` 同棒零交集問題。
-   - **具體阻礙（硬卡點）**：已盤點公開庫與現有工作區，**均無 `B24H` 與 `A60＋量縮` 之可讀規則或腳本檔**，因此同版設計去重尚無法完成；依 `#7225850828` 紅線，未完成去重前**不得直接實作腳本**。
-
-### 二、尚未由 ChatGPT 回測之項目與已做靜態檢查
-- **已做靜態檢查**：僅完成上述既有固定 commit 檔案與負證據文獻之靜態比對，零程式碼異動、零行情掃描／計數／回測。
-- **尚未由 ChatGPT 獨立回測**：`FIB-4H-LONG-V3` 完整基準接線回測、`RETEST24-R1-R2 v1.5` 離線基準回測、`LONG-STRUCT-01 v1.2` 全期離線回測，以及任何新優化候選（皆維持 `待驗`／`live_approved: false`）。
-
-### 三、具體缺口與建議下一步
-1. **解除 `LONG-STRUCT-02` 去重阻礙**：請提供 `B24H` 與 `A60＋量縮` 之可讀規則摘要或對應檔案，策略組即可補完同版去重對照，再決定是否進入隔離實作。
-2. **P1 路線準備（空單 `RETEST24-R1-R2`）**：待執行組完成 v1.1 A 段共用有界離線入口與資料／manifest 契約後，策略組將優先對齊同一介面，準備 **(a)** `RETEST24-R1-R2 v1.5` 凍結基準之純離線有界 adapter（供 ChatGPT 獨立跑出基線），並提出 **(b)** 不重複 `B1–B8` 軸線之單一主要假說隔離優化提案供 ChatGPT 審核後實作。
-3. **紅線重申**：PR #6 維持 Open Draft、不合併、不部署、不交易、不改實盤風控。
+### 三、具體阻礙與下一步待辦
+1. **既有資金費庫全窗缺口（待 ChatGPT 裁示）**：在不新抓 OKX 且維持缺費硬拒絕前提下，請裁示 ChatGPT 獨立回測基準入口時對上述 158／128 筆 8H 缺口的處置方向。
+2. **PR #6 分支待補齊項目（不依賴阻礙、可獨立進行）**：
+   - `@執行` 併案對齊 `BACKTEST_READINESS_01_REPORT.md` 標頭至 `v1.1`（標明 Job 1/2 為更正前留存），並更新 PR #6 分支上的 `CANDIDATES.md` / `CANDIDATES.json`（分列「腳本已交付、封裝驗收、真實引擎整合、完整回測」狀態與固定分支檔案連結，不把 `main` 舊 SHA 寫成新版）。
+   - `@策略組` 對齊 `run_l1_bounded_backtest.py` 介面準備 `RETEST24-R1-R2 v1.5` 凍結基準離線 adapter 與單一假說優化提案（見 `#7225973610`）。
+3. **`LONG-STRUCT-02` 去重硬阻礙**：公開庫與工作區皆無 `B24H` 與 `A60＋量縮` 可讀規則或腳本檔，未補齊同版去重前維持不實作。
