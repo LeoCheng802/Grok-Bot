@@ -1,0 +1,68 @@
+{
+  "prereg_id": "RETEST24-OPT-01-PREREG",
+  "version": "v1.0",
+  "study_id": "BACKTEST-READINESS-01",
+  "handoff_reference": "Issue #1 #7225850828 (BACKTEST-READINESS-01 v1.1)",
+  "status": "PROPOSED_UNBACKTESTED",
+  "live_approved": false,
+  "chatgpt_independent_backtest_status": "NOT_YET_EXECUTED",
+  "baseline_id": "RETEST24-R1-R2 v1.5",
+  "baseline_reference": {
+    "script": "research/long_struct_01/code/RETEST24_R1_R2_Switchable_v1_5_auditfix.py",
+    "pinned_commit": "da65fe4dbdd549aa973e4e3f2c69447b53dcb64a",
+    "sha256": "c2b00a987150c20d16f22500a5d6dc0f0dca00ccaac62851f4014a343f664b04",
+    "frozen_state": "FROZEN_UNCHANGED"
+  },
+  "candidate_id": "RETEST24-OPT-01 v1.0",
+  "candidate_mode_flag": "RETEST24_OPT_01_BEARISH_CLOSE_POS",
+  "adapter": {
+    "path": "research/long_struct_01/code/run_retest24_bounded_backtest.py",
+    "bytes": 33881,
+    "sha256": "19c2fe0d3ae1f2b7e06950318293175fe5b264420144e9790c075b99b3dac2da",
+    "aligned_with": "research/long_struct_01/code/run_l1_bounded_backtest.py (da65fe4dbdd549aa973e4e3f2c69447b53dcb64a)"
+  },
+  "single_primary_hypothesis": {
+    "name": "Bearish Breakdown Close Position Filter",
+    "formula_added": "h_prev > l_prev and ((c_prev - l_prev) / (h_prev - l_prev)) <= 0.35 on already-closed 4H breakdown bar i-1",
+    "causality": "Strictly causal; uses only OHLC of closed 4H bar i-1 prior to decision timestamp bt = ts4[i].",
+    "structural_rationale": "Frozen RETEST24-R1-R2 v1.5 checks only c_prev < pl and op < pl, admitting weak pokes or bullish-hammer / long-lower-wick absorption bars below the 12-bar swing low. Under conservative 1-bar entry delay (B6 delay1bar_cross_1tick), prior evidence showed edge flipping negative. Requiring the breakdown bar itself to close in the bottom 35% of its range filters out immediate buyer-absorption reversals without loosening entry thresholds or chasing trade count.",
+    "unchanged_components": [
+      "EMA55 trend filter (cp < ep)",
+      "RSI14 range [20, 40]",
+      "60-day causal D1 warmup",
+      "12-bar 4H swing low lookback (pl)",
+      "entry_offset_mult = 0.9995, dist in [0.0, 0.15], align_tick",
+      "Sort key sk = -rp, limit order trig = False",
+      "TP = 5%, SL = 5%, TTL = 24h, use_1h_cancel = False",
+      "R1 (12 slots, 150U risk, 600U daily loss) and R2 (12 slots, 100U risk, 400U daily loss)",
+      "initial_capital_u = 50000, leverage = 10, maker_fee = 0.0002, taker_fee = 0.0005, slip_mkt = 0.0003, mmr_approx = 0.01",
+      "shared_risk and funding/cost formulas"
+    ]
+  },
+  "deduplication_against_prior_studies": {
+    "B1_NOEMA55": "Distinct — EMA55 retained unchanged.",
+    "B2_TTL": "Distinct — TTL 24H retained unchanged.",
+    "B3_RSI_BAND": "Distinct — RSI [20, 40] retained unchanged.",
+    "B4_ENTRY_OFFSET": "Distinct — entry_offset_mult 0.9995 retained unchanged.",
+    "B5_FILL_SENSITIVITY": "Distinct — evaluated under frozen cross_1tick.",
+    "B6_DELAY_1_BAR": "Distinct — delay1bar_cross_1tick is the primary robustness stress test.",
+    "B7_B8_TICK_EXIT_ORDER": "Distinct — execution/exit order untouched.",
+    "R1_VS_R2": "Same-signal sizing control preserved intact."
+  },
+  "chatgpt_execution_commands": {
+    "dry_check_baseline": "python3 research/long_struct_01/code/run_retest24_bounded_backtest.py --manifest <PACK_ROOT>/REPRO_MANIFEST.json --retest24-script <PACK_ROOT>/scripts/RETEST24_R1_R2_Switchable_v1_5_auditfix.py --shared-risk <PACK_ROOT>/scripts/shared_risk.py --candidate RETEST24_V1_5_FROZEN --dry-check",
+    "baseline_bounded_run": "python3 research/long_struct_01/code/run_retest24_bounded_backtest.py --manifest <PACK_ROOT>/REPRO_MANIFEST.json --retest24-script <PACK_ROOT>/scripts/RETEST24_R1_R2_Switchable_v1_5_auditfix.py --shared-risk <PACK_ROOT>/scripts/shared_risk.py --cache-dir <CACHE_V3_DIR> --funding-db <FUNDING_DB_SQLITE> --out-dir <OUT_DIR_BASE> --start-utc 2023-01-01T00:00:00Z --end-utc 2026-11-26T12:00:00Z --scenarios 'R1_150U|cross_1tick,R1_150U|delay1bar,R2_100U|cross_1tick,R2_100U|delay1bar' --candidate RETEST24_V1_5_FROZEN",
+    "opt01_bounded_run": "python3 research/long_struct_01/code/run_retest24_bounded_backtest.py --manifest <PACK_ROOT>/REPRO_MANIFEST.json --retest24-script <PACK_ROOT>/scripts/RETEST24_R1_R2_Switchable_v1_5_auditfix.py --shared-risk <PACK_ROOT>/scripts/shared_risk.py --cache-dir <CACHE_V3_DIR> --funding-db <FUNDING_DB_SQLITE> --out-dir <OUT_DIR_OPT01> --start-utc 2023-01-01T00:00:00Z --end-utc 2026-11-26T12:00:00Z --scenarios 'R1_150U|cross_1tick,R1_150U|delay1bar,R2_100U|cross_1tick,R2_100U|delay1bar' --candidate RETEST24_OPT_01_BEARISH_CLOSE_POS"
+  },
+  "evaluation_criteria_for_chatgpt": {
+    "primary_pass_condition": "Under identical EX_USDC_286 window and fair cost/funding, RETEST24_OPT_01_BEARISH_CLOSE_POS improves expectancy and PF over RETEST24_V1_5_FROZEN under BOTH cross_1tick and delay1bar_cross_1tick, and remains net-positive under delay1bar_cross_1tick with acceptable drawdown and non-trivial sample size.",
+    "fail_stop_condition": "If delay1bar_cross_1tick remains net-negative or sample collapses without robust expectancy improvement, mark RETEST24-OPT-01 NO-GO and do not sweep threshold grid without a new structural hypothesis."
+  },
+  "static_checks_completed_by_grok": {
+    "py_compile": "PASS",
+    "ast_assert_count": 0,
+    "top_level_strategy_engine_shared_risk_imports": [],
+    "leak_scan_hits": 0,
+    "market_scan_or_backtest_executed_by_grok": false
+  }
+}
