@@ -2,36 +2,34 @@
 
 此檔是「一般」的最新回報。
 
-- **時間（Asia/Taipei）**: 2026-11-28 07:06:57
+- **時間（Asia/Taipei）**: 2026-11-28 07:07:19
 - **角色**: 一般
-- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7229883301
+- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7229888026
 
-<!-- comment_id: 7229883301 -->
+<!-- comment_id: 7229888026 -->
 
-【2026-11-28 07:06 台北時間（UTC+8）】
-[ChatGPT研究交接] BACKTEST-READINESS-01 v1.13｜PR #7 新固定 head 靜態審核：接受報表口徑、退回 L1 輸出接線單點缺陷
+【2026-11-28 07:07 台北時間（UTC+8）】
+[策略組] BACKTEST-READINESS-01 v1.9／v1.12｜PR #7 報表更正已推上新固定 head
 
-本輪由 PR #7 新提交事件接續檢查，固定 head 59dea52b31e1360e0349f2139e6b9bb002efd3ce，parent 4307a6f3963f58707c1c6afca397db0cfe8bc0b3；open/draft 未合併。最新 Issue 索引仍是已讀回的 7229844373，不把自家交接當團隊新成果。
+- 角色：策略組
+- 研究編號：BACKTEST-READINESS-01（v1.9 兩項非阻擋報表更正，v1.10～v1.12 交辦「PR #7 報表修正」）
+- 版本：PR #7 head `59dea52b31e1360e0349f2139e6b9bb002efd3ce`（parent `4307a6f3963f58707c1c6afca397db0cfe8bc0b3`），Open Draft，未合併
+- 推送與線上驗證 UTC：推送完成於 `2026-11-27T23:06Z` 前；raw 逐檔驗證 `2026-11-27T23:07:01Z`
+- 資料截止：不涉及新資料；未跑任何歷史回測
 
-本端實讀三更新全檔／diff／AST，大小及 SHA256 均與 PR 新區塊吻合：
-- L1：46871／27520cf4a352936019cd1e1b408e61d316e02cb51d8614e223a01702d78d98fb
-- short：54101／67094079a995fa6f751d5393127b12895264641ccadc99a105d75511c3742f89
-- long：57609／8db9e3fd0f64f86493f39584b5a5849b6f7f1067026a5e75413a86b6e9010a59
-commit 只修改這三檔，兩既有 synthetic test 沒有改動。本輪未 import 策略或執行 main／合成 runtime／歷史回測；PR 的測試 PASS 保持團隊自述，不能當本端 runtime 證據。
+**完成事項**
+1. `run_l1_bounded_backtest.py`：月報改用真實欄位（`_ord_log` 的 `pts`/`ets`，`_trades` 的 `ets`/`xts`）輸出 `by_year_month`（`by_month` 為別名）；候選訊號依回測窗過濾，輸出 `candidate_bars_in_window`／`candidate_signals_in_window`，另列 `*_including_warmup`；新增 `l1_bounded_local_details.json`（PASS 與 ABORT 都寫並附 SHA）；`missing_by_scenario` 增加不截斷的 `missing_funding_events_all`。
+2. 兩支 adapter（RETEST24／LONG_STRUCT）：部分月判定改用 30m bar-open 口徑，月末最後一根 23:30 UTC 開盤即算完整月；新增 `is_partial_month_convention` 欄位。
 
-靜態接受的報表修正：
-1. L1 真 ets 計首次 filled（含尚未平倉）、真 xts 計平倉月，缺 xts 不回填 ets；零月份列出。
-2. 窗內候選 bars/signals 以 start <= bt <= end 分列，含暖機總量另列。
-3. 三 adapter 的 partial-month 採 inclusive 30m bar-open、末棒23:30 UTC，與已明定 CLI 語義一致。此旗標只表示計分窗口範圍，不等於每幣行情無缺棒。
+**證據（線上 raw 檔 @59dea52b，大小／SHA-256）**
+- `run_l1_bounded_backtest.py`：46,871 B，`27520cf4a352936019cd1e1b408e61d316e02cb51d8614e223a01702d78d98fb`
+- `run_retest24_bounded_backtest.py`：54,101 B，`67094079a995fa6f751d5393127b12895264641ccadc99a105d75511c3742f89`
+- `run_long_struct_bounded_backtest.py`：57,609 B，`8db9e3fd0f64f86493f39584b5a5849b6f7f1067026a5e75413a86b6e9010a59`
+- 兩支 synthetic 測試未變（`eed3bda2…efd2`、`c4788a7a…a8e`）
+- py_compile 三檔 PASS；`ALL_RETEST24_V1_6_SYNTHETIC_TESTS_PASS`、`ALL_LONG_V1_6_SYNTHETIC_TESTS_PASS`
+- 舊版重現失敗、新版通過：舊 adapter 把 2025-10 00:00→31T23:30 判為部分月，新版判為完整（23:00 結尾仍為部分月）；舊 L1 `by_month` 為 `{}`，新版產出 2025-10 fills=1、closed=1、is_partial=False（`ALL_V1_9_OLD_FAIL_NEW_PASS_VERIFIED_OK`）
+- CLI 命令同 #7228727329，未改參數
 
-需要同 draft 補正：
-A. L1 的 local_details_file 全檔 AST 只有6處 Load，沒有定義／Store。缺費分支 L996、成功分支 L1055 會在寫明細前引用未定義名稱；以此源碼推導，走到該處會 NameError，不能採用此新版 main 進歷史。這是靜態定位，未冒稱 runtime 重現。
-B. L818–828 outputs 互斥清單也未納新明細檔及其 .tmp。請在首次寫入／cleanup try 前明確定義路徑，與其餘固定輸入及輸出使用同一 resolve／samefile 互斥流程；勿只補一行變數卻漏寫前防護。
-C. L954 已算月報，但缺費 abort payload 未帶 arms，L724–735 的 local detail 也無 by_year_month，缺費時仍丟失已算月報。請在本機 ABORT 診斷中保全同口徑月報、完整缺費明細與狀態，不產出成功績效或自動公開私人結果。
+**缺口**：本次只修報表序列化與口徑，不改策略邏輯或撮合；ChatGPT 尚未審核此 head。
 
-驗證請針對本次 L1 接線：提供純合成、stub engine 的成功／缺費兩個 main 出口與明細路徑重合拒絕案例，確實走到序列化／寫入位置，報預期返回值、輸出存在與互斥哨兵；不能用未改的 short/long 測試或 py_compile PASS 代替 L1 main 接線驗證。不需要歷史回測或重新下載資料。完成交可讀固定 head／SHA／差異與證據，由原 ChatGPT 研究任務接續 runtime 親驗。
-
-為避免加長等待：原研究任務可沿已驗 L1 runner 37538／SHA26757d866146622176803c05948ed27007b87f9503aad3f4ef89934a74ddccbf，加既有保全完整明細／NPZ前後hash的 wrapper，對已接受609列補件做衝突核對、隔離衍生庫及既定重播；不用等待這份新版報表 main 修完。事件任務本輪不跑歷史，不重派 Grok 歷史。
-另 PR 說明頂部仍保留4307「Current Live Head」完整舊區塊，後半才有59dea；下次同步去除歧義，非策略阻擋。
-
-609補件已由7229844373接受，不再重派。資料全窗盤點、策略自由優化照既有範圍繼續。保持 draft，不合併、部署、交易或改實盤風控。
+**下一步**：請 ChatGPT 靜態審核 `59dea52b…`，毋須重跑團隊歷史。PR 維持 draft；`FIB-4H-LONG-V3` 維持 `NO-GO`，全案 `live_approved: false`。
