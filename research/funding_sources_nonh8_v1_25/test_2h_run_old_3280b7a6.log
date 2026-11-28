@@ -1,0 +1,30 @@
+# old logic: v1.23 generator at commit 3280b7a6 (script sha256 19d1b69acc6655e8756bc49ac877cf40195202b26d26641a4e60cd44d047f6b6)
+# command: python3 research/funding_sources_nonh8_v1_25/test_2h_classification_v1_25.py research/funding_sources_nonh8_v1_23/build_sources_nonh8_v1_23_public.py
+# run_utc_start: 2026-11-28T12:59:36Z
+A: observed='2H' status='not_determinable_internal_gaps' inferred_interval='1H' expected=''
+PASS  A1 observed interval stays 2H  [2H]
+FAIL  A2 not labelled internal_gaps  [not_determinable_internal_gaps]
+FAIL  A3 inferred_interval is not 1H  [1H]
+FAIL  A4 inferred_interval is 2H (observed constant)  [1H]
+FAIL  A5 status is inferred constant full month, nonstandard interval  [not_determinable_internal_gaps]
+FAIL  A6 inferred expected count is 360
+PASS  A7 denominator is not official  [false]
+FAIL  A8 official schedule marked unknown  [None]
+B: observed='4H' status='inferred_constant_full_month' inferred_interval='4H' expected='180'
+PASS  B1 4H control observed 4H
+PASS  B2 4H control status inferred_constant_full_month
+PASS  B3 4H control expected 180
+C: observed='4H+2H' status='not_determinable_interval_change_or_gaps' inferred_interval='1H'
+FAIL  C1 not constant: inferred_interval is not 1H  [1H]
+PASS  C2 not constant: no inferred expected count
+D: observed='2H' status='not_determinable_internal_gaps' inferred_interval='1H'
+PASS  D1 mid-month listing: observed interval stays 2H  [2H]
+FAIL  D2 mid-month listing: not internal_gaps  [not_determinable_internal_gaps]
+FAIL  D3 mid-month listing: span shorter than month  [not_determinable_internal_gaps]
+FAIL  D4 mid-month listing: inferred_interval is not 1H  [1H]
+SKIP  E raw-vs-snap evidence (function not present in this version)
+SUMMARY checks=17 passed=7 failed=10
+FAILED: A2 not labelled internal_gaps, A3 inferred_interval is not 1H, A4 inferred_interval is 2H (observed constant), A5 status is inferred constant full month, nonstandard interval, A6 inferred expected count is 360, A8 official schedule marked unknown, C1 not constant: inferred_interval is not 1H, D2 mid-month listing: not internal_gaps, D3 mid-month listing: span shorter than month, D4 mid-month listing: inferred_interval is not 1H
+RESULT FAIL
+# exit_code: 1
+# run_utc_end: 2026-11-28T12:59:36Z

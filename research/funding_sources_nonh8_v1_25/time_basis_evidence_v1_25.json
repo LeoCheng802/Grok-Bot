@@ -1,0 +1,68 @@
+{
+  "raw_timestamps_saved": true,
+  "note": "ZIP funding_time and REST fundingTime raw millisecond values are present in the saved official files; this is raw-basis evidence from those saved values, not a claim that the original HTTP bytes for REST were retained (REST stored bodies are parsed JSON).",
+  "rows_parsed_total": 1046023,
+  "rows_zip": 941283,
+  "rows_rest": 104740,
+  "rows_finite": 1046021,
+  "rows_flagged_nonfinite_or_null": 2,
+  "rows_nonzero_offset": 95471,
+  "rows_zero_offset": 950550,
+  "max_abs_offset_ms": 45000,
+  "offset_abs_buckets": {
+    "0": 950550,
+    "10-59s": 22105,
+    "1-9s": 73366
+  },
+  "rows_cross_month_cst_raw_vs_snap": 0,
+  "rows_cross_month_utc_raw_vs_snap": 0,
+  "rows_excluded_snap_basis": 65773,
+  "rows_excluded_raw_basis": 65773,
+  "months_with_raw_to_snap_set_unequal": 0,
+  "in_file_snap_collision_keys": 0,
+  "in_file_snap_collision_same_raw_dup_keys": 0,
+  "in_file_snap_collision_distinct_raw_keys": 0,
+  "in_file_snap_collision_diff_rate_keys": 0,
+  "cross_file_same_snapped_key_collisions": 65703,
+  "cross_file_same_snapped_key_diff_rate": 0,
+  "cross_file_same_snapped_key_by_source_pair": {
+    "rest-zip": 65703
+  },
+  "cross_file_same_snapped_key_diff_rate_by_source_pair": {},
+  "rows_excluded_by_reason": {
+    "rest:earlier_cst_month": 65703,
+    "zip:before_window": 70
+  },
+  "boundary_crossings_snap_basis_all_months_with_files": 10387,
+  "boundary_crossings_raw_basis_all_months_with_files": 10387,
+  "boundary_crossings_snap_basis_non8h_months": 6109,
+  "boundary_crossings_raw_basis_non8h_months": 6109,
+  "non8h_months_raw_crossing_count_differs_from_snap": 0,
+  "months_without_saved_raw_timestamps": [
+    {
+      "inst_id": "CC-USDT-SWAP",
+      "month_cst": "2025-10",
+      "status": "unknown_no_saved_raw_timestamps"
+    },
+    {
+      "inst_id": "INJ-USDT-SWAP",
+      "month_cst": "2023-11",
+      "status": "unknown_no_saved_raw_timestamps"
+    },
+    {
+      "inst_id": "MEGA-USDT-SWAP",
+      "month_cst": "2026-04",
+      "status": "unknown_no_saved_raw_timestamps"
+    },
+    {
+      "inst_id": "ORDER-USDT-SWAP",
+      "month_cst": "2025-09",
+      "status": "unknown_no_saved_raw_timestamps"
+    }
+  ],
+  "scope_unknown": [
+    "Rows excluded as non-finite/None rates (2 official ZIP rows) have raw timestamps in the ZIPs but are not part of the finite-rate time sets.",
+    "Frozen DB rows and the v1.7/v1.9 deltas were not used as the official time source here; v1.7/v1.9 raw official bodies are not retained on this branch.",
+    "Same-key-different-rate across the frozen DB, v1.7, v1.9, v1.10, b1..b3c deltas is per-batch compare evidence (conflicts 0 in those manifests); it was not re-run here."
+  ]
+}
