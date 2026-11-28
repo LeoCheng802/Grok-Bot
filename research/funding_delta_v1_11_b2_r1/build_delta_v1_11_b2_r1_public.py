@@ -6,10 +6,16 @@
 #!/usr/bin/env python3
 """BACKTEST-READINESS-01 v1.11-b2 r1 — official funding delta with D1 fix.
 
-D1: official funding_rate values that are not numeric (including the literal
-string None) are rejected from the delta and written to
-funding_null_rate_rows_v1_11_b2_r1.csv with flag official_rate_null.
-No zero-fill, no interpolation. Rebuild from saved official ZIPs/REST; no refetch.
+D1 / v1.16: official funding_rate values that are empty, the literal string
+None, NaN, Inf, -Inf, or any other non-finite / non-numeric value are rejected
+from the delta and written to funding_null_rate_rows_v1_11_b2_r1.csv.
+Flags are distinct: official_rate_null (empty / literal None / null) versus
+official_rate_nonfinite (NaN / Inf / -Inf, case-insensitive, via math.isfinite).
+Affected months stay in class but are marked incomplete (complete=false,
+sub_reason official_rate_null or official_rate_nonfinite). No zero-fill, no
+interpolation. Rebuild from saved official ZIPs/REST; no refetch.
+Stored REST content is parsed JSON (evidence_form=parsed_json,
+raw_bytes_saved=false); original raw HTTP bytes were not saved.
 
 
 Offline research data prep only. Does not trade, run strategies, refetch
@@ -40,6 +46,7 @@ import gzip
 import hashlib
 import io
 import json
+import math
 import os
 import sqlite3
 import sys
@@ -176,6 +183,12 @@ def snap(ms: int) -> int:
 
 
 def rate_status(value) -> str:
+    """Classify an official rate. Only finite numeric values are accepted.
+
+    Explicitly rejected: empty, 'None', 'NaN', 'Inf'/'-Inf', and any other
+    non-finite or non-numeric token. Accepted rates must parse as float and
+    satisfy math.isfinite.
+    """
     if value is None:
         return "python_none"
     text = str(value).strip()
@@ -184,17 +197,41 @@ def rate_status(value) -> str:
     low = text.lower()
     if low == "none":
         return "literal_none"
-    if low in {"null", "nan", "na", "n/a"}:
-        return f"literal_{low}"
+    if low in {"null", "na", "n/a"}:
+        return f"literal_{low.replace('/', '_')}"
+    if low in {"nan"}:
+        return "nan"
+    if low in {"inf", "+inf", "infinity", "+infinity"}:
+        return "inf"
+    if low in {"-inf", "-infinity"}:
+        return "neg_inf"
     try:
-        float(text)
-        return "numeric"
+        number = float(text)
     except ValueError:
         return "non_numeric"
+    if math.isnan(number):
+        return "nan"
+    if not math.isfinite(number):
+        return "inf" if number > 0 else "neg_inf"
+    return "numeric"
 
 
 def is_numeric_rate(value) -> bool:
     return rate_status(value) == "numeric"
+
+
+# official_rate_nonfinite is distinct from official_rate_null.
+_NULL_REJECT = {"python_none", "empty", "literal_none", "literal_null", "literal_na", "literal_n_a", "non_numeric"}
+_NONFINITE_REJECT = {"nan", "inf", "neg_inf"}
+
+
+def reject_flag(status: str) -> str:
+    """Map a rate_status to the inventory/flagged-file flag."""
+    if status in _NONFINITE_REJECT:
+        return "official_rate_nonfinite"
+    if status in _NULL_REJECT or status != "numeric":
+        return "official_rate_null"
+    raise ValueError(f"rate_status {status!r} is accepted, not flagged")
 
 
 
@@ -255,17 +292,26 @@ def http_get(url: str, kind: str, log_evidence: bool = True) -> tuple[int | str,
                 status = int(resp.status)
                 body = resp.read()
                 if log_evidence:
-                    evidence_write(
-                        {
-                            "url": url,
-                            "request_utc": request_utc,
-                            "http": status,
-                            "response_bytes": len(body),
-                            "response_sha256": sha256_bytes(body),
-                            "kind": kind,
-                            "attempt": attempt,
-                        }
-                    )
+                    ev = {
+                        "url": url,
+                        "request_utc": request_utc,
+                        "http": status,
+                        "response_bytes": len(body),
+                        "response_sha256": sha256_bytes(body),
+                        "kind": kind,
+                        "attempt": attempt,
+                    }
+                    if kind == "rest_history":
+                        # Hash is of the HTTP body at fetch time; the body is then
+                        # parsed and only the parsed object is stored. Raw bytes
+                        # are not saved (evidence_form=parsed_json).
+                        ev["evidence_form"] = "parsed_json"
+                        ev["raw_bytes_saved"] = False
+                        ev["response_sha256_note"] = (
+                            "hashed_http_body_then_parsed; stored form is parsed JSON, "
+                            "raw HTTP bytes are not retained"
+                        )
+                    evidence_write(ev)
                 return status, body, request_utc
         except urllib.error.HTTPError as e:
             body = e.read()
@@ -673,13 +719,14 @@ def fetch_part_a(pairs: list[tuple[str, str]]) -> tuple[list[dict[str, Any]], li
                             "ts_snapped_utc": iso(snap(tr)),
                             "snap_offset_ms": tr - snap(tr),
                             "funding_rate_raw": rate_s,
+                            "reject_type": rate_status(rate_s),
                             "rate_field": "funding_rate",
                             "source_kind": "monthly_zip",
                             "source_month_cst": ym,
                             "source_file": rel,
                             "zip_sha256": sha256_bytes(blob),
                             "fetched_utc": fetched,
-                            "flag": "official_rate_null",
+                            "flag": reject_flag(rate_status(rate_s)),
                         }
                     )
                     continue
@@ -901,13 +948,14 @@ def fetch_part_b(symbols: list[str]) -> tuple[list[dict[str, Any]], list[tuple],
                                 "ts_snapped_utc": iso(snap(tr)),
                                 "snap_offset_ms": tr - snap(tr),
                                 "funding_rate_raw": raw_rate,
+                                "reject_type": rate_status(raw_rate if rate is not None else None),
                                 "rate_field": field or "",
                                 "source_kind": "rest_history",
                                 "source_month_cst": "2026-11",
                                 "source_file": rel,
                                 "zip_sha256": "",
                                 "fetched_utc": p["fetched_utc"],
-                                "flag": "official_rate_null",
+                                "flag": reject_flag(rate_status(raw_rate if rate is not None else None)),
                             }
                         )
                         continue
@@ -943,6 +991,16 @@ def fetch_part_b(symbols: list[str]) -> tuple[list[dict[str, Any]], list[tuple],
                 limitation = (
                     "HTTP 429 on official funding-rate-history after backoff retries "
                     "exhausted. Window end unchanged, no zero-fill."
+                )
+            elif "code=51001" in err_s or "51001" in err_s:
+                limitation_code = "rest_51001_instrument_not_listed"
+                limitation = (
+                    "Official REST funding-rate-history returned code 51001 "
+                    "(instrument ID does not exist) in this window. Class stays "
+                    "pending_check with sub_reason rest_51001_instrument_not_listed. "
+                    "Recheck once the official monthly ZIP for CST 2026-11 is "
+                    "published. Window end unchanged, no zero-fill. The symbol "
+                    "stays in the EX_USDC_286 universe."
                 )
             else:
                 limitation_code = "rest_error"
@@ -1198,10 +1256,29 @@ def write_inventory_r1(
             rec["class"] = "missing_candidate"
         # pending_check and covered_verified (the prior 85) are left unchanged;
         # pending_check is not key-compared in this batch and is not complete.
+        flagged_months: dict[tuple[str, str], set[str]] = {}
+        for fr in FLAGGED_NULL_RATES:
+            flagged_months.setdefault((fr["inst_id"], fr["source_month_cst"]), set()).add(fr["flag"])
+        if key in flagged_months:
+            # Numeric official rows may remain; the month is still incomplete.
+            flags = flagged_months[key]
+            if flags == {"official_rate_null"}:
+                rec["sub_reason"] = "official_rate_null"
+            elif flags == {"official_rate_nonfinite"}:
+                rec["sub_reason"] = "official_rate_nonfinite"
+            else:
+                rec["sub_reason"] = ",".join(sorted(flags))
+            rec["complete"] = "false"
+        elif rec.get("class") in {"covered_verified", "covered_verified_rest"}:
+            rec["complete"] = "true"
+        else:
+            rec["complete"] = rec.get("complete") or ""
         out_rows.append(rec)
 
     path = os.path.join(OUT, "funding_month_inventory_v1_11_r2.csv")
     fields = list(inv_rows[0].keys()) if inv_rows else []
+    if "complete" not in fields:
+        fields.append("complete")
     with open(path, "w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=fields)
         w.writeheader()
@@ -1363,14 +1440,19 @@ def main() -> int:
     flag_p = os.path.join(OUT, FLAGGED_CSV_NAME)
     flag_fields = [
         "inst_id","funding_time_ms","funding_time_utc","ts_snapped_ms","ts_snapped_utc",
-        "snap_offset_ms","funding_rate_raw","rate_field","source_kind","source_month_cst",
-        "source_file","zip_sha256","fetched_utc","flag",
+        "snap_offset_ms","funding_rate_raw","reject_type","rate_field","source_kind",
+        "source_month_cst","source_file","zip_sha256","fetched_utc","flag",
     ]
     with open(flag_p, "w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=flag_fields)
         w.writeheader()
         w.writerows(FLAGGED_NULL_RATES)
-    log(f"Flagged official_rate_null rows: {len(FLAGGED_NULL_RATES)}")
+    log(
+        "Flagged official rate rows: "
+        f"{len(FLAGGED_NULL_RATES)} "
+        f"(null={sum(1 for r in FLAGGED_NULL_RATES if r['flag']=='official_rate_null')}, "
+        f"nonfinite={sum(1 for r in FLAGGED_NULL_RATES if r['flag']=='official_rate_nonfinite')})"
+    )
 
     conf_p = os.path.join(OUT, "funding_conflicts_v1_11_b2_r1.json")
     with open(conf_p, "w", encoding="utf-8") as f:

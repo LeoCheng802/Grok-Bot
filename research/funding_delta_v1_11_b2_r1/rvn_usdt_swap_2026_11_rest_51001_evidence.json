@@ -1,0 +1,30 @@
+{
+  "inst_id": "RVN-USDT-SWAP",
+  "month_cst": "2026-11",
+  "inventory_class": "pending_check",
+  "inventory_sub_reason": "rest_51001_instrument_not_listed",
+  "stays_in_universe": true,
+  "zero_fill": false,
+  "recheck_when": "when the official monthly ZIP for CST 2026-11 is published",
+  "source_file": "../funding_delta_v1_11_b2/rest_2026_11/RVN-USDT-SWAP.json.gz",
+  "source_file_sha256": "81e54634ffc98331488385c187b3ecb4f9c5da7b29e8dd9140436500f80edbc9",
+  "source_file_bytes": 323,
+  "stored_content_sha256": "87804240e87f886f320d49837dc062ba2f5d4c960b3e1c1677f524311e884cd8",
+  "stored_content_bytes": 413,
+  "evidence_form": "parsed_json",
+  "raw_bytes_saved": false,
+  "response_sha256": "230e2c076484f09587d279fd86ac17dce541f4acec83ffd9d40e60daf729f491",
+  "response_bytes": 97,
+  "response_sha256_scope": "SHA-256 of json.dumps(parsed_object, separators=(',', ':')).encode() — parsed/re-serialized JSON, not original raw HTTP bytes",
+  "http": 200,
+  "url": "https://www.okx.com/api/v5/public/funding-rate-history?instId=RVN-USDT-SWAP&after=1795694400001&limit=400",
+  "fetched_utc": "2026-11-27T23:42:44Z",
+  "code": "51001",
+  "msg": "Instrument ID, Instrument ID code, or Spread ID doesn't exist.",
+  "response": {
+    "code": "51001",
+    "data": [],
+    "msg": "Instrument ID, Instrument ID code, or Spread ID doesn't exist."
+  },
+  "note": "Attached from the already-saved REST page; not refetched. fetch_evidence_v1_11_b2.jsonl hashed the HTTP body at request time, then the body was parsed and only the parsed object was stored. Raw HTTP bytes were not retained. For this 51001 page the compact re-serialization is 97 bytes and matches the evidence-log SHA."
+}

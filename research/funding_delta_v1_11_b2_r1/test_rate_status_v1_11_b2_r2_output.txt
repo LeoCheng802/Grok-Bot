@@ -1,0 +1,156 @@
+test_rate_status_v1_11_b2_r2
+OLD = published r1 rate_status (08ff3d5): float(text) plus exact lowercase 'nan'
+NEW = math.isfinite, case-insensitive; flags official_rate_null vs official_rate_nonfinite
+
+token          OLD_status       OLD_accept  NEW_status       NEW_accept  NEW_flag
+---------------------------------------------------------------------------------
+''             empty            False       empty            False       official_rate_null
+'None'         literal_none     False       literal_none     False       official_rate_null
+'none'         literal_none     False       literal_none     False       official_rate_null
+'NaN'          literal_nan      False       nan              False       official_rate_nonfinite
+'nan'          literal_nan      False       nan              False       official_rate_nonfinite
+'-nan'         numeric          True        nan              False       official_rate_nonfinite
+'+nan'         numeric          True        nan              False       official_rate_nonfinite
+'inf'          numeric          True        inf              False       official_rate_nonfinite
+'-inf'         numeric          True        neg_inf          False       official_rate_nonfinite
+'Inf'          numeric          True        inf              False       official_rate_nonfinite
+'Infinity'     numeric          True        inf              False       official_rate_nonfinite
+'-Infinity'    numeric          True        neg_inf          False       official_rate_nonfinite
+'1e-4'         numeric          True        numeric          True        
+'-0.0001'      numeric          True        numeric          True        
+
+SUMMARY
+OLD accepted as numeric (non-finite / null tokens that should be rejected): ['-nan', '+nan', 'inf', '-inf', 'Inf', 'Infinity', '-Infinity']
+NEW incorrectly accepted (should be 0): none
+NEW incorrectly rejected finite rates (should be 0): none
+OLD already rejected exact lowercase 'nan' / 'NaN' (via .lower()=='nan') and empty / None; it accepted inf / Infinity / +/-nan because float() succeeds and isfinite was not checked.
+NEW rejects empty and None with flag official_rate_null, and rejects NaN/Inf (any case, including +/-nan) with flag official_rate_nonfinite. Finite values 1e-4 and -0.0001 remain accepted.
+RESULT: PASS
+
+JSON
+{
+  "cases": [
+    {
+      "token": "",
+      "old_status": "empty",
+      "old_accepted_as_numeric": false,
+      "new_status": "empty",
+      "new_accepted_as_numeric": false,
+      "new_flag": "official_rate_null"
+    },
+    {
+      "token": "None",
+      "old_status": "literal_none",
+      "old_accepted_as_numeric": false,
+      "new_status": "literal_none",
+      "new_accepted_as_numeric": false,
+      "new_flag": "official_rate_null"
+    },
+    {
+      "token": "none",
+      "old_status": "literal_none",
+      "old_accepted_as_numeric": false,
+      "new_status": "literal_none",
+      "new_accepted_as_numeric": false,
+      "new_flag": "official_rate_null"
+    },
+    {
+      "token": "NaN",
+      "old_status": "literal_nan",
+      "old_accepted_as_numeric": false,
+      "new_status": "nan",
+      "new_accepted_as_numeric": false,
+      "new_flag": "official_rate_nonfinite"
+    },
+    {
+      "token": "nan",
+      "old_status": "literal_nan",
+      "old_accepted_as_numeric": false,
+      "new_status": "nan",
+      "new_accepted_as_numeric": false,
+      "new_flag": "official_rate_nonfinite"
+    },
+    {
+      "token": "-nan",
+      "old_status": "numeric",
+      "old_accepted_as_numeric": true,
+      "new_status": "nan",
+      "new_accepted_as_numeric": false,
+      "new_flag": "official_rate_nonfinite"
+    },
+    {
+      "token": "+nan",
+      "old_status": "numeric",
+      "old_accepted_as_numeric": true,
+      "new_status": "nan",
+      "new_accepted_as_numeric": false,
+      "new_flag": "official_rate_nonfinite"
+    },
+    {
+      "token": "inf",
+      "old_status": "numeric",
+      "old_accepted_as_numeric": true,
+      "new_status": "inf",
+      "new_accepted_as_numeric": false,
+      "new_flag": "official_rate_nonfinite"
+    },
+    {
+      "token": "-inf",
+      "old_status": "numeric",
+      "old_accepted_as_numeric": true,
+      "new_status": "neg_inf",
+      "new_accepted_as_numeric": false,
+      "new_flag": "official_rate_nonfinite"
+    },
+    {
+      "token": "Inf",
+      "old_status": "numeric",
+      "old_accepted_as_numeric": true,
+      "new_status": "inf",
+      "new_accepted_as_numeric": false,
+      "new_flag": "official_rate_nonfinite"
+    },
+    {
+      "token": "Infinity",
+      "old_status": "numeric",
+      "old_accepted_as_numeric": true,
+      "new_status": "inf",
+      "new_accepted_as_numeric": false,
+      "new_flag": "official_rate_nonfinite"
+    },
+    {
+      "token": "-Infinity",
+      "old_status": "numeric",
+      "old_accepted_as_numeric": true,
+      "new_status": "neg_inf",
+      "new_accepted_as_numeric": false,
+      "new_flag": "official_rate_nonfinite"
+    },
+    {
+      "token": "1e-4",
+      "old_status": "numeric",
+      "old_accepted_as_numeric": true,
+      "new_status": "numeric",
+      "new_accepted_as_numeric": true,
+      "new_flag": ""
+    },
+    {
+      "token": "-0.0001",
+      "old_status": "numeric",
+      "old_accepted_as_numeric": true,
+      "new_status": "numeric",
+      "new_accepted_as_numeric": true,
+      "new_flag": ""
+    }
+  ],
+  "old_accepted_nonfinite": [
+    "-nan",
+    "+nan",
+    "inf",
+    "-inf",
+    "Inf",
+    "Infinity",
+    "-Infinity"
+  ],
+  "pass": true
+}
