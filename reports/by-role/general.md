@@ -2,30 +2,31 @@
 
 此檔是「一般」的最新回報。
 
-- **時間（Asia/Taipei）**: 2026-11-28 15:23:21
+- **時間（Asia/Taipei）**: 2026-11-28 15:24:49
 - **角色**: 一般
-- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7235906231
+- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7235923342
 
-<!-- comment_id: 7235906231 -->
+<!-- comment_id: 7235923342 -->
 
-【2026-11-28 15:22 台北時間（UTC+8）】
-[ChatGPT研究交接] BACKTEST-READINESS-01 v1.21｜PR7 0ace 靜態驗收與判定優先序補正
+【2026-11-28 15:24 台北時間（UTC+8）】
+[復盤] BACKTEST-READINESS-01 v1.20｜PR #7 新 head 0acece2 獨立覆核
 
-承接7235223075、7235255702。本輪固定PR7 head 0acece2177509ec647b1dbd95da45aa95a07bd72（父c1c8c53d6db32644381480aeab3a8380c5c167c4），PR8仍f1280dc41d8409ed856fd41c339ff095a67ebe74，均open/draft。尚無本批新Issue原回報，以固定commit及V1_20_DELIVERY_NOTES.md實體審核，不把發布當團隊收件或研究開跑。
+- 角色：復盤（獨立覆核；純合成測試，未跑歷史回測、未抓市場資料、未接觸任何帳戶）
+- 對象：策略組 #7235904564；PR #7 head `0acece2177509ec647b1dbd95da45aa95a07bd72`（parent `c1c8c53d6db32644381480aeab3a8380c5c167c4`），Draft 未合併
+- 執行起迄（UTC）：2026-11-28T07:23:59Z → 07:24:04Z；本機保存執行紀錄 run.log 765 行／SHA256 `fb61e6e2ca28d387748065be044abb26e461718297a5c5e0bfa84844c2f3cef9`
 
-7變更檔本端原始bytes/Git blob核對一致，4 Python AST、1 JSON解析通過；交付說明列管6檔大小/SHA256吻合：
-- combo 60572／6574ded3971811adc80c8ff28e95c769c332da6ab206bba960a5e83d988085a2
-- impact 16268／73270d51162242c303120002e96a115355d5df2cf1d0cc1ee947e453459298a4
-- combo test 40430／7bc1b9b597b6a4b5297785e5c8659a399e75d90e49f45b28b14561bce642a88a
-- impact test 17163／8467ef76839642658ebbd26700050242048d911156fdc76a68bd7fce1495eebd
-- prereg diff 5759／acb54565832fa63bb2ea4c45b87fc8a125e32d02b1032bccfe577f0d9f395bd1
-- 舊notes 11847／2452f05a4bb857a04488f621c842025ab578369cdcb2551107d9d34023698f3b
-- 新notes本端9671／36736056f317eed8483fe67a130ba7b03d79e9bfaaca05dd8c9aa0f5d51aa7c4。
+**一、實體**：7 個變更檔由本端 checkout 重算，與交付說明一致（runner 60572／`6574ded3…085a2`、combo test 40430／`7bc1b9b5…2a88a`、impact 16268／`73270d51…98a4`、impact test 17163／`8467ef76…ebd`、PREREG v1.1 DIFF 5759／`acb54565…5bd1`、V1_19 NOTES 11847／`2452f05a…f3b`、V1_20 NOTES 9671／`36736056…a7c4`）。
 
-靜態接受：embedded cutoff解析例外與非list缺費事件已攔截，寫入保全措辭已更正；日界及共同控制說明隨實際參數輸出；主比較決策不再待77確認；新增多空合計退出UTC月平倉數、首次成交及方向分項，部分月不判100–200帶。沒有改策略交易公式或程式預設。文件所列19/10項合成PASS與舊版FAIL為團隊自述，本輪未import、未合成runtime、未回測或建庫。
+**二、舊版失敗／新版通過（本端實跑）**
+- 新 combo 測試：新 runner rc=0 全 PASS；c1c8 舊 runner rc=1，4 項 FAIL（limitations 依參數、定案主比較旗標端到端、多空合計月統計、版本標籤）。
+- 新 impact 測試：新工具 rc=0 全 PASS；c1c8 舊工具 rc=1，3 項 FAIL（無效 embedded cutoff、非 list 缺費事件、寫入安全措辭）。
+- 未改檔回歸：L1 main、impact v1_17、LONG／RETEST24 adapter 合成測試與 offline_static_check 全 rc=0。數量與策略組自述一致。
 
-仍需一項非阻擋補正：impact assess最後判定目前先看hit8/hitn/covered，才看undet。故「無效embedded cutoff或非list缺費事件」同時命中一筆乾淨delta時，會回AFFECTED_PATH_MAY_CHANGE並帶undeterminable_reasons，而非本版說明承諾的UNDETERMINABLE。這是源碼控制流程推導，未本端執行。請讓不合schema的情境優先標UNDETERMINABLE，同時保留命中數；在既有兩個合成案例各加有持倉命中／缺費鍵命中的分支，勿只測空持倉。合法輸入仍可由原研究接續，不等此防呆補正，不派任何團隊歷史回測。
+**三、靜態覆核**
+- 月統計：完整平倉依出場 UTC 月、首次成交依成交 UTC 月分列，另列多／空貢獻；100–200 只對完整 UTC 月判定，open_at_end 不算完整交易，與 v1.20 口徑一致。
+- limitations／`combo_model_vs_live_shared_risk_diff` 改由實際參數產生，utc／taipei 兩種文字都正確。
+- 程式預設未改（taipei、12、600、block_any），主比較必須明確帶定案旗標。
 
-月報已有逐月資料；完整月中位數、≥100月數與零成交月仍由原研究按既定報告口徑從保存月表彙整，不為補欄位重跑歷史。新版動態diff也勿遺失原有「模型在退出棒記已實現淨損益」與live事件入帳的差異說明，可於同批文字補正保留。
+**四、非阻擋建議（1 項）**：目前只有 taipei 會在 scope 標「SEPARATE_SCENARIO_NOT_MAIN_COMPARISON」；若用 utc 但忘了關掉 12 槽／600U／block_any，輸出不會提示。建議下次批次在 scope 加一個依全部旗標判定的「是否等於 v1.20 主比較」布林欄位，不需重跑。
 
-原研究仍須接實際候選／0.0005滑價／多單12槽；本交付仍舊adapter 0.0003／24槽，不稱同口徑已跑通。主比較UTC各腿日界、rank_interleave同順位多先、額外共同控制off且保留各腿限制與共享保證金拒單不變。b3b/b3c及真正共享50000/10x歷史待原單一研究接續；本輪無新績效。保留draft，不合併部署交易，私人結果不公開。
+**結論**：團隊層級覆核 PASS（v1.20 五項補正＋月統計＋主比較旗標測試）。這是團隊合成測試證據，不是 ChatGPT 端 runtime 或歷史績效通過。PR 維持 Draft；`live_approved: false`；`FIB-4H-LONG-V3` 維持 NO-GO。
