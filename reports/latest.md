@@ -2,36 +2,46 @@
 
 這是 Issue #1 最新一筆擁有者回報，供 ChatGPT 優先閱讀。
 
-- **時間（Asia/Taipei）**: 2026-11-28 20:43:26
+- **時間（Asia/Taipei）**: 2026-11-28 20:47:43
 - **角色**: 一般
-- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7239422691
+- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7239471455
 
-<!-- comment_id: 7239422691 -->
+<!-- comment_id: 7239471455 -->
 
-【2026-11-28 20:42 台北時間（UTC+8）】
-[ChatGPT研究交接] BACKTEST-READINESS-01 v1.24｜回覆策略7239373375、復盤7239320542：接線規格與可繼續交付範圍
+【2026-11-28 20:47 台北時間（UTC+8）】
+[復盤] BACKTEST-READINESS-01 v1.23 執行交付（來源清單與非 8H 未知項）獨立覆核：PASS
 
-本次由PR #7索引7239374963核原文；PR #7仍812fdd59edc47c5c2afc3731c948bad4595987e5、open/draft。本端僅讀既存wrapper／訊號生成原碼／凍結B6及保存JSON，沒有import策略、載入pickle、合成runtime、歷史回測或建庫。既驗五檔不重驗；未推送四檔及6／21項PASS均仍是團隊自述，尚無本端新實體驗收。
+角色：復盤（獨立覆核，只讀）
+對應：執行 Issue #1 評論 7239389862
+倉庫：LeoCheng802/Grok-Bot
+PR：#8（draft，未合併、未改寫歷史）
+核對 head：`3280b7a6975d272c24238476af80820c9668b6c7`（父 commit `f1280dc41d8409ed856fd41c339ff095a67ebe74`）
+本輪覆核執行時間（UTC）：2026-11-28T12:41:51Z – 2026-11-28T12:46:36Z
+本輪 run.log：1,986 行，SHA-256 `0daecdb274d44c62c700babaf3e5cf8553a42444dfacedd3f80be3f42ed3a2b3`
 
-一、G1–G9回覆（既存原研究映射，不冒稱812f主入口已驗）
-G1：既存研究快照是pickle dict，頂層cands／bars／max_lev；cands按Long02、OPT01、RETEST24_R2分組，各組為毫秒時間→有序五元組列表。實際3668650 bytes、SHA256 568f98ec6eae19a99b03a39f5cb6acddb69581ed833895e845834cd659afdb5c。本批組合只取Long02和OPT01。不要把來源字串或任意pickle當作可信可執行輸入；公開載入介面可採純JSON版本化規格，既存私下快照轉換及等價核對由原研究自己處理，無需公開快照／私人明細。
-特別注意：舊獨立腿快照的tuple leg欄兩邊都是0；共享wrapper依策略群組重新映射Long02→0、OPT01→1，不能直接相信舊leg欄。新schema可顯式side／strategy_id，保留來源版本、排序及輸入雜湊。
-G2：key為當根4H UTC開盤時間毫秒，來源為行情ts4[i]，不是前根收盤時戳或實測available_after；使用已收棒與當根open的歷史決策時點，不能宣稱已證實秒級可下單。bars另為研究窗內30m時間序列。
-G3：各腿按sort_key穩定升冪，多為-dist、空為-RSI；相同分數保留原列表順序，該順序來自固定cache manifest的標的遍歷順序。跨腿按順位交錯，同順位多先。新tie_break_seq須保留來源順序，不能改成字母排序或事後重排。
-G4：兩組候選taker_flag=False，採限價；多單原函式先round(old_ref,4)，再Decimal ROUND_DOWN對tick；空單用floor(raw_px/tick)取得索引再Decimal形成價格。快照價不再次取整；使用快照tick，非歷史tick已完整驗證。
-G5：這是訊號候選快照，未套持倉／掛單槽數、日虧或共享保證金閘門；這些在引擎事件循環處理。不得把實際已成交或過風控的列表當候選回填。
-G6：固定EX_USDC_286、2023-01-01T00:00:00Z～2026-11-26T12:00:00Z；驗完整標的集合與逐檔manifest，不只驗數量286。暖機輸入與交易窗分開。
-G7：已保存B6模型設定slip_mkt=0.0005；本批限價入場沒有再扣市場滑價，滑價作用於模型退出（含停損、止盈、同棒停損及強平路徑）。下單名目值仍risk/sl_pct，沒有把滑價／費用加入名目風險換算；不能稱與live成本納張數完全相同，也不要為「對齊」默改舊模型公式。
-G8：主組合OPT01是R1，每筆150、每日600、12槽；Long02同150／600／12。上傳RETEST24-R2與OPT01訊號R2-sizing是分開情境，不替代主臂。
-G9：保存主比較為cross_1tick與delay1bar；後者仍cross_1tick但禁首30m棒新成交，不順延原TTL，並非實測延遲或成交保證。
+範圍：只讀已保存檔案與已提交 CSV／腳本。未向交易所發網路請求，未跑回測，未下單，未改倉庫、未推送、未公開績效。公開編譯器因凍結庫不在 PR #8 內而沒有整支重跑；改以相同解析規則離線重讀已保存官方 ZIP／REST，並以 pandas 重算已提交 CSV。
 
-二、交付與候選決定
-接受選用滑價／多單槽數參數、分腿pre_place_margin_skips及明列尚未同口徑的介面方向。沿既有研究程式公開授權，可以在同一draft後續實質提交中交付目前本地四檔及上述快照schema／載入器，不必為保存812f而停推；舊固定commit仍保留作基準，不force-push、不合併。保留預設與交易公式，額外計數不得改變執行順序；新head／大小SHA／diff及已保存合成證據一併交，不為通知另造空提交或純確認。不派團隊任何策略歷史或績效回測；本端runtime仍由原單一研究接續，尚未開跑。
+## 結論
 
-C1 L02-K3與C2 OPT01-D06接受為獨立待驗假說登記，保留原版，先做等效設計去重與固定規格／版本；不是已有效或立即新增歷史批次。C3可保留獨立規格，但本端既存cache manifest沒有BTC-USDT-SWAP，資料與as-of接線未具備；本輪不因規格擴充下載。三者均不取代主比較，也不讓候選開發阻擋既有介面交付。
+可獨立核對的主張全部 PASS。七個具名缺口與 6 筆額外列的對應已釐清：OL 2025-10 留在 3,122 筆非 8H 月份內；額外 6 列是 4×404、RVN 2026-11，以及 0 筆非 8H 結算的 ZK 2024-06。
 
-三、復盤月表口徑
-接受公開側未取得私人月表、不能獨立重算的限制。原研究保存表來自私人wrapper，並非812f的combo_result.json，兩種schema勿混用。本端本輪實讀其monthly_combined.months：year_month、is_partial_month、first_fills（combined/long/short/unknown）、closed（combined/long/short/net_u/fee_u/fund_u）。因此原研究保存表確有合計費用欄，不能從公開runner缺欄推論私人表也缺欄。
-2023-01完整；2026-11部分月份，保留報出但不評目標。中位數／≥100／100–200含端點／零月全部取完整月closed.combined，首次成交分項獨立保留、不替代。兩者由同一情境的已保存order／trade產物彙整到同一月表，但分別用ets／xts；不是同一計數。檔案雜湊及私人表持續保存在原研究證據，不公開數值或明細，也不為欄位重跑。CST資金費來源月與UTC績效月須按實際結算時戳關聯。
+## 核對結果
 
-索引SHA縮寫更正接受，不重開已結案驗收。latest/index另出現PR #8來源清單回報7239389862；它不屬本次PR #7事件材料驗收，本則不宣稱已核新檔或完整分母。非8H未知、輸入先驗缺口及舊庫無完整trace限制維持。保留draft，無合併、部署、交易或實盤風控變更。
+- 本 commit 相對父 commit 只新增 `research/funding_sources_nonh8_v1_23/` 下 8 個檔案。四項指定 SHA 全部吻合：來源清單 csv `65dcdbbd…899a65ca`（10 列）、未知項 csv `dc4689a6…df8938ce`（3,128 列）、manifest `c1ebc83c…a1d510`、公開腳本 `19d1b69a…47f6b6`。
+- 不重複官方月 ZIP：**7,246**（各批 80+5+1,279+1,961+1,961+1,960，無重複）。離線解析數值鍵 **941,211**；flagged official null **2**：OL-USDT-SWAP 2025-10（1/85，字面 `None`）、ZK-USDT-SWAP 2024-06（1/54，字面 `None`）。
+- 非 8H 月份 **3,122** = 可推斷 2,499 + 無法判定 623。623 的分項：interval_change_or_gaps 195、interval_change 99、window_truncated 198、span_shorter_than_month 121、internal_gaps 8、insufficient_points 2。另有官方數值但全為 8H 的月份 4,409。inventory r5 為 7,536 列。
+- 未知項檔 **3,128** = 3,122 + 6。record_kind：non8h_month 3,122、known_gap_404 4、known_gap_pending 1、known_gap_official_rate_null 1。
+- 額外 6 列 = 4×404（CC 2025-10、INJ 2023-11、MEGA 2026-04、ORDER 2025-09）+ RVN-USDT-SWAP 2026-11 + ZK-USDT-SWAP 2024-06（53 筆結算皆在 8H 格點，非 8H 為 0）。
+- OL-USDT-SWAP 2025-10 在 3,122 內：非 8H 結算 7 筆，`denominator_status=not_determinable_interval_change_or_gaps`，`inventory_sub_reason=official_rate_null`。
+- 無官方數值結算的 5 個月份 = 4×404 + RVN，狀態皆為 `not_determinable_no_numeric_settlements`，全部落在額外 6 列，不在 623 內。
+- 檔案內 `not_determinable_*` 列合計 **629** = 623 + 6。
+- 3,122 個非 8H 月份的跨界結算合計 **6,109**；全部滿足「UTC 月最後一天 16:00Z（含）之後」。3,122 筆皆標 `cst_vs_utc_completeness_may_differ=true`。CST 2026-11 非 8H 列 212，全部標 `partial_month_no_month_end_crossing`。腳本判定式為 CST 月份 ≠ UTC 月份，與上述邊界規則等價（小時格點抽樣 5,376 點，0 筆不符）。與已提交 CSV 的月份集合、筆數、分母狀態、跨界數比對，0 筆差異。
+- 靜態檢查：公開腳本 AST 通過；沒有交易所請求、補 0、插值或改宇宙／視窗的實作。`https://` 僅出現在來源清單的 URL 模式字串。`subprocess` 只用於讀 git HEAD；sqlite 只以唯讀方式打開凍結庫。所有 3,128 列 `denominator_is_official=false`。
+
+## 限制（非矛盾）
+
+- 凍結庫檔不在 PR #8 內，故 `frozen_db_l1` 的 829,157 列與 SHA `23ebdab5…40783cc` 只能核對與既有 v1.11 manifest 的引用一致，不能在本倉庫重算檔案雜湊。因此沒有整支重跑公開編譯器、也未比較重跑輸出雜湊。
+- 推斷分母不是官方結算時程；`complete=true` 仍只代表該批來源與比對範圍。
+
+FIB-4H-LONG-V3 維持 NO-GO。live_approved = false。
+離線覆核，未交易、未模擬、未擴窗、未補值、未部署。
