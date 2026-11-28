@@ -2,31 +2,19 @@
 
 這是 Issue #1 最新一筆擁有者回報，供 ChatGPT 優先閱讀。
 
-- **時間（Asia/Taipei）**: 2026-11-28 15:24:49
+- **時間（Asia/Taipei）**: 2026-11-28 15:26:49
 - **角色**: 一般
-- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7235923342
+- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7235944722
 
-<!-- comment_id: 7235923342 -->
+<!-- comment_id: 7235944722 -->
 
-【2026-11-28 15:24 台北時間（UTC+8）】
-[復盤] BACKTEST-READINESS-01 v1.20｜PR #7 新 head 0acece2 獨立覆核
+【2026-11-28 15:26 台北時間（UTC+8）】
+[ChatGPT研究交接] BACKTEST-READINESS-01 v1.21 補充｜同版覆核與主比較標示
 
-- 角色：復盤（獨立覆核；純合成測試，未跑歷史回測、未抓市場資料、未接觸任何帳戶）
-- 對象：策略組 #7235904564；PR #7 head `0acece2177509ec647b1dbd95da45aa95a07bd72`（parent `c1c8c53d6db32644381480aeab3a8380c5c167c4`），Draft 未合併
-- 執行起迄（UTC）：2026-11-28T07:23:59Z → 07:24:04Z；本機保存執行紀錄 run.log 765 行／SHA256 `fb61e6e2ca28d387748065be044abb26e461718297a5c5e0bfa84844c2f3cef9`
+已讀策略7235904564及復盤7235923342全文；PR7索引7235925799不另算交付。固定head仍0acece2177509ec647b1dbd95da45aa95a07bd72，PR8仍f1280dc41d8409ed856fd41c339ff095a67ebe74，均open/draft。七檔已由7235906231驗收，不重驗或重派。
 
-**一、實體**：7 個變更檔由本端 checkout 重算，與交付說明一致（runner 60572／`6574ded3…085a2`、combo test 40430／`7bc1b9b5…2a88a`、impact 16268／`73270d51…98a4`、impact test 17163／`8467ef76…ebd`、PREREG v1.1 DIFF 5759／`acb54565…5bd1`、V1_19 NOTES 11847／`2452f05a…f3b`、V1_20 NOTES 9671／`36736056…a7c4`）。
+復盤所述UTC07:23:59～07:24:04、run.log765行/SHA fb61e6e2ca28d387748065be044abb26e461718297a5c5e0bfa84844c2f3cef9、新版合成PASS及舊版4/3項FAIL，收錄為團隊自述；本端未取得log、未執行runtime。此回報未涵蓋7235906231指出的「schema未知且同時命中delta」判定分支，該補正保持待辦，不因團隊PASS結案。
 
-**二、舊版失敗／新版通過（本端實跑）**
-- 新 combo 測試：新 runner rc=0 全 PASS；c1c8 舊 runner rc=1，4 項 FAIL（limitations 依參數、定案主比較旗標端到端、多空合計月統計、版本標籤）。
-- 新 impact 測試：新工具 rc=0 全 PASS；c1c8 舊工具 rc=1，3 項 FAIL（無效 embedded cutoff、非 list 缺費事件、寫入安全措辭）。
-- 未改檔回歸：L1 main、impact v1_17、LONG／RETEST24 adapter 合成測試與 offline_static_check 全 rc=0。數量與策略組自述一致。
+接受復盤的非阻擋標示建議。本端只補讀固定源碼，確認prereg_deviations目前僅依taipei日界產生。下次與既有補正同批加入「主比較控制旗標吻合」布林及不符項目，核UTC、rank_interleave、同順位long_first、global-max-slots=0、global-daily-loss-u=0、same-inst-policy=off。此欄只代表控制旗標，不得命名或解讀成完整策略/資料/成本已對齊：實際候選映射、0.0005滑價、多單12槽仍需原研究接線。保留現有預設，無需77再次決定；標示補正不阻合法輸入整合，不為文案重跑歷史。
 
-**三、靜態覆核**
-- 月統計：完整平倉依出場 UTC 月、首次成交依成交 UTC 月分列，另列多／空貢獻；100–200 只對完整 UTC 月判定，open_at_end 不算完整交易，與 v1.20 口徑一致。
-- limitations／`combo_model_vs_live_shared_risk_diff` 改由實際參數產生，utc／taipei 兩種文字都正確。
-- 程式預設未改（taipei、12、600、block_any），主比較必須明確帶定案旗標。
-
-**四、非阻擋建議（1 項）**：目前只有 taipei 會在 scope 標「SEPARATE_SCENARIO_NOT_MAIN_COMPARISON」；若用 utc 但忘了關掉 12 槽／600U／block_any，輸出不會提示。建議下次批次在 scope 加一個依全部旗標判定的「是否等於 v1.20 主比較」布林欄位，不需重跑。
-
-**結論**：團隊層級覆核 PASS（v1.20 五項補正＋月統計＋主比較旗標測試）。這是團隊合成測試證據，不是 ChatGPT 端 runtime 或歷史績效通過。PR 維持 Draft；`live_approved: false`；`FIB-4H-LONG-V3` 維持 NO-GO。
+沿既有範圍接續，下一次有實際修正再交固定head與差異；不需純確認。事件任務本輪無合成、回測、建庫或新績效，不派Grok歷史；保留draft，不合併部署交易。
