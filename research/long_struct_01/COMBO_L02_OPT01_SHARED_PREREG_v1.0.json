@@ -1,0 +1,130 @@
+{
+  "study_id": "BACKTEST-READINESS-01",
+  "version": "v1.17",
+  "combo_id": "COMBO_L02_OPT01_SHARED_50K_10X",
+  "prereg_version": "v1.0",
+  "author_role": "策略組",
+  "status": "PRELIMINARY_SPEC_FOR_CHATGPT_RUN (群組不跑歷史／績效；只交程式與合成測試)",
+  "live_approved": false,
+  "fib_4h_long_v3": "NO-GO",
+  "source_comments_issue_1": {
+    "77_priority_via_chatgpt_v1_17": "7230906219",
+    "77_priority_via_chatgpt_v1_16": "7230504858",
+    "preliminary_data_policy_v1_15": "7230355480",
+    "shared_capital_rule_long_short_scope_v1_0": "7207172638",
+    "isolated_out_dir_and_version_label_v1_14": "7230243906",
+    "complete_true_only_v1_16": "7230640043",
+    "long_01_02_03_readable_on_pr7": "7227474241"
+  },
+  "pinned_inputs": {
+    "pr7_head_base": "3a2ba82caec450d9b0bc854de0630618d6431e94",
+    "long_adapter": "research/long_struct_01/code/run_long_struct_bounded_backtest.py (unchanged, 57,609 B, sha256 8db9e3fd0f64f86493f39584b5a5849b6f7f1067026a5e75413a86b6e9010a59)",
+    "short_adapter": "research/long_struct_01/code/run_retest24_bounded_backtest.py (unchanged, 54,101 B, sha256 67094079a995fa6f751d5393127b12895264641ccadc99a105d75511c3742f89)",
+    "funding_inventory_reference": "PR #8 head 7852b42fe581ce15f1b5c84c8ca4f360c768e8fa research/funding_delta_v1_11_b3a/funding_month_inventory_v1_11_r3.csv (or later r-version)"
+  },
+  "legs": {
+    "0_long": {
+      "candidate": "LONG_STRUCT_02_V1_0_TEMPORAL_SPLIT",
+      "meaning": "多單 02（時間拆分）",
+      "rules": "adapter build_cands_long_struct_02_temporal_split, prereg LONG_STRUCT_02_TEMPORAL_SPLIT_DEDUP_PREREG_v1.2.json",
+      "exit_and_sizing": "adapter defaults: tp 2.5%, sl 4.0%, ttl 48h, max_slots 24, risk 150U, daily loss 600U (UTC day), loss-streak 3 -> pause 24h"
+    },
+    "1_short": {
+      "candidate": "RETEST24_OPT_01_BEARISH_CLOSE_POS",
+      "meaning": "OPT01（RETEST24 單一假說：前一根 4H 收盤位置 <= 0.35）",
+      "rules": "adapter build_cands_retest24(candidate_mode=RETEST24_OPT_01_BEARISH_CLOSE_POS)",
+      "exit_and_sizing": "frozen v1.5 spec: tp 5%, sl 5%, ttl 24h, max_slots 12; sizing R1_150U (150U / 600U) or R2_100U (100U / 400U)"
+    }
+  },
+  "shared_account": {
+    "initial_capital_u": 50000.0,
+    "leverage_cap": 10.0,
+    "margin": "one initial-margin pool (open + resting, both legs); one realised equity; one MTM drawdown; one liquidation check",
+    "fair_cost": {
+      "maker_fee": 0.0002,
+      "taker_fee": 0.0005,
+      "slip_mkt": 0.0003,
+      "mmr_approx": 0.01,
+      "check": "runner refuses if the two legs' cost fields differ"
+    },
+    "forbidden": "兩邊各給 50,000 後相加（#7207172638）",
+    "global_max_slots": {
+      "default": 12,
+      "source": "registered shared_risk.RiskLedger default max_slots=12（多空合計名額）"
+    },
+    "global_daily_loss_u": {
+      "default": 600.0,
+      "day": "Asia/Taipei (UTC+8)",
+      "source": "registered shared_risk.RiskLedger default daily_loss_limit=600 by taipei_day"
+    },
+    "same_inst_policy": {
+      "default": "block_any",
+      "alternative": "allow_opposite",
+      "note": "shared_risk 帳本以 (strategy, inst, pos_side) 佔格；開單審核口徑是同幣有任何持倉或委託就退回。兩者不一致，預設採較嚴格的 block_any，allow_opposite 只作敏感度。"
+    },
+    "leg_priority": {
+      "default": "long_first",
+      "alternative": "short_first",
+      "note": "未找到官方定義；同一根 4H 兩腿同時出訊號時的先後只能用參數固定，建議兩種都跑作敏感度。"
+    }
+  },
+  "universe_and_period": {
+    "universe": "EX_USDC_286（快取全部標的扣除 USDC-USDT-SWAP；不刪幣、不換母體）",
+    "start_utc": "2023-01-01T00:00:00Z",
+    "end_utc": "2026-11-26T12:00:00Z",
+    "source": "REPRO_MANIFEST window_utc 與兩 adapter 既有預設"
+  },
+  "arms": [
+    {
+      "id": "R1_150U|cross_1tick",
+      "role": "主組合"
+    },
+    {
+      "id": "R1_150U|delay1bar",
+      "role": "主組合延遲敏感度"
+    },
+    {
+      "id": "R2_100U|cross_1tick",
+      "role": "R2 對照"
+    },
+    {
+      "id": "R2_100U|delay1bar",
+      "role": "R2 對照延遲敏感度"
+    }
+  ],
+  "r2_comparison": {
+    "definition_used": "R2 = RETEST24 同一訊號的 Q29 倉位規格（每筆 100U、日損 400U），對照 R1（Q28，每筆 150U、日損 600U）。R1/R2 是倉位規格，不是兩套訊號（#7207172638）。",
+    "upload": "R2 對照以本組合 runner 的 R2_100U 兩個 arm 產生；交付物為 runner、合成測試、本規格與執行指令。實際歷史結果由 ChatGPT 原研究任務執行後上傳。",
+    "ambiguity": "Issue #1 #7230906219 只寫「上傳R2對照」，沒有寫明是組合內的空單 R2 倉位，還是 RETEST24 單獨的 R2 結果。採保守解讀：兩者都可由既有程式產生（組合 R2 arm；單獨空單可用 run_retest24_bounded_backtest.py --candidate RETEST24_OPT_01_BEARISH_CLOSE_POS --scenarios 'R2_100U|cross_1tick,R2_100U|delay1bar'），不另造新策略。"
+  },
+  "v1_15_data_policy": {
+    "run_when_mostly_complete": true,
+    "missing_funding": "UNKNOWN, not booked, not zero-filled, not interpolated; arms with unknown funding are conditional scenarios, not true net performance",
+    "miss_8h": "listed in full in local details; no abort",
+    "inventory": "only complete == 'true' counts; 'false' / blank / other = not complete",
+    "uncomputable": "inventory sub_reason rest_51001_instrument_not_listed (RVN 2026-11) -> whole CST month blocks new entries and flags overlapping positions 不可計算; extra windows via --uncomputable-windows",
+    "labels": "result status is PRELIMINARY_INCOMPLETE_DATA or PRELIMINARY_BATCH_SCOPE, never PASS"
+  },
+  "outputs": {
+    "out_dir": "必須是新的隔離目錄（不存在或空的）",
+    "files": [
+      "combo_scope.json",
+      "combo_result.json",
+      "combo_local_details.json (local only, do not publish)",
+      "funding_archive_combo_isolated.sqlite (+ .meta.json)"
+    ],
+    "exclusivity": "combo_result.json 只在完整跑完後出現；失敗不留 result 與 .tmp"
+  },
+  "command_template": "python3 research/long_struct_01/code/run_combo_l02_opt01_shared_backtest.py --manifest <REPRO_MANIFEST_JSON> --retest24-script <RETEST24_PY> --shared-risk <SHARED_RISK_PY> --cache-dir <CACHE_V3_DIR> --funding-db <FUNDING_SQLITE> --input-manifest <EX_USDC_286_NPZ_MANIFEST_JSON> --funding-inventory <FUNDING_MONTH_INVENTORY_CSV> --out-dir <NEW_EMPTY_OUT_DIR>",
+  "sensitivity_commands": [
+    "... --leg-priority short_first --out-dir <ANOTHER_NEW_DIR>",
+    "... --same-inst-policy allow_opposite --out-dir <ANOTHER_NEW_DIR>"
+  ],
+  "open_questions": [
+    "R2 對照的確切範圍（見 r2_comparison.ambiguity）",
+    "同根雙腿優先順序沒有官方定義（預設 long_first，需敏感度）",
+    "同幣跨腿規則：shared_risk 帳本與開單審核口徑不一致（預設較嚴格的 block_any）",
+    "多單 02 自身的 24 槽與共用 12 槽並存時，以共用 12 槽為硬上限（沿用 shared_risk 預設；若 77 另有指定再改參數）",
+    "RVN 下架確切時間未知，整個 2026-11 CST 月視為不可計算"
+  ]
+}
