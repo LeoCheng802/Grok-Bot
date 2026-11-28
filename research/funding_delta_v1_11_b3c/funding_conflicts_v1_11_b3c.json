@@ -1,0 +1,25 @@
+{
+  "official_vs_existing": [],
+  "existing_input_internal": [],
+  "official_zip_internal": [],
+  "official_identical_deduped": 0,
+  "baseline_census": {
+    "rows_by_source": {
+      "frozen_829157": 829157,
+      "v1_7": 6748,
+      "v1_9": 174,
+      "v1_10": 10633,
+      "v1_11_b1": 609,
+      "v1_11_b2_r1": 198354,
+      "v1_11_b3a": 918,
+      "v1_11_b3b": 1084
+    },
+    "unique_keys": 1047677,
+    "clean_keys": 1047677,
+    "keys_identical_multi_source_deduped": 0,
+    "identical_multi_source_extra_occurrences": 0,
+    "existing_input_conflict_keys": 0,
+    "existing_input_conflict_affected_months": [],
+    "existing_input_conflict_affected_month_keys": []
+  }
+}

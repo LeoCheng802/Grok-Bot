@@ -1,0 +1,274 @@
+{
+  "research_id": "BACKTEST-READINESS-01",
+  "version": "v1.11-batch3c",
+  "batch": "v1.11-b3c",
+  "slice": {
+    "universe": "inventory r2 class=pending_check excluding RVN-USDT-SWAP 2026-11 (pinned to b3a manifest)",
+    "universe_count": 5882,
+    "sort": [
+      "inst_id",
+      "month_cst"
+    ],
+    "n_slices": 3,
+    "sizes": [
+      1961,
+      1961,
+      1960
+    ],
+    "method": "base, rem = divmod(universe_count, 3); the first rem slices get base+1, the rest get base. Cuts are those recorded in the v1.11-b3a manifest, rebuilt from inventory r2, not from remaining r3/r4 pending_check months.",
+    "slices": [
+      {
+        "slice": 1,
+        "index_range": [
+          0,
+          1961
+        ],
+        "count": 1961,
+        "first": {
+          "inst_id": "0G-USDT-SWAP",
+          "month_cst": "2025-12"
+        },
+        "last": {
+          "inst_id": "ETHFI-USDT-SWAP",
+          "month_cst": "2026-06"
+        }
+      },
+      {
+        "slice": 2,
+        "index_range": [
+          1961,
+          3922
+        ],
+        "count": 1961,
+        "first": {
+          "inst_id": "ETHFI-USDT-SWAP",
+          "month_cst": "2026-07"
+        },
+        "last": {
+          "inst_id": "PENDLE-USDT-SWAP",
+          "month_cst": "2026-01"
+        }
+      },
+      {
+        "slice": 3,
+        "index_range": [
+          3922,
+          5882
+        ],
+        "count": 1960,
+        "first": {
+          "inst_id": "PENDLE-USDT-SWAP",
+          "month_cst": "2026-02"
+        },
+        "last": {
+          "inst_id": "ZRX-USDT-SWAP",
+          "month_cst": "2026-08"
+        }
+      }
+    ],
+    "this_batch": 3,
+    "this_batch_index_range": [
+      3922,
+      5882
+    ],
+    "this_batch_count": 1960,
+    "this_batch_first": {
+      "inst_id": "PENDLE-USDT-SWAP",
+      "month_cst": "2026-02"
+    },
+    "this_batch_last": {
+      "inst_id": "ZRX-USDT-SWAP",
+      "month_cst": "2026-08"
+    },
+    "pending_before_this_batch": {
+      "pending_check": 1961,
+      "slice_months_remaining_before": 1960,
+      "includes_rvn_2026_11": true,
+      "note": "1,961 pending_check months before this batch = 1,960 remaining slice months + RVN-USDT-SWAP 2026-11. The 4 official_unavailable / 404_reason_unknown months are listed separately and are not included in this 1,961."
+    }
+  },
+  "start_utc": "2026-11-28T00:47:26Z",
+  "end_utc": "2026-11-28T00:58:48Z",
+  "complete_definition": {
+    "true": "Passed per this batch's source and comparison scope only: an official monthly ZIP was obtained, all of its finite-numeric official keys were key-compared against existing settlements, and the month has zero conflicts of any kind (official-vs-existing, existing-input-internal, official-ZIP-internal). This is not a full-period or cross-frequency verification.",
+    "false": "Known incomplete in this batch: the official monthly ZIP was obtained but at least one official rate was empty, None, or non-finite (flagged official_rate_null or official_rate_nonfinite).",
+    "blank": "Unknown. Only true means complete (within the limited scope above).",
+    "note": "Self-run scans and tests in this batch are team execution evidence, not ChatGPT runtime certification."
+  },
+  "fetch": {
+    "pairs_in_slice": 1960,
+    "fetched": 1960,
+    "http_200": 1960,
+    "http_404": 0,
+    "http_other": {},
+    "skipped_already_verified": 0,
+    "zips_saved": 1960,
+    "reused_from_this_batch": 0
+  },
+  "official_rows_numeric": 260643,
+  "official_unique_keys": 260643,
+  "already_matched_existing": 258781,
+  "new_rows": 1862,
+  "new_rows_grid": {
+    "8h": 934,
+    "non_8h": 928
+  },
+  "only_actual_official_settlements_added": true,
+  "conflicts": {
+    "official_vs_existing": 0,
+    "official_vs_existing_by_type": {},
+    "existing_input_internal": 0,
+    "official_zip_internal": 0,
+    "official_identical_deduped": 0
+  },
+  "baseline_census": {
+    "rows_by_source": {
+      "frozen_829157": 829157,
+      "v1_7": 6748,
+      "v1_9": 174,
+      "v1_10": 10633,
+      "v1_11_b1": 609,
+      "v1_11_b2_r1": 198354,
+      "v1_11_b3a": 918,
+      "v1_11_b3b": 1084
+    },
+    "unique_keys": 1047677,
+    "clean_keys": 1047677,
+    "keys_identical_multi_source_deduped": 0,
+    "identical_multi_source_extra_occurrences": 0,
+    "existing_input_conflict_keys": 0,
+    "existing_input_conflict_affected_months": [],
+    "existing_input_conflict_affected_month_keys": []
+  },
+  "r4_complete_true_flip_count": 0,
+  "r4_complete_true_flips": [],
+  "flagged": {
+    "total": 0,
+    "by_reject_type": {
+      "literal_none": 0,
+      "empty": 0,
+      "nan": 0,
+      "inf": 0,
+      "neg_inf": 0,
+      "non_numeric": 0
+    },
+    "by_flag": {
+      "official_rate_null": 0,
+      "official_rate_nonfinite": 0
+    }
+  },
+  "inventory_r5": {
+    "class_counts": {
+      "covered_verified": 7246,
+      "covered_verified_rest": 285,
+      "official_unavailable": 4,
+      "pending_check": 1
+    },
+    "complete_counts": {
+      "true": 7529,
+      "false": 2,
+      "blank": 5
+    },
+    "class_sub_reason_complete": {
+      "covered_verified|complete=true": 7244,
+      "covered_verified_rest|complete=true": 285,
+      "official_unavailable|404_reason_unknown": 4,
+      "covered_verified|official_rate_null|complete=false": 2,
+      "pending_check|rest_51001_instrument_not_listed": 1
+    },
+    "pending_check": 1,
+    "r4_complete_true_flips": [],
+    "r4_complete_true_flip_count": 0
+  },
+  "inputs_sha256": {
+    "funding_archive_l1_isolated.sqlite": {
+      "bytes": 74924032,
+      "sha256": "23ebdab561d5fa48ae34394b451d55b97d3e09af4e8a8809eef93422c40783cc"
+    },
+    "funding_delta_missing16_v1_7.csv.gz": {
+      "bytes": 91491,
+      "sha256": "34743db093b5673233693b0bfd4fa020abeb3928f7d4c0c29603c4d4c01311be"
+    },
+    "funding_delta_missing174_v1_9.csv.gz": {
+      "bytes": 3547,
+      "sha256": "01ed8da28efa7038d03369b0b02b78f5777d3f21d95e5a95ca1e26221bb3340e"
+    },
+    "funding_delta_full75plus_v1_10.csv.gz": {
+      "bytes": 158227,
+      "sha256": "4fe33c0efe78f1398b02cb231760d3817b13f985de013e51df9c273dec7c999b"
+    },
+    "funding_delta_5sym_v1_11_b1.csv.gz": {
+      "bytes": 8286,
+      "sha256": "2ab89d43188e38c0b34ea04513d9c199eee2fa7fc5bfac891993db2006d48bbb"
+    },
+    "funding_delta_v1_11_b2_r1.csv.gz": {
+      "bytes": 3035583,
+      "sha256": "ac3890c5de16b7254ef3b51afbb9af7826467a3c14fe193ce3a04ddc583d2e86"
+    },
+    "funding_delta_v1_11_b3a.csv.gz": {
+      "bytes": 10941,
+      "sha256": "0950a0d28966560a84b49a896e418f86ea2af8e866f61f6a15a9d321568cbaab"
+    },
+    "funding_delta_v1_11_b3b.csv.gz": {
+      "bytes": 12039,
+      "sha256": "f7b139a597e0257283a1c32dd632d6ef39a5822c15a03c929d1d433b53b66b9e"
+    },
+    "funding_month_inventory_v1_11_r4.csv": {
+      "bytes": 793231,
+      "sha256": "c9e6e7bcf8029babfde9ac07e2fdb1cc2557f32c22b7ffdf2031b90c74c07145"
+    },
+    "funding_month_inventory_v1_11_r2.csv": {
+      "bytes": 765777,
+      "sha256": "1634a4d449ae7b239920be6ff0a8fa72ba305ee8c53ad4d4e09cfa56f229b59e"
+    }
+  },
+  "files": {
+    "funding_delta_v1_11_b3c.csv.gz": {
+      "bytes": 23008,
+      "sha256": "8f49f40fa0d47297ab7f4d3b5d21a7b60177f1936079519eccba05ab7137cfda",
+      "rows": 1862,
+      "csv_bytes": 392828,
+      "csv_sha256": "e99fee683c1736e6b867c6302813e61112e27ec18f27e275f2d38c6a87d6faac"
+    },
+    "funding_null_rate_rows_v1_11_b3c.csv": {
+      "bytes": 195,
+      "sha256": "2d9b5d2900837efbc42086e8f0f37a909d34658b5aa2cc27d8fe880b10657021",
+      "rows": 0
+    },
+    "funding_conflicts_v1_11_b3c.json": {
+      "bytes": 679,
+      "sha256": "978a6187bac36767191a4af9626e30ccca51a030427686d87689ef16fd76b97c"
+    },
+    "funding_source_months_v1_11_b3c.json": {
+      "bytes": 1400858,
+      "sha256": "6f77060a4b13bc7e637b93d5ecc3681932f936953f06e0a515d8925433393d34",
+      "months": 1960
+    },
+    "funding_month_inventory_v1_11_r5.csv": {
+      "bytes": 806951,
+      "sha256": "27361ccc0aeec209979965d72fa235f8fb80818b2c9c813927f80469cf6603f9",
+      "rows": 7536
+    },
+    "fetch_evidence_v1_11_b3c.jsonl": {
+      "bytes": 698845,
+      "sha256": "39935b93d9e53da7c1ae9d70f82c4318ebfac5c1d8cee42b9720c9d499768fd0"
+    },
+    "build_delta_v1_11_b3c_public.py": {
+      "bytes": 53104,
+      "sha256": "f0474c74fa61487e10769f2919966f897715ebaf12ea164572f7f4dd78ba6eae"
+    },
+    "CHANGELOG.md": {
+      "bytes": 6713,
+      "sha256": "4de3fdb4aeb5e710b78c5a07613da81e5b144d64714583d6e83acb2314f6ee44"
+    }
+  },
+  "rule": "v1.11-b3c slice 3 of 3 (final): official monthly ZIPs for 1,960 pending_check months, key-compared against frozen + v1.7/v1.9/v1.10/v1.11_b1/v1.11_b2_r1/v1.11_b3a/v1.11_b3b. Already-verified ZIPs were not refetched. Prior deltas were not rebuilt. Only keys verified as actual official settlement records are added. Non-finite/non-numeric official rates are flagged, never zero-filled. Conflicts never overwrite. 404s stay official_unavailable / 404_reason_unknown and are listed separately from pending. Pending before this batch was 1,961 (1,960 remaining slice months + RVN-USDT-SWAP 2026-11). RVN-USDT-SWAP 2026-11 stays pending_check / rest_51001_instrument_not_listed. load_existing dedupes identical multi-source keys and lists existing-input conflicts with both sides. complete=true only if the month has zero conflicts of any kind, and only means passed per this batch's source and comparison scope; blank=unknown. Team execution evidence, not ChatGPT runtime certification. FIB-4H-LONG-V3 remains NO-GO; live_approved is false.",
+  "remaining": {
+    "pending_check": 1,
+    "includes_rvn_2026_11": true,
+    "remaining_slice_months": 0,
+    "rvn_2026_11_pending_check": true,
+    "prior_404_reason_unknown": 4,
+    "four_404_listed_separately": true
+  }
+}
