@@ -2,24 +2,34 @@
 
 此檔是「一般」的最新回報。
 
-- **時間（Asia/Taipei）**: 2026-11-28 07:58:21
+- **時間（Asia/Taipei）**: 2026-11-28 08:05:33
 - **角色**: 一般
-- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7230545281
+- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7230640210
 
-<!-- comment_id: 7230545281 -->
+<!-- comment_id: 7230640210 -->
 
-【2026-11-28 07:59 台北時間（UTC+8）】
-[復盤] BACKTEST-READINESS-01 v1.11-b2 r1：D1 修正複驗
+【2026-11-28 08:05 台北時間（UTC+8）】
+[復盤] BACKTEST-READINESS-01 v1.11-b2 r2 複驗：PASS
 
-- 角色：復盤（獨立覆核）。對象：PR #8 head `08ff3d5bdb02c8b28ed0170d234bf1f02e8cc0ca`（執行回報 #7230527499）
-- 執行 UTC：`2026-11-27T23:57Z`～`23:58Z`
+- 角色：復盤（獨立覆核）。對象：PR #8 head `928beeb6cfeaa9fc686f0bdfe44154abba6e14ec`（執行回報 #7230617170），與 `08ff3d5b` 比較。
+- 執行時間（UTC）：`2026-11-28T00:04Z`～`00:05Z`。自寫的隔離測試 SHA 為 `ac89b650…f5d3`：用 AST 只抽出新舊兩版的 `rate_status`／`is_numeric_rate`，不執行整支生成程式。
 
-**結果**
-- 新 delta `funding_delta_v1_11_b2_r1.csv.gz` 的 SHA 是 `ac3890c5…2e86`，與回報一致。共 198,354 列，沒有重複鍵，每列費率都是有限數值（不是 `None`、`NaN` 或 `Inf`）。8H 有 120,996 列，非 8H 有 77,358 列。
-- 和 `74764f32` 的 delta 相比，只移除了 OL `2025-10-24T08:00Z` 和 ZK `2024-06-06T08:00Z` 這 2 個鍵。沒有新增任何鍵，其餘費率也沒有改動。
-- 旗標檔裡只有這 2 列，旗標是 `official_rate_null`，原值保留為 `None`。它記錄的 2 個來源月檔 SHA，我在 repo 原檔上重算後吻合。
-- 盤點表從 r1 到 r2 只改了這 2 列：子原因改成 `official_rate_null`，但分類仍是 `covered_verified`。執行已說明會在下一個 commit 改成未完整，屆時我再複驗。
-- 補充：這 2 筆空值都落在 NPZ 第一根行情棒之前（OL 的第一根是 `2025-10-29`，ZK 的是 `2024-06-18`），看起來不在回測期間內。不過這只是旁證，2 個月份還是照規定標成未完整。
+**判定函式：舊版確實會放行，新版全部擋下**
+- 舊版會把下列輸入判成數值，新版全部拒絕：`inf`、`-inf`、`+inf`、`Inf`、`INF`、`Infinity`、`-Infinity`、`-nan`、`+nan`。另外我多測了 `1e999` 和 `-1e999`，這兩個會溢位成 ±inf，新版也有擋下。
+- 新版標記：`None`／`none` 標為 `literal_none`，空字串和空白標為 `empty`，`null` 標為 `literal_null`，`abc` 標為 `non_numeric`，Python 的 None 標為 `python_none`；正負無限大分別標為 `inf`／`neg_inf`，所有 NaN 寫法都標為 `nan`。
+- `1e-4`、`-0.0001`、`0`、`0.00005` 仍判為數值，照常接受。
+- 執行附的 `test_rate_status_v1_11_b2_r2.py` 我也跑過：rc=0，結果 PASS。
 
-**D1 結論**：delta 部分 PASS。分類標記、`NaN`／`Inf`／空值的拒絕邏輯，以及 REST 原始 bytes 的說明，等下一個 head 再一起驗。
+**資料與盤點**
+- delta 這次沒有改動，SHA 仍是 `ac3890c5…2e86`，manifest 記錄的也是這個值。旗標檔仍只有 OL 和 ZK 這 2 列，類型都是 `literal_none`，來源 ZIP 的 SHA 吻合。
+- 盤點表 r2 跟 `08ff3d5b` 版逐列比對：列數與順序相同，只多了 `complete` 欄，另外只有 RVN 2026-11 這一格的子原因從 `rest_error` 改成 `rest_51001_instrument_not_listed`，其餘值完全沒變。
+- OL 2025-10 和 ZK 2024-06 都標為 `complete=false`；1,362 個逐鍵驗證月份與 285 個 REST 驗證月份標為 `true`；其餘 5,887 格留空。
+- RVN 證據檔記錄的來源檔 SHA `81e54634…`，我重算吻合。
+- REST 證據形式已寫明：存的是解析後的 JSON（`parsed_json`），原始 bytes 沒有保存（`raw_bytes_saved=false`）。這和我上一輪的觀察一致。
+
+**提醒**：`complete` 欄有三種值：`true`、`false`、留空。下游只能把 `true` 當成完整；留空代表未知，不能當成完整。
+
+**結論**：D1 修正和 v1.16 要求的補正都 PASS。
+
+缺口不變：5,883 個待核月份還沒逐鍵比對，4 格 404 和 RVN 的原因仍未知。
 `FIB-4H-LONG-V3` 維持 NO-GO；全案 `live_approved: false`；PR 維持 draft。
