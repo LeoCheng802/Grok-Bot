@@ -39,6 +39,7 @@ import numpy as np
 
 M30, H1, H4, H8, DAY = 1800000, 3600000, 14400000, 28800000, 86400000
 TZ_UTC = timezone.utc
+RUNNER_VERSION = "v1.17"  # single source for scope/result/abort/local-details version labels (v1.17: was v1.0 + v1.9 mixed)
 
 REQUIRED_EXPLICIT_KEYS = {
     "orig_long": "scripts/FIB_4H_Long_v3.py",
@@ -751,6 +752,21 @@ def parse_args(argv=None):
     return p.parse_args(argv)
 
 
+def _require_fresh_out_dir(out_dir: Path) -> None:
+    """v1.17: every run needs a NEW isolated out-dir so a stale abort/result from an earlier run can
+    never sit next to (or be mistaken for) this run's evidence; old evidence is left untouched."""
+    if out_dir.is_symlink():
+        raise RuntimeError("out-dir must be a new isolated directory, not a symlink; refusing before any write")
+    if out_dir.exists():
+        if not out_dir.is_dir():
+            raise RuntimeError("out-dir exists and is not a directory; refusing before any write")
+        if any(out_dir.iterdir()):
+            raise RuntimeError(
+                "out-dir already contains files (possible stale result/abort evidence); "
+                "every run needs a NEW isolated out-dir; refusing before any write"
+            )
+
+
 def main(argv=None) -> int:
     args = parse_args(argv)
     started_utc = datetime.now(TZ_UTC).isoformat()
@@ -782,7 +798,7 @@ def main(argv=None) -> int:
 
         scope_preview = {
             "study_id": "BACKTEST-READINESS-01",
-            "version": "v1.0",
+            "version": RUNNER_VERSION,
             "started_utc": started_utc,
             "manifest": str(bound["manifest"]),
             "orig_long": str(bound["roles"]["orig_long"]),
@@ -842,6 +858,7 @@ def main(argv=None) -> int:
             fixed_inputs.append(("manifest entry " + rel, path))
 
         _verify_output_paths_disjoint(outputs, fixed_inputs)
+        _require_fresh_out_dir(out_dir)
 
         try:
             out_dir.mkdir(parents=True, exist_ok=True)
@@ -969,7 +986,7 @@ def main(argv=None) -> int:
                 abort_payload = {
                     "status": "ABORTED_MISSING_FUNDING",
                     "study_id": "BACKTEST-READINESS-01",
-                    "version": "v1.0",
+                    "version": RUNNER_VERSION,
                     "started_utc": started_utc,
                     "finished_utc": finished_utc,
                     "elapsed_sec": round(time.time() - t0, 2),
@@ -1001,7 +1018,7 @@ def main(argv=None) -> int:
                         {
                             "status": "ABORTED_MISSING_FUNDING",
                             "study_id": "BACKTEST-READINESS-01",
-                            "version": "v1.9",
+                            "version": RUNNER_VERSION,
                             "performance_valid": False,
                             "publication": "LOCAL_DIAGNOSTICS_ONLY_NOT_A_SUCCESS_REPORT_DO_NOT_PUBLISH",
                             "arms": arms,
@@ -1026,7 +1043,7 @@ def main(argv=None) -> int:
             result_payload = {
                 "status": "PASS",
                 "study_id": "BACKTEST-READINESS-01",
-                "version": "v1.0",
+                "version": RUNNER_VERSION,
                 "started_utc": started_utc,
                 "finished_utc": finished_utc,
                 "elapsed_sec": round(time.time() - t0, 2),
@@ -1065,7 +1082,7 @@ def main(argv=None) -> int:
                     {
                         "status": "PASS",
                         "study_id": "BACKTEST-READINESS-01",
-                        "version": "v1.9",
+                        "version": RUNNER_VERSION,
                         "by_year_month": {k: v["by_year_month"] for k, v in arms.items()},
                         "scenarios": local_details_by_scenario,
                     },

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""100% synthetic main() tests for run_l1_bounded_backtest.py (BACKTEST-READINESS-01 v1.13).
+"""100% synthetic main() tests for run_l1_bounded_backtest.py (BACKTEST-READINESS-01 v1.13, updated v1.17).
 
 Zero real market data, zero network access, zero live/demo trading, no historical run.
 A tiny stub engine (engine/b6_sim_portable.py) and stub FIB_4H_Long_v3 are written into a
@@ -11,6 +11,12 @@ through serialization and writing. Covers:
    local details keep arms, by_year_month, untruncated missing_funding_events_all, status.
 3. Details-path collision with a fixed input is rejected before ANY write/copy/load
    (sentinel: zero writes, zero copies, zero np.load, zero module loads, out-dir unchanged).
+v1.17 changes:
+- case 2 now runs in a NEW isolated out-dir (reusing a dir is refused by design since v1.17);
+4. Reused out-dir (stale success report AND stale abort report from earlier runs) is refused before any
+   write/copy/load; both stale files stay byte-identical (old evidence preserved, never mixed).
+5. One version label: scope, result, abort report and local details all carry runner RUNNER_VERSION
+   (v1.13 mixed "v1.0" and "v1.9").
 
 Runner path defaults to the sibling run_l1_bounded_backtest.py; override with env
 L1_RUNNER_PATH to run the same tests against another revision (old-fail / new-pass evidence).
@@ -179,9 +185,7 @@ def test_missing_funding_exit():
     with tempfile.TemporaryDirectory() as td:
         env = _make_env(Path(td), include_miss=True)
         out = env["out"]
-        out.mkdir(parents=True)
-        stale = out / "l1_bounded_result.json"
-        stale.write_text('{"status": "PASS", "stale": true}\n', encoding="utf-8")
+        stale = out / "l1_bounded_result.json"  # v1.17: fresh out-dir; no success report may appear on abort
         rc = mod.main(env["argv"])
         det_p = out / DETAILS_NAME
         abort_p = out / "l1_bounded_missing_funding_abort.json"
@@ -189,7 +193,7 @@ def test_missing_funding_exit():
         print("ABORT_RC:", rc)
         print("ABORT_OUT_FILES:", _listing(out))
         _check(rc == 2, "missing-funding rc must be 2, got %r" % (rc,))
-        _check(not stale.exists(), "success report must not exist (stale one must be discarded)")
+        _check(not stale.exists(), "success report must not exist on abort")
         _check(abort_p.is_file(), "abort report missing")
         _check(det_p.is_file(), "local details file missing on abort")
         _check(not tmps, "no .tmp may remain: %r" % (tmps,))
@@ -276,10 +280,65 @@ def test_details_path_collision_rejected():
     _run_collision("details.tmp->funding-db symlink", setup_tmp)
 
 
+def test_reused_out_dir_refused_old_evidence_kept():
+    """v1.17: a reused out-dir holding stale result + abort evidence is refused before any write."""
+    with tempfile.TemporaryDirectory() as td:
+        env = _make_env(Path(td), include_miss=False)
+        out = env["out"]
+        out.mkdir(parents=True)
+        stale_ok = out / "l1_bounded_result.json"
+        stale_abort = out / "l1_bounded_missing_funding_abort.json"
+        stale_ok.write_text('{"status": "PASS", "stale": true}\n', encoding="utf-8")
+        stale_abort.write_text('{"status": "ABORTED_MISSING_FUNDING", "stale": true}\n', encoding="utf-8")
+        snap = {p.name: p.read_bytes() for p in out.iterdir()}
+        calls = {"writes": 0, "copy2": 0, "np_load": 0, "load_mods": 0}
+        o_write, o_copy, o_np, o_mods = mod._atomic_write_text, mod.shutil.copy2, mod.np.load, mod._load_runtime_modules
+
+        def spy(key, fn):
+            def w(*a, **k):
+                calls[key] += 1
+                return fn(*a, **k)
+            return w
+
+        mod._atomic_write_text = spy("writes", o_write)
+        mod.shutil.copy2 = spy("copy2", o_copy)
+        mod.np.load = spy("np_load", o_np)
+        mod._load_runtime_modules = spy("load_mods", o_mods)
+        err, rc = None, None
+        try:
+            try:
+                rc = mod.main(env["argv"])
+            except Exception as exc:
+                err = exc
+        finally:
+            mod._atomic_write_text, mod.shutil.copy2, mod.np.load, mod._load_runtime_modules = o_write, o_copy, o_np, o_mods
+        after = {p.name: p.read_bytes() for p in out.iterdir()}
+        print("REUSED_OUT_DIR:", "rc=", rc, "err=", type(err).__name__ if err else None, "-", str(err) if err else "",
+              "calls=", json.dumps(calls), "files_after=", sorted(after))
+        _check(isinstance(err, RuntimeError) and "NEW isolated out-dir" in str(err), "reused out-dir must be refused")
+        _check(all(v == 0 for v in calls.values()), "no write/copy/np.load/module load before refusal")
+        _check(after == snap, "stale evidence must stay byte-identical (no mixing, no deletion)")
+
+
+def test_single_version_label():
+    """v1.17: scope/result/details (success) and abort/details (abort) all carry RUNNER_VERSION."""
+    want = "v1.17"
+    for include_miss, files in ((False, ("l1_bounded_scope.json", "l1_bounded_result.json", DETAILS_NAME)),
+                                (True, ("l1_bounded_scope.json", "l1_bounded_missing_funding_abort.json", DETAILS_NAME))):
+        with tempfile.TemporaryDirectory() as td:
+            env = _make_env(Path(td), include_miss=include_miss)
+            mod.main(env["argv"])
+            got = {f: json.loads((env["out"] / f).read_text(encoding="utf-8")).get("version") for f in files}
+            print("VERSION_LABELS[%s]:" % ("abort" if include_miss else "success"), got)
+            _check(set(got.values()) == {want}, "all version labels must equal %s: %r" % (want, got))
+    _check(getattr(mod, "RUNNER_VERSION", None) == want, "runner must expose RUNNER_VERSION = %s" % want)
+
+
 if __name__ == "__main__":
     print("RUNNER_UNDER_TEST_SHA256:", mod.sha(MOD_PATH))
     failed = []
-    for fn in (test_success_exit, test_missing_funding_exit, test_details_path_collision_rejected):
+    for fn in (test_success_exit, test_missing_funding_exit, test_details_path_collision_rejected,
+               test_reused_out_dir_refused_old_evidence_kept, test_single_version_label):
         print("=== " + fn.__name__)
         try:
             fn()
