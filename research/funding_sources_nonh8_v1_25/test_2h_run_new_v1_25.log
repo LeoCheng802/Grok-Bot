@@ -1,0 +1,33 @@
+# new logic: v1.25 generator (script sha256 81372910192660bc31cba6b3d5c93880f86e0b7975dae020e0ee7f54620f31e0)
+# command: python3 research/funding_sources_nonh8_v1_25/test_2h_classification_v1_25.py research/funding_sources_nonh8_v1_25/build_sources_nonh8_v1_25_public.py
+# run_utc_start: 2026-11-28T12:59:36Z
+A: observed='2H' status='inferred_constant_full_month_nonstandard_interval' inferred_interval='2H' expected='360'
+PASS  A1 observed interval stays 2H  [2H]
+PASS  A2 not labelled internal_gaps  [inferred_constant_full_month_nonstandard_interval]
+PASS  A3 inferred_interval is not 1H  [2H]
+PASS  A4 inferred_interval is 2H (observed constant)  [2H]
+PASS  A5 status is inferred constant full month, nonstandard interval  [inferred_constant_full_month_nonstandard_interval]
+PASS  A6 inferred expected count is 360  [360]
+PASS  A7 denominator is not official  [false]
+PASS  A8 official schedule marked unknown  [unknown_no_official_schedule_source_used]
+B: observed='4H' status='inferred_constant_full_month' inferred_interval='4H' expected='180'
+PASS  B1 4H control observed 4H
+PASS  B2 4H control status inferred_constant_full_month
+PASS  B3 4H control expected 180
+C: observed='4H+2H' status='not_determinable_interval_change_or_gaps' inferred_interval=''
+PASS  C1 not constant: inferred_interval is not 1H
+PASS  C2 not constant: no inferred expected count
+D: observed='2H' status='not_determinable_span_shorter_than_month' inferred_interval='2H'
+PASS  D1 mid-month listing: observed interval stays 2H  [2H]
+PASS  D2 mid-month listing: not internal_gaps  [not_determinable_span_shorter_than_month]
+PASS  D3 mid-month listing: span shorter than month  [not_determinable_span_shorter_than_month]
+PASS  D4 mid-month listing: inferred_interval is not 1H  [2H]
+PASS  E1 snap collision detected  [1]
+PASS  E2 snap collision with different rates detected  [1]
+PASS  E3 non-zero offsets counted  [2]
+PASS  E4 raw basis keeps both raw times  [3]
+PASS  E5 snap basis collapses them  [2]
+SUMMARY checks=22 passed=22 failed=0
+RESULT PASS
+# exit_code: 0
+# run_utc_end: 2026-11-28T12:59:36Z

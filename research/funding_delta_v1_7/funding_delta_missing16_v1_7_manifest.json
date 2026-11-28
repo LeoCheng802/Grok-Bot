@@ -1,0 +1,212 @@
+{
+  "schema": "funding_delta_v1_7_manifest",
+  "research_id": "BACKTEST-READINESS-01",
+  "version": "v1.7-missing16-okx-public-api-delta",
+  "additive_only": true,
+  "preserves_original_frozen_61_shards": true,
+  "zero_fill_or_interpolation": false,
+  "source_endpoint": "https://www.okx.com/api/v5/public/funding-rate-history?instId={instId}&after={after}&limit=100",
+  "cutoff_utc": "2026-11-26T12:00:00Z",
+  "fetch_started_utc": "2026-11-27T21:24:32Z",
+  "fetch_finished_utc": "2026-11-27T21:24:55Z",
+  "symbols_targeted": 16,
+  "total_rows_fetched": 6748,
+  "delta_file": {
+    "filename": "funding_delta_missing16_v1_7.csv.gz",
+    "size_bytes_gz": 91491,
+    "sha256_gz": "34743db093b5673233693b0bfd4fa020abeb3928f7d4c0c29603c4d4c01311be",
+    "size_bytes_csv": 873635,
+    "sha256_csv": "e4c322902f66fbc7a6ea5c9f6a6db7b7e4144f75344ceed37e776e2c3caa435e"
+  },
+  "sqlite_merge_rule": "Load original 61 shards first, then INSERT OR IGNORE into funding_archive(inst_id, ts_snapped, ts_raw, rate, source_ym) from this delta CSV.gz; never overwrite original frozen rows and never zero-fill residual gaps.",
+  "per_symbol_summary": [
+    {
+      "inst_id": "AKE-USDT-SWAP",
+      "bar_min_utc": "2026-09-16T07:00:00Z",
+      "bar_max_utc": "2026-11-26T12:00:00Z",
+      "api_rows_fetched": 449,
+      "api_min_utc": "2026-09-16T08:00:00Z",
+      "api_max_utc": "2026-11-26T12:00:00Z",
+      "expected_8h_slots": 214,
+      "residual_missing_8h_slots": 0,
+      "residual_missing_span_utc": null
+    },
+    {
+      "inst_id": "AXIS-USDT-SWAP",
+      "bar_min_utc": "2026-10-21T14:00:00Z",
+      "bar_max_utc": "2026-11-26T12:00:00Z",
+      "api_rows_fetched": 261,
+      "api_min_utc": "2026-10-21T16:00:00Z",
+      "api_max_utc": "2026-11-26T12:00:00Z",
+      "expected_8h_slots": 108,
+      "residual_missing_8h_slots": 0,
+      "residual_missing_span_utc": null
+    },
+    {
+      "inst_id": "BTW-USDT-SWAP",
+      "bar_min_utc": "2026-10-22T08:00:00Z",
+      "bar_max_utc": "2026-11-26T12:00:00Z",
+      "api_rows_fetched": 289,
+      "api_min_utc": "2026-10-22T12:00:00Z",
+      "api_max_utc": "2026-11-26T12:00:00Z",
+      "expected_8h_slots": 106,
+      "residual_missing_8h_slots": 1,
+      "residual_missing_span_utc": [
+        "2026-10-22T08:00:00Z",
+        "2026-10-22T08:00:00Z"
+      ]
+    },
+    {
+      "inst_id": "CASHCAT-USDT-SWAP",
+      "bar_min_utc": "2026-09-03T03:30:00Z",
+      "bar_max_utc": "2026-11-26T12:00:00Z",
+      "api_rows_fetched": 507,
+      "api_min_utc": "2026-09-03T04:00:00Z",
+      "api_max_utc": "2026-11-26T12:00:00Z",
+      "expected_8h_slots": 253,
+      "residual_missing_8h_slots": 0,
+      "residual_missing_span_utc": null
+    },
+    {
+      "inst_id": "CNPY-USDT-SWAP",
+      "bar_min_utc": "2026-09-07T13:00:00Z",
+      "bar_max_utc": "2026-11-26T12:00:00Z",
+      "api_rows_fetched": 518,
+      "api_min_utc": "2026-09-07T16:00:00Z",
+      "api_max_utc": "2026-11-26T12:00:00Z",
+      "expected_8h_slots": 240,
+      "residual_missing_8h_slots": 0,
+      "residual_missing_span_utc": null
+    },
+    {
+      "inst_id": "CT-USDT-SWAP",
+      "bar_min_utc": "2026-09-30T11:00:00Z",
+      "bar_max_utc": "2026-11-26T12:00:00Z",
+      "api_rows_fetched": 350,
+      "api_min_utc": "2026-09-30T12:00:00Z",
+      "api_max_utc": "2026-11-26T12:00:00Z",
+      "expected_8h_slots": 171,
+      "residual_missing_8h_slots": 0,
+      "residual_missing_span_utc": null
+    },
+    {
+      "inst_id": "DATA-USDT-SWAP",
+      "bar_min_utc": "2026-07-02T12:30:00Z",
+      "bar_max_utc": "2026-11-26T12:00:00Z",
+      "api_rows_fetched": 553,
+      "api_min_utc": "2026-08-26T12:00:00Z",
+      "api_max_utc": "2026-11-26T12:00:00Z",
+      "expected_8h_slots": 441,
+      "residual_missing_8h_slots": 165,
+      "residual_missing_span_utc": [
+        "2026-07-02T16:00:00Z",
+        "2026-08-26T08:00:00Z"
+      ]
+    },
+    {
+      "inst_id": "DGAI-USDT-SWAP",
+      "bar_min_utc": "2026-09-03T03:00:00Z",
+      "bar_max_utc": "2026-11-26T12:00:00Z",
+      "api_rows_fetched": 507,
+      "api_min_utc": "2026-09-03T04:00:00Z",
+      "api_max_utc": "2026-11-26T12:00:00Z",
+      "expected_8h_slots": 253,
+      "residual_missing_8h_slots": 0,
+      "residual_missing_span_utc": null
+    },
+    {
+      "inst_id": "DNA-USDT-SWAP",
+      "bar_min_utc": "2026-10-16T12:00:00Z",
+      "bar_max_utc": "2026-11-26T12:00:00Z",
+      "api_rows_fetched": 246,
+      "api_min_utc": "2026-10-16T16:00:00Z",
+      "api_max_utc": "2026-11-26T12:00:00Z",
+      "expected_8h_slots": 123,
+      "residual_missing_8h_slots": 0,
+      "residual_missing_span_utc": null
+    },
+    {
+      "inst_id": "FET-USDT-SWAP",
+      "bar_min_utc": "2026-09-05T03:30:00Z",
+      "bar_max_utc": "2026-11-26T12:00:00Z",
+      "api_rows_fetched": 495,
+      "api_min_utc": "2026-09-05T04:00:00Z",
+      "api_max_utc": "2026-11-26T12:00:00Z",
+      "expected_8h_slots": 247,
+      "residual_missing_8h_slots": 0,
+      "residual_missing_span_utc": null
+    },
+    {
+      "inst_id": "FLOCK-USDT-SWAP",
+      "bar_min_utc": "2026-09-12T10:00:00Z",
+      "bar_max_utc": "2026-11-26T12:00:00Z",
+      "api_rows_fetched": 451,
+      "api_min_utc": "2026-09-12T12:00:00Z",
+      "api_max_utc": "2026-11-26T12:00:00Z",
+      "expected_8h_slots": 225,
+      "residual_missing_8h_slots": 0,
+      "residual_missing_span_utc": null
+    },
+    {
+      "inst_id": "GRVT-USDT-SWAP",
+      "bar_min_utc": "2026-07-30T15:00:00Z",
+      "bar_max_utc": "2026-11-26T12:00:00Z",
+      "api_rows_fetched": 553,
+      "api_min_utc": "2026-08-26T12:00:00Z",
+      "api_max_utc": "2026-11-26T12:00:00Z",
+      "expected_8h_slots": 357,
+      "residual_missing_8h_slots": 81,
+      "residual_missing_span_utc": [
+        "2026-07-30T16:00:00Z",
+        "2026-08-26T08:00:00Z"
+      ]
+    },
+    {
+      "inst_id": "KII-USDT-SWAP",
+      "bar_min_utc": "2026-09-24T11:00:00Z",
+      "bar_max_utc": "2026-11-26T12:00:00Z",
+      "api_rows_fetched": 379,
+      "api_min_utc": "2026-09-24T12:00:00Z",
+      "api_max_utc": "2026-11-26T12:00:00Z",
+      "expected_8h_slots": 189,
+      "residual_missing_8h_slots": 0,
+      "residual_missing_span_utc": null
+    },
+    {
+      "inst_id": "PONS-USDT-SWAP",
+      "bar_min_utc": "2026-09-05T03:00:00Z",
+      "bar_max_utc": "2026-11-26T12:00:00Z",
+      "api_rows_fetched": 495,
+      "api_min_utc": "2026-09-05T04:00:00Z",
+      "api_max_utc": "2026-11-26T12:00:00Z",
+      "expected_8h_slots": 247,
+      "residual_missing_8h_slots": 0,
+      "residual_missing_span_utc": null
+    },
+    {
+      "inst_id": "QUANT-USDT-SWAP",
+      "bar_min_utc": "2026-10-01T08:00:00Z",
+      "bar_max_utc": "2026-11-26T12:00:00Z",
+      "api_rows_fetched": 337,
+      "api_min_utc": "2026-10-01T12:00:00Z",
+      "api_max_utc": "2026-11-26T12:00:00Z",
+      "expected_8h_slots": 169,
+      "residual_missing_8h_slots": 1,
+      "residual_missing_span_utc": [
+        "2026-10-01T08:00:00Z",
+        "2026-10-01T08:00:00Z"
+      ]
+    },
+    {
+      "inst_id": "XDP-USDT-SWAP",
+      "bar_min_utc": "2026-09-28T14:00:00Z",
+      "bar_max_utc": "2026-11-26T12:00:00Z",
+      "api_rows_fetched": 358,
+      "api_min_utc": "2026-09-28T16:00:00Z",
+      "api_max_utc": "2026-11-26T12:00:00Z",
+      "expected_8h_slots": 177,
+      "residual_missing_8h_slots": 0,
+      "residual_missing_span_utc": null
+    }
+  ]
+}

@@ -1,0 +1,134 @@
+{
+  "research_id": "BACKTEST-READINESS-01",
+  "version": "v1.10",
+  "start_utc": "2026-11-27T22:45:55Z",
+  "end_utc": "2026-11-27T22:46:06Z",
+  "months_total": 80,
+  "months_174": 75,
+  "months_new7_only": 5,
+  "months_http200": 80,
+  "official_rows_total": 11031,
+  "official_unique_keys": 11031,
+  "already_matched_existing": 398,
+  "new_rows": 10633,
+  "new_rows_grid": {
+    "8h": 7036,
+    "non_8h": 3597
+  },
+  "conflicts": 0,
+  "conflict_types": {},
+  "conflict_sources": {},
+  "intra_official_dups": 0,
+  "new7": [
+    {
+      "inst_id": "AEVO-USDT-SWAP",
+      "target_ts_utc": "2026-05-01T00:00Z",
+      "matcher": "cross_1tick",
+      "status": "recovered_in_v1_10_delta",
+      "rate": "0.00005",
+      "ts_raw_ms": 1777593600000,
+      "prev_gap_h": 4.0,
+      "next_gap_h": 4.0
+    },
+    {
+      "inst_id": "THETA-USDT-SWAP",
+      "target_ts_utc": "2026-04-06T00:00Z",
+      "matcher": "cross_1tick",
+      "status": "recovered_in_v1_10_delta",
+      "rate": "-0.0002035301823228",
+      "ts_raw_ms": 1775433600000,
+      "prev_gap_h": 8.0,
+      "next_gap_h": 8.0
+    },
+    {
+      "inst_id": "USELESS-USDT-SWAP",
+      "target_ts_utc": "2026-04-05T00:00Z",
+      "matcher": "cross_1tick",
+      "status": "recovered_in_v1_10_delta",
+      "rate": "0.00005",
+      "ts_raw_ms": 1775347200000,
+      "prev_gap_h": 4.0,
+      "next_gap_h": 4.0
+    },
+    {
+      "inst_id": "YB-USDT-SWAP",
+      "target_ts_utc": "2026-04-05T08:00Z",
+      "matcher": "cross_1tick",
+      "status": "recovered_in_v1_10_delta",
+      "rate": "0.00005",
+      "ts_raw_ms": 1775376000000,
+      "prev_gap_h": 4.0,
+      "next_gap_h": 4.0
+    },
+    {
+      "inst_id": "YB-USDT-SWAP",
+      "target_ts_utc": "2026-04-05T16:00Z",
+      "matcher": "cross_1tick",
+      "status": "recovered_in_v1_10_delta",
+      "rate": "0.00005",
+      "ts_raw_ms": 1775404800000,
+      "prev_gap_h": 4.0,
+      "next_gap_h": 4.0
+    },
+    {
+      "inst_id": "IOTA-USDT-SWAP",
+      "target_ts_utc": "2026-07-12T08:00Z",
+      "matcher": "delay1bar",
+      "status": "recovered_in_v1_10_delta",
+      "rate": "-0.0003178087269076",
+      "ts_raw_ms": 1783843200000,
+      "prev_gap_h": 8.0,
+      "next_gap_h": 8.0
+    },
+    {
+      "inst_id": "O-USDT-SWAP",
+      "target_ts_utc": "2026-08-18T00:00Z",
+      "matcher": "delay1bar",
+      "status": "recovered_in_v1_10_delta",
+      "rate": "0.00005",
+      "ts_raw_ms": 1787011200000,
+      "prev_gap_h": 4.0,
+      "next_gap_h": 4.0
+    }
+  ],
+  "og_check_2025_11_24": [
+    {
+      "ts_utc": "2025-11-24T14:00:00Z",
+      "rate": "-0.0007997886606483",
+      "status": "new"
+    },
+    {
+      "ts_utc": "2025-11-24T15:00:00Z",
+      "rate": "-0.0010031826789156",
+      "status": "new"
+    },
+    {
+      "ts_utc": "2025-11-24T16:00:00Z",
+      "rate": "-0.0006500396625131",
+      "status": "existing"
+    },
+    {
+      "ts_utc": "2025-11-24T17:00:00Z",
+      "rate": "-0.0006074667787935",
+      "status": "new"
+    }
+  ],
+  "files": {
+    "funding_delta_full75plus_v1_10.csv.gz": {
+      "bytes": 158227,
+      "sha256": "4fe33c0efe78f1398b02cb231760d3817b13f985de013e51df9c273dec7c999b",
+      "rows": 10633,
+      "csv_bytes": 1939539,
+      "csv_sha256": "7b7166f291629cd93e338330c58614b634a6956f9cf702b9d8f08c08c45c663d"
+    },
+    "funding_conflicts_v1_10.json": {
+      "bytes": 50,
+      "sha256": "b9900cb4aae6670829d75b3bb989bbc4227172b656dc28e6da0b6a606f95775d"
+    },
+    "funding_source_months_v1_10.json": {
+      "bytes": 38910,
+      "sha256": "04a86793fa08624bf0e60c20cc01f54a716e45019dd265f1b870351ad118ff2e"
+    }
+  },
+  "rule": "Not for blind INSERT OR IGNORE: rows in the delta have zero key overlap with the frozen 829,157-row DB, v1.7 and v1.9; conflicts are listed separately for review. No zero-fill, no interpolation."
+}

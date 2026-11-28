@@ -1,0 +1,1750 @@
+{
+  "schema": "ex_usdc_286_npz_manifest_v1",
+  "research_id": "BACKTEST-READINESS-01",
+  "dataset": "EX_USDC_286",
+  "source_cache_version": "v3.0-public-merged",
+  "source_cutoff_taipei": "2026-11-26 20:00 CST",
+  "excluded_symbols": [
+    "USDC-USDT-SWAP"
+  ],
+  "file_count": 286,
+  "total_bytes": 273659565,
+  "npz_keys_verified": [
+    "d1_ts",
+    "frt",
+    "fts",
+    "ohlc1",
+    "ohlc30",
+    "ohlc4",
+    "ts1",
+    "ts30",
+    "ts4"
+  ],
+  "npz_dtypes_verified": [
+    "float64",
+    "int64"
+  ],
+  "cache_v3_manifest": {
+    "filename": "cache_v3_manifest.json",
+    "size_bytes": 98451,
+    "sha256": "b6b4fde6dc84cc26d72258a38e4b6059ca1fe2fa24bea369f9a792e5e36d71b8"
+  },
+  "files": [
+    {
+      "filename": "0G-USDT-SWAP.npz",
+      "relative_path": "cache_v3/0G-USDT-SWAP.npz",
+      "size_bytes": 404750,
+      "sha256": "3fd5d5603c7375a8567365a2c378f7e5e37e79e9807f3b769ece2fe634292845"
+    },
+    {
+      "filename": "1INCH-USDT-SWAP.npz",
+      "relative_path": "cache_v3/1INCH-USDT-SWAP.npz",
+      "size_bytes": 2016826,
+      "sha256": "ad32b5e14d95f9ea4a2777600dfaf9ee72bff91e43d013c4923ca6e427529bcd"
+    },
+    {
+      "filename": "2Z-USDT-SWAP.npz",
+      "relative_path": "cache_v3/2Z-USDT-SWAP.npz",
+      "size_bytes": 444437,
+      "sha256": "ddb210263358aaf8b7b214bb218cc92cfafb37fc8543c93128c5480ebf928864"
+    },
+    {
+      "filename": "A-USDT-SWAP.npz",
+      "relative_path": "cache_v3/A-USDT-SWAP.npz",
+      "size_bytes": 556785,
+      "sha256": "2124d035ffb441a881501240a09ec96b97e3788d1ff6a8f319aab1457217a194"
+    },
+    {
+      "filename": "AAVE-USDT-SWAP.npz",
+      "relative_path": "cache_v3/AAVE-USDT-SWAP.npz",
+      "size_bytes": 2164052,
+      "sha256": "6e5725cb40fe3a6158d43b88ba67f372dc1c798df940a2ca6b97f0e0339103c5"
+    },
+    {
+      "filename": "ACH-USDT-SWAP.npz",
+      "relative_path": "cache_v3/ACH-USDT-SWAP.npz",
+      "size_bytes": 1053916,
+      "sha256": "225e92896cc9989b07af17df802119fef1c8a1086eaa532370dcc0e63d503012"
+    },
+    {
+      "filename": "ACT-USDT-SWAP.npz",
+      "relative_path": "cache_v3/ACT-USDT-SWAP.npz",
+      "size_bytes": 778375,
+      "sha256": "119212a1ecacec081e2d3e20c4509dc357d7eeeab17f348547120e010d481bf2"
+    },
+    {
+      "filename": "ACU-USDT-SWAP.npz",
+      "relative_path": "cache_v3/ACU-USDT-SWAP.npz",
+      "size_bytes": 380884,
+      "sha256": "0cf5c3be0bbf9383159ad1a42ac9369366cc79071c323bc5161a63d023ffe759"
+    },
+    {
+      "filename": "ADA-USDT-SWAP.npz",
+      "relative_path": "cache_v3/ADA-USDT-SWAP.npz",
+      "size_bytes": 2687697,
+      "sha256": "50dbea1d85c532a8be05eb3120c89ddadc0e131c8d3ea53764db311ce861f805"
+    },
+    {
+      "filename": "AEON-USDT-SWAP.npz",
+      "relative_path": "cache_v3/AEON-USDT-SWAP.npz",
+      "size_bytes": 155914,
+      "sha256": "331333da8f7d7fc46542990ea524686c63297b7ac359599591e9b6b4995e9a66"
+    },
+    {
+      "filename": "AERO-USDT-SWAP.npz",
+      "relative_path": "cache_v3/AERO-USDT-SWAP.npz",
+      "size_bytes": 485352,
+      "sha256": "3d0f13c822fb5f0192341d25430380334c194f319b40754e67d0c7e1ca66971e"
+    },
+    {
+      "filename": "AEVO-USDT-SWAP.npz",
+      "relative_path": "cache_v3/AEVO-USDT-SWAP.npz",
+      "size_bytes": 960654,
+      "sha256": "cedbd29d7f1f59d45b860c82cb1e033a436bd36f6c6317739830138cb2fbd0b1"
+    },
+    {
+      "filename": "AGLD-USDT-SWAP.npz",
+      "relative_path": "cache_v3/AGLD-USDT-SWAP.npz",
+      "size_bytes": 1742259,
+      "sha256": "d4f7cb5e403744b31d1e5d5db75fc7d3da26b4bdddb46c94643083105ed0158d"
+    },
+    {
+      "filename": "AI-USDT-SWAP.npz",
+      "relative_path": "cache_v3/AI-USDT-SWAP.npz",
+      "size_bytes": 206209,
+      "sha256": "730498dfd3a6a3cc0b910e27581f62eb32f49dbd9acdc53408ca6a5187d0873a"
+    },
+    {
+      "filename": "AIXBT-USDT-SWAP.npz",
+      "relative_path": "cache_v3/AIXBT-USDT-SWAP.npz",
+      "size_bytes": 733479,
+      "sha256": "e206ab39540a8d9fdcae9de78bf813b1cfda3fe998f2e9a39bb9672a18194e34"
+    },
+    {
+      "filename": "AKE-USDT-SWAP.npz",
+      "relative_path": "cache_v3/AKE-USDT-SWAP.npz",
+      "size_bytes": 109078,
+      "sha256": "dcf9ad9959397905fbc19c2860058e0e56013ec4777262675c230c865808aeb3"
+    },
+    {
+      "filename": "ALGO-USDT-SWAP.npz",
+      "relative_path": "cache_v3/ALGO-USDT-SWAP.npz",
+      "size_bytes": 2140379,
+      "sha256": "0af3e5c9cdbb509083616ba7db8f993fd8400bb733f7498aa2395a3475d8c0db"
+    },
+    {
+      "filename": "ALLO-USDT-SWAP.npz",
+      "relative_path": "cache_v3/ALLO-USDT-SWAP.npz",
+      "size_bytes": 467764,
+      "sha256": "2ec1f04d9d99e978e3a436ee34cbc4ca0d0ea9d7c3613cb090c05c4da9ff3678"
+    },
+    {
+      "filename": "ANIME-USDT-SWAP.npz",
+      "relative_path": "cache_v3/ANIME-USDT-SWAP.npz",
+      "size_bytes": 704161,
+      "sha256": "a7ba4435f5baf0fb0204a41b6c55ae26d3fdfedafcadc2e8190a4733d10c530c"
+    },
+    {
+      "filename": "APE-USDT-SWAP.npz",
+      "relative_path": "cache_v3/APE-USDT-SWAP.npz",
+      "size_bytes": 1759516,
+      "sha256": "d3cb8482c2ba219a17fe536a6db0c7e0089c037e9e93749adaed237940a60085"
+    },
+    {
+      "filename": "API3-USDT-SWAP.npz",
+      "relative_path": "cache_v3/API3-USDT-SWAP.npz",
+      "size_bytes": 1477400,
+      "sha256": "acd2328d3f71a41f9cef2f80ff7d9729880a5820c64ddf0e412d7462d7654f1f"
+    },
+    {
+      "filename": "APR-USDT-SWAP.npz",
+      "relative_path": "cache_v3/APR-USDT-SWAP.npz",
+      "size_bytes": 452422,
+      "sha256": "423b6056cb52764235cf9d416ba17ad12d66a2662df9864deb64c4cf7979c130"
+    },
+    {
+      "filename": "APT-USDT-SWAP.npz",
+      "relative_path": "cache_v3/APT-USDT-SWAP.npz",
+      "size_bytes": 1646463,
+      "sha256": "f033739dd4542a8e064efc259c8a1dd94043c41ff5fcbd39f1fe3a7ad23e003b"
+    },
+    {
+      "filename": "AR-USDT-SWAP.npz",
+      "relative_path": "cache_v3/AR-USDT-SWAP.npz",
+      "size_bytes": 1246076,
+      "sha256": "689f880b9ee9bbf9a0fbad8819a335b38baa040206deca5f36b3692bfc5b817c"
+    },
+    {
+      "filename": "ARB-USDT-SWAP.npz",
+      "relative_path": "cache_v3/ARB-USDT-SWAP.npz",
+      "size_bytes": 1312147,
+      "sha256": "2392408642b5fa424236c573c0efbd967ce6bb76b22c90e55a8fcaf0bcc7f530"
+    },
+    {
+      "filename": "ARKM-USDT-SWAP.npz",
+      "relative_path": "cache_v3/ARKM-USDT-SWAP.npz",
+      "size_bytes": 723288,
+      "sha256": "d65ecae75f6a382ea3678077236da1e0ba956c04faf8b4877455eed43871d02c"
+    },
+    {
+      "filename": "ARX-USDT-SWAP.npz",
+      "relative_path": "cache_v3/ARX-USDT-SWAP.npz",
+      "size_bytes": 143858,
+      "sha256": "0d6c60bc7a0c003c21105ac2cc34c9a510f3fb2a1eacc040a297e2a4fdee697b"
+    },
+    {
+      "filename": "ASTER-USDT-SWAP.npz",
+      "relative_path": "cache_v3/ASTER-USDT-SWAP.npz",
+      "size_bytes": 387650,
+      "sha256": "a1ee5792b025dd6a6596ff367491c0c06f62091477751c688462951ded90876f"
+    },
+    {
+      "filename": "AT-USDT-SWAP.npz",
+      "relative_path": "cache_v3/AT-USDT-SWAP.npz",
+      "size_bytes": 373220,
+      "sha256": "7880712deb9c09f7569cce9481c880a51263baccac9950a8b2012bb4450b4a24"
+    },
+    {
+      "filename": "ATH-USDT-SWAP.npz",
+      "relative_path": "cache_v3/ATH-USDT-SWAP.npz",
+      "size_bytes": 1040729,
+      "sha256": "f141a0bb7b41b0234289288a2285a727ba035497c137bdf1d69c55dd02cf26eb"
+    },
+    {
+      "filename": "ATOM-USDT-SWAP.npz",
+      "relative_path": "cache_v3/ATOM-USDT-SWAP.npz",
+      "size_bytes": 2149043,
+      "sha256": "baf626aeb36542355d406f5e1e5a64293ea9db9c0dc7e0edcfa0c004e9c8795a"
+    },
+    {
+      "filename": "AUCTION-USDT-SWAP.npz",
+      "relative_path": "cache_v3/AUCTION-USDT-SWAP.npz",
+      "size_bytes": 1031872,
+      "sha256": "da6ab928a66639a796622dccb8c39a46b488873cc1d653e5b86d43b5cd1c62ee"
+    },
+    {
+      "filename": "AVAX-USDT-SWAP.npz",
+      "relative_path": "cache_v3/AVAX-USDT-SWAP.npz",
+      "size_bytes": 2223428,
+      "sha256": "22fc712efea205832a77c3e8c05de3aac2fab21fc0602182c1af68b1f1b10700"
+    },
+    {
+      "filename": "AVNT-USDT-SWAP.npz",
+      "relative_path": "cache_v3/AVNT-USDT-SWAP.npz",
+      "size_bytes": 436146,
+      "sha256": "9dc23b81f369caaf9f991c885fac11fac12d90c6aee64362d3895344556413af"
+    },
+    {
+      "filename": "AXIS-USDT-SWAP.npz",
+      "relative_path": "cache_v3/AXIS-USDT-SWAP.npz",
+      "size_bytes": 49354,
+      "sha256": "362b46cb86e7e311befa5e9f5ac87616cd6ace0616cd8e5ecd981d6e9c7babbb"
+    },
+    {
+      "filename": "AXS-USDT-SWAP.npz",
+      "relative_path": "cache_v3/AXS-USDT-SWAP.npz",
+      "size_bytes": 1729007,
+      "sha256": "497bba61dd709731b52d1f4178676bc2e8feffe293c29e9fbf4bba3a3d4d22df"
+    },
+    {
+      "filename": "AZTEC-USDT-SWAP.npz",
+      "relative_path": "cache_v3/AZTEC-USDT-SWAP.npz",
+      "size_bytes": 260737,
+      "sha256": "58b46fced9306d68caa34d48fa9b07029b9c965682397bd94448968d88195ebd"
+    },
+    {
+      "filename": "BABY-USDT-SWAP.npz",
+      "relative_path": "cache_v3/BABY-USDT-SWAP.npz",
+      "size_bytes": 639889,
+      "sha256": "ab773e267c55d2da14c12edba5664bbc0f543f477f10c4e1fa53e250eb7bdb50"
+    },
+    {
+      "filename": "BAND-USDT-SWAP.npz",
+      "relative_path": "cache_v3/BAND-USDT-SWAP.npz",
+      "size_bytes": 1909943,
+      "sha256": "b1bae5b9897baca1e6399684bb8ebb6b23b4545a6bd165498a4e60b61c2a3151"
+    },
+    {
+      "filename": "BARD-USDT-SWAP.npz",
+      "relative_path": "cache_v3/BARD-USDT-SWAP.npz",
+      "size_bytes": 385234,
+      "sha256": "3ddd541470814722342efdec969e380738a7ea017eda623c8dba2b1990d9b353"
+    },
+    {
+      "filename": "BASED-USDT-SWAP.npz",
+      "relative_path": "cache_v3/BASED-USDT-SWAP.npz",
+      "size_bytes": 295970,
+      "sha256": "29b4f2cd284120aec8b60b48c7e972f8c52c881c5db4381d11ab0884dd6c3336"
+    },
+    {
+      "filename": "BAT-USDT-SWAP.npz",
+      "relative_path": "cache_v3/BAT-USDT-SWAP.npz",
+      "size_bytes": 1965920,
+      "sha256": "189e94f6b6bbdb9c3deb13e7c5803cfd35bc911b88bc5f57dc01e3ec2657a6e2"
+    },
+    {
+      "filename": "BCH-USDT-SWAP.npz",
+      "relative_path": "cache_v3/BCH-USDT-SWAP.npz",
+      "size_bytes": 2390543,
+      "sha256": "86be3f9f27847235e29ce0219bf4509707179a97d798ec16c9ba0205d293cd79"
+    },
+    {
+      "filename": "BEAT-USDT-SWAP.npz",
+      "relative_path": "cache_v3/BEAT-USDT-SWAP.npz",
+      "size_bytes": 501119,
+      "sha256": "841dad59f1ed89d3362de12cb00dde43aea5005c863e37413c3e8418be2c5a1a"
+    },
+    {
+      "filename": "BERA-USDT-SWAP.npz",
+      "relative_path": "cache_v3/BERA-USDT-SWAP.npz",
+      "size_bytes": 578895,
+      "sha256": "5875c7812305835dd34bddd833bd7e119bec380911810e279d4143b3424ff266"
+    },
+    {
+      "filename": "BICO-USDT-SWAP.npz",
+      "relative_path": "cache_v3/BICO-USDT-SWAP.npz",
+      "size_bytes": 1622575,
+      "sha256": "c46fea1a09fd3a421155e1d0dc5c29da0a10bdcb76a3891a3c6017b885b69585"
+    },
+    {
+      "filename": "BIGTIME-USDT-SWAP.npz",
+      "relative_path": "cache_v3/BIGTIME-USDT-SWAP.npz",
+      "size_bytes": 1236699,
+      "sha256": "6cc972ef19f7da2047a2abf7074012ef1daa64d580de36832ae342416064fbb2"
+    },
+    {
+      "filename": "BILL-USDT-SWAP.npz",
+      "relative_path": "cache_v3/BILL-USDT-SWAP.npz",
+      "size_bytes": 252054,
+      "sha256": "c074fd2057ddbeda6a40a2beeaccd6173d263fb0f63358dc57eafd957bc84d51"
+    },
+    {
+      "filename": "BIO-USDT-SWAP.npz",
+      "relative_path": "cache_v3/BIO-USDT-SWAP.npz",
+      "size_bytes": 756331,
+      "sha256": "3b2debd150cadfbd4cf664f276db55b1d04fd1ff47e06526984546b4a477d432"
+    },
+    {
+      "filename": "BLEND-USDT-SWAP.npz",
+      "relative_path": "cache_v3/BLEND-USDT-SWAP.npz",
+      "size_bytes": 232120,
+      "sha256": "15b24fe70ab8c5ad150009b22c88653542afc2b467295be2e9b60deede805c28"
+    },
+    {
+      "filename": "BLUR-USDT-SWAP.npz",
+      "relative_path": "cache_v3/BLUR-USDT-SWAP.npz",
+      "size_bytes": 1316617,
+      "sha256": "40039a5978e6e27472e0ce4a8a1cbe9f3da11411ed016fa42f26568d86ef394b"
+    },
+    {
+      "filename": "BNB-USDT-SWAP.npz",
+      "relative_path": "cache_v3/BNB-USDT-SWAP.npz",
+      "size_bytes": 1258832,
+      "sha256": "b2804bf38b168e64fda4a5d23bbd73732db44c7f23610b1fe6e299c49bc168cb"
+    },
+    {
+      "filename": "BOME-USDT-SWAP.npz",
+      "relative_path": "cache_v3/BOME-USDT-SWAP.npz",
+      "size_bytes": 1030631,
+      "sha256": "812a5f5c01b457c9a226c30dc5c70a1eab234ceb0acc636e3374c9074275eaa7"
+    },
+    {
+      "filename": "BONK-USDT-SWAP.npz",
+      "relative_path": "cache_v3/BONK-USDT-SWAP.npz",
+      "size_bytes": 1788896,
+      "sha256": "a1dfa0ee2a7840f58198c7beb50de3bbe97a0eb6e2f9a8cc45921f5cbd17ceb6"
+    },
+    {
+      "filename": "BRETT-USDT-SWAP.npz",
+      "relative_path": "cache_v3/BRETT-USDT-SWAP.npz",
+      "size_bytes": 973833,
+      "sha256": "a0c10ecdc4a2de04c24feafcfbb1789bbd238947a85797e0dc39f3b724042be4"
+    },
+    {
+      "filename": "BREV-USDT-SWAP.npz",
+      "relative_path": "cache_v3/BREV-USDT-SWAP.npz",
+      "size_bytes": 333675,
+      "sha256": "c834808d2767dd0d67f87b981660c0485c868187c7d972032db40db9eb68dc45"
+    },
+    {
+      "filename": "BSB-USDT-SWAP.npz",
+      "relative_path": "cache_v3/BSB-USDT-SWAP.npz",
+      "size_bytes": 265828,
+      "sha256": "39124fe8d81a8a2f0f4f92d6c666e7772224ff97f3a894139f2c40757cdb6bd5"
+    },
+    {
+      "filename": "BTW-USDT-SWAP.npz",
+      "relative_path": "cache_v3/BTW-USDT-SWAP.npz",
+      "size_bytes": 48136,
+      "sha256": "355ece66d41184cd5484527509a1df5760561999ad4378a31191cf01489c0514"
+    },
+    {
+      "filename": "CAP-USDT-SWAP.npz",
+      "relative_path": "cache_v3/CAP-USDT-SWAP.npz",
+      "size_bytes": 196338,
+      "sha256": "cfc8bc5cd284cb9bb8a7dd8f56db4197f4f59f9ee27d9243d7f5a9d65cb5d6bd"
+    },
+    {
+      "filename": "CASHCAT-USDT-SWAP.npz",
+      "relative_path": "cache_v3/CASHCAT-USDT-SWAP.npz",
+      "size_bytes": 99573,
+      "sha256": "bf29214655f18e3cda21f83d69e4a23a4c4438c786f287ff430cdbdca661c48d"
+    },
+    {
+      "filename": "CC-USDT-SWAP.npz",
+      "relative_path": "cache_v3/CC-USDT-SWAP.npz",
+      "size_bytes": 473688,
+      "sha256": "9a5e2cd7cdeaef482a53afea3ddbbc00d784c22058da83051e5b5d137f17a5fb"
+    },
+    {
+      "filename": "CELO-USDT-SWAP.npz",
+      "relative_path": "cache_v3/CELO-USDT-SWAP.npz",
+      "size_bytes": 1733254,
+      "sha256": "2106737e19cf0a7345e43714860b5a743798efbbe6083d98f851ceefff29dd58"
+    },
+    {
+      "filename": "CFX-USDT-SWAP.npz",
+      "relative_path": "cache_v3/CFX-USDT-SWAP.npz",
+      "size_bytes": 2226385,
+      "sha256": "1f811424828639e5dc9c60d3c64fdc8d8a64865f7bef709c3b0fd36c57b6e72c"
+    },
+    {
+      "filename": "CHIP-USDT-SWAP.npz",
+      "relative_path": "cache_v3/CHIP-USDT-SWAP.npz",
+      "size_bytes": 258249,
+      "sha256": "a1f254d1ef5d977bf6ac98fbfb410770de718f0c71bce1801de9707aeff98b76"
+    },
+    {
+      "filename": "CHZ-USDT-SWAP.npz",
+      "relative_path": "cache_v3/CHZ-USDT-SWAP.npz",
+      "size_bytes": 2361664,
+      "sha256": "a6f9ee75b3e7c78372994e15b868829ac21b2c14f2fa967cf5e766b97c99bd66"
+    },
+    {
+      "filename": "CNPY-USDT-SWAP.npz",
+      "relative_path": "cache_v3/CNPY-USDT-SWAP.npz",
+      "size_bytes": 89277,
+      "sha256": "2c93c3de7d54da7d5b48e41d55bbe7b1a564129bdeef8d3673707900467b10ca"
+    },
+    {
+      "filename": "COAI-USDT-SWAP.npz",
+      "relative_path": "cache_v3/COAI-USDT-SWAP.npz",
+      "size_bytes": 364411,
+      "sha256": "7f6708a890707bfdbc799860d2a30a978be05e0ea7b0f4f6be218fd1b4c8606e"
+    },
+    {
+      "filename": "COMP-USDT-SWAP.npz",
+      "relative_path": "cache_v3/COMP-USDT-SWAP.npz",
+      "size_bytes": 2132113,
+      "sha256": "490763661a9ab16089605555f1e234cc07566bf5fd8c9be0fe26bfda57effb7f"
+    },
+    {
+      "filename": "CORE-USDT-SWAP.npz",
+      "relative_path": "cache_v3/CORE-USDT-SWAP.npz",
+      "size_bytes": 1452929,
+      "sha256": "0506a2e7af91cff01881ffc37411d300036563865873f1da3385edcbdd38ed4c"
+    },
+    {
+      "filename": "CP-USDT-SWAP.npz",
+      "relative_path": "cache_v3/CP-USDT-SWAP.npz",
+      "size_bytes": 118971,
+      "sha256": "124ab339b34b64a4f5b3a56743b2aefc6e78db85d1464666c6789b5fea7572fb"
+    },
+    {
+      "filename": "CRO-USDT-SWAP.npz",
+      "relative_path": "cache_v3/CRO-USDT-SWAP.npz",
+      "size_bytes": 2157384,
+      "sha256": "ce1c3bbad40dd78c4df6f68862ecaddfdc94041e95353a4382747a2190e9d866"
+    },
+    {
+      "filename": "CRV-USDT-SWAP.npz",
+      "relative_path": "cache_v3/CRV-USDT-SWAP.npz",
+      "size_bytes": 2034442,
+      "sha256": "26ca02ffbf7c4f8d89d73f951ea61ea662ad6ec4dfb1a783e46b97f01bddf74b"
+    },
+    {
+      "filename": "CT-USDT-SWAP.npz",
+      "relative_path": "cache_v3/CT-USDT-SWAP.npz",
+      "size_bytes": 79099,
+      "sha256": "2eb9245413341df3722df479697b18bfd4c4b14285fd22c4e7d95bbfc752107b"
+    },
+    {
+      "filename": "CVX-USDT-SWAP.npz",
+      "relative_path": "cache_v3/CVX-USDT-SWAP.npz",
+      "size_bytes": 706236,
+      "sha256": "3a16c99673dc62b244c17aa9cea4f8c5ac0f0b8abb0590bcabfe18cc69e4c511"
+    },
+    {
+      "filename": "DASH-USDT-SWAP.npz",
+      "relative_path": "cache_v3/DASH-USDT-SWAP.npz",
+      "size_bytes": 344918,
+      "sha256": "4451d82ff23cd60f0538a5a0f956393c5955366ab4e2229a402d261b00caf178"
+    },
+    {
+      "filename": "DATA-USDT-SWAP.npz",
+      "relative_path": "cache_v3/DATA-USDT-SWAP.npz",
+      "size_bytes": 136641,
+      "sha256": "90a009973104887adc846d88b6bf40064b5ba117c2a99e4e1515bab107541047"
+    },
+    {
+      "filename": "DGAI-USDT-SWAP.npz",
+      "relative_path": "cache_v3/DGAI-USDT-SWAP.npz",
+      "size_bytes": 90448,
+      "sha256": "9656b2cf9b245cbc1a8fc56acded60c38c1a3f26f9206ff0614a4fc7e2ef88d5"
+    },
+    {
+      "filename": "DNA-USDT-SWAP.npz",
+      "relative_path": "cache_v3/DNA-USDT-SWAP.npz",
+      "size_bytes": 44864,
+      "sha256": "577e8ce5a47d381193e63726dfef71c73ab25afee60e2327c70a870efb568776"
+    },
+    {
+      "filename": "DOGE-USDT-SWAP.npz",
+      "relative_path": "cache_v3/DOGE-USDT-SWAP.npz",
+      "size_bytes": 3038291,
+      "sha256": "fc3fe19ca5100d6b89a04fbd9739ffe9ce6fbdcc05707d1d20f0ed096896380c"
+    },
+    {
+      "filename": "DOOD-USDT-SWAP.npz",
+      "relative_path": "cache_v3/DOOD-USDT-SWAP.npz",
+      "size_bytes": 637280,
+      "sha256": "15e1d74d1b43fddea4b3d0bd98e704b4c9a79c0cb051ca4f3f031b14cfe604f4"
+    },
+    {
+      "filename": "DOS-USDT-SWAP.npz",
+      "relative_path": "cache_v3/DOS-USDT-SWAP.npz",
+      "size_bytes": 104527,
+      "sha256": "3a0277a8183a65719bafac65c38ba2e7dc45b9e928e380de87b86736b2ae480d"
+    },
+    {
+      "filename": "DOT-USDT-SWAP.npz",
+      "relative_path": "cache_v3/DOT-USDT-SWAP.npz",
+      "size_bytes": 2056149,
+      "sha256": "92c15e55a76410183de2d952c143b6e7ef9d16a9262d0c8d26a9374cd94d2d0a"
+    },
+    {
+      "filename": "DYDX-USDT-SWAP.npz",
+      "relative_path": "cache_v3/DYDX-USDT-SWAP.npz",
+      "size_bytes": 1806794,
+      "sha256": "c498ec20408337f72024c82b129115e8f80cd3ebdb369e1582c78f8c78fa6d07"
+    },
+    {
+      "filename": "EDEN-USDT-SWAP.npz",
+      "relative_path": "cache_v3/EDEN-USDT-SWAP.npz",
+      "size_bytes": 469048,
+      "sha256": "f4a4b9536592112b62e7ead1c3789234d85ac999f5a25c48f61a784d4cc277b7"
+    },
+    {
+      "filename": "EDGE-USDT-SWAP.npz",
+      "relative_path": "cache_v3/EDGE-USDT-SWAP.npz",
+      "size_bytes": 234600,
+      "sha256": "2fefec46fa52f7f1a8fdc34176513dd8d928579b54162478e16dde9827635624"
+    },
+    {
+      "filename": "EGLD-USDT-SWAP.npz",
+      "relative_path": "cache_v3/EGLD-USDT-SWAP.npz",
+      "size_bytes": 1905905,
+      "sha256": "c815144d8b34c30a7e858c2b60611224940fe9593c3a2090fb81ee93b2263e97"
+    },
+    {
+      "filename": "EIGEN-USDT-SWAP.npz",
+      "relative_path": "cache_v3/EIGEN-USDT-SWAP.npz",
+      "size_bytes": 697262,
+      "sha256": "16156b6492d2d713679e0c7aefda8ef9137a348092991b941c1e45a6d34bebb8"
+    },
+    {
+      "filename": "ENA-USDT-SWAP.npz",
+      "relative_path": "cache_v3/ENA-USDT-SWAP.npz",
+      "size_bytes": 486156,
+      "sha256": "93789a6ce6109bd6290cc64efc8f13fbf2027bd86fcf052e6b931a6edb0758da"
+    },
+    {
+      "filename": "ENJ-USDT-SWAP.npz",
+      "relative_path": "cache_v3/ENJ-USDT-SWAP.npz",
+      "size_bytes": 974634,
+      "sha256": "0f33808d3f3c96f13487f87bc0e75dca89c237f1cccf12c757de50c66c2d96c8"
+    },
+    {
+      "filename": "ENS-USDT-SWAP.npz",
+      "relative_path": "cache_v3/ENS-USDT-SWAP.npz",
+      "size_bytes": 1749100,
+      "sha256": "1d04bd11fc454c9a33dc9bf8ae0424133b8f4a5f5b84ec52eb0dbd189c51c5aa"
+    },
+    {
+      "filename": "ENSO-USDT-SWAP.npz",
+      "relative_path": "cache_v3/ENSO-USDT-SWAP.npz",
+      "size_bytes": 382172,
+      "sha256": "833937190ae87031eca11443ecf289c51b6fc20149570ab571c33863b3a7c481"
+    },
+    {
+      "filename": "ESP-USDT-SWAP.npz",
+      "relative_path": "cache_v3/ESP-USDT-SWAP.npz",
+      "size_bytes": 348574,
+      "sha256": "aabb2936e9e258f21b694038f279202fbffbe43d13a4b9b10c36dab8dfaeb33a"
+    },
+    {
+      "filename": "ETC-USDT-SWAP.npz",
+      "relative_path": "cache_v3/ETC-USDT-SWAP.npz",
+      "size_bytes": 2310920,
+      "sha256": "1fcf1cc43c8722f5b631e7f7d05359829d86a60ad7a406ce8b2f057ea37cea9d"
+    },
+    {
+      "filename": "ETHFI-USDT-SWAP.npz",
+      "relative_path": "cache_v3/ETHFI-USDT-SWAP.npz",
+      "size_bytes": 977399,
+      "sha256": "32615559a9392abc9ee19c4b7e2ce5d202e8f610dd332e0c0577a7a44c48df79"
+    },
+    {
+      "filename": "ETHW-USDT-SWAP.npz",
+      "relative_path": "cache_v3/ETHW-USDT-SWAP.npz",
+      "size_bytes": 1232243,
+      "sha256": "b0a4e3c3ec39cb08b1955424b551e7eef9dac5736d1c044fc251e6e8ac783f20"
+    },
+    {
+      "filename": "F-USDT-SWAP.npz",
+      "relative_path": "cache_v3/F-USDT-SWAP.npz",
+      "size_bytes": 437583,
+      "sha256": "37fb36f9543d2c03c9e1e853135c99e161ff29b9615b3c76418d20b841f7c7fc"
+    },
+    {
+      "filename": "FARTCOIN-USDT-SWAP.npz",
+      "relative_path": "cache_v3/FARTCOIN-USDT-SWAP.npz",
+      "size_bytes": 653913,
+      "sha256": "14cdad0c88ec61912d14cfd145a5ac07de693582e711f8a5769635b4595318e1"
+    },
+    {
+      "filename": "FET-USDT-SWAP.npz",
+      "relative_path": "cache_v3/FET-USDT-SWAP.npz",
+      "size_bytes": 77875,
+      "sha256": "221e3f6fe8ab5c106e29a7aba3652605f5d387fa74419a04893cba44de580f5e"
+    },
+    {
+      "filename": "FIL-USDT-SWAP.npz",
+      "relative_path": "cache_v3/FIL-USDT-SWAP.npz",
+      "size_bytes": 2063284,
+      "sha256": "fff9d783e9009372660d0bc390f8bc014350faa0cbcf04f24f357c7c2f3925eb"
+    },
+    {
+      "filename": "FLOCK-USDT-SWAP.npz",
+      "relative_path": "cache_v3/FLOCK-USDT-SWAP.npz",
+      "size_bytes": 100271,
+      "sha256": "2b8ba236bb4ab88c78027774525bca98c462624457068a5553154fac2c0d506e"
+    },
+    {
+      "filename": "FLOKI-USDT-SWAP.npz",
+      "relative_path": "cache_v3/FLOKI-USDT-SWAP.npz",
+      "size_bytes": 1852371,
+      "sha256": "9757e304521fa250a8ed223e24f6247115eb0dde208754a4a494742d8b10b293"
+    },
+    {
+      "filename": "FLOW-USDT-SWAP.npz",
+      "relative_path": "cache_v3/FLOW-USDT-SWAP.npz",
+      "size_bytes": 1023169,
+      "sha256": "e9304d3af70ed48bb08e03decc4ec34c4df263aef9e2ab92b49c479ccb9ba29a"
+    },
+    {
+      "filename": "FOGO-USDT-SWAP.npz",
+      "relative_path": "cache_v3/FOGO-USDT-SWAP.npz",
+      "size_bytes": 368289,
+      "sha256": "8e1ada983cb4b8fb57a5e3baaeaa18e453da04b368416fa38d924f575cd89c6e"
+    },
+    {
+      "filename": "GALA-USDT-SWAP.npz",
+      "relative_path": "cache_v3/GALA-USDT-SWAP.npz",
+      "size_bytes": 1960522,
+      "sha256": "f8e8af41e71532fd2eafdbf97e648169a1e7a48ed91a36b9202b02b8bfc1ddb2"
+    },
+    {
+      "filename": "GAS-USDT-SWAP.npz",
+      "relative_path": "cache_v3/GAS-USDT-SWAP.npz",
+      "size_bytes": 933421,
+      "sha256": "bb404ecf55bb2fdf00540a31e612edd9b5332b40e0640d30241b67194651ad9d"
+    },
+    {
+      "filename": "GIGGLE-USDT-SWAP.npz",
+      "relative_path": "cache_v3/GIGGLE-USDT-SWAP.npz",
+      "size_bytes": 353850,
+      "sha256": "bad6e7c9f84dab53cb039e52ede1e05453ec9705f7c1b41380d0a67a712cf970"
+    },
+    {
+      "filename": "GLM-USDT-SWAP.npz",
+      "relative_path": "cache_v3/GLM-USDT-SWAP.npz",
+      "size_bytes": 818146,
+      "sha256": "045002ad08e3c5216811fbed9367b3548ece8bea0361ae7b6785cf6e347e643e"
+    },
+    {
+      "filename": "GMT-USDT-SWAP.npz",
+      "relative_path": "cache_v3/GMT-USDT-SWAP.npz",
+      "size_bytes": 1621875,
+      "sha256": "b0e6710b5a5e4894cfe6b529b738381775a3c0fe94f33e79b92fac3fc0c2e935"
+    },
+    {
+      "filename": "GMX-USDT-SWAP.npz",
+      "relative_path": "cache_v3/GMX-USDT-SWAP.npz",
+      "size_bytes": 1174155,
+      "sha256": "094b4d3e2466095715bec3bf5f9b64bec0ef7558590d41c569841f4a54b00849"
+    },
+    {
+      "filename": "GPS-USDT-SWAP.npz",
+      "relative_path": "cache_v3/GPS-USDT-SWAP.npz",
+      "size_bytes": 814034,
+      "sha256": "526e8ee9722f2fd8e977ae8ecf5e587898b7b212a78210534ea80fc3b4b495a5"
+    },
+    {
+      "filename": "GRAM-USDT-SWAP.npz",
+      "relative_path": "cache_v3/GRAM-USDT-SWAP.npz",
+      "size_bytes": 116534,
+      "sha256": "54880d7cb61e573aa24aa7263cc57e71510bec047df09592eaf64dad8ac01188"
+    },
+    {
+      "filename": "GRASS-USDT-SWAP.npz",
+      "relative_path": "cache_v3/GRASS-USDT-SWAP.npz",
+      "size_bytes": 747462,
+      "sha256": "a731ec6ed3bad0f5695aa1ab7f0295188cc0415613962f1502a5b6d6b53770d2"
+    },
+    {
+      "filename": "GRT-USDT-SWAP.npz",
+      "relative_path": "cache_v3/GRT-USDT-SWAP.npz",
+      "size_bytes": 2098082,
+      "sha256": "bcc10cc4c1a314da591632f41d6f167d7c424c7d83cddfd21d2a7c3fc5a9d9e8"
+    },
+    {
+      "filename": "GRVT-USDT-SWAP.npz",
+      "relative_path": "cache_v3/GRVT-USDT-SWAP.npz",
+      "size_bytes": 170813,
+      "sha256": "30057a362e45f03cba437e6d2d982c43288644e70646dba440535b41a294c57d"
+    },
+    {
+      "filename": "H-USDT-SWAP.npz",
+      "relative_path": "cache_v3/H-USDT-SWAP.npz",
+      "size_bytes": 652528,
+      "sha256": "222189b99ab85e52a569f52ca76838b66003f4cb9732c37526edbd04b7d2d0cb"
+    },
+    {
+      "filename": "HBAR-USDT-SWAP.npz",
+      "relative_path": "cache_v3/HBAR-USDT-SWAP.npz",
+      "size_bytes": 1388223,
+      "sha256": "5659764570ca745251d9d2c2e3898fc32cb7c74f897e7278da767fdbc5fe8366"
+    },
+    {
+      "filename": "HMSTR-USDT-SWAP.npz",
+      "relative_path": "cache_v3/HMSTR-USDT-SWAP.npz",
+      "size_bytes": 803490,
+      "sha256": "4b53d9be8069593d5c0bf92da9fd77d687349d283a1c758949337ff36651286f"
+    },
+    {
+      "filename": "HOME-USDT-SWAP.npz",
+      "relative_path": "cache_v3/HOME-USDT-SWAP.npz",
+      "size_bytes": 575654,
+      "sha256": "6c2172363e5b9fd5b11af2a81667bd6f5dfda40373e7b43a97be2df6db0729c5"
+    },
+    {
+      "filename": "HUMA-USDT-SWAP.npz",
+      "relative_path": "cache_v3/HUMA-USDT-SWAP.npz",
+      "size_bytes": 547876,
+      "sha256": "5215f1cbd6e5077b4621bb81daacd2454e9cf85dbf0f44e8ed974cfec31ea707"
+    },
+    {
+      "filename": "HYPE-USDT-SWAP.npz",
+      "relative_path": "cache_v3/HYPE-USDT-SWAP.npz",
+      "size_bytes": 705711,
+      "sha256": "3615480055c3b8cc5bbfcdc864d84bfd05d53980d6dbc06c4fdf2fb905ad16e1"
+    },
+    {
+      "filename": "ICP-USDT-SWAP.npz",
+      "relative_path": "cache_v3/ICP-USDT-SWAP.npz",
+      "size_bytes": 1631939,
+      "sha256": "1004eab16a36b894d4933dab7a9ca9a33c1a985ee002584210e250eff6757fc0"
+    },
+    {
+      "filename": "IMX-USDT-SWAP.npz",
+      "relative_path": "cache_v3/IMX-USDT-SWAP.npz",
+      "size_bytes": 1721849,
+      "sha256": "53fa8d2d68792e981b790ec722e93805ac195bff3359a66aa7cb659427c1335f"
+    },
+    {
+      "filename": "INIT-USDT-SWAP.npz",
+      "relative_path": "cache_v3/INIT-USDT-SWAP.npz",
+      "size_bytes": 630042,
+      "sha256": "ca2ab0af50647b8df875f702132b91a014dd6d9ba9f560b5e47fab803a0b38a2"
+    },
+    {
+      "filename": "INJ-USDT-SWAP.npz",
+      "relative_path": "cache_v3/INJ-USDT-SWAP.npz",
+      "size_bytes": 1080216,
+      "sha256": "20a4916298b6d6e799ebd04307980e38341ded088b3cdf99ea688496baa19037"
+    },
+    {
+      "filename": "IOST-USDT-SWAP.npz",
+      "relative_path": "cache_v3/IOST-USDT-SWAP.npz",
+      "size_bytes": 2959074,
+      "sha256": "3961c8ff0594587d22db9b2d0c594468527374f87c398c847acdb9e2803b7bd2"
+    },
+    {
+      "filename": "IOTA-USDT-SWAP.npz",
+      "relative_path": "cache_v3/IOTA-USDT-SWAP.npz",
+      "size_bytes": 2075859,
+      "sha256": "4cb72f2112ee325fef3ad786b4b56242cec54ad16008a6b8cb4bd5db5927ec5d"
+    },
+    {
+      "filename": "IRYS-USDT-SWAP.npz",
+      "relative_path": "cache_v3/IRYS-USDT-SWAP.npz",
+      "size_bytes": 174302,
+      "sha256": "d7490c66d8ba27587ce5c36b286bb420764dd999da1c52d931fc8e540cf7d8a9"
+    },
+    {
+      "filename": "JELLYJELLY-USDT-SWAP.npz",
+      "relative_path": "cache_v3/JELLYJELLY-USDT-SWAP.npz",
+      "size_bytes": 663579,
+      "sha256": "630b0294797f16469fe712da82621d007394995a3c29985a68ed0e1b5ef8a8cb"
+    },
+    {
+      "filename": "JTO-USDT-SWAP.npz",
+      "relative_path": "cache_v3/JTO-USDT-SWAP.npz",
+      "size_bytes": 881684,
+      "sha256": "2d4460f311a8ddef4d294051cf676b8d4a97cfadd260aa12c34acb40e7878de4"
+    },
+    {
+      "filename": "JUP-USDT-SWAP.npz",
+      "relative_path": "cache_v3/JUP-USDT-SWAP.npz",
+      "size_bytes": 925242,
+      "sha256": "d1eb54fe279e283f04163821ac732c85ef72f828e57d7c6d62cae93108b90abb"
+    },
+    {
+      "filename": "KAITO-USDT-SWAP.npz",
+      "relative_path": "cache_v3/KAITO-USDT-SWAP.npz",
+      "size_bytes": 612077,
+      "sha256": "ef2a3d5e0d2e8298939eaf601df1a0bf3445fec0ca01733c57639a6a3a92659b"
+    },
+    {
+      "filename": "KAT-USDT-SWAP.npz",
+      "relative_path": "cache_v3/KAT-USDT-SWAP.npz",
+      "size_bytes": 325282,
+      "sha256": "8d576b890fee496ee1ca2d21d4cff1e06fedc16f27226754c5e962f0d1b1c37e"
+    },
+    {
+      "filename": "KGEN-USDT-SWAP.npz",
+      "relative_path": "cache_v3/KGEN-USDT-SWAP.npz",
+      "size_bytes": 450753,
+      "sha256": "7741f272cfb42829ae3db0144f23979a3a0e5be737e96c33999cfbb4f5d7b133"
+    },
+    {
+      "filename": "KII-USDT-SWAP.npz",
+      "relative_path": "cache_v3/KII-USDT-SWAP.npz",
+      "size_bytes": 67363,
+      "sha256": "ee41049b6437cf33561f6c3888ee8e4d60f6f31a72668521b36e7fbb6632d067"
+    },
+    {
+      "filename": "KITE-USDT-SWAP.npz",
+      "relative_path": "cache_v3/KITE-USDT-SWAP.npz",
+      "size_bytes": 283039,
+      "sha256": "68b6d580e761c364b3fe3177fef12c9d1a25259241f8645c836ec11907c12796"
+    },
+    {
+      "filename": "KMNO-USDT-SWAP.npz",
+      "relative_path": "cache_v3/KMNO-USDT-SWAP.npz",
+      "size_bytes": 563174,
+      "sha256": "4cc775fa068f24ca0071c48cdacd13b27ec678059d5d82b0b2095f3a4fd1ee73"
+    },
+    {
+      "filename": "KSM-USDT-SWAP.npz",
+      "relative_path": "cache_v3/KSM-USDT-SWAP.npz",
+      "size_bytes": 1997199,
+      "sha256": "008d0c225513889abbb5677255be1e094cd10bec4b7fbef8ce44fc187bef7705"
+    },
+    {
+      "filename": "LA-USDT-SWAP.npz",
+      "relative_path": "cache_v3/LA-USDT-SWAP.npz",
+      "size_bytes": 518819,
+      "sha256": "f7b4eaa21b6f97c1cd4cfe8eeca7af86cf6d408a612963870c4b5e0108c82d1f"
+    },
+    {
+      "filename": "LAB-USDT-SWAP.npz",
+      "relative_path": "cache_v3/LAB-USDT-SWAP.npz",
+      "size_bytes": 494367,
+      "sha256": "d6863ff63dff0cb9e27cac2e3481509e4e0e8a3593ed9c02b03f31f94e9f83df"
+    },
+    {
+      "filename": "LAYER-USDT-SWAP.npz",
+      "relative_path": "cache_v3/LAYER-USDT-SWAP.npz",
+      "size_bytes": 705287,
+      "sha256": "db762a021f988df1b0703c81e3921652f4da0658bd87f93f3fce2531d50dbe32"
+    },
+    {
+      "filename": "LDO-USDT-SWAP.npz",
+      "relative_path": "cache_v3/LDO-USDT-SWAP.npz",
+      "size_bytes": 1290363,
+      "sha256": "42de4f57b3a3074ef9e7878bd97f276d66c9423fdb980309b8b0e7bb6ae99f6b"
+    },
+    {
+      "filename": "LIGHT-USDT-SWAP.npz",
+      "relative_path": "cache_v3/LIGHT-USDT-SWAP.npz",
+      "size_bytes": 303197,
+      "sha256": "3f3907fc5ca1ab230d5ece9f753e51e59460566ef4b39b4f88774c224f281cc6"
+    },
+    {
+      "filename": "LINEA-USDT-SWAP.npz",
+      "relative_path": "cache_v3/LINEA-USDT-SWAP.npz",
+      "size_bytes": 459825,
+      "sha256": "39ce13cfc223e1cc814d683443b767966ec5c1a3d1f455ac569312db69b5053d"
+    },
+    {
+      "filename": "LINK-USDT-SWAP.npz",
+      "relative_path": "cache_v3/LINK-USDT-SWAP.npz",
+      "size_bytes": 2382840,
+      "sha256": "33c2ec00effb144d0655e312b6c7fb082037b6ae978638063cbf53d36eb6f072"
+    },
+    {
+      "filename": "LIT-USDT-SWAP.npz",
+      "relative_path": "cache_v3/LIT-USDT-SWAP.npz",
+      "size_bytes": 352493,
+      "sha256": "1afe14ff3650c7ae5f09f2bb0df591dfe1e124e7b4aece6c05e8eb3aaaeea8fe"
+    },
+    {
+      "filename": "LPT-USDT-SWAP.npz",
+      "relative_path": "cache_v3/LPT-USDT-SWAP.npz",
+      "size_bytes": 1756143,
+      "sha256": "343a5b4802265866b6064337283f1e131588cf2b73238d77690246b34df63695"
+    },
+    {
+      "filename": "LQTY-USDT-SWAP.npz",
+      "relative_path": "cache_v3/LQTY-USDT-SWAP.npz",
+      "size_bytes": 913903,
+      "sha256": "3bc134b0f1cc0811fac6220bc9e9900b086ef82cf36341da393584f36240e86a"
+    },
+    {
+      "filename": "LTC-USDT-SWAP.npz",
+      "relative_path": "cache_v3/LTC-USDT-SWAP.npz",
+      "size_bytes": 2305481,
+      "sha256": "0572b3c09d1a86b8e8f0953a1ab89128cddde42fb59db89078d3ebf7165bd941"
+    },
+    {
+      "filename": "LUNA-USDT-SWAP.npz",
+      "relative_path": "cache_v3/LUNA-USDT-SWAP.npz",
+      "size_bytes": 1582968,
+      "sha256": "9fe4d8cf50160eed1646b3271e83e4f2de535dd9861d16a028a3c1040c7c042d"
+    },
+    {
+      "filename": "MAGIC-USDT-SWAP.npz",
+      "relative_path": "cache_v3/MAGIC-USDT-SWAP.npz",
+      "size_bytes": 1429866,
+      "sha256": "cc5b5cfff9818a0ea048520570fa9797e0e0288c8995e4731d392acbb83fc2ac"
+    },
+    {
+      "filename": "MANA-USDT-SWAP.npz",
+      "relative_path": "cache_v3/MANA-USDT-SWAP.npz",
+      "size_bytes": 1955917,
+      "sha256": "d2e1bf8c18ce7f51a17a965ac42d1c1190f5598e9f429f1b6df57c99ddff2611"
+    },
+    {
+      "filename": "MASK-USDT-SWAP.npz",
+      "relative_path": "cache_v3/MASK-USDT-SWAP.npz",
+      "size_bytes": 1761322,
+      "sha256": "027efde632384e5ccaa2fcbf661036ae28c7e095385976297163d0d9f0b41767"
+    },
+    {
+      "filename": "ME-USDT-SWAP.npz",
+      "relative_path": "cache_v3/ME-USDT-SWAP.npz",
+      "size_bytes": 681821,
+      "sha256": "f08ebd52decceb834d25a668cc9d993e92cb86d58a2dc999ebbf702460f4fa69"
+    },
+    {
+      "filename": "MEGA-USDT-SWAP.npz",
+      "relative_path": "cache_v3/MEGA-USDT-SWAP.npz",
+      "size_bytes": 233091,
+      "sha256": "4868bc5d94918047429c7e29bea5cef194711889e29e7705c720a5515d6d7870"
+    },
+    {
+      "filename": "MEME-USDT-SWAP.npz",
+      "relative_path": "cache_v3/MEME-USDT-SWAP.npz",
+      "size_bytes": 1299907,
+      "sha256": "663cc963a3812223ae76ad99b369427f4cea9fae49dd3a7167c336143b9464cc"
+    },
+    {
+      "filename": "MERL-USDT-SWAP.npz",
+      "relative_path": "cache_v3/MERL-USDT-SWAP.npz",
+      "size_bytes": 1020563,
+      "sha256": "ab4f4ae5fcd103c306a5910e7f19126d6a93921d123b500c0f62bc5ac0318bea"
+    },
+    {
+      "filename": "MET-USDT-SWAP.npz",
+      "relative_path": "cache_v3/MET-USDT-SWAP.npz",
+      "size_bytes": 358824,
+      "sha256": "ee70d1f01b359624004beaa0ff47b763e3d0264a5d4ace7e31e0dd904a2a95f9"
+    },
+    {
+      "filename": "METIS-USDT-SWAP.npz",
+      "relative_path": "cache_v3/METIS-USDT-SWAP.npz",
+      "size_bytes": 912568,
+      "sha256": "98a9dd4f3bbaa7e98aa0c26e004c0881acaeb5a3cf479993ba1e4f49bbd0fbfd"
+    },
+    {
+      "filename": "MEW-USDT-SWAP.npz",
+      "relative_path": "cache_v3/MEW-USDT-SWAP.npz",
+      "size_bytes": 1162609,
+      "sha256": "9b22bca20691ee2f3541fa659a3de88804dd314b63be1a138029a5a1ab3540ea"
+    },
+    {
+      "filename": "MINA-USDT-SWAP.npz",
+      "relative_path": "cache_v3/MINA-USDT-SWAP.npz",
+      "size_bytes": 1740643,
+      "sha256": "4457d813e38b02652c590cf61beb70192c141ad57b2c9293b3408b5d832f45dd"
+    },
+    {
+      "filename": "MMT-USDT-SWAP.npz",
+      "relative_path": "cache_v3/MMT-USDT-SWAP.npz",
+      "size_bytes": 320983,
+      "sha256": "7e8d443f15a9616d4acc4ea37d25439736c128a8858ca8ed17af23c2ffd227aa"
+    },
+    {
+      "filename": "MON-USDT-SWAP.npz",
+      "relative_path": "cache_v3/MON-USDT-SWAP.npz",
+      "size_bytes": 422252,
+      "sha256": "7e8ac68e1d241f92a641b6b456c3f2e8405d79f75d771016af5a8b8c8780523b"
+    },
+    {
+      "filename": "MOODENG-USDT-SWAP.npz",
+      "relative_path": "cache_v3/MOODENG-USDT-SWAP.npz",
+      "size_bytes": 934817,
+      "sha256": "1593192bc6ee2f2f42fa67b1bbdf3b2967525320c52c246fcb9e6aeb3880280c"
+    },
+    {
+      "filename": "MORPHO-USDT-SWAP.npz",
+      "relative_path": "cache_v3/MORPHO-USDT-SWAP.npz",
+      "size_bytes": 765052,
+      "sha256": "d8e849b7f3f128361fc129d205b0fcc410a2b711603a573c8fe79287b7adbd0e"
+    },
+    {
+      "filename": "MOVE-USDT-SWAP.npz",
+      "relative_path": "cache_v3/MOVE-USDT-SWAP.npz",
+      "size_bytes": 855972,
+      "sha256": "37d8f6ee53c4da1faea9752b51d992f8ae1e9e0f7f9d4e012784700746555210"
+    },
+    {
+      "filename": "MUBARAK-USDT-SWAP.npz",
+      "relative_path": "cache_v3/MUBARAK-USDT-SWAP.npz",
+      "size_bytes": 658424,
+      "sha256": "eab36dd202decd7e3c4af08698f30a104f25e62f1509f286719f3054e0bf0d51"
+    },
+    {
+      "filename": "NEAR-USDT-SWAP.npz",
+      "relative_path": "cache_v3/NEAR-USDT-SWAP.npz",
+      "size_bytes": 2001721,
+      "sha256": "705f60f52d4deb1b6bf26e2d6db58ed17b3455ca136ea24ee0f0433e149ea908"
+    },
+    {
+      "filename": "NEIRO-USDT-SWAP.npz",
+      "relative_path": "cache_v3/NEIRO-USDT-SWAP.npz",
+      "size_bytes": 1136120,
+      "sha256": "b58096f8cc56b2fd721cf0b3420b32f42dd7e680cc395f4211de72967df98a94"
+    },
+    {
+      "filename": "NEO-USDT-SWAP.npz",
+      "relative_path": "cache_v3/NEO-USDT-SWAP.npz",
+      "size_bytes": 2244817,
+      "sha256": "d9051aa301bbd4fe228b74c14dd309ac0668ec98b9430f21938f8b00f9f617e9"
+    },
+    {
+      "filename": "NES-USDT-SWAP.npz",
+      "relative_path": "cache_v3/NES-USDT-SWAP.npz",
+      "size_bytes": 139647,
+      "sha256": "742d406e15755972c5df350ba7f6c24903d58d784683787590dbc2748fe8dbe0"
+    },
+    {
+      "filename": "NIGHT-USDT-SWAP.npz",
+      "relative_path": "cache_v3/NIGHT-USDT-SWAP.npz",
+      "size_bytes": 607447,
+      "sha256": "e024e1497ce817e417eb66f9489f12fabafe0e4c334fedce6422a8caf8213870"
+    },
+    {
+      "filename": "NMR-USDT-SWAP.npz",
+      "relative_path": "cache_v3/NMR-USDT-SWAP.npz",
+      "size_bytes": 924156,
+      "sha256": "06c33d4ca2402ad9ca4466673451f7c012b23cdb0430d19fac33282ef5f193f8"
+    },
+    {
+      "filename": "NOT-USDT-SWAP.npz",
+      "relative_path": "cache_v3/NOT-USDT-SWAP.npz",
+      "size_bytes": 1122705,
+      "sha256": "0901e5e49aa4a5f29fe9b3a9caef51a39ae338a1c2fb51f94ad4a8d45e8934bd"
+    },
+    {
+      "filename": "O-USDT-SWAP.npz",
+      "relative_path": "cache_v3/O-USDT-SWAP.npz",
+      "size_bytes": 157872,
+      "sha256": "b815a158488b8ff2ba131e300823040e3def7d482699b4c9b32cb648054767a0"
+    },
+    {
+      "filename": "OFC-USDT-SWAP.npz",
+      "relative_path": "cache_v3/OFC-USDT-SWAP.npz",
+      "size_bytes": 305937,
+      "sha256": "bcfc70bbb6ba5ef36ae258aef1d0f9ec2b436bbce8d1690c0a702b19b6f8a74f"
+    },
+    {
+      "filename": "OKB-USDT-SWAP.npz",
+      "relative_path": "cache_v3/OKB-USDT-SWAP.npz",
+      "size_bytes": 413237,
+      "sha256": "77331fbeadc91c29a2bf45798117b44da61b444d51273a03bc5bcde9a5b67d4b"
+    },
+    {
+      "filename": "OL-USDT-SWAP.npz",
+      "relative_path": "cache_v3/OL-USDT-SWAP.npz",
+      "size_bytes": 462478,
+      "sha256": "2e0d4ac42d735130d3c1fbe6bd5fc492a9b00addf3ac06468b5c0e0e4b6e8193"
+    },
+    {
+      "filename": "ONDO-USDT-SWAP.npz",
+      "relative_path": "cache_v3/ONDO-USDT-SWAP.npz",
+      "size_bytes": 766183,
+      "sha256": "f8b9b788e372abc0f3b901d69d106de5feefa13f76d9a2123717a19937428ea8"
+    },
+    {
+      "filename": "ONE-USDT-SWAP.npz",
+      "relative_path": "cache_v3/ONE-USDT-SWAP.npz",
+      "size_bytes": 1091146,
+      "sha256": "da306eb81205aec20f02a0988380015c5e5f05cc5c72b48379dbb714e31d01ea"
+    },
+    {
+      "filename": "ONT-USDT-SWAP.npz",
+      "relative_path": "cache_v3/ONT-USDT-SWAP.npz",
+      "size_bytes": 2123569,
+      "sha256": "1870265579df868f70b03815f104b594eae3e6a503a33e443aa9004b09c43371"
+    },
+    {
+      "filename": "OP-USDT-SWAP.npz",
+      "relative_path": "cache_v3/OP-USDT-SWAP.npz",
+      "size_bytes": 1637697,
+      "sha256": "77a0e9e8b18d2115572667a5c1c9a9a63502d1bf6c0fd6a3d1002849cd193283"
+    },
+    {
+      "filename": "OPG-USDT-SWAP.npz",
+      "relative_path": "cache_v3/OPG-USDT-SWAP.npz",
+      "size_bytes": 239162,
+      "sha256": "6853d7346c70ae9ba12b0fbe9aa9d70f4e62ced205968ee459108c24e477b5d4"
+    },
+    {
+      "filename": "OPN-USDT-SWAP.npz",
+      "relative_path": "cache_v3/OPN-USDT-SWAP.npz",
+      "size_bytes": 299895,
+      "sha256": "5c96588416da5889ab623cfea97b6899959c34f1b26784ac32f9cf881eb7c94f"
+    },
+    {
+      "filename": "ORDER-USDT-SWAP.npz",
+      "relative_path": "cache_v3/ORDER-USDT-SWAP.npz",
+      "size_bytes": 439284,
+      "sha256": "a519c4c946b0a99a105b0f1eb0bfcc0ca4140246a85643f4e3e356a643383de2"
+    },
+    {
+      "filename": "ORDI-USDT-SWAP.npz",
+      "relative_path": "cache_v3/ORDI-USDT-SWAP.npz",
+      "size_bytes": 1255745,
+      "sha256": "6cc4ba51b378e8ff784c3559a0c93798ed21d16d37a92c38fdbf91888321580b"
+    },
+    {
+      "filename": "PARTI-USDT-SWAP.npz",
+      "relative_path": "cache_v3/PARTI-USDT-SWAP.npz",
+      "size_bytes": 638280,
+      "sha256": "63f49cc3ee8950e87553aed54ba3a2d01fea45e0e625f0d4e4b34d22f51065f3"
+    },
+    {
+      "filename": "PENDLE-USDT-SWAP.npz",
+      "relative_path": "cache_v3/PENDLE-USDT-SWAP.npz",
+      "size_bytes": 360001,
+      "sha256": "a1c6f740cd4b06786b63bfcec794abb86006fd2cdf4a773b9564fc9a13833aa2"
+    },
+    {
+      "filename": "PENGU-USDT-SWAP.npz",
+      "relative_path": "cache_v3/PENGU-USDT-SWAP.npz",
+      "size_bytes": 1094544,
+      "sha256": "dde130d95b2187c30a8d64af89925365777fc0d3dc7d87b9e1131b1b54286e4d"
+    },
+    {
+      "filename": "PEOPLE-USDT-SWAP.npz",
+      "relative_path": "cache_v3/PEOPLE-USDT-SWAP.npz",
+      "size_bytes": 1942442,
+      "sha256": "f7e62a44f924a273f7e3b964f89cadc631c86da119cd6181a438b31d35973924"
+    },
+    {
+      "filename": "PEPE-USDT-SWAP.npz",
+      "relative_path": "cache_v3/PEPE-USDT-SWAP.npz",
+      "size_bytes": 1857925,
+      "sha256": "d2a682cd21a40ca740e9afe0c783eb3d659815e49c2723017b15143a2443d19d"
+    },
+    {
+      "filename": "PI-USDT-SWAP.npz",
+      "relative_path": "cache_v3/PI-USDT-SWAP.npz",
+      "size_bytes": 588724,
+      "sha256": "c7bc2334c88957622888a545b083964ca6e37234a9ac8381d85aee085529c455"
+    },
+    {
+      "filename": "PIEVERSE-USDT-SWAP.npz",
+      "relative_path": "cache_v3/PIEVERSE-USDT-SWAP.npz",
+      "size_bytes": 375318,
+      "sha256": "267ccf705a267211ddaccabda79d865f93a39d2b89904164ca5dae9b7e6911f6"
+    },
+    {
+      "filename": "PIPPIN-USDT-SWAP.npz",
+      "relative_path": "cache_v3/PIPPIN-USDT-SWAP.npz",
+      "size_bytes": 392821,
+      "sha256": "9e142ca4a71aadafb0fa951a1fb3a4d30b4a5de57ef868f59e58d963789c9af7"
+    },
+    {
+      "filename": "PLUME-USDT-SWAP.npz",
+      "relative_path": "cache_v3/PLUME-USDT-SWAP.npz",
+      "size_bytes": 747468,
+      "sha256": "f3c3154092f36032132bc5404482631fe791ded8c9f6db6296ff414e010ac55f"
+    },
+    {
+      "filename": "PNUT-USDT-SWAP.npz",
+      "relative_path": "cache_v3/PNUT-USDT-SWAP.npz",
+      "size_bytes": 740925,
+      "sha256": "d655d79482637e83883856bd91d66711074a0c27bb902b76d70f24fa9e2e7484"
+    },
+    {
+      "filename": "POL-USDT-SWAP.npz",
+      "relative_path": "cache_v3/POL-USDT-SWAP.npz",
+      "size_bytes": 752506,
+      "sha256": "19f96d0a4659f5e34a2397bcaf57af36c38c07706f867f2ae6db030946cda9d5"
+    },
+    {
+      "filename": "PONS-USDT-SWAP.npz",
+      "relative_path": "cache_v3/PONS-USDT-SWAP.npz",
+      "size_bytes": 90079,
+      "sha256": "7d5977d4f90f3f5445ad49b4386031860991a39fd73055322b7c600f3c0a4f3e"
+    },
+    {
+      "filename": "POPCAT-USDT-SWAP.npz",
+      "relative_path": "cache_v3/POPCAT-USDT-SWAP.npz",
+      "size_bytes": 824546,
+      "sha256": "09ee9b1edd0855fd23b27e37ccb6a9682053ea8ed63a17d7bab2d4b202e5cdb2"
+    },
+    {
+      "filename": "PROS-USDT-SWAP.npz",
+      "relative_path": "cache_v3/PROS-USDT-SWAP.npz",
+      "size_bytes": 205669,
+      "sha256": "54ad147fe597275d1bda29d471b547d3fb32e9a49d928aa31b970051f4007a37"
+    },
+    {
+      "filename": "PROVE-USDT-SWAP.npz",
+      "relative_path": "cache_v3/PROVE-USDT-SWAP.npz",
+      "size_bytes": 343441,
+      "sha256": "cb13e0293d378d1cee01df5606ac93cb53e4b8f28c8f34765adc3932bf8a04b7"
+    },
+    {
+      "filename": "PUMP-USDT-SWAP.npz",
+      "relative_path": "cache_v3/PUMP-USDT-SWAP.npz",
+      "size_bytes": 575456,
+      "sha256": "ff9e85c5097677afa050da183bfb0885458ec238943123a62cc02af76aa8c216"
+    },
+    {
+      "filename": "PYTH-USDT-SWAP.npz",
+      "relative_path": "cache_v3/PYTH-USDT-SWAP.npz",
+      "size_bytes": 1111076,
+      "sha256": "9aaa91be267dda07c3115fe86beee66ce4a0dbd7dc2f57599d90078670c4b7eb"
+    },
+    {
+      "filename": "QTUM-USDT-SWAP.npz",
+      "relative_path": "cache_v3/QTUM-USDT-SWAP.npz",
+      "size_bytes": 2035541,
+      "sha256": "0bf401689c02d43e913a67813a0d1357f06239ef9b82a0384da8e9782489d1a8"
+    },
+    {
+      "filename": "QUANT-USDT-SWAP.npz",
+      "relative_path": "cache_v3/QUANT-USDT-SWAP.npz",
+      "size_bytes": 49946,
+      "sha256": "794a9fd93122331727bf1c9acf892236ee51039fbd4a859b5f1b63461efa6074"
+    },
+    {
+      "filename": "RAVE-USDT-SWAP.npz",
+      "relative_path": "cache_v3/RAVE-USDT-SWAP.npz",
+      "size_bytes": 384079,
+      "sha256": "8605cb6d566239c87334790a2e58bc18a7f12d13e10d621d3d967992226a63b3"
+    },
+    {
+      "filename": "RAY-USDT-SWAP.npz",
+      "relative_path": "cache_v3/RAY-USDT-SWAP.npz",
+      "size_bytes": 1049880,
+      "sha256": "f738ac5197d043d198f6976d9e2f1fc227528aa65b3bb9f196ec8e346d0f111c"
+    },
+    {
+      "filename": "RE-USDT-SWAP.npz",
+      "relative_path": "cache_v3/RE-USDT-SWAP.npz",
+      "size_bytes": 234068,
+      "sha256": "463553853b0bc9f8a2d5bde04dbff716cf1e5e00f649736fbe7290895d3bb949"
+    },
+    {
+      "filename": "RECALL-USDT-SWAP.npz",
+      "relative_path": "cache_v3/RECALL-USDT-SWAP.npz",
+      "size_bytes": 434872,
+      "sha256": "2c667a01f5f382caf65283939cb69494351cc94a7fea15d64847388190c826af"
+    },
+    {
+      "filename": "RENDER-USDT-SWAP.npz",
+      "relative_path": "cache_v3/RENDER-USDT-SWAP.npz",
+      "size_bytes": 682368,
+      "sha256": "8aa918ae447b0e419d4c614c1e0a92dcac0f5b94ae17d19ba89085f38dce87a9"
+    },
+    {
+      "filename": "RESOLV-USDT-SWAP.npz",
+      "relative_path": "cache_v3/RESOLV-USDT-SWAP.npz",
+      "size_bytes": 536180,
+      "sha256": "e84a2f4973238a3ad279614f57a87a382cf167fb156ac481395371a63c7f4df3"
+    },
+    {
+      "filename": "RIVER-USDT-SWAP.npz",
+      "relative_path": "cache_v3/RIVER-USDT-SWAP.npz",
+      "size_bytes": 312339,
+      "sha256": "346e6fdc092fa8978dca0b0163df4038482e1efce756f0a6b77501acfb9f6bed"
+    },
+    {
+      "filename": "RLS-USDT-SWAP.npz",
+      "relative_path": "cache_v3/RLS-USDT-SWAP.npz",
+      "size_bytes": 451904,
+      "sha256": "e8b9ea195e348df41bc614ac49488dc233e0b22e45c80a8e47f8bb0d44bd45b8"
+    },
+    {
+      "filename": "ROBO-USDT-SWAP.npz",
+      "relative_path": "cache_v3/ROBO-USDT-SWAP.npz",
+      "size_bytes": 303272,
+      "sha256": "a013f41ef1eb5a97949c3612f1247f3fb9947d8b0871d069e71987d3a4aa350b"
+    },
+    {
+      "filename": "RSR-USDT-SWAP.npz",
+      "relative_path": "cache_v3/RSR-USDT-SWAP.npz",
+      "size_bytes": 2654341,
+      "sha256": "219d371179943774cf57375093e64e99e6a3e1adfdb99e67896b8b8fd15e5d1c"
+    },
+    {
+      "filename": "RVN-USDT-SWAP.npz",
+      "relative_path": "cache_v3/RVN-USDT-SWAP.npz",
+      "size_bytes": 1952717,
+      "sha256": "a34994f51ba55b164d1ad2ad55b79cf40b1b11b07c47963ae4e97eb81382d4c8"
+    },
+    {
+      "filename": "S-USDT-SWAP.npz",
+      "relative_path": "cache_v3/S-USDT-SWAP.npz",
+      "size_bytes": 666826,
+      "sha256": "819b0c99becea5cb1824b8a542f43259bd1e9140042ff88ad69fca589e10082c"
+    },
+    {
+      "filename": "SAHARA-USDT-SWAP.npz",
+      "relative_path": "cache_v3/SAHARA-USDT-SWAP.npz",
+      "size_bytes": 580446,
+      "sha256": "0a1916d9362150b3349bc8f3495ea7dc9df195d8f60036fefbea498a7e05a23d"
+    },
+    {
+      "filename": "SAND-USDT-SWAP.npz",
+      "relative_path": "cache_v3/SAND-USDT-SWAP.npz",
+      "size_bytes": 2017787,
+      "sha256": "9b5c6e0a81e2cc49d5cea0a554edb4595eabef60440840b3ac0de407f32f5d8f"
+    },
+    {
+      "filename": "SAPIEN-USDT-SWAP.npz",
+      "relative_path": "cache_v3/SAPIEN-USDT-SWAP.npz",
+      "size_bytes": 417133,
+      "sha256": "939576c4511ecd1aae2dc26d0533322af9b7c79743208b1ffdef123395f70327"
+    },
+    {
+      "filename": "SATS-USDT-SWAP.npz",
+      "relative_path": "cache_v3/SATS-USDT-SWAP.npz",
+      "size_bytes": 1585739,
+      "sha256": "06e8fe490e6332ab10d2d44009f4e744821f275a1172236e8eb92354fce8e84e"
+    },
+    {
+      "filename": "SEI-USDT-SWAP.npz",
+      "relative_path": "cache_v3/SEI-USDT-SWAP.npz",
+      "size_bytes": 394036,
+      "sha256": "dbcd0774f8f3f6c95e5ab56900b20ca1ed4a33079b753100b5ad903f9efc61fd"
+    },
+    {
+      "filename": "SENT-USDT-SWAP.npz",
+      "relative_path": "cache_v3/SENT-USDT-SWAP.npz",
+      "size_bytes": 356893,
+      "sha256": "4f3ff09f6d44f2032cc2e1cb40fa1c158c0cdf024f4f1ed24cdc28d5045de1af"
+    },
+    {
+      "filename": "SHELL-USDT-SWAP.npz",
+      "relative_path": "cache_v3/SHELL-USDT-SWAP.npz",
+      "size_bytes": 614875,
+      "sha256": "9d18b5c514fd1a8eb3bf281853fde3385d49a695013ad768636f614fbd42fbc3"
+    },
+    {
+      "filename": "SHIB-USDT-SWAP.npz",
+      "relative_path": "cache_v3/SHIB-USDT-SWAP.npz",
+      "size_bytes": 2464235,
+      "sha256": "571227fa833219ec0a0d247fa8fdd8fdb3966b4c49eaf7fab2968bbad205fc3d"
+    },
+    {
+      "filename": "SIGN-USDT-SWAP.npz",
+      "relative_path": "cache_v3/SIGN-USDT-SWAP.npz",
+      "size_bytes": 669497,
+      "sha256": "27eb09fcab17b2c62290a14a715d16996b08d88bfe8c3d862c3c1c64e9fd3fae"
+    },
+    {
+      "filename": "SKY-USDT-SWAP.npz",
+      "relative_path": "cache_v3/SKY-USDT-SWAP.npz",
+      "size_bytes": 491010,
+      "sha256": "2dedf647752816551f969664460089c2dab062d93517dedb0d4321364445eff3"
+    },
+    {
+      "filename": "SLX-USDT-SWAP.npz",
+      "relative_path": "cache_v3/SLX-USDT-SWAP.npz",
+      "size_bytes": 205126,
+      "sha256": "abb253e24f431f08af7185f75622e3e0d0095a4926a04d4dbc36fe1174900939"
+    },
+    {
+      "filename": "SNX-USDT-SWAP.npz",
+      "relative_path": "cache_v3/SNX-USDT-SWAP.npz",
+      "size_bytes": 1959499,
+      "sha256": "bbd0bbff3faf4bf7ace111ed26c8a86a929f77da77add967ef652ac2a61d5c74"
+    },
+    {
+      "filename": "SOL-USDT-SWAP.npz",
+      "relative_path": "cache_v3/SOL-USDT-SWAP.npz",
+      "size_bytes": 2157572,
+      "sha256": "db424061ff9cb85a056800d2cd5a166445720cafd0aaf3cd03446ea061934d99"
+    },
+    {
+      "filename": "SOON-USDT-SWAP.npz",
+      "relative_path": "cache_v3/SOON-USDT-SWAP.npz",
+      "size_bytes": 570300,
+      "sha256": "a80ada03ec417879fb347c027dffd1eae95232bf6a4b1a743db7e5be8bfabe5b"
+    },
+    {
+      "filename": "SOPH-USDT-SWAP.npz",
+      "relative_path": "cache_v3/SOPH-USDT-SWAP.npz",
+      "size_bytes": 608874,
+      "sha256": "01cba9493f8b32db0f8ff1c218d0232e31091a3854ab393f29048271b89a1ef1"
+    },
+    {
+      "filename": "SPACE-USDT-SWAP.npz",
+      "relative_path": "cache_v3/SPACE-USDT-SWAP.npz",
+      "size_bytes": 406821,
+      "sha256": "a913b30c1d0983632dd7df077d4c00f3749b5e044a6655d845877ed005d6c49d"
+    },
+    {
+      "filename": "SPK-USDT-SWAP.npz",
+      "relative_path": "cache_v3/SPK-USDT-SWAP.npz",
+      "size_bytes": 527600,
+      "sha256": "3f652ee74828cc7cf2ecc90235ba3f3dab3bc8f8b993065a88288139857c1c2e"
+    },
+    {
+      "filename": "SPX-USDT-SWAP.npz",
+      "relative_path": "cache_v3/SPX-USDT-SWAP.npz",
+      "size_bytes": 468191,
+      "sha256": "181bdbd208d0c84565334d7a1681d18f976e815dc4c05479a992f2d396cb167d"
+    },
+    {
+      "filename": "SSV-USDT-SWAP.npz",
+      "relative_path": "cache_v3/SSV-USDT-SWAP.npz",
+      "size_bytes": 935761,
+      "sha256": "33913c0a042e3a4156dcc594265284231e8be022a2dbb4e62aa9d32b5ecd731d"
+    },
+    {
+      "filename": "STABLE-USDT-SWAP.npz",
+      "relative_path": "cache_v3/STABLE-USDT-SWAP.npz",
+      "size_bytes": 341804,
+      "sha256": "0b0ff42e93285f954bc3661e99ab44e622b9a09f21502665f54a49267d32ec49"
+    },
+    {
+      "filename": "STRK-USDT-SWAP.npz",
+      "relative_path": "cache_v3/STRK-USDT-SWAP.npz",
+      "size_bytes": 958070,
+      "sha256": "3d4875cf8fa8a8ce44490e464fd5cf6e06fafb16595bceee4c949d83108e706a"
+    },
+    {
+      "filename": "STX-USDT-SWAP.npz",
+      "relative_path": "cache_v3/STX-USDT-SWAP.npz",
+      "size_bytes": 1290231,
+      "sha256": "397f1417ced18ce9a43eb140c1b280f954d74d6a84cd7c0d3b72bae29db0992b"
+    },
+    {
+      "filename": "SUI-USDT-SWAP.npz",
+      "relative_path": "cache_v3/SUI-USDT-SWAP.npz",
+      "size_bytes": 1291736,
+      "sha256": "e1d5c80ee39244f33c8832343086abc3870c3a854aaff33e7fcc10c8fd1e1e5a"
+    },
+    {
+      "filename": "SUSHI-USDT-SWAP.npz",
+      "relative_path": "cache_v3/SUSHI-USDT-SWAP.npz",
+      "size_bytes": 2099569,
+      "sha256": "ff269b6435c1b1660e4b6159c8cd33974c355eeb6ece25b17cc358f28f8a3c66"
+    },
+    {
+      "filename": "SYRUP-USDT-SWAP.npz",
+      "relative_path": "cache_v3/SYRUP-USDT-SWAP.npz",
+      "size_bytes": 438719,
+      "sha256": "804dcf35ed510cd09c06a85bfd7aea8e506a995e854a5b1cca73897359fa8f41"
+    },
+    {
+      "filename": "TAO-USDT-SWAP.npz",
+      "relative_path": "cache_v3/TAO-USDT-SWAP.npz",
+      "size_bytes": 690243,
+      "sha256": "6a4e5f6814b1c4cf64cdf12f7260fa26a38074f8a1bf79724a3d3acf80cc4255"
+    },
+    {
+      "filename": "THETA-USDT-SWAP.npz",
+      "relative_path": "cache_v3/THETA-USDT-SWAP.npz",
+      "size_bytes": 2211374,
+      "sha256": "557950e62dd75482f1ce31d6ca0a86a61f29afde805f4fe4c13853f3413a865a"
+    },
+    {
+      "filename": "TIA-USDT-SWAP.npz",
+      "relative_path": "cache_v3/TIA-USDT-SWAP.npz",
+      "size_bytes": 1002038,
+      "sha256": "bb5639ee38d0279324c9fc26eb5a117f11197f00879f55f8201d230990eee179"
+    },
+    {
+      "filename": "TRB-USDT-SWAP.npz",
+      "relative_path": "cache_v3/TRB-USDT-SWAP.npz",
+      "size_bytes": 1961661,
+      "sha256": "7a264add4f1a69b4907066339a0271f2e6a924357eed06565882bbf7d0cd0ca5"
+    },
+    {
+      "filename": "TRIA-USDT-SWAP.npz",
+      "relative_path": "cache_v3/TRIA-USDT-SWAP.npz",
+      "size_bytes": 358454,
+      "sha256": "d6d32f58c27eb24da02aed22e38cc15146314d67cf0ab7adb4acbadd31ab1c52"
+    },
+    {
+      "filename": "TRUMP-USDT-SWAP.npz",
+      "relative_path": "cache_v3/TRUMP-USDT-SWAP.npz",
+      "size_bytes": 586132,
+      "sha256": "af24d17e5016075a65eda26533bd7f84b38a102d7d300492338efeb8c5ed0ee4"
+    },
+    {
+      "filename": "TRUST-USDT-SWAP.npz",
+      "relative_path": "cache_v3/TRUST-USDT-SWAP.npz",
+      "size_bytes": 396551,
+      "sha256": "3009f472f3c6d3d302d817f7906d1f7e371cfe97108710168ad15fd3196a6d7e"
+    },
+    {
+      "filename": "TRUTH-USDT-SWAP.npz",
+      "relative_path": "cache_v3/TRUTH-USDT-SWAP.npz",
+      "size_bytes": 554638,
+      "sha256": "06ae10ef27ae370a15eb4114c40339ebda9264e3c5192d1dd4b20e03fb659419"
+    },
+    {
+      "filename": "TRX-USDT-SWAP.npz",
+      "relative_path": "cache_v3/TRX-USDT-SWAP.npz",
+      "size_bytes": 2624984,
+      "sha256": "4e0c2730ec4e4312e710a96661fb57cea77fa43e4aa0f8a6e06064b5d8872157"
+    },
+    {
+      "filename": "TURBO-USDT-SWAP.npz",
+      "relative_path": "cache_v3/TURBO-USDT-SWAP.npz",
+      "size_bytes": 1678707,
+      "sha256": "6b6998b442708b1aba6f2cf2754192d3de63bd55d0386fb0403807ebdf2bd83b"
+    },
+    {
+      "filename": "UB-USDT-SWAP.npz",
+      "relative_path": "cache_v3/UB-USDT-SWAP.npz",
+      "size_bytes": 283353,
+      "sha256": "af014dd3d1ea8a395cde26facd44c0333d6cbfc6adbe99ac9e54323414432098"
+    },
+    {
+      "filename": "UMA-USDT-SWAP.npz",
+      "relative_path": "cache_v3/UMA-USDT-SWAP.npz",
+      "size_bytes": 1846202,
+      "sha256": "2bd0252ec0d63082d419e9f32de579748927bdad0fd953fd9bad93427d72551d"
+    },
+    {
+      "filename": "UNI-USDT-SWAP.npz",
+      "relative_path": "cache_v3/UNI-USDT-SWAP.npz",
+      "size_bytes": 2090764,
+      "sha256": "b53c7822a79f07ec0e177ad547f7d7984ac218c852ac57fd6f910b42f3d6bff9"
+    },
+    {
+      "filename": "UP-USDT-SWAP.npz",
+      "relative_path": "cache_v3/UP-USDT-SWAP.npz",
+      "size_bytes": 218027,
+      "sha256": "b91ae74564e79abb72c341e498df1befac51d92e5106e57d9e22374abba929cb"
+    },
+    {
+      "filename": "USELESS-USDT-SWAP.npz",
+      "relative_path": "cache_v3/USELESS-USDT-SWAP.npz",
+      "size_bytes": 574759,
+      "sha256": "94f46d9f40a4ab4ba26d230cf594d96be8339ac6d4a3492d15857e7214879225"
+    },
+    {
+      "filename": "VANA-USDT-SWAP.npz",
+      "relative_path": "cache_v3/VANA-USDT-SWAP.npz",
+      "size_bytes": 605696,
+      "sha256": "1cecc2fc24064e8302553f844649fa174de25050fb60ca412c264530c1dd3275"
+    },
+    {
+      "filename": "VIRTUAL-USDT-SWAP.npz",
+      "relative_path": "cache_v3/VIRTUAL-USDT-SWAP.npz",
+      "size_bytes": 708225,
+      "sha256": "8fded81719aed0b9989a88b96ae697324df04a07e10d6eb73d7b5359e52b8b63"
+    },
+    {
+      "filename": "VVV-USDT-SWAP.npz",
+      "relative_path": "cache_v3/VVV-USDT-SWAP.npz",
+      "size_bytes": 162110,
+      "sha256": "10284dafe28df6cdff92c28fd907b40264594a0018a78f0cf671659758957b70"
+    },
+    {
+      "filename": "W-USDT-SWAP.npz",
+      "relative_path": "cache_v3/W-USDT-SWAP.npz",
+      "size_bytes": 1051435,
+      "sha256": "869d0f41c626c8f552de611b775f83eb35f7562eb86a803f609fd7dc473590da"
+    },
+    {
+      "filename": "WAL-USDT-SWAP.npz",
+      "relative_path": "cache_v3/WAL-USDT-SWAP.npz",
+      "size_bytes": 553666,
+      "sha256": "c3071145ea2341708bd8604ae4af4b7ec7d5e1fe4ba7c69992f7565831e2d04b"
+    },
+    {
+      "filename": "WCT-USDT-SWAP.npz",
+      "relative_path": "cache_v3/WCT-USDT-SWAP.npz",
+      "size_bytes": 579520,
+      "sha256": "4741f006c75bf90fab8c5592d052c6f8f3616823f8ae604cbfbaa3e0258d2add"
+    },
+    {
+      "filename": "WET-USDT-SWAP.npz",
+      "relative_path": "cache_v3/WET-USDT-SWAP.npz",
+      "size_bytes": 395162,
+      "sha256": "a427c1e5ba37e1dc6505ceb921fbea3de066a6617bed2656dd5c52f2c2eb710d"
+    },
+    {
+      "filename": "WIF-USDT-SWAP.npz",
+      "relative_path": "cache_v3/WIF-USDT-SWAP.npz",
+      "size_bytes": 819264,
+      "sha256": "808ed5027732cc755d229f8a418f2a4eec29e297b1cca1840896faf23258e016"
+    },
+    {
+      "filename": "WLD-USDT-SWAP.npz",
+      "relative_path": "cache_v3/WLD-USDT-SWAP.npz",
+      "size_bytes": 1102529,
+      "sha256": "6947186184c4bb9d789cddef30b4851100a2f4c70b7de13b2f0dd0e84c03a9f0"
+    },
+    {
+      "filename": "WLFI-USDT-SWAP.npz",
+      "relative_path": "cache_v3/WLFI-USDT-SWAP.npz",
+      "size_bytes": 424381,
+      "sha256": "f968d2d6a228864f341a728e92ce72a67d4ef107db85bbbb2e71b92e59c926df"
+    },
+    {
+      "filename": "WOO-USDT-SWAP.npz",
+      "relative_path": "cache_v3/WOO-USDT-SWAP.npz",
+      "size_bytes": 1253342,
+      "sha256": "7a04a9a2e4477538d66e4747f318ea39d611ee18b4204fbb57f00cb0249ff8b3"
+    },
+    {
+      "filename": "XDP-USDT-SWAP.npz",
+      "relative_path": "cache_v3/XDP-USDT-SWAP.npz",
+      "size_bytes": 85258,
+      "sha256": "1bddfaa60b619beb5fc4b5ea705f6e664256e476c9a8554e1a2a7871f4859a21"
+    },
+    {
+      "filename": "XLM-USDT-SWAP.npz",
+      "relative_path": "cache_v3/XLM-USDT-SWAP.npz",
+      "size_bytes": 2707928,
+      "sha256": "383eb5063888e604942e462283a7c19fd6a3c591016420b0a450886b639a8229"
+    },
+    {
+      "filename": "XPL-USDT-SWAP.npz",
+      "relative_path": "cache_v3/XPL-USDT-SWAP.npz",
+      "size_bytes": 504190,
+      "sha256": "d43ffe0cb57da9cdf2ff20defeaa102529a06648c207a1c62b687036d3c5f84f"
+    },
+    {
+      "filename": "XRP-USDT-SWAP.npz",
+      "relative_path": "cache_v3/XRP-USDT-SWAP.npz",
+      "size_bytes": 2666140,
+      "sha256": "302840baea2728a84ca68f87c997d40ca486849e76caae3f683755d0c0bd43bf"
+    },
+    {
+      "filename": "XTZ-USDT-SWAP.npz",
+      "relative_path": "cache_v3/XTZ-USDT-SWAP.npz",
+      "size_bytes": 2130026,
+      "sha256": "6cca1b9281dfb15cb05ac2633c38f9d9a8e085045a7eb66254a012ba707d182d"
+    },
+    {
+      "filename": "YB-USDT-SWAP.npz",
+      "relative_path": "cache_v3/YB-USDT-SWAP.npz",
+      "size_bytes": 448769,
+      "sha256": "857e41d1c9e2ce93ce3c71bdf83fb5ea680ab54d4f1dce614c332f574d87792f"
+    },
+    {
+      "filename": "YFI-USDT-SWAP.npz",
+      "relative_path": "cache_v3/YFI-USDT-SWAP.npz",
+      "size_bytes": 1900187,
+      "sha256": "464c9d6d5f7a17eee7f6e15c345e4e521e4532bc9b924ca1e52563ef97d513d0"
+    },
+    {
+      "filename": "YGG-USDT-SWAP.npz",
+      "relative_path": "cache_v3/YGG-USDT-SWAP.npz",
+      "size_bytes": 1833025,
+      "sha256": "edf786110d467dd4f7738ade7d0f5bd7fdbb190d68309851d8beb32bbf555b87"
+    },
+    {
+      "filename": "ZAMA-USDT-SWAP.npz",
+      "relative_path": "cache_v3/ZAMA-USDT-SWAP.npz",
+      "size_bytes": 357045,
+      "sha256": "280523ab33e45694ffa86e7790d8c3ec7d4f5238cd7ce060617fa34b59e4cabe"
+    },
+    {
+      "filename": "ZBT-USDT-SWAP.npz",
+      "relative_path": "cache_v3/ZBT-USDT-SWAP.npz",
+      "size_bytes": 474476,
+      "sha256": "ec867db3739f35a802e495ce46d8bdcaec116671e98d3883016c9254550a9ff4"
+    },
+    {
+      "filename": "ZEC-USDT-SWAP.npz",
+      "relative_path": "cache_v3/ZEC-USDT-SWAP.npz",
+      "size_bytes": 417635,
+      "sha256": "d1acd09ee91444e648a1435b8d3499e11d75b3fd75cc3d7ab63d05e18d08faa2"
+    },
+    {
+      "filename": "ZEN-USDT-SWAP.npz",
+      "relative_path": "cache_v3/ZEN-USDT-SWAP.npz",
+      "size_bytes": 345986,
+      "sha256": "b1bef95fa43a556383387b72a1d51635a85bfaa846244a438bac9b64b74653ff"
+    },
+    {
+      "filename": "ZETA-USDT-SWAP.npz",
+      "relative_path": "cache_v3/ZETA-USDT-SWAP.npz",
+      "size_bytes": 1006283,
+      "sha256": "3fefbe05a12d3d67307af880409a5197754d0df1e10a75872c4146a7c9b85d5b"
+    },
+    {
+      "filename": "ZIL-USDT-SWAP.npz",
+      "relative_path": "cache_v3/ZIL-USDT-SWAP.npz",
+      "size_bytes": 2258428,
+      "sha256": "95dbe728f59cbe3e631329607fe03c2a122375bd5319d3e5fb0e3e1998c19638"
+    },
+    {
+      "filename": "ZK-USDT-SWAP.npz",
+      "relative_path": "cache_v3/ZK-USDT-SWAP.npz",
+      "size_bytes": 936247,
+      "sha256": "afb86aa4131f2e4d08342320ccb06247daebebd0558db7b73a212803bf51a32e"
+    },
+    {
+      "filename": "ZKP-USDT-SWAP.npz",
+      "relative_path": "cache_v3/ZKP-USDT-SWAP.npz",
+      "size_bytes": 354471,
+      "sha256": "1b9c31a84c7c1c2d700f41935c504d4ec7114aad0a128efb769372be300e62ac"
+    },
+    {
+      "filename": "ZORA-USDT-SWAP.npz",
+      "relative_path": "cache_v3/ZORA-USDT-SWAP.npz",
+      "size_bytes": 487651,
+      "sha256": "6f0c73f346dfee021f34e64a0f6e5b4d61cd64a2a53ddf655de7cbec0fb5757f"
+    },
+    {
+      "filename": "ZRO-USDT-SWAP.npz",
+      "relative_path": "cache_v3/ZRO-USDT-SWAP.npz",
+      "size_bytes": 754106,
+      "sha256": "7139e69e0a8ebeef9505d98de3483714d3279a3b71aa573aa14765d1c7afe50e"
+    },
+    {
+      "filename": "ZRX-USDT-SWAP.npz",
+      "relative_path": "cache_v3/ZRX-USDT-SWAP.npz",
+      "size_bytes": 2035475,
+      "sha256": "f6314cf9f1f4b3286ed6027581f9276f0908ae558017a7d007ce3c922413c386"
+    }
+  ]
+}

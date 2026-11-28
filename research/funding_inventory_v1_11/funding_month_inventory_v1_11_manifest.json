@@ -1,0 +1,192 @@
+{
+  "research_id": "BACKTEST-READINESS-01",
+  "version": "v1.11-inventory",
+  "dataset": "EX_USDC_286",
+  "window_start_utc": "2023-01-01T00:00:00Z",
+  "window_end_utc": "2026-11-26T12:00:00Z",
+  "start_utc": "2026-11-27T23:18:01Z",
+  "end_utc": "2026-11-27T23:23:02Z",
+  "elapsed_sec": 300.86,
+  "universe_symbols": 286,
+  "bar_series": "ts30",
+  "month_timezone": "CST (UTC+8)",
+  "total_pairs": 7536,
+  "class_counts": {
+    "covered_verified": 85,
+    "pending_check": 5882,
+    "confirmed_missing": 1279,
+    "official_unavailable": 290
+  },
+  "official_unavailable_breakdown": {
+    "boundary-insufficient": 286,
+    "404": 4
+  },
+  "confirmed_missing_breakdown": {
+    "zero_rows": 1157,
+    "below_8h_grid_min": 122
+  },
+  "symbols_with_confirmed_missing": 272,
+  "official_unavailable_404_pairs": [
+    {
+      "inst_id": "CC-USDT-SWAP",
+      "month_cst": "2025-10",
+      "npz_bar_first_utc": "2025-10-31T14:00:00Z",
+      "npz_bar_last_utc": "2025-10-31T15:30:00Z",
+      "note": "Listed in the last hours of this CST month; bar span contains no UTC 8H settlement, and the official monthly ZIP is not published (API unlisted, CDN HEAD 404). First settlements belong to the next CST month."
+    },
+    {
+      "inst_id": "INJ-USDT-SWAP",
+      "month_cst": "2023-11",
+      "npz_bar_first_utc": "2023-11-30T11:30:00Z",
+      "npz_bar_last_utc": "2023-11-30T15:30:00Z",
+      "note": "Listed in the last hours of this CST month; bar span contains no UTC 8H settlement, and the official monthly ZIP is not published (API unlisted, CDN HEAD 404). First settlements belong to the next CST month."
+    },
+    {
+      "inst_id": "MEGA-USDT-SWAP",
+      "month_cst": "2026-04",
+      "npz_bar_first_utc": "2026-04-30T12:00:00Z",
+      "npz_bar_last_utc": "2026-04-30T15:30:00Z",
+      "note": "Listed in the last hours of this CST month; bar span contains no UTC 8H settlement, and the official monthly ZIP is not published (API unlisted, CDN HEAD 404). First settlements belong to the next CST month."
+    },
+    {
+      "inst_id": "ORDER-USDT-SWAP",
+      "month_cst": "2025-09",
+      "npz_bar_first_utc": "2025-09-30T15:00:00Z",
+      "npz_bar_last_utc": "2025-09-30T15:30:00Z",
+      "note": "Listed in the last hours of this CST month; bar span contains no UTC 8H settlement, and the official monthly ZIP is not published (API unlisted, CDN HEAD 404). First settlements belong to the next CST month."
+    }
+  ],
+  "already_fetched_official_zips": 85,
+  "verified_pairs_without_npz_bars_in_window": [],
+  "top_symbols_confirmed_missing": [
+    {
+      "inst_id": "PEPE-USDT-SWAP",
+      "confirmed_missing_months": 13
+    },
+    {
+      "inst_id": "SHIB-USDT-SWAP",
+      "confirmed_missing_months": 13
+    },
+    {
+      "inst_id": "SATS-USDT-SWAP",
+      "confirmed_missing_months": 12
+    },
+    {
+      "inst_id": "FLOKI-USDT-SWAP",
+      "confirmed_missing_months": 11
+    },
+    {
+      "inst_id": "GAS-USDT-SWAP",
+      "confirmed_missing_months": 11
+    },
+    {
+      "inst_id": "ARB-USDT-SWAP",
+      "confirmed_missing_months": 10
+    },
+    {
+      "inst_id": "ETC-USDT-SWAP",
+      "confirmed_missing_months": 10
+    },
+    {
+      "inst_id": "ETHW-USDT-SWAP",
+      "confirmed_missing_months": 10
+    },
+    {
+      "inst_id": "FLOW-USDT-SWAP",
+      "confirmed_missing_months": 10
+    },
+    {
+      "inst_id": "GMT-USDT-SWAP",
+      "confirmed_missing_months": 10
+    },
+    {
+      "inst_id": "SAND-USDT-SWAP",
+      "confirmed_missing_months": 10
+    },
+    {
+      "inst_id": "SUI-USDT-SWAP",
+      "confirmed_missing_months": 10
+    },
+    {
+      "inst_id": "ANIME-USDT-SWAP",
+      "confirmed_missing_months": 9
+    },
+    {
+      "inst_id": "NEIRO-USDT-SWAP",
+      "confirmed_missing_months": 9
+    },
+    {
+      "inst_id": "NEO-USDT-SWAP",
+      "confirmed_missing_months": 9
+    },
+    {
+      "inst_id": "SSV-USDT-SWAP",
+      "confirmed_missing_months": 9
+    },
+    {
+      "inst_id": "STX-USDT-SWAP",
+      "confirmed_missing_months": 9
+    },
+    {
+      "inst_id": "ZIL-USDT-SWAP",
+      "confirmed_missing_months": 9
+    },
+    {
+      "inst_id": "AEVO-USDT-SWAP",
+      "confirmed_missing_months": 8
+    },
+    {
+      "inst_id": "ARKM-USDT-SWAP",
+      "confirmed_missing_months": 8
+    }
+  ],
+  "classification_rules": {
+    "covered_verified": "Pair is one of the 85 already-fetched official monthly ZIPs (v1.10 80 + v1.11-b1 5). Those ZIPs were not refetched.",
+    "pending_check": "Official monthly file exists (API listed or CDN HEAD 200); frozen+deltas already have at least the 8H-grid minimum row count for the NPZ bar span in that CST month, but the month has not been verified against the official ZIP.",
+    "confirmed_missing": "Official monthly file exists, and frozen+deltas have 0 rows for that CST month, or fewer rows than the UTC 8H-grid (00/08/16Z) point count inside [npz_bar_first, npz_bar_last] ∩ the CST month.",
+    "official_unavailable": "Official file not listed and not retrievable. sub_reason is one of: not_listed, 404, listing-suspension, boundary-insufficient.",
+    "boundary-insufficient": "CST month is still open (2026-11 closes 2026-12-01 00:00 CST), so the official monthly ZIP is not published yet.",
+    "no_zero_fill_no_interpolation": true,
+    "frozen_files_unmodified": true
+  },
+  "download_estimate_pending_plus_missing": {
+    "file_count": 7161,
+    "est_seconds_at_5rps": {
+      "low": 1861.9,
+      "high": 2608.0
+    },
+    "est_minutes": {
+      "low": 31.0,
+      "high": 43.5
+    },
+    "est_bytes_from_v1_10_v1_11_b1_mean": 9645867,
+    "note": "Estimate only; ZIPs were not downloaded in this inventory run. Mean size taken from the existing 85 official ZIPs (~1347 B)."
+  },
+  "inputs": {
+    "npz_manifest": "ex_usdc_286_npz_manifest_v1.json",
+    "npz_dir": "cache_v3",
+    "frozen_db": "funding_archive_l1_isolated.sqlite",
+    "frozen_access": "sqlite mode=ro, unmodified",
+    "deltas": [
+      "funding_delta_missing16_v1_7.csv.gz",
+      "funding_delta_missing174_v1_9.csv.gz",
+      "funding_delta_full75plus_v1_10.csv.gz",
+      "funding_delta_5sym_v1_11_b1.csv.gz"
+    ],
+    "verified_month_lists": [
+      "funding_source_months_v1_10.json",
+      "funding_source_months_v1_11_b1.json"
+    ]
+  },
+  "files": {
+    "funding_month_inventory_v1_11.csv": {
+      "size_bytes": 771000,
+      "sha256": "038d59cd74b28859c482aeda1bf7f378ac44728054fdfd134d8647dab2b08e21"
+    },
+    "build_inventory_v1_11.py": {
+      "size_bytes": 33637,
+      "sha256": "723da5e03ac7727494a92b337dca7147d56d3c2bfe2c7d0ebbf710fe23c4145f"
+    }
+  },
+  "rule": "Offline inventory only. No zero-fill, no interpolation, no symbol/period expansion, no candle refetch, no strategy run, no ZIP body download, no push."
+}

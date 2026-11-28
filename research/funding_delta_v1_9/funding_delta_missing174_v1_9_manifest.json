@@ -1,0 +1,33 @@
+{
+  "research_id": "BACKTEST-READINESS-01",
+  "version": "v1.9-funding-delta-missing174",
+  "execution_start_utc": "2026-11-27T22:30:52Z",
+  "execution_end_utc": "2026-11-27T22:31:04Z",
+  "target_keys_total": 174,
+  "distinct_symbols": 65,
+  "counts": {
+    "recovered_exact": 170,
+    "recovered_snapped": 4,
+    "not_scheduled_settlement": 0,
+    "unresolved": 0
+  },
+  "conflicts": 0,
+  "official_sources_used": [
+    "https://static.okx.com/cdn/okex/traderecords/swaprates/monthly/{YYYYMM}/{INST_ID}-fundingrates-{YYYY}-{MM}.zip",
+    "https://www.okx.com/api/v5/public/funding-rate-history"
+  ],
+  "files": {
+    "funding_delta_missing174_v1_9.csv.gz": {
+      "bytes": 3547,
+      "sha256": "01ed8da28efa7038d03369b0b02b78f5777d3f21d95e5a95ca1e26221bb3340e",
+      "row_count": 174,
+      "csv_uncompressed_bytes": 25414,
+      "csv_uncompressed_sha256": "cec0fa6c5a4952adaf96b6cb28d994401fac0a37fef51d163f56d177c3482c3a"
+    },
+    "funding_missing174_classification_v1_9.json": {
+      "bytes": 95287,
+      "sha256": "bd697c0be93e42a43a093548a464cba12d1585665fcdafcbae4c0a130899a959"
+    }
+  },
+  "additive_overlay_rule": "Preserve original frozen 829,157-row DB and v1.7 6,748-row delta untouched; check key overlap/conflict first, then overlay these recovered rows."
+}

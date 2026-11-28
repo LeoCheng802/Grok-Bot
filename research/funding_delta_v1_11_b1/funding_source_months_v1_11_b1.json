@@ -1,0 +1,67 @@
+[
+  {
+    "inst_id": "ARKM-USDT-SWAP",
+    "month_cst": "2026-01",
+    "url": "https://static.okx.com/cdn/okex/traderecords/swaprates/monthly/202601/ARKM-USDT-SWAP-fundingrates-2026-01.zip",
+    "http": 200,
+    "fetched_utc": "2026-11-27T22:58:55Z",
+    "group": "v1_11_new12",
+    "zip_bytes": 1217,
+    "zip_sha256": "f4d86d0c1a2b0ac232c1dd0ce302a67e5c8676c4f79be2842f0f9cf6295e4e0e",
+    "rows": 93,
+    "min_ts_utc": "2025-12-31T16:00:00Z",
+    "max_ts_utc": "2026-01-31T08:00:00Z"
+  },
+  {
+    "inst_id": "AT-USDT-SWAP",
+    "month_cst": "2026-10",
+    "url": "https://static.okx.com/cdn/okex/traderecords/swaprates/monthly/202610/AT-USDT-SWAP-fundingrates-2026-10.zip",
+    "http": 200,
+    "fetched_utc": "2026-11-27T22:58:55Z",
+    "group": "v1_11_new12",
+    "zip_bytes": 970,
+    "zip_sha256": "75b3681ae5c2749449b76f372e078ca428bbde0d586b60c872c75858f8890712",
+    "rows": 186,
+    "min_ts_utc": "2026-09-30T16:00:00Z",
+    "max_ts_utc": "2026-10-31T12:00:00Z"
+  },
+  {
+    "inst_id": "BERA-USDT-SWAP",
+    "month_cst": "2026-05",
+    "url": "https://static.okx.com/cdn/okex/traderecords/swaprates/monthly/202605/BERA-USDT-SWAP-fundingrates-2026-05.zip",
+    "http": 200,
+    "fetched_utc": "2026-11-27T22:58:56Z",
+    "group": "v1_11_new12",
+    "zip_bytes": 1788,
+    "zip_sha256": "347c7e965fde497f9128a95d9a8643f861a771c5e9b0ffae6d28056abd49c5bc",
+    "rows": 186,
+    "min_ts_utc": "2026-04-30T16:00:00Z",
+    "max_ts_utc": "2026-05-31T12:00:00Z"
+  },
+  {
+    "inst_id": "GALA-USDT-SWAP",
+    "month_cst": "2026-04",
+    "url": "https://static.okx.com/cdn/okex/traderecords/swaprates/monthly/202604/GALA-USDT-SWAP-fundingrates-2026-04.zip",
+    "http": 200,
+    "fetched_utc": "2026-11-27T22:58:56Z",
+    "group": "v1_11_new12",
+    "zip_bytes": 1058,
+    "zip_sha256": "45926149ee97f5451d1d097bfdbf66b16ea9fae6032dcf00b066935fa530f30b",
+    "rows": 90,
+    "min_ts_utc": "2026-03-31T16:00:00Z",
+    "max_ts_utc": "2026-04-30T08:00:00Z"
+  },
+  {
+    "inst_id": "POPCAT-USDT-SWAP",
+    "month_cst": "2026-04",
+    "url": "https://static.okx.com/cdn/okex/traderecords/swaprates/monthly/202604/POPCAT-USDT-SWAP-fundingrates-2026-04.zip",
+    "http": 200,
+    "fetched_utc": "2026-11-27T22:58:56Z",
+    "group": "v1_11_new12",
+    "zip_bytes": 883,
+    "zip_sha256": "f64393be76baac8c60250ae54ff9d92861afcb0ec9d7d6a69f3087c611a21c4b",
+    "rows": 180,
+    "min_ts_utc": "2026-03-31T16:00:00Z",
+    "max_ts_utc": "2026-04-30T12:00:00Z"
+  }
+]

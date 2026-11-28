@@ -1,0 +1,11 @@
+{
+  "evidence_form": "parsed_json",
+  "raw_bytes_saved": false,
+  "stored_rest_location": "../funding_delta_v1_11_b2/rest_2026_11/",
+  "no_refetch": true,
+  "response_sha256": {
+    "fetch_evidence_log": "At request time, fetch_evidence_v1_11_b2.jsonl hashed the raw HTTP body; the body was then parsed and only the parsed object was saved. Raw HTTP bytes were discarded and were not retained.",
+    "stored_and_reused_pages": "SHA-256 of json.dumps(parsed_object, separators=(',', ':')).encode() — parsed/re-serialized JSON, not original raw HTTP bytes.",
+    "coincidence": "When the official body is already compact JSON, the two SHAs may match (as with RVN-USDT-SWAP 2026-11 code 51001, 97 bytes, sha256 230e2c076484f09587d279fd86ac17dce541f4acec83ffd9d40e60daf729f491)."
+  }
+}

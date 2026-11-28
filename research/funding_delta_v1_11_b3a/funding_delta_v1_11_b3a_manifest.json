@@ -1,0 +1,231 @@
+{
+  "research_id": "BACKTEST-READINESS-01",
+  "version": "v1.11-batch3a",
+  "batch": "v1.11-b3a",
+  "slice": {
+    "universe": "inventory r2 class=pending_check excluding RVN-USDT-SWAP 2026-11",
+    "universe_count": 5882,
+    "sort": [
+      "inst_id",
+      "month_cst"
+    ],
+    "n_slices": 3,
+    "sizes": [
+      1961,
+      1961,
+      1960
+    ],
+    "method": "base, rem = divmod(universe_count, 3); the first rem slices get base+1, the rest get base",
+    "slices": [
+      {
+        "slice": 1,
+        "index_range": [
+          0,
+          1961
+        ],
+        "count": 1961,
+        "first": {
+          "inst_id": "0G-USDT-SWAP",
+          "month_cst": "2025-12"
+        },
+        "last": {
+          "inst_id": "ETHFI-USDT-SWAP",
+          "month_cst": "2026-06"
+        }
+      },
+      {
+        "slice": 2,
+        "index_range": [
+          1961,
+          3922
+        ],
+        "count": 1961,
+        "first": {
+          "inst_id": "ETHFI-USDT-SWAP",
+          "month_cst": "2026-07"
+        },
+        "last": {
+          "inst_id": "PENDLE-USDT-SWAP",
+          "month_cst": "2026-01"
+        }
+      },
+      {
+        "slice": 3,
+        "index_range": [
+          3922,
+          5882
+        ],
+        "count": 1960,
+        "first": {
+          "inst_id": "PENDLE-USDT-SWAP",
+          "month_cst": "2026-02"
+        },
+        "last": {
+          "inst_id": "ZRX-USDT-SWAP",
+          "month_cst": "2026-08"
+        }
+      }
+    ],
+    "this_batch": 1,
+    "this_batch_index_range": [
+      0,
+      1961
+    ],
+    "this_batch_count": 1961,
+    "this_batch_first": {
+      "inst_id": "0G-USDT-SWAP",
+      "month_cst": "2025-12"
+    },
+    "this_batch_last": {
+      "inst_id": "ETHFI-USDT-SWAP",
+      "month_cst": "2026-06"
+    }
+  },
+  "start_utc": "2026-11-28T00:06:36Z",
+  "end_utc": "2026-11-28T00:18:03Z",
+  "complete_definition": {
+    "true": "Passed per this batch's source and comparison scope only: an official monthly ZIP was obtained and all of its finite-numeric official keys were key-compared against existing settlements. This is not a full-period or cross-frequency verification.",
+    "false": "Known incomplete in this batch: the official monthly ZIP was obtained but at least one official rate was empty, None, or non-finite (flagged official_rate_null or official_rate_nonfinite).",
+    "blank": "Unknown. Only true means complete (within the limited scope above).",
+    "note": "Self-run scans and tests in this batch are team execution evidence, not ChatGPT runtime certification."
+  },
+  "fetch": {
+    "pairs_in_slice": 1961,
+    "fetched": 1961,
+    "http_200": 1961,
+    "http_404": 0,
+    "http_other": {},
+    "skipped_already_verified": 0,
+    "zips_saved": 1961,
+    "reused_from_this_batch": 0
+  },
+  "official_rows_numeric": 232095,
+  "official_unique_keys": 232095,
+  "already_matched_existing": 231177,
+  "new_rows": 918,
+  "new_rows_grid": {
+    "8h": 469,
+    "non_8h": 449
+  },
+  "conflicts": 0,
+  "conflicts_by_type": {},
+  "conflicts_by_existing_source": {},
+  "intra_official_dups": 0,
+  "flagged": {
+    "total": 0,
+    "by_reject_type": {
+      "literal_none": 0,
+      "empty": 0,
+      "nan": 0,
+      "inf": 0,
+      "neg_inf": 0,
+      "non_numeric": 0
+    },
+    "by_flag": {
+      "official_rate_null": 0,
+      "official_rate_nonfinite": 0
+    }
+  },
+  "inventory_r3": {
+    "class_counts": {
+      "covered_verified": 3325,
+      "covered_verified_rest": 285,
+      "official_unavailable": 4,
+      "pending_check": 3922
+    },
+    "complete_counts": {
+      "true": 3608,
+      "false": 2,
+      "blank": 3926
+    },
+    "class_sub_reason_complete": {
+      "covered_verified|complete=true": 3323,
+      "covered_verified_rest|complete=true": 285,
+      "official_unavailable|404_reason_unknown": 4,
+      "pending_check": 3921,
+      "covered_verified|official_rate_null|complete=false": 2,
+      "pending_check|rest_51001_instrument_not_listed": 1
+    },
+    "pending_check": 3922
+  },
+  "inputs_sha256": {
+    "funding_archive_l1_isolated.sqlite": {
+      "bytes": 74924032,
+      "sha256": "23ebdab561d5fa48ae34394b451d55b97d3e09af4e8a8809eef93422c40783cc"
+    },
+    "funding_delta_missing16_v1_7.csv.gz": {
+      "bytes": 91491,
+      "sha256": "34743db093b5673233693b0bfd4fa020abeb3928f7d4c0c29603c4d4c01311be"
+    },
+    "funding_delta_missing174_v1_9.csv.gz": {
+      "bytes": 3547,
+      "sha256": "01ed8da28efa7038d03369b0b02b78f5777d3f21d95e5a95ca1e26221bb3340e"
+    },
+    "funding_delta_full75plus_v1_10.csv.gz": {
+      "bytes": 158227,
+      "sha256": "4fe33c0efe78f1398b02cb231760d3817b13f985de013e51df9c273dec7c999b"
+    },
+    "funding_delta_5sym_v1_11_b1.csv.gz": {
+      "bytes": 8286,
+      "sha256": "2ab89d43188e38c0b34ea04513d9c199eee2fa7fc5bfac891993db2006d48bbb"
+    },
+    "funding_delta_v1_11_b2_r1.csv.gz": {
+      "bytes": 3035583,
+      "sha256": "ac3890c5de16b7254ef3b51afbb9af7826467a3c14fe193ce3a04ddc583d2e86"
+    },
+    "funding_month_inventory_v1_11_r2.csv": {
+      "bytes": 765777,
+      "sha256": "1634a4d449ae7b239920be6ff0a8fa72ba305ee8c53ad4d4e09cfa56f229b59e"
+    }
+  },
+  "files": {
+    "funding_delta_v1_11_b3a.csv.gz": {
+      "bytes": 10941,
+      "sha256": "0950a0d28966560a84b49a896e418f86ea2af8e866f61f6a15a9d321568cbaab",
+      "rows": 918,
+      "csv_bytes": 193163,
+      "csv_sha256": "0b333493458e68bcf044b79e34d32118e22a02a3ee6ee6609938886c3454713d"
+    },
+    "funding_null_rate_rows_v1_11_b3a.csv": {
+      "bytes": 195,
+      "sha256": "2d9b5d2900837efbc42086e8f0f37a909d34658b5aa2cc27d8fe880b10657021",
+      "rows": 0
+    },
+    "funding_conflicts_v1_11_b3a.json": {
+      "bytes": 51,
+      "sha256": "246073a7e1014e7a9d819eff7e6d3f131ba24c5e59229fc28e4b0d4064f425d2"
+    },
+    "funding_source_months_v1_11_b3a.json": {
+      "bytes": 1400971,
+      "sha256": "0f706f6c56d3f49c18e10dd759eea21e4f0fd6298cf135926b3e826e7d2ac0b3",
+      "months": 1961
+    },
+    "funding_month_inventory_v1_11_r3.csv": {
+      "bytes": 779504,
+      "sha256": "7755339784ddfdfd49d339427f97a90f92943e61cfde1192b0b434a140505d1f",
+      "rows": 7536
+    },
+    "fetch_evidence_v1_11_b3a.jsonl": {
+      "bytes": 699212,
+      "sha256": "77e37050c1d8cc4330c102fa3f7cf2d2ad2afbb91f61ddb41431bf7798b353bd"
+    },
+    "build_delta_v1_11_b3a_public.py": {
+      "bytes": 37794,
+      "sha256": "a5dacbc4cc2179948506baca1bae6c1c5f442170126c6f226b633ae4de9d77a4"
+    },
+    "CHANGELOG.md": {
+      "bytes": 3247,
+      "sha256": "3a5c87a09dfa53b5857b330142c7c615d33d815073092a0d4aa70a1023261ccd"
+    }
+  },
+  "rule": "v1.11-b3a slice 1 of 3: official monthly ZIPs for 1,961 pending_check months, key-compared against frozen + v1.7/v1.9/v1.10/v1.11_b1/v1.11_b2_r1. Already-verified ZIPs were not refetched. The v1.11-b2 r1 delta (198,354 rows) was not rebuilt. Non-finite/non-numeric official rates are flagged, never zero-filled. Conflicts never overwrite. 404s stay official_unavailable / 404_reason_unknown. complete=true is passed per this batch's source and comparison scope only, not full-period or cross-frequency verified; blank=unknown. Team execution evidence, not ChatGPT runtime certification. FIB-4H-LONG-V3 remains NO-GO; live_approved is false.",
+  "remaining": {
+    "pending_check": 3922,
+    "includes_rvn_2026_11": true,
+    "remaining_slices": [
+      2,
+      3
+    ],
+    "prior_404_reason_unknown": 4
+  }
+}
