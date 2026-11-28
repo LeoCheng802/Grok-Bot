@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""BACKTEST-READINESS-01 v1.20 | COMBO_L02_OPT01_SHARED_50K_10X offline runner.
+"""BACKTEST-READINESS-01 v1.21 | COMBO_L02_OPT01_SHARED_50K_10X offline runner.
 
 One shared account, NOT two independent 50,000 USDT books added together:
   * leg 0 (long)  = LONG_STRUCT_02_V1_0_TEMPORAL_SPLIT  (run_long_struct_bounded_backtest.py, unchanged rules/defaults)
@@ -70,7 +70,7 @@ from pathlib import Path
 
 import numpy as np
 
-RUNNER_VERSION = "v1.20"
+RUNNER_VERSION = "v1.21"
 TARGET_BAND_CLOSED_PER_MONTH = (100, 200)
 STUDY_ID = "BACKTEST-READINESS-01"
 COMBO_ID = "COMBO_L02_OPT01_SHARED_50K_10X"
@@ -317,6 +317,77 @@ def load_uncomputable_windows(path: Path, parse_utc_ms):
 # combo engine: patched copy of the registered b6 engine (the registered files are not modified)
 # ---------------------------------------------------------------------------------------------
 
+BOOKING_TIMING_DIFF = (
+    "model books realised net (fee + booked funding) at the exit bar; "
+    "live books realised PnL at the event time — a timing difference independent of the day-boundary and global-control flags"
+)
+MAIN_COMPARISON_CONTROL_FLAGS = (
+    ("leg_daily_loss_day", "utc"),
+    ("cross_leg_order", "rank_interleave"),
+    ("leg_priority", "long_first"),
+    ("global_max_slots", 0),
+    ("global_daily_loss_u", 0.0),
+    ("same_inst_policy", "off"),
+)
+MAIN_COMPARISON_CONTROL_FLAGS_NOTE = (
+    "main_comparison_control_flags_match / main_comparison_control_flags_mismatches report ONLY whether these six "
+    "CONTROL FLAGS equal the ChatGPT v1.20 decided main-comparison set (Issue #1 #7235223075 / #7235944722): "
+    "utc, rank_interleave, long_first, global-max-slots 0, global-daily-loss-u 0, same-inst-policy off. "
+    "They do NOT mean the strategy, data, or costs are aligned. Actual candidate mapping, 0.0005 slippage, "
+    "and the long 12-slot mapping are still wired by the ChatGPT original research. This delivery still uses "
+    "the current adapters (slip 0.0003, long max_slots 24) and must not be described as a same-basis run."
+)
+PREREG_V1_0_FLAGS = (
+    ("leg_daily_loss_day", "utc"),
+    ("cross_leg_order", "direction_block"),
+    ("leg_priority", "long_first"),
+    ("global_max_slots", 12),
+    ("global_daily_loss_u", 600.0),
+    ("same_inst_policy", "block_any"),
+)
+
+
+def _flag_value(args, name):
+    return getattr(args, name)
+
+
+def _flag_equal(name, actual, expected):
+    if name == "global_daily_loss_u":
+        return float(actual) == float(expected)
+    if name == "global_max_slots":
+        return int(actual) == int(expected)
+    return actual == expected
+
+
+def main_comparison_control_flags(args):
+    """Flag-only check against the ChatGPT v1.20 main-comparison control set; not a strategy/data/cost alignment claim."""
+    mismatches = []
+    for name, expected in MAIN_COMPARISON_CONTROL_FLAGS:
+        actual = _flag_value(args, name)
+        if not _flag_equal(name, actual, expected):
+            mismatches.append({"flag": name, "expected": expected, "this_run": actual})
+    return {
+        "main_comparison_control_flags_match": not mismatches,
+        "main_comparison_control_flags_mismatches": mismatches,
+        "main_comparison_control_flags_note": MAIN_COMPARISON_CONTROL_FLAGS_NOTE,
+    }
+
+
+def list_prereg_deviations(args):
+    """Every control flag that differs from frozen PREREG v1.0, based on the actual flags of this run."""
+    out = []
+    for name, expected in PREREG_V1_0_FLAGS:
+        actual = _flag_value(args, name)
+        if not _flag_equal(name, actual, expected):
+            out.append({
+                "item": name,
+                "prereg_v1_0": expected,
+                "this_run": actual,
+                "status": "DEVIATION_FROM_PREREG_V1_0",
+            })
+    return out
+
+
 def describe_controls(args):
     """Texts for limitations / model-vs-live diff, derived from the ACTUAL parameters of this run (v1.20 item 4)."""
     if args.leg_daily_loss_day == "utc":
@@ -352,6 +423,7 @@ def describe_controls(args):
             + (" (block_any is stricter than the live ledger)" if args.same_inst_policy == "block_any" else ""),
             "same-bar cross-leg order: --cross-leg-order " + args.cross_leg_order + " (equal rank -> --leg-priority " + args.leg_priority
             + "); each leg's own frozen sort key kept",
+            BOOKING_TIMING_DIFF,
         ],
     }
 
@@ -605,7 +677,7 @@ def _leg_stats(trades):
 
 def parse_args(argv=None):
     here = Path(__file__).resolve().parent
-    p = argparse.ArgumentParser(description="BACKTEST-READINESS-01 v1.19 shared 50,000 USDT / 10x combo (LONG_STRUCT_02 + RETEST24 OPT-01) offline runner")
+    p = argparse.ArgumentParser(description="BACKTEST-READINESS-01 v1.21 shared 50,000 USDT / 10x combo (LONG_STRUCT_02 + RETEST24 OPT-01) offline runner")
     p.add_argument("--manifest", required=True, help="REPRO_MANIFEST.json (registers RETEST24 script, shared_risk.py, engine files)")
     p.add_argument("--retest24-script", required=True)
     p.add_argument("--shared-risk", required=True)
@@ -717,8 +789,8 @@ def _main_guarded(args, t0, started_utc, guard, long_path, short_path, long_byte
             "global_daily_loss_day": "Asia/Taipei (UTC+8) calendar day, realised net incl. fee and booked funding",
             "same_inst_policy": args.same_inst_policy, "leg_priority": args.leg_priority,
             "cross_leg_order": args.cross_leg_order, "leg_daily_loss_day": args.leg_daily_loss_day,
-            "prereg_deviations": ([{"item": "per-leg daily loss day boundary", "prereg_v1_0": "UTC day", "this_run": "Asia/Taipei day",
-                                    "status": "SEPARATE_SCENARIO_NOT_MAIN_COMPARISON (ChatGPT v1.20 #7235223075: main comparison uses utc)"}] if args.leg_daily_loss_day == "taipei" else []),
+            "prereg_deviations": list_prereg_deviations(args),
+            **main_comparison_control_flags(args),
             "r2_naming": R2_ARM_NOTE,
             "adapter_verification": adapter_verification,
             "funding_inventory_supplied": bool(args.funding_inventory),

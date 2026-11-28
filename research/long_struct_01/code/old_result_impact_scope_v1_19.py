@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""BACKTEST-READINESS-01 v1.20 | old-result impact scope (static, no replay).
+"""BACKTEST-READINESS-01 v1.21 | old-result impact scope (static, no replay).
 
-(File name kept as old_result_impact_scope_v1_19.py on purpose: v1.20 updates it in place; the tool still supersedes
+(File name kept as old_result_impact_scope_v1_19.py on purpose: v1.20 and v1.21 update it in place; the tool still supersedes
 old_result_impact_scope_v1_17.py.)
 Supersedes old_result_impact_scope_v1_17.py (kept unchanged for audit; do not use for new assessments).
 Answers "does this newly delivered funding data touch what an OLD result actually held?" without
@@ -16,9 +16,12 @@ Verdict per scenario:
   AFFECTED_PATH_MAY_CHANGE      clean (non-conflicting) delta keys fall inside held intervals or cover old
                                 miss_8h events (equity / margin / daily-loss / liquidation paths can change)
   NOT_AFFECTED_BY_THESE_DELTAS  complete, schema-valid, count-verified evidence and zero intersection
-  UNDETERMINABLE                evidence insufficient: closed or open_at_end list missing, schema invalid,
-                                counts not verifiable or not matching, position outside the cutoff, or a
-                                CONFLICTING delta key (two different rates for one key) touches a held interval
+  UNDETERMINABLE                evidence insufficient or schema invalid (closed or open_at_end list missing,
+                                schema invalid, counts not verifiable or not matching, position outside the
+                                cutoff, invalid / mismatched embedded cutoff, non-list missing_funding_events_all,
+                                or a CONFLICTING delta key touching a held interval). Verdict priority (v1.21):
+                                any undeterminable reason (including schema) wins over AFFECTED_PATH_MAY_CHANGE;
+                                hit counts (hit8 / hitn / covered) are still recorded.
 v1.19 fixes (ChatGPT v1.19, Issue #1 #7231413139, items 1-2):
   * --out AND --out + ".tmp" must both differ from every input (resolve() and os.path.samefile);
     an existing --out, an existing .tmp or a symlink at either path is refused before any write;
@@ -30,6 +33,10 @@ v1.20 (ChatGPT v1.20, Issue #1 #7235223075): an invalid / non-string / empty emb
   non-list missing_funding_events_all, no longer aborts the whole assessment: the affected scenarios are reported
   UNDETERMINABLE (reasons details_embedded_cutoff_invalid / missing_funding_events_not_a_list). The CLI --cutoff-utc
   stays strict (explicit refusal with a message).
+v1.21 (ChatGPT v1.21, Issue #1 #7235906231): final verdict priority: any undeterminable reason (schema-invalid
+  embedded cutoff, non-list missing_funding_events_all, and every other undet reason) is applied FIRST; a clean
+  delta hit (held interval or covered miss event) must not upgrade the verdict to AFFECTED_PATH_MAY_CHANGE.
+  hit8 / hitn / covered are still recorded so the intersection is visible.
   * open_at_end bound to the run cutoff; schema and record-count integrity checked; missing evidence ->
     UNDETERMINABLE; identical basenames never overwrite each other (inputs / assessments are lists keyed
     by argument index); conflicting delta keys are excluded from the clean set and never reported clean.
@@ -46,7 +53,7 @@ import os
 from datetime import datetime, timezone
 from pathlib import Path
 
-RUNNER_VERSION = "v1.20"
+RUNNER_VERSION = "v1.21"
 TOOL_ID = "old_result_impact_scope_v1_19"
 
 
@@ -288,12 +295,11 @@ def assess(details_obj, clean, conflicts, cutoff):
                 conflict_cover += 1
         if conflict_hits or conflict_cover:
             undet.append("conflicting_delta_values_touch_held_interval_or_miss_event")
-        if conflict_hits or conflict_cover:
+        # v1.21: schema / evidence problems (undet) take priority over a clean-delta hit.
+        if undet:
             verdict = "UNDETERMINABLE"
         elif hit8 or hitn or covered:
             verdict = "AFFECTED_PATH_MAY_CHANGE"
-        elif undet:
-            verdict = "UNDETERMINABLE"
         else:
             verdict = "NOT_AFFECTED_BY_THESE_DELTAS"
         res[name] = {"verdict": verdict, "positions_checked": len(ivs), "positions_touched": touched,

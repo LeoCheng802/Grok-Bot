@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Synthetic tests for old_result_impact_scope_v1_19.py (v1.20 in-place update; no market data, no replay, temp dirs only).
+"""Synthetic tests for old_result_impact_scope_v1_19.py (v1.21 in-place update; no market data, no replay, temp dirs only).
 
 Minimal pure-synthetic boundary / collision cases for ChatGPT v1.19 items 1-2 (Issue #1 #7231413139).
 IMPACT_TOOL_PATH may point at another tool version (used to record old-fails / new-passes evidence);
@@ -273,7 +273,32 @@ def test_invalid_embedded_cutoff_is_undeterminable():
         _run([detp], dp, out)
         r = _scen(json.loads(out.read_text(encoding="utf-8")))["s"]
         _check(r["verdict"] == "UNDETERMINABLE" and "cutoff_mismatch_with_details_embedded_cutoff" in r["undeterminable_reasons"], "mismatch reason kept")
-    print("EMBEDDED CUTOFF: invalid / non-string / empty -> UNDETERMINABLE, no abort; valid and mismatch semantics kept")
+    # v1.21: schema-invalid cutoff PLUS a clean-delta hit must stay UNDETERMINABLE; counts kept
+    held = [{"inst_id": "AAA-USDT-SWAP", "ets_ms": T0, "xts_ms": T0 + H8}]
+    with tempfile.TemporaryDirectory() as td:
+        td = Path(td)
+        dp = _delta(td, ["AAA-USDT-SWAP,%d,0.0001,true" % (T0 + H8)])
+        det = {"cutoff_utc": "not-a-date", "scenarios": {
+            "held_hit": _sc(held, []),
+            "miss_hit": _sc([], [], missing_funding_events_all=[{"inst_id": "AAA-USDT-SWAP", "ts_ms": T0 + H8}]),
+        }}
+        detp = _det(td, det)
+        out = td / "impact.json"
+        try:
+            rc = _run([detp], dp, out)
+        except Exception as exc:
+            raise AssertionError("SYNTHETIC_TEST_FAIL: invalid cutoff + hit aborted: %s: %s" % (type(exc).__name__, exc))
+        a = _scen(json.loads(out.read_text(encoding="utf-8")))
+        h, m = a["held_hit"], a["miss_hit"]
+        _check(h["verdict"] == "UNDETERMINABLE" and "details_embedded_cutoff_invalid" in h["undeterminable_reasons"],
+               "held-interval hit must not override invalid-cutoff UNDETERMINABLE: %r" % h)
+        _check(h.get("clean_delta_keys_in_held_8h") == 1 or h.get("delta_keys_in_held_8h") == 1,
+               "held-hit count must be kept: %r" % h)
+        _check(m["verdict"] == "UNDETERMINABLE" and "details_embedded_cutoff_invalid" in m["undeterminable_reasons"],
+               "miss-event hit must not override invalid-cutoff UNDETERMINABLE: %r" % m)
+        _check(m.get("old_miss_8h_now_covered_clean") == 1 or m.get("old_miss_8h_now_covered") == 1,
+               "miss-cover count must be kept: %r" % m)
+    print("EMBEDDED CUTOFF: invalid / non-string / empty -> UNDETERMINABLE, no abort; valid and mismatch semantics kept; held-hit and miss-hit stay UNDETERMINABLE with counts")
 
 
 def test_missing_funding_events_not_list_is_undeterminable():
@@ -295,7 +320,32 @@ def test_missing_funding_events_not_list_is_undeterminable():
         for k in ("int", "dict", "str", "true"):
             _check(a[k]["verdict"] == "UNDETERMINABLE" and "missing_funding_events_not_a_list" in a[k]["undeterminable_reasons"], "%s must be UNDETERMINABLE: %r" % (k, a[k]))
         _check(a["ok_list"]["verdict"] == "NOT_AFFECTED_BY_THESE_DELTAS", "valid empty list stays clean")
-    print("MISSING EVENTS: non-list missing_funding_events_all -> UNDETERMINABLE per scenario, no abort")
+    # v1.21: non-list field PLUS a clean-delta hit (held interval, or a miss event that would be a cover if it were a list)
+    held = [{"inst_id": "AAA-USDT-SWAP", "ets_ms": T0, "xts_ms": T0 + H8}]
+    with tempfile.TemporaryDirectory() as td:
+        td = Path(td)
+        dp = _delta(td, ["AAA-USDT-SWAP,%d,0.0001,true" % (T0 + H8)])
+        scen = {
+            "held_hit": _sc(held, [], missing_funding_events_all=5),
+            "miss_hit": _sc([], [], missing_funding_events_all={"inst_id": "AAA-USDT-SWAP", "ts_ms": T0 + H8}),
+            "ok_cover": _sc([], [], missing_funding_events_all=[{"inst_id": "AAA-USDT-SWAP", "ts_ms": T0 + H8}]),
+        }
+        detp = _det(td, {"scenarios": scen})
+        out = td / "impact.json"
+        try:
+            rc = _run([detp], dp, out)
+        except Exception as exc:
+            raise AssertionError("SYNTHETIC_TEST_FAIL: non-list + hit aborted: %s: %s" % (type(exc).__name__, exc))
+        a = _scen(json.loads(out.read_text(encoding="utf-8")))
+        h, m = a["held_hit"], a["miss_hit"]
+        _check(h["verdict"] == "UNDETERMINABLE" and "missing_funding_events_not_a_list" in h["undeterminable_reasons"],
+               "held-interval hit must not override non-list UNDETERMINABLE: %r" % h)
+        _check(h.get("clean_delta_keys_in_held_8h") == 1 or h.get("delta_keys_in_held_8h") == 1,
+               "held-hit count must be kept: %r" % h)
+        _check(m["verdict"] == "UNDETERMINABLE" and "missing_funding_events_not_a_list" in m["undeterminable_reasons"],
+               "a dict miss field that would have been a cover if it were a one-element list must stay UNDETERMINABLE: %r" % m)
+        _check(a["ok_cover"]["verdict"] == "AFFECTED_PATH_MAY_CHANGE", "valid list cover stays AFFECTED: %r" % a["ok_cover"])
+    print("MISSING EVENTS: non-list missing_funding_events_all -> UNDETERMINABLE per scenario, no abort; held-hit and would-be miss-hit stay UNDETERMINABLE with counts")
 
 
 def test_write_safety_wording():

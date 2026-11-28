@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""100% synthetic main() tests for run_combo_l02_opt01_shared_backtest.py (BACKTEST-READINESS-01 v1.20).
+"""100% synthetic main() tests for run_combo_l02_opt01_shared_backtest.py (BACKTEST-READINESS-01 v1.21).
 
 Zero real market data, zero network, zero live/demo trading, no historical or performance backtest.
 The REAL registered engine files (engine/*.py) are copied into a temp dir and registered in a synthetic
@@ -15,6 +15,9 @@ uncomputable windows need price evidence (item 3), same-scale cross-leg rank int
 controls listed/switchable (item 4), OPT01_SIG_R2_SIZING_100U rename (item 5), adapter size/SHA verified and
 network blocked BEFORE adapter load (item 6), per-leg daily-loss day boundary taipei default / utc option
 (item 7), patched engine source written and its SHA-256 recorded (item 8).
+v1.21 (ChatGPT v1.21, Issue #1 #7235906231 / #7235944722) adds: booking-timing text always present in the model-vs-live
+diff; main_comparison_control_flags_match / mismatches (six control flags only, not a strategy/data/cost claim);
+prereg_deviations lists every flag that differs from frozen PREREG v1.0.
 v1.20 (ChatGPT v1.20, Issue #1 #7235223075 and #7235255702) adds: limitations / model-vs-live diff text derived from the
 actual --leg-daily-loss-day and global-control parameters (no hard-coded "600U UTC-day"), the decided main-comparison
 parameter set (utc legs + rank_interleave + global controls off) running end-to-end, and combined long+short monthly
@@ -427,7 +430,7 @@ def test_leg_daily_loss_day_boundary():
         rc, res, det = run(env, ["--global-daily-loss-u", "100000", "--leg-daily-loss-day", "utc"])
         late = [o for o in placed(det, sc, 1) if o["inst"] == SYMS[5]]
         _check(len(late) == 1, "utc (PREREG v1.0) day: new UTC day -> next short placed")
-        _check(res["scope"]["prereg_deviations"] == [], "no deviation in utc mode")
+        _check(all(d.get("item") != "leg_daily_loss_day" for d in res["scope"]["prereg_deviations"]), "utc mode must not list the per-leg day boundary as a PREREG deviation: %r" % res["scope"]["prereg_deviations"])
     print("LEG DAY: taipei default blocks across 00:00Z; utc option reproduces PREREG v1.0")
 
 
@@ -463,7 +466,12 @@ def test_limitations_text_follows_parameters():
     _check("OFF in this run" in jd and "共同名額限制：關閉" in jl and "同幣跨腿規則：關閉" in jl, "other controls stated off")
     res = one(["--global-daily-loss-u", "250"])
     _check("250U" in "\n".join(_texts(res)[0]), "custom global limit value echoed")
-    print("TEXT: limitations / diff follow --leg-daily-loss-day and global control parameters")
+    needle = getattr(mod, "BOOKING_TIMING_DIFF", "model books realised net (fee + booked funding) at the exit bar")
+    for extra, label in (["--leg-daily-loss-day", "utc"], "utc"), (["--leg-daily-loss-day", "taipei"], "taipei"), (
+            ["--leg-daily-loss-day", "utc", "--global-daily-loss-u", "0", "--global-max-slots", "0", "--same-inst-policy", "off"], "main-set"):
+        jd = "\n".join(_texts(one(extra))[1])
+        _check(needle in jd, "booking-timing diff text must be present for %s: %r" % (label, jd))
+    print("TEXT: limitations / diff follow --leg-daily-loss-day and global control parameters; booking-timing text always present")
 
 
 def test_main_comparison_parameter_set():
@@ -480,7 +488,8 @@ def test_main_comparison_parameter_set():
         det = json.loads((env["out"] / mod.DETAILS_NAME).read_text(encoding="utf-8"))
         _check(rc == 0 and set(res["arms"]) == {sc1, sc2}, "main-comparison parameter set runs end-to-end, 2 arms")
         sc = res["scope"]
-        _check(sc["leg_daily_loss_day"] == "utc" and sc["cross_leg_order"] == "rank_interleave" and sc["prereg_deviations"] == [], "utc legs, no PREREG deviation")
+        _check(sc["leg_daily_loss_day"] == "utc" and sc["cross_leg_order"] == "rank_interleave", "utc legs + rank_interleave")
+        _check(sc.get("main_comparison_control_flags_match") is True and sc.get("main_comparison_control_flags_mismatches") == [], "six control flags match the decided main-comparison set: %r" % sc.get("main_comparison_control_flags_mismatches"))
         rr = sc["research_added_risk_controls"]
         _check(not rr["global_max_slots"]["enabled"] and not rr["global_daily_loss_u"]["enabled"] and not rr["same_inst_policy"]["enabled"], "research-added controls all off")
         for name in (sc1, sc2):
@@ -494,7 +503,7 @@ def test_main_comparison_parameter_set():
                    "combined monthly closed = long + short: %r" % row)
         jl = "\n".join(res["limitations"])
         _check("共同日損限制：關閉" in jl and "各腿日損日界：UTC 日" in jl and "600" not in jl, "limitations describe this exact basis")
-        _check("v1.20" in res["version"], "version")
+        _check("v1.21" in res["version"], "version")
     print("MAIN COMPARISON: utc legs + rank_interleave + global controls off runs end-to-end (2 arms)")
 
 
@@ -533,6 +542,77 @@ def test_monthly_combined_statistics():
     _check(j["long_closed_trades"] == 100 and j["short_closed_trades"] == 50, "direction contribution")
     _check(mc["summary"] == {"full_months": 2, "months_in_band": 1, "months_below_band": 1, "months_above_band": 0}, "band summary %r" % mc["summary"])
     print("MONTHLY: combined closed trades by exit UTC month, first fills, direction split, 100-200 band on full months")
+
+
+
+def _flag_names(devs):
+    return [d.get("item") or d.get("flag") for d in devs]
+
+
+def test_main_comparison_control_flags():
+    """v1.21 / #7235944722: flag-only marker; six flags; not a strategy/data/cost claim."""
+    A = SYMS[0]
+    def scope(extra):
+        with tempfile.TemporaryDirectory() as td:
+            env = make_env(Path(td), long_cands=[(S0, A, 100.0, -0.01)])
+            rc, res, det = run(env, extra)
+            return res["scope"]
+    main = ["--leg-daily-loss-day", "utc", "--cross-leg-order", "rank_interleave", "--leg-priority", "long_first",
+            "--global-max-slots", "0", "--global-daily-loss-u", "0", "--same-inst-policy", "off"]
+    sc = scope(main)
+    _check(sc["main_comparison_control_flags_match"] is True and sc["main_comparison_control_flags_mismatches"] == [],
+           "main set must match: %r" % sc.get("main_comparison_control_flags_mismatches"))
+    note = sc.get("main_comparison_control_flags_note") or ""
+    _check("CONTROL FLAGS" in note and "do NOT mean the strategy, data, or costs are aligned" in note, "note disclaims alignment: %r" % note)
+    _check("0.0005" in note and "0.0003" in note and "12-slot" in note, "note states mapping/slip/slots still with original research")
+    # program defaults (taipei, 12, 600, block_any; rank_interleave and long_first already match)
+    sc = scope([])
+    _check(sc["main_comparison_control_flags_match"] is False, "defaults must not match")
+    flags = {d["flag"] for d in sc["main_comparison_control_flags_mismatches"]}
+    _check(flags == {"leg_daily_loss_day", "global_max_slots", "global_daily_loss_u", "same_inst_policy"},
+           "default mismatches: %r" % flags)
+    # each single flag off the main set
+    singles = [
+        (["--leg-daily-loss-day", "taipei"], "leg_daily_loss_day"),
+        (["--cross-leg-order", "direction_block"], "cross_leg_order"),
+        (["--leg-priority", "short_first"], "leg_priority"),
+        (["--global-max-slots", "12"], "global_max_slots"),
+        (["--global-daily-loss-u", "600"], "global_daily_loss_u"),
+        (["--same-inst-policy", "block_any"], "same_inst_policy"),
+    ]
+    for extra, expected_flag in singles:
+        argv = list(main)
+        name = "--" + expected_flag.replace("_", "-")
+        argv[argv.index(name) + 1] = extra[-1]
+        sc = scope(argv)
+        _check(sc["main_comparison_control_flags_match"] is False, "%s must not match: %r" % (expected_flag, sc.get("main_comparison_control_flags_mismatches")))
+        flags = {d["flag"] for d in sc["main_comparison_control_flags_mismatches"]}
+        _check(flags == {expected_flag}, "only %s should mismatch, got %r" % (expected_flag, flags))
+    print("CONTROL FLAGS: main set true; defaults false; each single-flag difference false; note is flag-only")
+
+
+def test_prereg_deviations_follow_actual_flags():
+    """v1.21 / #7235944722: prereg_deviations lists every flag that differs from frozen PREREG v1.0, not only taipei."""
+    A = SYMS[0]
+    def devs(extra):
+        with tempfile.TemporaryDirectory() as td:
+            env = make_env(Path(td), long_cands=[(S0, A, 100.0, -0.01)])
+            rc, res, det = run(env, extra)
+            return res["scope"]["prereg_deviations"]
+    # closest to PREREG v1.0: utc + direction_block + long_first + 12 + 600 + block_any
+    d = devs(["--leg-daily-loss-day", "utc", "--cross-leg-order", "direction_block", "--leg-priority", "long_first",
+              "--global-max-slots", "12", "--global-daily-loss-u", "600", "--same-inst-policy", "block_any"])
+    _check(d == [], "full PREREG v1.0 flag set must list no deviations: %r" % d)
+    d = devs(["--leg-daily-loss-day", "taipei", "--cross-leg-order", "direction_block", "--leg-priority", "long_first",
+              "--global-max-slots", "12", "--global-daily-loss-u", "600", "--same-inst-policy", "block_any"])
+    _check(_flag_names(d) == ["leg_daily_loss_day"], "only the taipei day boundary: %r" % d)
+    d = devs(["--leg-daily-loss-day", "utc", "--cross-leg-order", "rank_interleave", "--leg-priority", "long_first",
+              "--global-max-slots", "0", "--global-daily-loss-u", "0", "--same-inst-policy", "off"])
+    names = set(_flag_names(d))
+    _check(names == {"cross_leg_order", "global_max_slots", "global_daily_loss_u", "same_inst_policy"},
+           "main-comparison set deviates from PREREG v1.0 on research-added / order flags, not the utc day: %r" % d)
+    _check("leg_daily_loss_day" not in names, "utc is PREREG v1.0")
+    print("PREREG DEVIATIONS: listed from actual flags; v1.0 set empty; taipei-only; main set lists the four v1.0 differences")
 
 
 def test_engine_source_sha_recorded():
@@ -604,7 +684,7 @@ def test_real_builders_smoke_and_dry_check():
         res = json.loads((env["out"] / mod.RESULT_NAME).read_text(encoding="utf-8"))
         _check(rc == 0 and set(res["arms"]) == set(mod.DEFAULT_SCENARIOS.split(",")), "4 arms")
         _check(res["sha256"]["long_adapter"] == mod.sha(REAL_LONG) and res["sha256"]["short_adapter"] == mod.sha(REAL_SHORT), "real adapters bound")
-        _check(res["version"] == "v1.20" and res["scope"]["version"] == "v1.20", "version label")
+        _check(res["version"] == "v1.21" and res["scope"]["version"] == "v1.21", "version label")
         _check(res["scope"]["adapter_verification"]["short"]["expected_source"] == "pinned_constant", "pinned adapters verified")
         rc2 = mod.main(env["argv"][:6] + ["--dry-check"])
         _check(rc2 == 0, "dry-check")
@@ -617,6 +697,7 @@ def main():
              test_cross_leg_rank_interleave, test_research_controls_switchable_and_listed, test_r2_arm_renamed,
              test_adapter_verified_before_load, test_network_blocked_before_adapter_load, test_leg_daily_loss_day_boundary,
              test_limitations_text_follows_parameters, test_main_comparison_parameter_set, test_monthly_combined_statistics,
+             test_main_comparison_control_flags, test_prereg_deviations_follow_actual_flags,
              test_engine_source_sha_recorded, test_output_exclusivity, test_real_builders_smoke_and_dry_check]
     failed = 0
     for t in tests:
