@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""100% synthetic main() tests for run_combo_l02_opt01_shared_backtest.py (BACKTEST-READINESS-01 v1.19).
+"""100% synthetic main() tests for run_combo_l02_opt01_shared_backtest.py (BACKTEST-READINESS-01 v1.20).
 
 Zero real market data, zero network, zero live/demo trading, no historical or performance backtest.
 The REAL registered engine files (engine/*.py) are copied into a temp dir and registered in a synthetic
@@ -15,6 +15,10 @@ uncomputable windows need price evidence (item 3), same-scale cross-leg rank int
 controls listed/switchable (item 4), OPT01_SIG_R2_SIZING_100U rename (item 5), adapter size/SHA verified and
 network blocked BEFORE adapter load (item 6), per-leg daily-loss day boundary taipei default / utc option
 (item 7), patched engine source written and its SHA-256 recorded (item 8).
+v1.20 (ChatGPT v1.20, Issue #1 #7235223075 and #7235255702) adds: limitations / model-vs-live diff text derived from the
+actual --leg-daily-loss-day and global-control parameters (no hard-coded "600U UTC-day"), the decided main-comparison
+parameter set (utc legs + rank_interleave + global controls off) running end-to-end, and combined long+short monthly
+closed-trade statistics by exit UTC month with first fills and per-direction contribution.
 COMBO_RUNNER_PATH may point at another runner version (old-fails / new-passes evidence); flags the runner
 under test does not know are omitted from shared fixtures so that the item's assertion, not argparse, fails.
 """
@@ -427,6 +431,110 @@ def test_leg_daily_loss_day_boundary():
     print("LEG DAY: taipei default blocks across 00:00Z; utc option reproduces PREREG v1.0")
 
 
+def _texts(res):
+    return res["limitations"], res["combo_model_vs_live_shared_risk_diff"]
+
+
+def test_limitations_text_follows_parameters():
+    """v1.20 item 4: no hard-coded '600U UTC-day'; text follows --leg-daily-loss-day and the global control settings."""
+    A = SYMS[0]
+    def one(extra):
+        with tempfile.TemporaryDirectory() as td:
+            env = make_env(Path(td), long_cands=[(S0, A, 100.0, -0.01)])
+            rc, res, det = run(env, extra)
+            return res
+    res = one(["--leg-daily-loss-day", "utc"])
+    lim, diff = _texts(res)
+    jl, jd = "\n".join(lim), "\n".join(diff)
+    _check("各腿日損日界：UTC 日" in jl and "各腿日損日界：台北日" not in jl, "utc leg-day text in limitations: %r" % lim)
+    _check("UTC day" in jd and "Taipei day (Asia/Taipei" not in jd, "utc leg-day text in diff: %r" % diff)
+    _check("共同日損限制（另加研究風控）：啟用" in jl and "600U" in jl, "global default 600U described as ON")
+    _check("600U UTC-day" not in jd and "600U UTC-day" not in jl, "no hard-coded 600U UTC-day")
+    res = one(["--leg-daily-loss-day", "taipei"])
+    lim, diff = _texts(res)
+    jl, jd = "\n".join(lim), "\n".join(diff)
+    _check("各腿日損日界：台北日" in jl and "各腿日損日界：UTC 日" not in jl, "taipei leg-day text: %r" % lim)
+    _check("per-leg daily loss day: Taipei day" in jd and "per-leg daily loss day: UTC day" not in jd, "taipei leg-day text in diff: %r" % diff)
+    res = one(["--leg-daily-loss-day", "utc", "--global-daily-loss-u", "0", "--global-max-slots", "0", "--same-inst-policy", "off"])
+    lim, diff = _texts(res)
+    jl, jd = "\n".join(lim), "\n".join(diff)
+    _check("共同日損限制：關閉" in jl and "沒有共同日損限制" in jl, "global loss off stated: %r" % lim)
+    _check("600" not in jl and "600" not in jd, "no 600U claim anywhere in limitations / diff when global limit is 0: %r %r" % (lim, diff))
+    _check("OFF in this run" in jd and "共同名額限制：關閉" in jl and "同幣跨腿規則：關閉" in jl, "other controls stated off")
+    res = one(["--global-daily-loss-u", "250"])
+    _check("250U" in "\n".join(_texts(res)[0]), "custom global limit value echoed")
+    print("TEXT: limitations / diff follow --leg-daily-loss-day and global control parameters")
+
+
+def test_main_comparison_parameter_set():
+    """ChatGPT v1.20 decided main comparison: utc legs + rank_interleave + global controls OFF (program defaults unchanged)."""
+    A, B, C = SYMS[:3]
+    sc1, sc2 = "R1_150U|cross_1tick", "OPT01_SIG_R2_SIZING_100U|cross_1tick"
+    crash = [(A, S0 + H4, [100.0, 100.0, 90.0, 91.0]), (B, S0 + H4, [100.0, 100.0, 90.0, 91.0]), (C, S0 + H4, [100.0, 110.0, 100.0, 109.0])]
+    with tempfile.TemporaryDirectory() as td:
+        env = make_env(Path(td), long_cands=[(S0, A, 100.0, -0.01), (S0, B, 100.0, -0.02)],
+                       short_cands=[(S0, A, 100.0, -30.0), (S0, C, 100.0, -31.0)], crash=crash)
+        rc = mod.main(env["argv"] + ["--scenarios", sc1 + "," + sc2, "--leg-daily-loss-day", "utc", "--cross-leg-order", "rank_interleave",
+                                      "--global-max-slots", "0", "--global-daily-loss-u", "0", "--same-inst-policy", "off"])
+        res = json.loads((env["out"] / mod.RESULT_NAME).read_text(encoding="utf-8"))
+        det = json.loads((env["out"] / mod.DETAILS_NAME).read_text(encoding="utf-8"))
+        _check(rc == 0 and set(res["arms"]) == {sc1, sc2}, "main-comparison parameter set runs end-to-end, 2 arms")
+        sc = res["scope"]
+        _check(sc["leg_daily_loss_day"] == "utc" and sc["cross_leg_order"] == "rank_interleave" and sc["prereg_deviations"] == [], "utc legs, no PREREG deviation")
+        rr = sc["research_added_risk_controls"]
+        _check(not rr["global_max_slots"]["enabled"] and not rr["global_daily_loss_u"]["enabled"] and not rr["same_inst_policy"]["enabled"], "research-added controls all off")
+        for name in (sc1, sc2):
+            placed_by_leg = {(o.get("leg"), o["inst"]) for o in det["scenarios"][name]["order_log"]}
+            _check((0, A) in placed_by_leg and (1, A) in placed_by_leg, "same instrument held by both legs when same-inst control is off (%s)" % name)
+            arm = res["arms"][name]
+            _check(arm["legs"]["0_long"]["closed_trades"] == 2 and arm["legs"]["1_short"]["closed_trades"] >= 1, "both legs trade (%s)" % name)
+            mc = arm["monthly_combined"]
+            row = mc["by_year_month"]["2024-03"]
+            _check(row["closed_trades_total"] == row["long_closed_trades"] + row["short_closed_trades"] == arm["legs"]["0_long"]["closed_trades"] + arm["legs"]["1_short"]["closed_trades"],
+                   "combined monthly closed = long + short: %r" % row)
+        jl = "\n".join(res["limitations"])
+        _check("共同日損限制：關閉" in jl and "各腿日損日界：UTC 日" in jl and "600" not in jl, "limitations describe this exact basis")
+        _check("v1.20" in res["version"], "version")
+    print("MAIN COMPARISON: utc legs + rank_interleave + global controls off runs end-to-end (2 arms)")
+
+
+def test_monthly_combined_statistics():
+    """v1.20: long+short closed trades by EXIT UTC month, first fills and direction contribution; 100-200 band on full months."""
+    A, B, C = SYMS[:3]
+    crash = [(A, S0 + H4, [100.0, 100.0, 90.0, 91.0]), (B, S0 + H4, [100.0, 100.0, 90.0, 91.0]), (C, S0 + H4, [100.0, 110.0, 100.0, 109.0])]
+    sc = "R1_150U|cross_1tick"
+    with tempfile.TemporaryDirectory() as td:
+        env = make_env(Path(td), long_cands=[(S0, A, 100.0, -0.01), (S0, B, 100.0, -0.02)], short_cands=[(S0, C, 100.0, -30.0)], crash=crash)
+        rc, res, det = run(env, ["--global-max-slots", "0", "--global-daily-loss-u", "0"])
+        mc = res["arms"][sc]["monthly_combined"]
+        row = mc["by_year_month"]["2024-03"]
+        _check(row["closed_trades_total"] == 3 and row["long_closed_trades"] == 2 and row["short_closed_trades"] == 1, "3 closed = 2 long + 1 short: %r" % row)
+        _check(row["unique_first_fills_total"] == 3 and row["long_unique_first_fills"] == 2 and row["short_unique_first_fills"] == 1, "first fills by direction: %r" % row)
+        _check(row["is_partial_month"] is True and row["in_target_band_100_200"] is None, "partial month reported, not judged")
+        _check(mc["summary"]["full_months"] == 0 and mc["target_band_closed_per_month"] == [100, 200], "summary")
+        _check("EXIT UTC month" in mc["definition"], "definition states exit-month rule")
+    # direct unit check of the band logic and the exit-month rule on fabricated month data (no market data)
+    spec = importlib.util.spec_from_file_location("short_for_monthly_test", str(REAL_SHORT))
+    sm = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(sm)
+    JAN, FEB, MAR = 1704067200000, 1706745600000, 1709251200000  # 2024-01-01 / 02-01 / 03-01 UTC
+    def tr(side, x, net=1.0):
+        return {"side": side, "ets": x - H4, "xts": x, "net": net, "fee": 0.1, "fund": 0.0}
+    trades = [tr("long", JAN + 5 * H4 + i * M30) for i in range(100)] + [tr("short", JAN + 9 * H4 + i * M30) for i in range(50)]
+    trades += [tr("long", FEB + 5 * H4 + i * M30) for i in range(10)]
+    trades.append({"side": "long", "ets": JAN + 28 * DAY, "xts": FEB + H4, "net": -1.0, "fee": 0.1, "fund": 0.0})  # opened Jan, closed Feb
+    ol = [{"outcome": "filled", "ets": t["ets"], "leg": 0 if t["side"] == "long" else 1} for t in trades]
+    leg_ym = {li: sm._build_by_year_month([o for o in ol if o["leg"] == li], [t for t in trades if t["side"] == ("long" if li == 0 else "short")],
+                                          start_ts_ms=JAN, end_ts_ms=MAR - M30) for li in (0, 1)}
+    mc = mod._monthly_combined(sm, ol, trades, leg_ym, JAN, MAR - M30)
+    j, f = mc["by_year_month"]["2024-01"], mc["by_year_month"]["2024-02"]
+    _check(j["closed_trades_total"] == 150 and j["in_target_band_100_200"] is True, "Jan 150 closed in band: %r" % j)
+    _check(f["closed_trades_total"] == 11 and f["in_target_band_100_200"] is False, "Feb counts the Jan-opened trade by EXIT month (11): %r" % f)
+    _check(j["long_closed_trades"] == 100 and j["short_closed_trades"] == 50, "direction contribution")
+    _check(mc["summary"] == {"full_months": 2, "months_in_band": 1, "months_below_band": 1, "months_above_band": 0}, "band summary %r" % mc["summary"])
+    print("MONTHLY: combined closed trades by exit UTC month, first fills, direction split, 100-200 band on full months")
+
+
 def test_engine_source_sha_recorded():
     with tempfile.TemporaryDirectory() as td:
         env = make_env(Path(td), long_cands=[(S0, SYMS[0], 100.0, -0.01)])
@@ -496,7 +604,7 @@ def test_real_builders_smoke_and_dry_check():
         res = json.loads((env["out"] / mod.RESULT_NAME).read_text(encoding="utf-8"))
         _check(rc == 0 and set(res["arms"]) == set(mod.DEFAULT_SCENARIOS.split(",")), "4 arms")
         _check(res["sha256"]["long_adapter"] == mod.sha(REAL_LONG) and res["sha256"]["short_adapter"] == mod.sha(REAL_SHORT), "real adapters bound")
-        _check(res["version"] == "v1.19" and res["scope"]["version"] == "v1.19", "version label")
+        _check(res["version"] == "v1.20" and res["scope"]["version"] == "v1.20", "version label")
         _check(res["scope"]["adapter_verification"]["short"]["expected_source"] == "pinned_constant", "pinned adapters verified")
         rc2 = mod.main(env["argv"][:6] + ["--dry-check"])
         _check(rc2 == 0, "dry-check")
@@ -508,6 +616,7 @@ def main():
              test_missing_funding_annotation_and_inventory, test_uncomputable_windows, test_explicit_window_needs_evidence,
              test_cross_leg_rank_interleave, test_research_controls_switchable_and_listed, test_r2_arm_renamed,
              test_adapter_verified_before_load, test_network_blocked_before_adapter_load, test_leg_daily_loss_day_boundary,
+             test_limitations_text_follows_parameters, test_main_comparison_parameter_set, test_monthly_combined_statistics,
              test_engine_source_sha_recorded, test_output_exclusivity, test_real_builders_smoke_and_dry_check]
     failed = 0
     for t in tests:

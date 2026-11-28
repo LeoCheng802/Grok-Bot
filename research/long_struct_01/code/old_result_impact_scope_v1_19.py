@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
-"""BACKTEST-READINESS-01 v1.19 | old-result impact scope (static, no replay).
+"""BACKTEST-READINESS-01 v1.20 | old-result impact scope (static, no replay).
 
+(File name kept as old_result_impact_scope_v1_19.py on purpose: v1.20 updates it in place; the tool still supersedes
+old_result_impact_scope_v1_17.py.)
 Supersedes old_result_impact_scope_v1_17.py (kept unchanged for audit; do not use for new assessments).
 Answers "does this newly delivered funding data touch what an OLD result actually held?" without
 re-running any strategy. Inputs: saved local-details JSON files (L1 / LONG / RETEST24 / combo adapters),
@@ -20,7 +22,14 @@ Verdict per scenario:
 v1.19 fixes (ChatGPT v1.19, Issue #1 #7231413139, items 1-2):
   * --out AND --out + ".tmp" must both differ from every input (resolve() and os.path.samefile);
     an existing --out, an existing .tmp or a symlink at either path is refused before any write;
-    the .tmp is created with O_CREAT|O_EXCL; inputs are re-hashed before the rename.
+    the .tmp is created with O_CREAT|O_EXCL; inputs are re-hashed after the assessment and the output paths are
+    checked a SECOND time immediately before the .tmp is written (a second pre-write check, not a rename-time check).
+    This does NOT guarantee that an arbitrary concurrent change by another process can never overwrite a file;
+    run it in a NEW isolated single-writer directory.
+v1.20 (ChatGPT v1.20, Issue #1 #7235223075): an invalid / non-string / empty embedded cutoff_utc in a details file, or a
+  non-list missing_funding_events_all, no longer aborts the whole assessment: the affected scenarios are reported
+  UNDETERMINABLE (reasons details_embedded_cutoff_invalid / missing_funding_events_not_a_list). The CLI --cutoff-utc
+  stays strict (explicit refusal with a message).
   * open_at_end bound to the run cutoff; schema and record-count integrity checked; missing evidence ->
     UNDETERMINABLE; identical basenames never overwrite each other (inputs / assessments are lists keyed
     by argument index); conflicting delta keys are excluded from the clean set and never reported clean.
@@ -37,7 +46,7 @@ import os
 from datetime import datetime, timezone
 from pathlib import Path
 
-RUNNER_VERSION = "v1.19"
+RUNNER_VERSION = "v1.20"
 TOOL_ID = "old_result_impact_scope_v1_19"
 
 
@@ -224,6 +233,18 @@ def _count_in(series, a, b):
     return n8, nn
 
 
+def _embedded_cutoff_state(embedded, cutoff):
+    """None -> no embedded cutoff; 'ok' / 'mismatch' / 'invalid' otherwise (never raises)."""
+    if embedded is None:
+        return None
+    if not isinstance(embedded, str):
+        return "invalid"
+    try:
+        return "ok" if parse_utc_ms(embedded) == cutoff else "mismatch"
+    except (RuntimeError, ValueError, OverflowError, OSError):
+        return "invalid"
+
+
 def assess(details_obj, clean, conflicts, cutoff):
     res = {}
     embedded = details_obj.get("cutoff_utc") if isinstance(details_obj, dict) else None
@@ -235,8 +256,11 @@ def assess(details_obj, clean, conflicts, cutoff):
             res[name] = {"verdict": "UNDETERMINABLE", "undeterminable_reasons": ["scenario_schema_invalid"]}
             continue
         ivs, undet = _intervals(scen, cutoff)
-        if embedded is not None and str(embedded) and parse_utc_ms(embedded) != cutoff:
+        est = _embedded_cutoff_state(embedded, cutoff)
+        if est == "mismatch":
             undet.append("cutoff_mismatch_with_details_embedded_cutoff")
+        elif est == "invalid":
+            undet.append("details_embedded_cutoff_invalid")
         hit8 = hitn = touched = conflict_hits = 0
         for inst, a, b, _kind in ivs:
             n8, nn = _count_in(clean.get(inst, ()), a, b)
@@ -247,6 +271,9 @@ def assess(details_obj, clean, conflicts, cutoff):
             touched += 1 if (n8 or nn) else 0
         miss = scen.get("missing_funding_events_all")
         if miss is None:
+            miss = []
+        elif not isinstance(miss, list):
+            undet.append("missing_funding_events_not_a_list")
             miss = []
         covered = conflict_cover = 0
         for m in miss:
@@ -299,6 +326,7 @@ def main(argv=None):
     clean, conflicts, dstats = load_delta([Path(p) for p in a.delta])
     names = [Path(p).name for p in a.details]
     report = {"tool": TOOL_ID, "version": RUNNER_VERSION,
+              "write_safety": "output and .tmp checked before the hash pass and again immediately before the .tmp is written; no guarantee against arbitrary concurrent changes by other processes; use a new isolated single-writer directory",
               "rule": "funding booked when ets < ts_snapped <= xts; open_at_end held over (ets, cutoff]; keys after cutoff ignored",
               "delta_stats": dstats, "inputs_sha256": before,
               "duplicate_details_basenames": sorted({n for n in names if names.count(n) > 1}),

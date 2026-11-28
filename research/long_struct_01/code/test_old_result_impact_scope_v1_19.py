@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Synthetic tests for old_result_impact_scope_v1_19.py (no market data, no replay, temp dirs only).
+"""Synthetic tests for old_result_impact_scope_v1_19.py (v1.20 in-place update; no market data, no replay, temp dirs only).
 
 Minimal pure-synthetic boundary / collision cases for ChatGPT v1.19 items 1-2 (Issue #1 #7231413139).
 IMPACT_TOOL_PATH may point at another tool version (used to record old-fails / new-passes evidence);
@@ -238,10 +238,90 @@ def test_conflicting_delta_not_clean():
     print("CONFLICT: conflicting delta key excluded from clean set; touched scenario UNDETERMINABLE")
 
 
+def test_invalid_embedded_cutoff_is_undeterminable():
+    """v1.20 item 1: a bad embedded cutoff_utc must not abort the whole assessment."""
+    bad_values = ["not-a-date", "2024-03-01T16:00:00", 12345, "", ["x"]]
+    for i, bad in enumerate(bad_values):
+        with tempfile.TemporaryDirectory() as td:
+            td = Path(td)
+            dp = _delta(td, ["AAA-USDT-SWAP,%d,0.0001,true" % (T0 + H8)])
+            det = {"cutoff_utc": bad, "scenarios": {"s": _sc([], []), "t": _sc([], [])}}
+            detp = _det(td, det)
+            out = td / "impact.json"
+            try:
+                rc = _run([detp], dp, out)
+            except Exception as exc:
+                raise AssertionError("SYNTHETIC_TEST_FAIL: invalid embedded cutoff %r aborted the assessment: %s: %s" % (bad, type(exc).__name__, exc))
+            _check(rc == 0 and out.exists(), "report written for %r" % (bad,))
+            a = _scen(json.loads(out.read_text(encoding="utf-8")))
+            for k in ("s", "t"):
+                _check(a[k]["verdict"] == "UNDETERMINABLE" and "details_embedded_cutoff_invalid" in a[k]["undeterminable_reasons"],
+                       "scenario %s with embedded %r must be UNDETERMINABLE/details_embedded_cutoff_invalid: %r" % (k, bad, a[k]))
+    # control: valid and equal embedded cutoff stays clean; valid but different -> mismatch reason (existing semantics)
+    with tempfile.TemporaryDirectory() as td:
+        td = Path(td)
+        dp = _delta(td, ["AAA-USDT-SWAP,%d,0.0001,true" % (T0 + H8)])
+        detp = _det(td, {"cutoff_utc": CUT, "scenarios": {"s": _sc([], [])}})
+        out = td / "impact.json"
+        _run([detp], dp, out)
+        _check(_scen(json.loads(out.read_text(encoding="utf-8")))["s"]["verdict"] == "NOT_AFFECTED_BY_THESE_DELTAS", "valid embedded cutoff stays clean")
+    with tempfile.TemporaryDirectory() as td:
+        td = Path(td)
+        dp = _delta(td, ["AAA-USDT-SWAP,%d,0.0001,true" % (T0 + H8)])
+        detp = _det(td, {"cutoff_utc": "2024-03-02T00:00:00Z", "scenarios": {"s": _sc([], [])}})
+        out = td / "impact.json"
+        _run([detp], dp, out)
+        r = _scen(json.loads(out.read_text(encoding="utf-8")))["s"]
+        _check(r["verdict"] == "UNDETERMINABLE" and "cutoff_mismatch_with_details_embedded_cutoff" in r["undeterminable_reasons"], "mismatch reason kept")
+    print("EMBEDDED CUTOFF: invalid / non-string / empty -> UNDETERMINABLE, no abort; valid and mismatch semantics kept")
+
+
+def test_missing_funding_events_not_list_is_undeterminable():
+    """v1.20 item 2."""
+    with tempfile.TemporaryDirectory() as td:
+        td = Path(td)
+        dp = _delta(td, ["AAA-USDT-SWAP,%d,0.0001,true" % (T0 + H8)])
+        scen = {}
+        for k, v in (("int", 5), ("dict", {"inst_id": "AAA-USDT-SWAP", "ts_ms": T0}), ("str", "oops"), ("true", True)):
+            scen[k] = _sc([], [], missing_funding_events_all=v)
+        scen["ok_list"] = _sc([], [], missing_funding_events_all=[])
+        detp = _det(td, {"scenarios": scen})
+        out = td / "impact.json"
+        try:
+            rc = _run([detp], dp, out)
+        except Exception as exc:
+            raise AssertionError("SYNTHETIC_TEST_FAIL: non-list missing_funding_events_all aborted the assessment: %s: %s" % (type(exc).__name__, exc))
+        a = _scen(json.loads(out.read_text(encoding="utf-8")))
+        for k in ("int", "dict", "str", "true"):
+            _check(a[k]["verdict"] == "UNDETERMINABLE" and "missing_funding_events_not_a_list" in a[k]["undeterminable_reasons"], "%s must be UNDETERMINABLE: %r" % (k, a[k]))
+        _check(a["ok_list"]["verdict"] == "NOT_AFFECTED_BY_THESE_DELTAS", "valid empty list stays clean")
+    print("MISSING EVENTS: non-list missing_funding_events_all -> UNDETERMINABLE per scenario, no abort")
+
+
+def test_write_safety_wording():
+    """v1.20 item 3: no 'checked before the rename' claim; no absolute concurrency guarantee."""
+    doc = mod.__doc__ or ""
+    _check("before the rename" not in doc, "docstring must not claim a re-check before the rename")
+    _check("second" in doc and "before the .tmp is written" in doc, "docstring states the real second pre-write check")
+    _check("does NOT guarantee" in doc and "concurrent" in doc, "docstring disclaims concurrent-change guarantee")
+    with tempfile.TemporaryDirectory() as td:
+        td = Path(td)
+        dp = _delta(td, ["AAA-USDT-SWAP,%d,0.0001,true" % (T0 + H8)])
+        detp = _det(td, {"scenarios": {"s": _sc([], [])}})
+        out = td / "impact.json"
+        _run([detp], dp, out)
+        r = json.loads(out.read_text(encoding="utf-8"))
+        ws = r.get("write_safety", "")
+        _check("no guarantee" in ws and "single-writer" in ws, "report carries the write-safety statement: %r" % ws)
+    print("WORDING: second pre-write check described accurately; no concurrency guarantee claimed")
+
+
 def main():
     tests = [test_legacy_semantics, test_out_tmp_aliases_input, test_existing_tmp_and_symlink_refused,
              test_open_at_end_bound_to_cutoff, test_missing_evidence_is_undeterminable,
-             test_same_basename_not_overwritten, test_conflicting_delta_not_clean]
+             test_same_basename_not_overwritten, test_conflicting_delta_not_clean,
+             test_invalid_embedded_cutoff_is_undeterminable, test_missing_funding_events_not_list_is_undeterminable,
+             test_write_safety_wording]
     failed = 0
     for t in tests:
         try:

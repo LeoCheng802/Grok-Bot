@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""BACKTEST-READINESS-01 v1.19 | COMBO_L02_OPT01_SHARED_50K_10X offline runner.
+"""BACKTEST-READINESS-01 v1.20 | COMBO_L02_OPT01_SHARED_50K_10X offline runner.
 
 One shared account, NOT two independent 50,000 USDT books added together:
   * leg 0 (long)  = LONG_STRUCT_02_V1_0_TEMPORAL_SPLIT  (run_long_struct_bounded_backtest.py, unchanged rules/defaults)
@@ -15,10 +15,15 @@ Both legs run inside ONE call of the registered B6/Q38 engine (patched copy, see
      ChatGPT original research and are NOT in scope here; current adapter values are kept unchanged);
   * each leg keeps its own frozen per-leg rules; per-leg daily loss day boundary is a parameter
     (--leg-daily-loss-day, default taipei = Asia/Taipei 00:00 reset; utc = frozen PREREG v1.0 basis;
-     the default is a DECLARED deviation from PREREG v1.0, pending 77 / ChatGPT confirmation);
+     the program default stays taipei = a DECLARED deviation from PREREG v1.0; the ChatGPT v1.20 main comparison
+     explicitly passes --leg-daily-loss-day utc, so taipei is a separate scenario);
   * cross-leg order on one 4H bar (--cross-leg-order, default rank_interleave): each direction keeps its own
     frozen sort; directions are interleaved by same-scale rank (0, 1, 2, ...), equal rank -> --leg-priority
     (default long_first).  direction_block (whole direction first) is the v1.17 behaviour, sensitivity only.
+  v1.20 decided main-comparison basis (ChatGPT v1.20, Issue #1 #7235223075; program defaults are NOT changed):
+      --leg-daily-loss-day utc --cross-leg-order rank_interleave --global-max-slots 0 --global-daily-loss-u 0
+      --same-inst-policy off   (each leg's own limits and the shared-margin rejection still apply);
+      the research-added controls below are separate scenarios only.
   RESEARCH-ADDED RISK CONTROLS (listed separately; each can be switched off; differences must not be
   attributed to signals alone):
       - global active slots (open positions + resting entry orders, both legs)  --global-max-slots (0 = off)
@@ -65,7 +70,8 @@ from pathlib import Path
 
 import numpy as np
 
-RUNNER_VERSION = "v1.19"
+RUNNER_VERSION = "v1.20"
+TARGET_BAND_CLOSED_PER_MONTH = (100, 200)
 STUDY_ID = "BACKTEST-READINESS-01"
 COMBO_ID = "COMBO_L02_OPT01_SHARED_50K_10X"
 LONG_CANDIDATE = "LONG_STRUCT_02_V1_0_TEMPORAL_SPLIT"
@@ -310,6 +316,84 @@ def load_uncomputable_windows(path: Path, parse_utc_ms):
 # ---------------------------------------------------------------------------------------------
 # combo engine: patched copy of the registered b6 engine (the registered files are not modified)
 # ---------------------------------------------------------------------------------------------
+
+def describe_controls(args):
+    """Texts for limitations / model-vs-live diff, derived from the ACTUAL parameters of this run (v1.20 item 4)."""
+    if args.leg_daily_loss_day == "utc":
+        leg_day = "各腿日損日界：UTC 日（UTC 00:00 重置；凍結 PREREG v1.0 口徑）"
+        leg_day_en = "per-leg daily loss day: UTC day (UTC 00:00 reset, frozen PREREG v1.0 basis)"
+    else:
+        leg_day = "各腿日損日界：台北日（Asia/Taipei 00:00 重置；偏離 PREREG v1.0 的 UTC 日；不是 ChatGPT v1.20 主比較口徑）"
+        leg_day_en = "per-leg daily loss day: Taipei day (Asia/Taipei 00:00 reset; deviation from PREREG v1.0 UTC day)"
+    if args.global_daily_loss_u > 0:
+        g_loss = "共同日損限制（另加研究風控）：啟用，兩腿合計每台北日已實現淨損達 %gU 即停止新單（全局日界＝台北日）" % args.global_daily_loss_u
+        g_loss_en = "global daily-loss gate (research-added): ON, %gU realised net loss per Taipei day, both legs; global day = Taipei day" % args.global_daily_loss_u
+    else:
+        g_loss = "共同日損限制：關閉（--global-daily-loss-u 0），本次沒有共同日損限制；全局日界不適用"
+        g_loss_en = "global daily-loss gate: OFF in this run (no global daily-loss limit; no global day boundary applies)"
+    if args.global_max_slots > 0:
+        g_slots = "共同名額限制（另加研究風控）：啟用，持倉＋掛單合計上限 %d 格（兩腿合計）" % args.global_max_slots
+    else:
+        g_slots = "共同名額限制：關閉（--global-max-slots 0），本次沒有共同名額上限"
+    if args.same_inst_policy == "off":
+        g_same = "同幣跨腿規則：關閉（--same-inst-policy off），同一幣可兩腿同時持有"
+    else:
+        g_same = "同幣跨腿規則（另加研究風控）：%s" % args.same_inst_policy
+    order = ("跨方向排序：同尺度名次交錯，同名次依 --leg-priority=%s；各方向內排序不變" % args.leg_priority
+             if args.cross_leg_order == "rank_interleave" else "跨方向排序：整個方向先後（direction_block，僅敏感度）")
+    return {
+        "limitations": [leg_day, g_loss, g_slots, g_same, order],
+        "diff": [
+            leg_day_en,
+            g_loss_en,
+            "each leg keeps its own frozen per-leg slot / daily-loss / loss-streak limits (values: PREREG v1.0 legs); "
+            "shared-margin rejection applies to the whole account",
+            "live shared_risk.RiskLedger keys slots by (strategy, inst, pos_side); this run's same-instrument rule: " + args.same_inst_policy
+            + (" (block_any is stricter than the live ledger)" if args.same_inst_policy == "block_any" else ""),
+            "same-bar cross-leg order: --cross-leg-order " + args.cross_leg_order + " (equal rank -> --leg-priority " + args.leg_priority
+            + "); each leg's own frozen sort key kept",
+        ],
+    }
+
+
+def _monthly_combined(short_mod, ol, trades, leg_ym, start_ts, end_ts):
+    """Long+short combined monthly stats: closed trades by EXIT UTC month, first fills, per-direction contribution (v1.20)."""
+    allm = short_mod._build_by_year_month(ol, trades, start_ts_ms=start_ts, end_ts_ms=end_ts)
+    lo, hi = TARGET_BAND_CLOSED_PER_MONTH
+    out, full, inb, below, above = {}, 0, 0, 0, 0
+    for ym, b in allm.items():
+        l = leg_ym[0].get(ym) or {}
+        sh = leg_ym[1].get(ym) or {}
+        row = {
+            "is_partial_month": b["is_partial_month"],
+            "closed_trades_total": b["closed_trades"],
+            "unique_first_fills_total": b["unique_first_fills"],
+            "closed_net_u_total": b["closed_net_u"],
+            "long_closed_trades": l.get("closed_trades", 0), "short_closed_trades": sh.get("closed_trades", 0),
+            "long_unique_first_fills": l.get("unique_first_fills", 0), "short_unique_first_fills": sh.get("unique_first_fills", 0),
+            "long_closed_net_u": l.get("closed_net_u", 0.0), "short_closed_net_u": sh.get("closed_net_u", 0.0),
+        }
+        if b["is_partial_month"] is False:
+            full += 1
+            n = b["closed_trades"]
+            in_band = lo <= n <= hi
+            row["in_target_band_%d_%d" % (lo, hi)] = in_band
+            inb += 1 if in_band else 0
+            below += 1 if n < lo else 0
+            above += 1 if n > hi else 0
+        else:
+            row["in_target_band_%d_%d" % (lo, hi)] = None
+        out[ym] = row
+    return {
+        "definition": ("closed_trades_total = long+short positions fully closed (final exit), counted by EXIT UTC month; "
+                       "unique_first_fills_total = first fills by fill UTC month (includes still-open positions); "
+                       "positions opened in a month are NOT counted as complete trades; open_at_end positions are not complete trades"),
+        "target_band_closed_per_month": [lo, hi],
+        "target_band_applies_to": "full UTC months only (partial months are reported but not judged)",
+        "summary": {"full_months": full, "months_in_band": inb, "months_below_band": below, "months_above_band": above},
+        "by_year_month": out,
+    }
+
 
 def _combo_init(ctrl):
     if ctrl is None:
@@ -613,9 +697,9 @@ def _main_guarded(args, t0, started_utc, guard, long_path, short_path, long_byte
             "universe": requested_symbols if requested_symbols else "ALL_CACHE_EX_USDC (EX_USDC_286)",
             "established_combo_basis": {
                 "capital": "one shared 50,000U / 10x account, both legs in one engine call",
-                "per_leg_rules": "each leg keeps its own frozen rules (long 24 slots / 600U / 3-loss pause; short 12 slots / R1 600U or R2-sizing 400U)",
+                "per_leg_rules": "each leg keeps its own frozen rules (long 24 slots / 600U / 3-loss pause; short 12 slots / R1 600U or R2-sizing 400U); per-leg day boundary = " + args.leg_daily_loss_day,
                 "leg_daily_loss_day": args.leg_daily_loss_day,
-                "leg_daily_loss_day_meaning": ("Asia/Taipei 00:00 reset (DEVIATION from PREREG v1.0 UTC day; pending 77/ChatGPT)"
+                "leg_daily_loss_day_meaning": ("Asia/Taipei 00:00 reset (DEVIATION from PREREG v1.0 UTC day; NOT the ChatGPT v1.20 main-comparison basis, which passes utc explicitly)"
                                                if args.leg_daily_loss_day == "taipei" else "UTC 00:00 reset (PREREG v1.0 basis)"),
                 "cross_leg_order": args.cross_leg_order, "leg_priority": args.leg_priority,
                 "cross_leg_order_meaning": ("same-scale rank interleave; equal rank -> " + args.leg_priority + "; within-direction order unchanged"
@@ -634,7 +718,7 @@ def _main_guarded(args, t0, started_utc, guard, long_path, short_path, long_byte
             "same_inst_policy": args.same_inst_policy, "leg_priority": args.leg_priority,
             "cross_leg_order": args.cross_leg_order, "leg_daily_loss_day": args.leg_daily_loss_day,
             "prereg_deviations": ([{"item": "per-leg daily loss day boundary", "prereg_v1_0": "UTC day", "this_run": "Asia/Taipei day",
-                                    "status": "PENDING_77_OR_CHATGPT_CONFIRMATION"}] if args.leg_daily_loss_day == "taipei" else []),
+                                    "status": "SEPARATE_SCENARIO_NOT_MAIN_COMPARISON (ChatGPT v1.20 #7235223075: main comparison uses utc)"}] if args.leg_daily_loss_day == "taipei" else []),
             "r2_naming": R2_ARM_NOTE,
             "adapter_verification": adapter_verification,
             "funding_inventory_supplied": bool(args.funding_inventory),
@@ -801,7 +885,11 @@ def _main_guarded(args, t0, started_utc, guard, long_path, short_path, long_byte
                 if flags["funding_query_51001_note_positions"]:
                     gaps.append("positions_in_rest_51001_funding_months_rates_unknown")
                 gaps.append("non_8h_funding_denominator_unknown")
+                leg_ym = {0: short_mod._build_by_year_month([o for o in ol if o.get("leg") == 0], [t for t in r.get("_trades", []) if t["side"] == "long"], start_ts_ms=start_ts, end_ts_ms=end_ts),
+                          1: short_mod._build_by_year_month([o for o in ol if o.get("leg") == 1], [t for t in r.get("_trades", []) if t["side"] == "short"], start_ts_ms=start_ts, end_ts_ms=end_ts)}
+                monthly_combined = _monthly_combined(short_mod, ol, r.get("_trades", []), leg_ym, start_ts, end_ts)
                 arms[name] = {
+                    "monthly_combined": monthly_combined,
                     "status": "PRELIMINARY_INCOMPLETE_DATA" if len(gaps) > 1 else "PRELIMINARY_BATCH_SCOPE",
                     "performance_label": "初步／資料不完整；未入帳的未知資金費為條件情境，不是真實淨績效",
                     "short_sizing": sizing, "fill_mode": fill,
@@ -840,6 +928,7 @@ def _main_guarded(args, t0, started_utc, guard, long_path, short_path, long_byte
                 if sha(pth) != npz_records[inst]["sha256"]:
                     raise RuntimeError("symbol npz modified during run: " + inst)
 
+            controls_txt = describe_controls(args)
             finished_utc = datetime.now(TZ_UTC).isoformat()
             short_mod._atomic_write_text(details_file, json.dumps({
                 "public_repo_policy": "LOCAL_OFFLINE_DETAIL_ONLY_DO_NOT_AUTO_PUSH_TO_PUBLIC_REPO",
@@ -864,13 +953,7 @@ def _main_guarded(args, t0, started_utc, guard, long_path, short_path, long_byte
                 "combo_engine_patched_source_file": ENGINE_SRC_NAME,
                 "combo_engine_patched_source_sha256": combo_src_sha,
                 "historical_model_vs_delivered_script_diff": short_mod.HISTORICAL_MODEL_VS_DELIVERED_SCRIPT_DIFF,
-                "combo_model_vs_live_shared_risk_diff": [
-                    "live shared_risk.RiskLedger keys slots by (strategy, inst, pos_side); model default block_any is stricter (one instrument, one leg)",
-                    "live daily loss uses realised PnL events by Taipei day; model books realised net (fee + booked funding) at exit bar, Taipei day",
-                    "each leg keeps its own frozen per-leg limits (long 24 slots / 600U UTC-day / 3-loss pause; short 12 slots / R1 600U or R2 400U UTC-day)",
-                    "same-bar cross-leg order: --cross-leg-order (default rank_interleave, equal rank -> --leg-priority); each leg's own frozen sort key kept",
-                    "per-leg daily loss day: --leg-daily-loss-day (default taipei; PREREG v1.0 = utc)",
-                ],
+                "combo_model_vs_live_shared_risk_diff": controls_txt["diff"],
                 "sha256": dict(after, manifest=sha(manifest_path), retest24_script=sha(bound["roles"]["retest24_script"]),
                                shared_risk=sha(bound["roles"]["shared_risk"]), long_adapter=long_sha_before, short_adapter=short_sha_before,
                                runner=sha(Path(__file__).resolve()), combo_engine_source=combo_src_sha,
@@ -878,6 +961,7 @@ def _main_guarded(args, t0, started_utc, guard, long_path, short_path, long_byte
                 "local_details_file": DETAILS_NAME,
                 "limitations": [
                     "缺歷史 BBO，post_only 可否掛入與排隊順位未知；cross_1tick 只是穿價下界",
+                    *controls_txt["limitations"],
                     "delay1bar 為敏感度，不是真實延遲；歷史 MMR 以 1% 近似",
                     "缺資金費維持未知、未入帳；非 8H 結算應有分母未知；complete=true 只代表該批來源核對口徑",
                     "REST 51001（例如 RVN 2026-11）只代表該次資金費查詢未列出；母體保留、不擋進場，該月資金費維持未知並逐筆註記",

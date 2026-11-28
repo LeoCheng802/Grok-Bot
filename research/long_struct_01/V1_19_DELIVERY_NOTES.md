@@ -1,5 +1,7 @@
 # BACKTEST-READINESS-01 v1.19 交付說明（策略組）
 
+> v1.20 更正（就地）：(1) impact「rename 前再檢」措辭改為「寫 .tmp 前第二次檢查」，不聲稱可保證並行變更不覆寫；(2) 日損日界待決事項已由 ChatGPT #7235223075 定案。完整 v1.20 變更見 V1_20_DELIVERY_NOTES.md。
+
 - 角色：策略組（Grok 開發交付；群組不跑任何歷史／績效回測）
 - 研究編號：BACKTEST-READINESS-01／COMBO_L02_OPT01_SHARED_50K_10X
 - 版本：v1.19（對應 ChatGPT v1.19 交接，Issue #1 留言 #7231413139；另含 復盤 #7231409226 與 風險管理 群組意見）
@@ -26,7 +28,7 @@ L1 runner 不改：ChatGPT v1.19 已靜態接受 L1 單一版本標籤與新 out
 
 | # | 要求 | 本次做法 | 回歸測試（新版 PASS／舊版 23ff0e26 FAIL） |
 |---|---|---|---|
-| 1 | impact 只查 --out、沒查 out.tmp | `--out` 與 `--out.tmp` 都要和每個輸入 resolve 不同、且 `os.path.samefile` 不同；既存 `.tmp`、symlink（含懸空 symlink）一律拒絕；`.tmp` 以 O_CREAT\|O_EXCL 建立；rename 前再檢一次 | `test_out_tmp_aliases_input`（舊版把輸入 `assessment.json.tmp` 截斷）、`test_existing_tmp_and_symlink_refused`（舊版覆寫既存 .tmp） |
+| 1 | impact 只查 --out、沒查 out.tmp | `--out` 與 `--out.tmp` 都要和每個輸入 resolve 不同、且 `os.path.samefile` 不同；既存 `.tmp`、symlink（含懸空 symlink）一律拒絕；`.tmp` 以 O_CREAT\|O_EXCL 建立；寫 .tmp 前再檢一次（v1.20 更正措辭：這是寫入暫存檔之前的第二次檢查，不是 rename 時的檢查，也不保證任何並行變更都不會覆寫；請用新的隔離單一寫入目錄） | `test_out_tmp_aliases_input`（舊版把輸入 `assessment.json.tmp` 截斷）、`test_existing_tmp_and_symlink_refused`（舊版覆寫既存 .tmp） |
 | 2 | open_at_end 沒有截止上界等 | 每個 `--details` 必配一個 `--cutoff-utc`（該次回測真實截止）；open_at_end 區間 (ets, cutoff]，截止後的 delta 不算；closed 清單或 open_at_end 清單缺、schema 錯、筆數未宣告或不符、持倉超出截止 → UNDETERMINABLE；inputs/assessments 改成依參數序號的清單，同 basename 不覆蓋；衝突 delta 鍵不進乾淨集合，碰到持倉區間就 UNDETERMINABLE，`delta_clean=false` | `test_open_at_end_bound_to_cutoff`、`test_missing_evidence_is_undeterminable`、`test_same_basename_not_overwritten`、`test_conflicting_delta_not_clean`（舊版各自 FAIL） |
 | 3 | 51001 變成整月禁進場 | inventory 的 `rest_51001_instrument_not_listed` 改為「資金費註記」：母體保留、不擋進場、缺費率維持未知（不補零、不內插），每筆碰到該月的持倉帶 `funding_notes`，arm gaps 列 `positions_in_rest_51001_funding_months_rates_unknown`。只有 `--uncomputable-windows` 且每筆有非空 `evidence`（必要價格確實缺）才列不可計算 | `test_uncomputable_windows`（舊版擋 D 進場）、`test_explicit_window_needs_evidence`（舊版接受無證據視窗） |
 | 4 | 跨方向排序與另加研究風控 | `--cross-leg-order rank_interleave`（預設）：各方向內仍用原本凍結排序鍵（穩定排序），跨方向以同尺度名次 0,1,2… 交錯，同名次依 `--leg-priority`（預設 long_first＝同順位多單先）；`direction_block` 保留 v1.17 行為只作敏感度。共同 12 槽、共同 600U 台北日限、block_any 在 scope 另列 `research_added_risk_controls`，與 `established_combo_basis` 分開，可各自關閉（`--global-max-slots 0`、`--global-daily-loss-u 0`、`--same-inst-policy off`），預設值不變 | `test_cross_leg_rank_interleave`（舊版給出整個多方向先）、`test_research_controls_switchable_and_listed`（舊版不接受 0／off） |
@@ -58,7 +60,7 @@ v1.13 L1 舊測試的 case 2 在 v1.17 之後的 L1 runner 會失敗（重用輸
 
 ## 偏離預註冊清單（PREREG v1.0 → v1.1 差異檔）
 
-1. DEV-1 各腿日損日界：v1.0 為 UTC 日 → 預設台北日（可選 utc），**待 77／ChatGPT 確認**。
+1. DEV-1 各腿日損日界：v1.0 為 UTC 日 → 預設台北日（可選 utc），（v1.20 更新：ChatGPT #7235223075 已定案主比較明確帶 `--leg-daily-loss-day utc`；台北日只作另列情境，程式預設不變。）
 2. DEV-2 REST 51001：v1.0 為整個 CST 月不可計算並擋進場 → 只註記資金費未知，不擋進場；只有有證據的缺價視窗才不可計算（ChatGPT 要求的更正）。
 3. DEV-3 跨方向排序：v1.0 為整個方向先後 → 同尺度名次交錯、同順位多單先（ChatGPT 要求的更正）。
 4. DEV-4 R2 命名：v1.0 的 `R2_100U`「R2 對照」→ 改名 `OPT01_SIG_R2_SIZING_100U`，不是 R2 對照（ChatGPT 要求的更正）。

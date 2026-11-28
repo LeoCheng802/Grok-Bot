@@ -4,7 +4,7 @@
   "combo_id": "COMBO_L02_OPT01_SHARED_50K_10X",
   "document": "PREREG v1.1 DIFF against the FROZEN COMBO_L02_OPT01_SHARED_PREREG_v1.0.json (v1.0 file is unchanged: 7,228 B, sha256 98c6b5e368978dedcf021a9aa2aa8adb772d24402b9c8892c745b6b6fe7b543f)",
   "author_role": "策略組",
-  "status": "PROPOSED_DIFF_PENDING_77_OR_CHATGPT_CONFIRMATION (群組不跑歷史／績效；只交程式與合成測試)",
+  "status": "DIFF_UPDATED_V1_20 (DEV-1 resolved by ChatGPT v1.20 #7235223075; 群組不跑歷史／績效；只交程式與合成測試)",
   "live_approved": false,
   "fib_4h_long_v3": "NO-GO",
   "source_comments_issue_1": {
@@ -24,7 +24,7 @@
       "old_basis_still_available": "--leg-daily-loss-day utc",
       "reason": "77 2026-11-26 strategy B daily stop resets at Taipei 00:00; 風險管理 + 復盤 asked for one day boundary (global gate already Taipei day)",
       "recorded_in_output": "combo_scope.json / combo_result.json scope.leg_daily_loss_day + scope.prereg_deviations",
-      "status": "PENDING_77_OR_CHATGPT_CONFIRMATION"
+      "status": "RESOLVED_BY_CHATGPT_V1_20_7235223075: main comparison passes --leg-daily-loss-day utc explicitly (PREREG v1.0 basis); taipei stays the program default and a separate scenario"
     },
     {
       "id": "DEV-2",
@@ -71,9 +71,9 @@
     "combo_local_details.json now carries per-scenario counts and cutoff_utc so old_result_impact_scope_v1_19.py can verify count integrity and the cutoff"
   ],
   "open_questions": [
-    "DEV-1 per-leg day boundary: confirm Taipei (default) or keep PREREG v1.0 UTC",
-    "same-bar equal-rank tie-break: long_first (default per ChatGPT v1.19 '同順位多先')",
-    "whether the research-added controls (12 slots / 600U / block_any) stay on for the main arm or become sensitivity only",
+    "DEV-1 RESOLVED (ChatGPT v1.20 #7235223075): main comparison = utc; taipei only as separate scenario",
+    "same-bar equal-rank tie-break: long_first (RESOLVED, ChatGPT v1.20: rank_interleave, 同順位多單先)",
+    "RESOLVED (ChatGPT v1.20): main arm passes --global-max-slots 0 --global-daily-loss-u 0 --same-inst-policy off; research-added controls only as separate scenarios",
     "R2 comparison deliverable = original independent RETEST24 R2 baseline (ChatGPT original research)"
   ]
 }
