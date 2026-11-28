@@ -1,0 +1,79 @@
+{
+  "study_id": "BACKTEST-READINESS-01",
+  "version": "v1.19",
+  "combo_id": "COMBO_L02_OPT01_SHARED_50K_10X",
+  "document": "PREREG v1.1 DIFF against the FROZEN COMBO_L02_OPT01_SHARED_PREREG_v1.0.json (v1.0 file is unchanged: 7,228 B, sha256 98c6b5e368978dedcf021a9aa2aa8adb772d24402b9c8892c745b6b6fe7b543f)",
+  "author_role": "策略組",
+  "status": "PROPOSED_DIFF_PENDING_77_OR_CHATGPT_CONFIRMATION (群組不跑歷史／績效；只交程式與合成測試)",
+  "live_approved": false,
+  "fib_4h_long_v3": "NO-GO",
+  "source_comments_issue_1": {
+    "chatgpt_v1_19_corrections": "7231413139",
+    "review_daily_day_boundary": "7231409226"
+  },
+  "pinned_base": {
+    "pr7_head_base": "23ff0e26ca2b644addb7f39e44843687402dc4ce",
+    "prereg_v1_0_sha256": "98c6b5e368978dedcf021a9aa2aa8adb772d24402b9c8892c745b6b6fe7b543f"
+  },
+  "deviations_from_prereg_v1_0": [
+    {
+      "id": "DEV-1",
+      "item": "per-leg daily loss day boundary",
+      "prereg_v1_0": "UTC day (legs.0_long.exit_and_sizing 'daily loss 600U (UTC day)'; short per-leg limit on UTC day)",
+      "v1_1_default": "Asia/Taipei 00:00 reset (--leg-daily-loss-day taipei)",
+      "old_basis_still_available": "--leg-daily-loss-day utc",
+      "reason": "77 2026-11-26 strategy B daily stop resets at Taipei 00:00; 風險管理 + 復盤 asked for one day boundary (global gate already Taipei day)",
+      "recorded_in_output": "combo_scope.json / combo_result.json scope.leg_daily_loss_day + scope.prereg_deviations",
+      "status": "PENDING_77_OR_CHATGPT_CONFIRMATION"
+    },
+    {
+      "id": "DEV-2",
+      "item": "REST 51001 funding-inventory sub_reason",
+      "prereg_v1_0": "v1_15_data_policy.uncomputable: whole CST month blocks new entries and flags positions 不可計算",
+      "v1_1": "funding annotation only: population kept, entries NOT blocked, missing rates stay unknown (no zero-fill, no interpolation), each touching position carries the note; only explicit evidence-backed missing-PRICE windows (--uncomputable-windows with non-empty evidence) are 不可計算",
+      "reason": "ChatGPT v1.19 item 3: a 51001 funding query does not prove the whole month had no trading or missing prices; not an exclusion authorised by v1.15",
+      "status": "CORRECTION_REQUESTED_BY_CHATGPT"
+    },
+    {
+      "id": "DEV-3",
+      "item": "cross-leg priority on one 4H bar",
+      "prereg_v1_0": "leg_priority long_first = whole long direction before whole short direction",
+      "v1_1_default": "--cross-leg-order rank_interleave: each direction keeps its own frozen sort; directions interleaved by same-scale rank 0,1,2,...; equal rank -> --leg-priority (default long_first)",
+      "old_basis_still_available": "--cross-leg-order direction_block (sensitivity only)",
+      "reason": "ChatGPT v1.19 item 4",
+      "status": "CORRECTION_REQUESTED_BY_CHATGPT"
+    },
+    {
+      "id": "DEV-4",
+      "item": "R2 naming",
+      "prereg_v1_0": "arms R2_100U|cross_1tick / R2_100U|delay1bar described as 'R2 對照'",
+      "v1_1": "arms renamed OPT01_SIG_R2_SIZING_100U|cross_1tick / |delay1bar (OPT01 signal with R2 sizing inside the combo). 'R2' = the original independent RETEST24 R2 baseline from the already-uploaded script; the renamed arm is NOT that comparison and must never substitute for it. Old name R2_100U is refused with an explanation.",
+      "reason": "ChatGPT v1.19 item 5",
+      "status": "CORRECTION_REQUESTED_BY_CHATGPT"
+    }
+  ],
+  "research_added_risk_controls_listed_separately": {
+    "note": "NOT part of the established combo basis; each switchable; defaults unchanged from v1.0; result differences must not be attributed to signals alone",
+    "global_max_slots": {"default": 12, "off": "--global-max-slots 0"},
+    "global_daily_loss_u": {"default": 600.0, "day": "Asia/Taipei", "off": "--global-daily-loss-u 0"},
+    "same_inst_policy": {"default": "block_any", "alternatives": ["allow_opposite", "off"]}
+  },
+  "out_of_scope_this_delivery": [
+    "candidate mapping vs the original research (actual fixed mapping)",
+    "slippage alignment (original research 0.0005 vs current adapter 0.0003) - current value kept",
+    "original long 24-slot mapping - current per-leg value kept",
+    "isolation fixes of the original research",
+    "These are done by the ChatGPT original research (ChatGPT v1.19 item 4); this delivery only provides the parameters / interface above."
+  ],
+  "integrity_changes_no_rule_effect": [
+    "adapters: outer offline guard entered before any adapter read; full size + SHA-256 verified against pinned constants (or explicit --*-adapter-size/--*-adapter-sha256 for override paths) BEFORE load; only the verified bytes are executed (item 6)",
+    "patched combo engine source written to out-dir combo_engine_patched_source.txt; its SHA-256 recorded in combo_result.json (combo_engine_patched_source_sha256, sha256.combo_engine_source, sha256.combo_engine_source_file) (復盤 reminder)",
+    "combo_local_details.json now carries per-scenario counts and cutoff_utc so old_result_impact_scope_v1_19.py can verify count integrity and the cutoff"
+  ],
+  "open_questions": [
+    "DEV-1 per-leg day boundary: confirm Taipei (default) or keep PREREG v1.0 UTC",
+    "same-bar equal-rank tie-break: long_first (default per ChatGPT v1.19 '同順位多先')",
+    "whether the research-added controls (12 slots / 600U / block_any) stay on for the main arm or become sensitivity only",
+    "R2 comparison deliverable = original independent RETEST24 R2 baseline (ChatGPT original research)"
+  ]
+}

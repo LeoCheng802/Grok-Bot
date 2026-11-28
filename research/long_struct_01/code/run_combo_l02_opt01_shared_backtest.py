@@ -1,20 +1,31 @@
 #!/usr/bin/env python3
-"""BACKTEST-READINESS-01 v1.17 | COMBO_L02_OPT01_SHARED_50K_10X offline runner.
+"""BACKTEST-READINESS-01 v1.19 | COMBO_L02_OPT01_SHARED_50K_10X offline runner.
 
 One shared account, NOT two independent 50,000 USDT books added together:
   * leg 0 (long)  = LONG_STRUCT_02_V1_0_TEMPORAL_SPLIT  (run_long_struct_bounded_backtest.py, unchanged rules/defaults)
   * leg 1 (short) = RETEST24_OPT_01_BEARISH_CLOSE_POS   (run_retest24_bounded_backtest.py, unchanged rules)
-                    sized by the frozen R1_150U (150U / 600U) or R2_100U (100U / 400U) spec; R2 is the comparison arm.
+                    sized by the frozen R1_150U (150U / 600U) spec, or by the R2 sizing (100U / 400U) in the
+                    combo arm OPT01_SIG_R2_SIZING_100U.  That arm is NOT the "R2" comparison: "R2" means the
+                    original independent RETEST24 R2 baseline (ChatGPT v1.19 item 5); this arm can never replace it.
 Both legs run inside ONE call of the registered B6/Q38 engine (patched copy, see _build_combo_sim):
+  ESTABLISHED COMBO BASIS
   * one realised equity, one MTM equity / drawdown, one initial-margin pool (pending + open, both legs),
     one liquidation check, identical fair cost (maker 0.02%, taker 0.05%, slip 0.03%, MMR 1%, 10x cap);
-  * combo-level gates on top of each leg's own frozen rules (defaults taken from the registered
-    shared_risk.RiskLedger defaults: 12 slots long+short combined, 600U realised daily loss per Taipei day):
-      - global active slots (open positions + resting entry orders, both legs),
-      - global realised daily loss (UTC+8 day, net incl. fee and booked funding),
-      - same-instrument cross-leg policy (default block_any: one instrument, one leg at a time),
-      - deterministic cross-leg priority when both legs signal on the same 4H bar (default long_first),
-      - uncomputable windows (e.g. delisted instruments) block new entries and flag overlapping positions.
+    (candidate mapping, slippage alignment and isolation fixes vs the original research are done by the
+     ChatGPT original research and are NOT in scope here; current adapter values are kept unchanged);
+  * each leg keeps its own frozen per-leg rules; per-leg daily loss day boundary is a parameter
+    (--leg-daily-loss-day, default taipei = Asia/Taipei 00:00 reset; utc = frozen PREREG v1.0 basis;
+     the default is a DECLARED deviation from PREREG v1.0, pending 77 / ChatGPT confirmation);
+  * cross-leg order on one 4H bar (--cross-leg-order, default rank_interleave): each direction keeps its own
+    frozen sort; directions are interleaved by same-scale rank (0, 1, 2, ...), equal rank -> --leg-priority
+    (default long_first).  direction_block (whole direction first) is the v1.17 behaviour, sensitivity only.
+  RESEARCH-ADDED RISK CONTROLS (listed separately; each can be switched off; differences must not be
+  attributed to signals alone):
+      - global active slots (open positions + resting entry orders, both legs)  --global-max-slots (0 = off)
+      - global realised daily loss (Taipei day, net incl. fee and booked funding) --global-daily-loss-u (0 = off)
+      - same-instrument cross-leg policy                                      --same-inst-policy block_any|allow_opposite|off
+  * uncomputable windows: ONLY explicit, evidence-backed windows where required PRICE data is missing
+    (--uncomputable-windows, each entry needs a non-empty "evidence") block new entries and flag overlaps.
 
 v1.15 preliminary-data policy (data mostly complete -> run, annotate gaps):
   * missing funding rates stay UNKNOWN: never zero-filled, never interpolated, no symbol dropped;
@@ -22,12 +33,19 @@ v1.15 preliminary-data policy (data mostly complete -> run, annotate gaps):
     CONDITIONAL scenario (unknown funding not booked) and must not be called true net performance;
   * missing 8H grid events are listed in full (local details), no abort;
   * funding-month inventory: ONLY complete == "true" counts as complete; "false" / blank / anything else = not complete;
-  * inventory sub_reason rest_51001_instrument_not_listed (e.g. RVN 2026-11) -> whole CST month treated as an
-    uncomputable window (exact delisting time unknown); extra windows can be passed with --uncomputable-windows.
+  * inventory sub_reason rest_51001_instrument_not_listed (e.g. RVN 2026-11) is a FUNDING annotation only
+    (v1.19 item 3): the instrument stays in the population, entries are NOT blocked, the missing rates stay
+    unknown and every position touching that month carries the note.
+
+Adapter integrity (v1.19 item 6): the outer offline guard (socket / urllib / http.client blocked) is entered
+BEFORE any adapter is read; both adapters are read once, their full size and SHA-256 are compared with the
+expected values (pinned constants, or explicit --*-adapter-size/--*-adapter-sha256 for an override path),
+and only the verified bytes are compiled and executed.  A mismatch refuses before any adapter code runs.
 
 Output contract: --out-dir must be a NEW isolated directory (absent or empty); combo_result.json exists only
-after a complete run; any failure leaves no result file and no *.tmp. Zero network (outer TransportBlocker),
-zero credentials, no order/exchange API. Results are always labelled PRELIMINARY (never PASS).
+after a complete run; any failure leaves no result file and no *.tmp. The exact patched engine source is
+written to combo_engine_patched_source.txt and its SHA-256 recorded in combo_result.json (v1.19 item 8).
+Zero network, zero credentials, no order/exchange API. Results are always labelled PRELIMINARY (never PASS).
 """
 
 from __future__ import annotations
@@ -35,24 +53,38 @@ from __future__ import annotations
 import argparse
 import csv
 import hashlib
-import importlib.util
 import json
 import sys
 import time
+import types
+import socket
+import urllib.request
+import http.client
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import numpy as np
 
-RUNNER_VERSION = "v1.17"
+RUNNER_VERSION = "v1.19"
 STUDY_ID = "BACKTEST-READINESS-01"
 COMBO_ID = "COMBO_L02_OPT01_SHARED_50K_10X"
 LONG_CANDIDATE = "LONG_STRUCT_02_V1_0_TEMPORAL_SPLIT"
 SHORT_CANDIDATE = "RETEST24_OPT_01_BEARISH_CLOSE_POS"
-SHORT_SIZINGS = {"R1_150U": ("R1", 150.0, 600.0), "R2_100U": ("R2", 100.0, 400.0)}
+R2_SIZING_ARM = "OPT01_SIG_R2_SIZING_100U"
+SHORT_SIZINGS = {"R1_150U": ("R1", 150.0, 600.0), R2_SIZING_ARM: ("R2", 100.0, 400.0)}
+RENAMED_SIZINGS = {"R2_100U": R2_SIZING_ARM}
+R2_ARM_NOTE = ("OPT01_SIG_R2_SIZING_100U = OPT01 short signal with R2 sizing (100U / 400U) inside the shared combo; "
+               "it is NOT the R2 comparison. 'R2' = the original independent RETEST24 R2 baseline produced by the "
+               "already-uploaded script; this arm must never substitute for that comparison.")
 FILL_MODES = {"cross_1tick": False, "delay1bar": True}
-DEFAULT_SCENARIOS = "R1_150U|cross_1tick,R1_150U|delay1bar,R2_100U|cross_1tick,R2_100U|delay1bar"
-UNCOMPUTABLE_SUB_REASONS = ("rest_51001_instrument_not_listed",)
+DEFAULT_SCENARIOS = "R1_150U|cross_1tick,R1_150U|delay1bar,OPT01_SIG_R2_SIZING_100U|cross_1tick,OPT01_SIG_R2_SIZING_100U|delay1bar"
+FUNDING_NOTE_SUB_REASONS = ("rest_51001_instrument_not_listed",)  # v1.19: annotation only, never an entry block
+PINNED_ADAPTERS = {
+    "long": ("run_long_struct_bounded_backtest.py", 57609, "8db9e3fd0f64f86493f39584b5a5849b6f7f1067026a5e75413a86b6e9010a59"),
+    "short": ("run_retest24_bounded_backtest.py", 54101, "67094079a995fa6f751d5393127b12895264641ccadc99a105d75511c3742f89"),
+}
+LEG_DAY_OFFSETS = {"taipei": 8 * 3600000, "utc": 0}
+CROSS_LEG_ORDERS = ("rank_interleave", "direction_block")
 INVENTORY_REQUIRED_COLS = ("inst_id", "month_cst", "complete")
 
 H1, H4, H8, DAY = 3600000, 14400000, 28800000, 86400000
@@ -65,6 +97,7 @@ DETAILS_NAME = "combo_local_details.json"
 SCOPE_NAME = "combo_scope.json"
 DERIVED_DB_NAME = "funding_archive_combo_isolated.sqlite"
 DERIVED_META_NAME = "funding_archive_combo_isolated.meta.json"
+ENGINE_SRC_NAME = "combo_engine_patched_source.txt"
 
 
 # ---------------------------------------------------------------------------------------------
@@ -113,14 +146,77 @@ def _months_spanned(a_ms: int, b_ms: int):
     return out
 
 
-def _load_module(name: str, path: Path):
-    spec = importlib.util.spec_from_file_location(name, str(path))
-    if spec is None or spec.loader is None:
-        raise RuntimeError("adapter module cannot be loaded: " + path.name)
-    mod = importlib.util.module_from_spec(spec)
+class OfflineGuard:
+    """Outer network block entered before any adapter is read (v1.19 item 6)."""
+
+    def __init__(self):
+        self.hits = []
+        self._orig = {}
+
+    def _deny(self, label):
+        def _blocked(*args, **kwargs):
+            self.hits.append(label)
+            raise RuntimeError("OFFLINE_TRANSPORT_BLOCKED: " + label)
+        return _blocked
+
+    def __enter__(self):
+        self._orig = {
+            "create_connection": socket.create_connection, "socket_connect": socket.socket.connect,
+            "socket_connect_ex": socket.socket.connect_ex, "getaddrinfo": socket.getaddrinfo,
+            "urlopen": urllib.request.urlopen, "http_connect": http.client.HTTPConnection.connect,
+            "https_connect": http.client.HTTPSConnection.connect,
+        }
+        socket.create_connection = self._deny("socket.create_connection")
+        socket.socket.connect = self._deny("socket.socket.connect")
+        socket.socket.connect_ex = self._deny("socket.socket.connect_ex")
+        socket.getaddrinfo = self._deny("socket.getaddrinfo")
+        urllib.request.urlopen = self._deny("urllib.request.urlopen")
+        http.client.HTTPConnection.connect = self._deny("http.client.HTTPConnection.connect")
+        http.client.HTTPSConnection.connect = self._deny("http.client.HTTPSConnection.connect")
+        return self
+
+    def __exit__(self, exc_type, exc, tb):
+        socket.create_connection = self._orig["create_connection"]
+        socket.socket.connect = self._orig["socket_connect"]
+        socket.socket.connect_ex = self._orig["socket_connect_ex"]
+        socket.getaddrinfo = self._orig["getaddrinfo"]
+        urllib.request.urlopen = self._orig["urlopen"]
+        http.client.HTTPConnection.connect = self._orig["http_connect"]
+        http.client.HTTPSConnection.connect = self._orig["https_connect"]
+
+
+def _expected_adapter(role, path, cli_size, cli_sha):
+    """Expected size/SHA: explicit CLI values, else the pinned constants (never measured from the file itself)."""
+    if (cli_size is None) != (cli_sha is None):
+        raise RuntimeError(role + " adapter: give both --" + role + "-adapter-size and --" + role + "-adapter-sha256, or neither")
+    if cli_sha is not None:
+        cli_sha = str(cli_sha).strip().lower()
+        if len(cli_sha) != 64 or any(c not in "0123456789abcdef" for c in cli_sha):
+            raise RuntimeError(role + " adapter: expected sha256 must be 64 hex chars")
+        return int(cli_size), cli_sha, "cli_expected"
+    _name, size, digest = PINNED_ADAPTERS[role]
+    return size, digest, "pinned_constant"
+
+
+def _read_verified_adapter(role, path, exp_size, exp_sha):
+    """Read the adapter ONCE and verify full size + SHA-256 BEFORE any of its code runs."""
+    if not path.is_file():
+        raise RuntimeError(role + " adapter is not a regular file: " + path.name)
+    data = path.read_bytes()
+    got = hashlib.sha256(data).hexdigest()
+    if len(data) != int(exp_size) or got != exp_sha:
+        raise RuntimeError("%s adapter size/SHA mismatch before load (expected %d B %s, got %d B %s); refusing before any adapter code runs"
+                           % (role, int(exp_size), exp_sha, len(data), got))
+    return data, got
+
+
+def _load_module_from_bytes(name: str, path: Path, data: bytes):
+    """Execute exactly the verified bytes (no second read of the file)."""
+    mod = types.ModuleType(name)
+    mod.__file__ = str(path)
     sys.modules[name] = mod
     try:
-        spec.loader.exec_module(mod)
+        exec(compile(data, str(path), "exec"), mod.__dict__)
     except Exception:
         sys.modules.pop(name, None)
         raise
@@ -181,12 +277,12 @@ def load_funding_inventory(path: Path):
             if key in inv and inv[key] != rec:
                 raise RuntimeError("funding inventory has conflicting duplicate rows for " + inst + " " + month)
             inv[key] = rec
-            if rec["sub_reason"] in UNCOMPUTABLE_SUB_REASONS:
-                uncomputable.setdefault(inst, []).append({
-                    "from_ms": _cst_month_start_ms(month),
-                    "to_ms": None,
-                    "reason": "inventory:" + rec["sub_reason"] + ":" + month + " (exact delisting time unknown; whole CST month onward)",
-                })
+            if rec["sub_reason"] in FUNDING_NOTE_SUB_REASONS:
+                # v1.19 item 3: a REST 51001 funding query proves nothing about prices or trading in that month;
+                # population kept, entries NOT blocked, missing rates stay unknown (annotation only).
+                uncomputable.setdefault(inst, {})[month] = (
+                    "funding_query:" + rec["sub_reason"] + ":" + month
+                    + " (funding rates unknown, not booked, not zero-filled; NOT an entry block, NOT uncomputable by itself)")
     return inv, uncomputable, stats
 
 
@@ -199,11 +295,15 @@ def load_uncomputable_windows(path: Path, parse_utc_ms):
     for it in items:
         if not isinstance(it, dict) or not it.get("inst_id") or not it.get("from_utc"):
             raise RuntimeError("uncomputable window entry needs inst_id and from_utc")
+        if not str(it.get("evidence") or "").strip():
+            raise RuntimeError("uncomputable window for " + str(it["inst_id"]) + " needs non-empty 'evidence' that required PRICE data is missing "
+                               "(v1.19: a missing funding rate alone is never uncomputable)")
         a = parse_utc_ms(str(it["from_utc"]))
         b = parse_utc_ms(str(it["to_utc"])) if it.get("to_utc") else None
         if b is not None and b <= a:
             raise RuntimeError("uncomputable window to_utc must be > from_utc")
-        out.setdefault(str(it["inst_id"]), []).append({"from_ms": a, "to_ms": b, "reason": str(it.get("reason") or "explicit")})
+        out.setdefault(str(it["inst_id"]), []).append({"from_ms": a, "to_ms": b, "reason": str(it.get("reason") or "explicit"),
+                                                       "evidence": str(it["evidence"]).strip()})
     return out
 
 
@@ -240,8 +340,8 @@ def _combo_gate(cb, li, inst, t30, pos, pend, legs):
     for w in cb["uncomputable"].get(inst, ()):
         if w["from_ms"] <= t30 and (w["to_ms"] is None or t30 < w["to_ms"]):
             return _combo_block(cb, "uncomputable_window", li, inst, t30, {"window_reason": w["reason"]})
-    holders = [(k, "open") for k in pos if k[1] == inst and k[0] != li]
-    holders += [(k, "pending", od) for k, od in pend.items() if k[1] == inst and k[0] != li]
+    holders = [] if cb["same_inst_policy"] == "off" else [(k, "open") for k in pos if k[1] == inst and k[0] != li]
+    holders += [] if cb["same_inst_policy"] == "off" else [(k, "pending", od) for k, od in pend.items() if k[1] == inst and k[0] != li]
     for h in holders:
         k, state = h[0], h[1]
         same_side = cb["leg_sides"][k[0]] == cb["leg_sides"][li]
@@ -249,10 +349,10 @@ def _combo_gate(cb, li, inst, t30, pos, pend, legs):
             same_bar = state == "pending" and int(h[2]["pts"]) == int(t30)
             return _combo_block(cb, "same_bar_cross_leg_same_inst" if same_bar else "same_inst_held_by_other_leg",
                                 li, inst, t30, {"holder_leg": k[0], "holder_state": state})
-    if len(pos) + len(pend) >= cb["global_max_slots"]:
+    if cb["global_max_slots"] > 0 and len(pos) + len(pend) >= cb["global_max_slots"]:
         return _combo_block(cb, "global_slots_full", li, inst, t30, {"active": len(pos) + len(pend)})
     day = (int(t30) + 8 * H1) // DAY
-    if cb["gday"].get(day, 0.0) <= -cb["global_daily_loss_u"]:
+    if cb["global_daily_loss_u"] > 0 and cb["gday"].get(day, 0.0) <= -cb["global_daily_loss_u"]:
         return _combo_block(cb, "global_daily_loss_taipei_day", li, inst, t30, {"day_net_u": round(cb["gday"][day], 6)})
     return False
 
@@ -284,8 +384,10 @@ _PATCHES = (
      1),
     ("init",
      '    trades, last_c = [], {}; _ord_log = []; _skip_fb_cross = 0; _same_bar_sl = 0',
-     '    trades, last_c = [], {}; _ord_log = []; _skip_fb_cross = 0; _same_bar_sl = 0; _cb = _combo_init(combo)',
+     '    trades, last_c = [], {}; _ord_log = []; _skip_fb_cross = 0; _same_bar_sl = 0; _cb = _combo_init(combo); '
+     '_leg_doff = int((combo or {}).get("leg_day_offset_ms", 0))',
      1),
+    ("leg_day_boundary", 'ud = t30 // DAY', 'ud = (t30 + _leg_doff) // DAY', 3),
     ("gate",
      '                if (li, inst) in pos or (li, inst) in pend or blk.get((li, inst), 0) > t30 or t30 < pause_u[li]: continue\n',
      '                if (li, inst) in pos or (li, inst) in pend or blk.get((li, inst), 0) > t30 or t30 < pause_u[li]: continue\n'
@@ -320,7 +422,7 @@ def _build_combo_sim(b6mod):
     ns = dict(q38a.__dict__)
     ns.update({"_combo_init": _combo_init, "_combo_gate": _combo_gate, "_combo_book": _combo_book, "_combo_export": _combo_export})
     exec(compile(src, "<run_audit_sim_combo>", "exec"), ns)
-    return ns["run_audit_sim_combo"], hashlib.sha256(src.encode("utf-8")).hexdigest()
+    return ns["run_audit_sim_combo"], hashlib.sha256(src.encode("utf-8")).hexdigest(), src
 
 
 # ---------------------------------------------------------------------------------------------
@@ -345,9 +447,15 @@ def _overlaps(windows, a_ms, b_ms):
     return hits
 
 
-def annotate_arm(r, leg_names, inv, unc, last_bar):
+def _funding_notes_for(notes, inst, months):
+    d = (notes or {}).get(inst) or {}
+    return [d[m] for m in months if m in d]
+
+
+def annotate_arm(r, leg_names, inv, unc, last_bar, funding_notes=None):
     trades_out = []
-    flags = {"funding_incomplete_or_unknown_trades": 0, "uncomputable_trades": 0, "no_funding_interval_trades": 0}
+    flags = {"funding_incomplete_or_unknown_trades": 0, "uncomputable_trades": 0, "no_funding_interval_trades": 0,
+             "funding_query_51001_note_positions": 0}
     side_to_leg = {"long": 0, "short": 1}
     for i, t in enumerate(r.get("_trades", [])):
         inst, ets, xts = t["inst"], int(t["ets"]), int(t["xts"])
@@ -360,6 +468,9 @@ def annotate_arm(r, leg_names, inv, unc, last_bar):
             flags["no_funding_interval_trades"] += 1
         if unc_hits:
             flags["uncomputable_trades"] += 1
+        fnotes = _funding_notes_for(funding_notes, inst, months)
+        if fnotes:
+            flags["funding_query_51001_note_positions"] += 1
         leg = side_to_leg[t["side"]]
         trades_out.append({
             "seq": i + 1, "leg": leg, "leg_name": leg_names[leg], "inst_id": inst, "side": t["side"],
@@ -367,6 +478,7 @@ def annotate_arm(r, leg_names, inv, unc, last_bar):
             "net_pnl_u": round(float(t["net"]), 6), "fee_u": round(float(t["fee"]), 6), "fund_booked_u": round(float(t["fund"]), 6),
             "reason": t.get("reason"), "funding_status": fst, "funding_months_cst": per,
             "computability": "不可計算(UNCOMPUTABLE)" if unc_hits else "computable", "uncomputable_reasons": unc_hits,
+            "funding_notes": fnotes,
         })
     open_out = []
     for p in r.get("_combo_open", []):
@@ -376,9 +488,13 @@ def annotate_arm(r, leg_names, inv, unc, last_bar):
         unc_hits = _overlaps(unc.get(p["inst"]), ets, int(last_bar))
         if unc_hits:
             flags["uncomputable_trades"] += 1
+        fnotes = _funding_notes_for(funding_notes, p["inst"], months)
+        if fnotes:
+            flags["funding_query_51001_note_positions"] += 1
         open_out.append({"leg": p["leg"], "leg_name": leg_names[p["leg"]], "inst_id": p["inst"], "side": p["side"],
                          "ets_ms": ets, "ets_utc": _iso(ets), "funding_status": fst, "funding_months_cst": per,
-                         "computability": "不可計算(UNCOMPUTABLE)" if unc_hits else "computable", "uncomputable_reasons": unc_hits})
+                         "computability": "不可計算(UNCOMPUTABLE)" if unc_hits else "computable", "uncomputable_reasons": unc_hits,
+                         "funding_notes": fnotes})
     miss = sorted(e for e in r.get("events_set", set()) if len(e) >= 4 and e[3] == "miss_8h")
     miss_out = [{"leg": int(e[0]), "inst_id": e[1], "ts_ms": int(e[2]), "ts_utc": _iso(e[2]), "kind": e[3]} for e in miss]
     return trades_out, open_out, miss_out, flags
@@ -405,7 +521,7 @@ def _leg_stats(trades):
 
 def parse_args(argv=None):
     here = Path(__file__).resolve().parent
-    p = argparse.ArgumentParser(description="BACKTEST-READINESS-01 v1.17 shared 50,000 USDT / 10x combo (LONG_STRUCT_02 + RETEST24 OPT-01) offline runner")
+    p = argparse.ArgumentParser(description="BACKTEST-READINESS-01 v1.19 shared 50,000 USDT / 10x combo (LONG_STRUCT_02 + RETEST24 OPT-01) offline runner")
     p.add_argument("--manifest", required=True, help="REPRO_MANIFEST.json (registers RETEST24 script, shared_risk.py, engine files)")
     p.add_argument("--retest24-script", required=True)
     p.add_argument("--shared-risk", required=True)
@@ -416,11 +532,19 @@ def parse_args(argv=None):
     p.add_argument("--symbols", default="", help="comma list; empty = all cache symbols excl. USDC-USDT-SWAP (EX_USDC_286)")
     p.add_argument("--start-utc", default="2023-01-01T00:00:00Z")
     p.add_argument("--end-utc", default="2026-11-26T12:00:00Z")
-    p.add_argument("--scenarios", default=DEFAULT_SCENARIOS, help="comma list of <R1_150U|R2_100U>|<cross_1tick|delay1bar>")
-    p.add_argument("--global-max-slots", type=int, default=12, help="open positions + resting entries, both legs (shared_risk default 12)")
-    p.add_argument("--global-daily-loss-u", type=float, default=600.0, help="realised net loss per Taipei day, both legs (shared_risk default 600)")
-    p.add_argument("--same-inst-policy", choices=("block_any", "allow_opposite"), default="block_any")
-    p.add_argument("--leg-priority", choices=("long_first", "short_first"), default="long_first")
+    p.add_argument("--scenarios", default=DEFAULT_SCENARIOS, help="comma list of <R1_150U|OPT01_SIG_R2_SIZING_100U>|<cross_1tick|delay1bar>")
+    p.add_argument("--global-max-slots", type=int, default=12, help="RESEARCH-ADDED: open positions + resting entries, both legs (shared_risk default 12; 0 = off)")
+    p.add_argument("--global-daily-loss-u", type=float, default=600.0, help="RESEARCH-ADDED: realised net loss per Taipei day, both legs (shared_risk default 600; 0 = off)")
+    p.add_argument("--same-inst-policy", choices=("block_any", "allow_opposite", "off"), default="block_any", help="RESEARCH-ADDED cross-leg same-instrument rule")
+    p.add_argument("--leg-priority", choices=("long_first", "short_first"), default="long_first", help="tie-break at equal cross-leg rank (or whole-direction order with direction_block)")
+    p.add_argument("--cross-leg-order", choices=CROSS_LEG_ORDERS, default="rank_interleave",
+                   help="rank_interleave: same-scale rank interleave, equal rank -> --leg-priority; direction_block: v1.17 whole-direction order (sensitivity)")
+    p.add_argument("--leg-daily-loss-day", choices=tuple(LEG_DAY_OFFSETS), default="taipei",
+                   help="per-leg daily-loss day boundary: taipei (Asia/Taipei 00:00, default; deviation from PREREG v1.0) or utc (PREREG v1.0)")
+    p.add_argument("--long-adapter-size", type=int, default=None)
+    p.add_argument("--long-adapter-sha256", default=None)
+    p.add_argument("--short-adapter-size", type=int, default=None)
+    p.add_argument("--short-adapter-sha256", default=None)
     p.add_argument("--funding-inventory", default="", help="funding month inventory CSV (only complete==true counts as complete)")
     p.add_argument("--uncomputable-windows", default="", help="optional JSON list of {inst_id, from_utc, to_utc?, reason}")
     p.add_argument("--long-adapter", default=str(here / "run_long_struct_bounded_backtest.py"))
@@ -435,11 +559,25 @@ def main(argv=None) -> int:
     args = parse_args(argv)
     long_path = Path(args.long_adapter).expanduser().resolve()
     short_path = Path(args.short_adapter).expanduser().resolve()
-    long_sha_before, short_sha_before = sha(long_path), sha(short_path)
-    short_mod = _load_module("combo_short_adapter_retest24", short_path)
+    with OfflineGuard() as guard:
+        exp_long = _expected_adapter("long", long_path, args.long_adapter_size, args.long_adapter_sha256)
+        exp_short = _expected_adapter("short", short_path, args.short_adapter_size, args.short_adapter_sha256)
+        long_bytes, long_sha_before = _read_verified_adapter("long", long_path, exp_long[0], exp_long[1])
+        short_bytes, short_sha_before = _read_verified_adapter("short", short_path, exp_short[0], exp_short[1])
+        adapter_verification = {
+            "order": "outer_offline_guard_entered -> adapters read once -> full size+SHA verified -> verified bytes executed",
+            "long": {"size": len(long_bytes), "sha256": long_sha_before, "expected_source": exp_long[2]},
+            "short": {"size": len(short_bytes), "sha256": short_sha_before, "expected_source": exp_short[2]},
+        }
+        short_mod = _load_module_from_bytes("combo_short_adapter_retest24", short_path, short_bytes)
+        return _main_guarded(args, t0, started_utc, guard, long_path, short_path, long_bytes, long_sha_before,
+                             short_sha_before, short_mod, adapter_verification)
 
+
+def _main_guarded(args, t0, started_utc, guard, long_path, short_path, long_bytes, long_sha_before,
+                  short_sha_before, short_mod, adapter_verification) -> int:
     with short_mod.TransportBlocker() as tb:
-        long_mod = _load_module("combo_long_adapter_long_struct", long_path)
+        long_mod = _load_module_from_bytes("combo_long_adapter_long_struct", long_path, long_bytes)
         manifest_path = Path(args.manifest).expanduser()
         retest_path = Path(args.retest24_script).expanduser()
         shared_risk_path = Path(args.shared_risk).expanduser()
@@ -450,14 +588,17 @@ def main(argv=None) -> int:
             raise RuntimeError("at least one scenario is required")
         for s in scen:
             parts = s.split("|")
+            if parts and parts[0] in RENAMED_SIZINGS:
+                raise RuntimeError("scenario sizing " + parts[0] + " was renamed to " + RENAMED_SIZINGS[parts[0]]
+                                   + " in v1.19 (it is NOT the R2 comparison; R2 = original independent RETEST24 R2 baseline)")
             if len(parts) != 2 or parts[0] not in SHORT_SIZINGS or parts[1] not in FILL_MODES:
                 raise RuntimeError("unsupported scenario: " + s)
         if len(set(scen)) != len(scen):
             raise RuntimeError("duplicate scenario")
-        if args.global_max_slots < 1:
-            raise RuntimeError("global-max-slots must be >= 1")
-        if not (args.global_daily_loss_u > 0):
-            raise RuntimeError("global-daily-loss-u must be > 0")
+        if args.global_max_slots < 0:
+            raise RuntimeError("global-max-slots must be >= 0 (0 = research control off)")
+        if not (args.global_daily_loss_u >= 0):
+            raise RuntimeError("global-daily-loss-u must be >= 0 (0 = research control off)")
         start_ts = short_mod.parse_utc_ms(args.start_utc)
         end_ts = short_mod.parse_utc_ms(args.end_utc)
         if end_ts < start_ts:
@@ -470,16 +611,39 @@ def main(argv=None) -> int:
             "legs": {"0": {"name": LONG_CANDIDATE, "side": "long"}, "1": {"name": SHORT_CANDIDATE, "side": "short"}},
             "scenarios": scen, "start_utc": args.start_utc, "end_utc": args.end_utc,
             "universe": requested_symbols if requested_symbols else "ALL_CACHE_EX_USDC (EX_USDC_286)",
+            "established_combo_basis": {
+                "capital": "one shared 50,000U / 10x account, both legs in one engine call",
+                "per_leg_rules": "each leg keeps its own frozen rules (long 24 slots / 600U / 3-loss pause; short 12 slots / R1 600U or R2-sizing 400U)",
+                "leg_daily_loss_day": args.leg_daily_loss_day,
+                "leg_daily_loss_day_meaning": ("Asia/Taipei 00:00 reset (DEVIATION from PREREG v1.0 UTC day; pending 77/ChatGPT)"
+                                               if args.leg_daily_loss_day == "taipei" else "UTC 00:00 reset (PREREG v1.0 basis)"),
+                "cross_leg_order": args.cross_leg_order, "leg_priority": args.leg_priority,
+                "cross_leg_order_meaning": ("same-scale rank interleave; equal rank -> " + args.leg_priority + "; within-direction order unchanged"
+                                            if args.cross_leg_order == "rank_interleave" else "v1.17 whole-direction order (sensitivity only)"),
+                "out_of_scope": "candidate mapping, slippage alignment (original research 0.0005 vs current 0.0003), original 24-slot mapping and isolation fixes are done by the ChatGPT original research; current values kept",
+            },
+            "research_added_risk_controls": {
+                "note": "NOT part of the established combo basis; listed separately, each switchable; result differences must not be attributed to signals alone",
+                "global_max_slots": {"enabled": args.global_max_slots > 0, "value": args.global_max_slots},
+                "global_daily_loss_u": {"enabled": args.global_daily_loss_u > 0, "value": args.global_daily_loss_u,
+                                        "day": "Asia/Taipei (UTC+8) calendar day, realised net incl. fee and booked funding"},
+                "same_inst_policy": {"enabled": args.same_inst_policy != "off", "value": args.same_inst_policy},
+            },
             "global_max_slots": args.global_max_slots, "global_daily_loss_u": args.global_daily_loss_u,
             "global_daily_loss_day": "Asia/Taipei (UTC+8) calendar day, realised net incl. fee and booked funding",
             "same_inst_policy": args.same_inst_policy, "leg_priority": args.leg_priority,
+            "cross_leg_order": args.cross_leg_order, "leg_daily_loss_day": args.leg_daily_loss_day,
+            "prereg_deviations": ([{"item": "per-leg daily loss day boundary", "prereg_v1_0": "UTC day", "this_run": "Asia/Taipei day",
+                                    "status": "PENDING_77_OR_CHATGPT_CONFIRMATION"}] if args.leg_daily_loss_day == "taipei" else []),
+            "r2_naming": R2_ARM_NOTE,
+            "adapter_verification": adapter_verification,
             "funding_inventory_supplied": bool(args.funding_inventory),
             "started_utc": started_utc,
         }
         print("COMBO_SCOPE:", json.dumps(scope, ensure_ascii=False), flush=True)
         if args.dry_check:
             print(json.dumps({"dry_check": "PASS", "files_verified": bound["files_verified"], "scope": scope,
-                              "transport_hits": list(tb.hits)}, ensure_ascii=False, indent=2), flush=True)
+                              "transport_hits": list(tb.hits) + list(guard.hits)}, ensure_ascii=False, indent=2), flush=True)
             return 0
         if not args.cache_dir or not args.funding_db or not args.out_dir:
             raise RuntimeError("--cache-dir, --funding-db and --out-dir are required unless --dry-check")
@@ -497,7 +661,8 @@ def main(argv=None) -> int:
         outputs = [("derived_db", derived_db), ("derived_meta", derived_meta), ("derived_meta.tmp", Path(str(derived_meta) + ".tmp")),
                    ("scope", scope_file), ("scope.tmp", Path(str(scope_file) + ".tmp")),
                    ("result", result_file), ("result.tmp", Path(str(result_file) + ".tmp")),
-                   ("details", details_file), ("details.tmp", Path(str(details_file) + ".tmp"))]
+                   ("details", details_file), ("details.tmp", Path(str(details_file) + ".tmp")),
+                   ("engine_src", out_dir / ENGINE_SRC_NAME), ("engine_src.tmp", Path(str(out_dir / ENGINE_SRC_NAME) + ".tmp"))]
 
         cache_manifest_path = cache_dir / "manifest.json"
         if not cache_manifest_path.is_file():
@@ -534,7 +699,8 @@ def main(argv=None) -> int:
         inv, inv_unc, inv_stats = (None, {}, None)
         if inv_path is not None:
             inv, inv_unc, inv_stats = load_funding_inventory(inv_path)
-        unc = {k: list(v) for k, v in inv_unc.items()}
+        funding_notes = {k: dict(v) for k, v in inv_unc.items()}
+        unc = {}
         if unc_path is not None:
             for k, v in load_uncomputable_windows(unc_path, short_mod.parse_utc_ms).items():
                 unc.setdefault(k, []).extend(v)
@@ -549,7 +715,11 @@ def main(argv=None) -> int:
             short_mod._atomic_write_text(scope_file, json.dumps(scope, ensure_ascii=False, indent=2) + "\n")
             short_mod._bind_isolated_funding_db(src_db, derived_db, derived_meta)
             loaded = short_mod._load_runtime_modules(bound)
-            combo_sim, combo_src_sha = _build_combo_sim(loaded["b6_sim_portable"])
+            combo_sim, combo_src_sha, combo_src = _build_combo_sim(loaded["b6_sim_portable"])
+            engine_src_file = out_dir / ENGINE_SRC_NAME
+            short_mod._atomic_write_text(engine_src_file, combo_src)
+            if sha(engine_src_file) != combo_src_sha:
+                raise RuntimeError("patched engine source file SHA differs from the executed source SHA")
             fmaps, ov_raw = short_mod.load_funding_db(derived_db)
 
             raw, bars_set = {}, set()
@@ -587,8 +757,10 @@ def main(argv=None) -> int:
             merged, contested_bars = {}, 0
             for li, cands in ((0, l_cands), (1, s_cands)):
                 for bt, lst in cands.items():
-                    for (sk, _li, inst, px, tr) in lst:
-                        merged.setdefault(int(bt), []).append(((rank[li], sk), li, inst, px, tr))
+                    # stable sort by the leg's own frozen key == the engine's own within-direction order
+                    for ordinal, (sk, _li, inst, px, tr) in enumerate(sorted(lst, key=lambda x: x[0])):
+                        key = (ordinal, rank[li], sk) if args.cross_leg_order == "rank_interleave" else (rank[li], sk)
+                        merged.setdefault(int(bt), []).append((key, li, inst, px, tr))
             for bt, lst in merged.items():
                 if len({x[1] for x in lst}) > 1:
                     contested_bars += 1
@@ -610,11 +782,12 @@ def main(argv=None) -> int:
                 if sides != ["long", "short"]:
                     raise RuntimeError("combo legs must be exactly [long, short]")
                 ctrl = {"global_max_slots": args.global_max_slots, "global_daily_loss_u": args.global_daily_loss_u,
-                        "same_inst_policy": args.same_inst_policy, "leg_sides": sides, "uncomputable": unc}
+                        "same_inst_policy": args.same_inst_policy, "leg_sides": sides, "uncomputable": unc,
+                        "leg_day_offset_ms": LEG_DAY_OFFSETS[args.leg_daily_loss_day]}
                 r = combo_sim(raw, bars, spec, ov_raw_ts=ov_raw, cands_pre=merged, max_lev_pre=max_lev,
                               record_events=True, record_trades_detail=True, fill_mode="cross_1tick",
                               delay_first_bar=FILL_MODES[fill], combo=ctrl)
-                trades_out, open_out, miss_out, flags = annotate_arm(r, leg_names, inv, unc, bars[-1])
+                trades_out, open_out, miss_out, flags = annotate_arm(r, leg_names, inv, unc, bars[-1], funding_notes)
                 ol = r.get("_ord_log", [])
                 gaps = []
                 if miss_out:
@@ -625,11 +798,14 @@ def main(argv=None) -> int:
                     gaps.append("positions_held_in_months_not_complete_true")
                 if flags["uncomputable_trades"]:
                     gaps.append("uncomputable_positions_present")
+                if flags["funding_query_51001_note_positions"]:
+                    gaps.append("positions_in_rest_51001_funding_months_rates_unknown")
                 gaps.append("non_8h_funding_denominator_unknown")
                 arms[name] = {
                     "status": "PRELIMINARY_INCOMPLETE_DATA" if len(gaps) > 1 else "PRELIMINARY_BATCH_SCOPE",
                     "performance_label": "初步／資料不完整；未入帳的未知資金費為條件情境，不是真實淨績效",
                     "short_sizing": sizing, "fill_mode": fill,
+                    "short_sizing_note": (R2_ARM_NOTE if sizing == R2_SIZING_ARM else "R1 frozen sizing (150U / 600U)"),
                     "account": {"final_eq_u": r.get("final_eq_u"), "ret_eq_pct": r.get("ret_eq_pct"),
                                 "mtm_mdd_pct": r.get("mtm_mdd_pct"), "cagr_eq_pct": r.get("cagr_eq_pct")},
                     "legs": {
@@ -648,7 +824,8 @@ def main(argv=None) -> int:
                     "annotation_flags": flags,
                     "gaps": gaps,
                 }
-                details[name] = {"closed_trades": trades_out, "open_at_end": open_out, "missing_funding_events_all": miss_out,
+                details[name] = {"counts": {"closed_trades": len(trades_out), "open_at_end": len(open_out)},
+                                 "closed_trades": trades_out, "open_at_end": open_out, "missing_funding_events_all": miss_out,
                                  "combo_blocked_events": (r.get("_combo") or {}).get("blocked_events", []),
                                  "order_log": ol}
 
@@ -657,7 +834,7 @@ def main(argv=None) -> int:
                 after["funding_inventory"] = sha(inv_path)
             if unc_path is not None:
                 after["uncomputable_windows"] = sha(unc_path)
-            if after != sha_before or sha(long_path) != long_sha_before or sha(short_path) != short_sha_before:
+            if after != sha_before or sha(long_path) != long_sha_before or sha(short_path) != short_sha_before or sha(engine_src_file) != combo_src_sha:
                 raise RuntimeError("fixed input modified during run")
             for inst, pth in npz_paths.items():
                 if sha(pth) != npz_records[inst]["sha256"]:
@@ -667,7 +844,9 @@ def main(argv=None) -> int:
             short_mod._atomic_write_text(details_file, json.dumps({
                 "public_repo_policy": "LOCAL_OFFLINE_DETAIL_ONLY_DO_NOT_AUTO_PUSH_TO_PUBLIC_REPO",
                 "study_id": STUDY_ID, "version": RUNNER_VERSION, "combo_id": COMBO_ID,
+                "cutoff_utc": _iso(end_ts), "last_bar_30m_utc": _iso(bars[-1]),
                 "uncomputable_windows": {k: v for k, v in sorted(unc.items())},
+                "funding_query_51001_notes": {k: v for k, v in sorted(funding_notes.items())},
                 "npz_files": npz_records, "scenarios": details,
             }, ensure_ascii=False, indent=2) + "\n")
             payload = {
@@ -680,23 +859,30 @@ def main(argv=None) -> int:
                 "candidates": {"long": l_diag, "short": s_diag, "bars_with_both_legs_signalling": contested_bars},
                 "funding_inventory_stats": inv_stats,
                 "uncomputable_windows_count": sum(len(v) for v in unc.values()),
+                "funding_query_51001_note_months": sum(len(v) for v in funding_notes.values()),
+                "outer_offline_guard_active_entire_run": True, "outer_guard_hits": list(guard.hits),
+                "combo_engine_patched_source_file": ENGINE_SRC_NAME,
+                "combo_engine_patched_source_sha256": combo_src_sha,
                 "historical_model_vs_delivered_script_diff": short_mod.HISTORICAL_MODEL_VS_DELIVERED_SCRIPT_DIFF,
                 "combo_model_vs_live_shared_risk_diff": [
                     "live shared_risk.RiskLedger keys slots by (strategy, inst, pos_side); model default block_any is stricter (one instrument, one leg)",
                     "live daily loss uses realised PnL events by Taipei day; model books realised net (fee + booked funding) at exit bar, Taipei day",
                     "each leg keeps its own frozen per-leg limits (long 24 slots / 600U UTC-day / 3-loss pause; short 12 slots / R1 600U or R2 400U UTC-day)",
-                    "same-bar cross-leg order follows --leg-priority, then each leg's own frozen sort key",
+                    "same-bar cross-leg order: --cross-leg-order (default rank_interleave, equal rank -> --leg-priority); each leg's own frozen sort key kept",
+                    "per-leg daily loss day: --leg-daily-loss-day (default taipei; PREREG v1.0 = utc)",
                 ],
                 "sha256": dict(after, manifest=sha(manifest_path), retest24_script=sha(bound["roles"]["retest24_script"]),
                                shared_risk=sha(bound["roles"]["shared_risk"]), long_adapter=long_sha_before, short_adapter=short_sha_before,
                                runner=sha(Path(__file__).resolve()), combo_engine_source=combo_src_sha,
-                               derived_funding_db=sha(derived_db), details=sha(details_file)),
+                               derived_funding_db=sha(derived_db), details=sha(details_file), combo_engine_source_file=sha(engine_src_file)),
                 "local_details_file": DETAILS_NAME,
                 "limitations": [
                     "缺歷史 BBO，post_only 可否掛入與排隊順位未知；cross_1tick 只是穿價下界",
                     "delay1bar 為敏感度，不是真實延遲；歷史 MMR 以 1% 近似",
                     "缺資金費維持未知、未入帳；非 8H 結算應有分母未知；complete=true 只代表該批來源核對口徑",
-                    "RVN 等下架合約的確切下架時間未知，整個 CST 月視為不可計算視窗",
+                    "REST 51001（例如 RVN 2026-11）只代表該次資金費查詢未列出；母體保留、不擋進場，該月資金費維持未知並逐筆註記",
+                    "只有必要價格確實缺且有證據（--uncomputable-windows 的 evidence）才列不可計算",
+                    "候選映射、滑價對齊（原研究 0.0005 vs 目前 0.0003）、原 24 槽與隔離修正由 ChatGPT 原研究完成，不在本次範圍",
                 ],
                 "arms": arms,
             }
