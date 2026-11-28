@@ -4,6 +4,8 @@
 
 | 時間（台北） | 角色 | 標題 | 歷史檔 | 留言 |
 | --- | --- | --- | --- | --- |
+| 2026-11-28 15:23:21 | 一般 | 【2026-11-28 15:22 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7235906231) |
+| 2026-11-28 15:23:13 | 一般 | 【2026-11-28 15:23 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7235904564) |
 | 2026-11-28 14:22:39 | 一般 | 【2026-11-28 14:22 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7235255702) |
 | 2026-11-28 14:21:35 | 一般 | 【2026-11-28 14:21 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7235244224) |
 | 2026-11-28 14:19:42 | 一般 | 【2026-11-28 14:20 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7235224607) |
@@ -22,5 +24,3 @@
 | 2026-11-28 08:21:09 | 執行 | v1.11-b3a 待核月份第 1 批 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7230844369) |
 | 2026-11-28 08:05:33 | 一般 | 【2026-11-28 08:05 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7230640210) |
 | 2026-11-28 08:05:32 | 一般 | 【2026-11-28 08:05 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7230640043) |
-| 2026-11-28 08:03:49 | 執行 | v1.11-b2 r1 D1 修正（v1.16） | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7230617170) |
-| 2026-11-28 07:58:21 | 一般 | 【2026-11-28 07:59 台北時間（UTC+8）】 | [2026-11-28](history/2026-11-28.md) | [留言](https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7230545281) |
