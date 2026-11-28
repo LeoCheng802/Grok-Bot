@@ -1,0 +1,131 @@
+{
+  "research_id": "BACKTEST-READINESS-01",
+  "version": "v1.23",
+  "batch": "funding_sources_nonh8_v1_23",
+  "start_utc": "2026-11-28T12:28:11Z",
+  "end_utc": "2026-11-28T12:38:51Z",
+  "mode": "offline_only_from_already_saved_files",
+  "equivalent_list_in_repo": false,
+  "equivalent_list_note": "No existing funding_source_register or non-8H completeness-unknowns list was found on this branch. Per-batch manifests, inventory r5, evidence jsonl, and saved official files are inputs, not duplicates of this compilation.",
+  "window": {
+    "win_lo_ms": 1672531200000,
+    "win_hi_ms": 1795694400000,
+    "win_hi_inclusive": true,
+    "months_cst": "UTC+8"
+  },
+  "no_official_settlement_schedule_source_used": true,
+  "denominator_policy": "complete=true in inventory r5 is not used as a full-period denominator. inferred_constant_full_month means a single observed interval in {1H,4H,8H} spans the full CST month (which itself lies inside the research window) with no internal missing slots. That expected count is an observed-assumption, inferred and not officially verified. All other cases are not determinable from the saved data alone.",
+  "summary": {
+    "inventory_months": 7536,
+    "official_zips_indexed": 7246,
+    "non8h_months": 3122,
+    "eight_h_only_months": 4409,
+    "empty_official_months": 5,
+    "inferred_constant_full_month": 2499,
+    "non8h_not_determinable": 623,
+    "special_known_gap_rows": 6,
+    "unknown_file_rows": 3128,
+    "observed_intervals": {
+      "4H+2H": 75,
+      "1H+4H+2H": 34,
+      "1H+4H": 96,
+      "4H+1H": 14,
+      "4H": 2814,
+      "8H+4H": 50,
+      "4H+8H+2H": 5,
+      "2H": 8,
+      "8H+1H": 4,
+      "1H+8H": 1,
+      "1H+4H+8H": 6,
+      "1H": 4,
+      "unknown_single_point": 2,
+      "4H+8H": 6,
+      "1H+4H+8H+2H": 1,
+      "8H+2H": 1,
+      "4H+8H+132H": 1
+    },
+    "denominator_status": {
+      "not_determinable_interval_change_or_gaps": 195,
+      "not_determinable_interval_change": 99,
+      "inferred_constant_full_month": 2499,
+      "not_determinable_window_truncated": 198,
+      "not_determinable_span_shorter_than_month": 121,
+      "not_determinable_internal_gaps": 8,
+      "not_determinable_insufficient_points": 2
+    },
+    "rest_2026_11_files": 286,
+    "rest_2026_11_numeric_keys": 39037,
+    "zip_numeric_keys": 941211,
+    "zip_flagged_rows": 2,
+    "non8h_with_opening_boundary_crossings": 2974,
+    "non8h_opening_boundary_crossing_settlements": 6109,
+    "non8h_cst_vs_utc_completeness_may_differ": 3122,
+    "non8h_2026_11_partial_no_month_end_crossing": 212,
+    "non8h_crossing_count_histogram": {
+      "0": 148,
+      "1": 69,
+      "2": 2846,
+      "3": 1,
+      "4": 29,
+      "5": 1,
+      "8": 28
+    },
+    "non8h_boundary_effect": {
+      "utc_month_end_slots_belong_to_next_cst_month": 148,
+      "has_opening_boundary_crossings": 2762,
+      "partial_month_no_month_end_crossing": 212
+    }
+  },
+  "inputs_sha256": {
+    "funding_month_inventory_v1_11_r5.csv": {
+      "bytes": 806951,
+      "sha256": "27361ccc0aeec209979965d72fa235f8fb80818b2c9c813927f80469cf6603f9",
+      "rows": 7536
+    },
+    "funding_archive_l1_isolated.sqlite": {
+      "bytes": 74924032,
+      "sha256": "23ebdab561d5fa48ae34394b451d55b97d3e09af4e8a8809eef93422c40783cc",
+      "rows": 829157,
+      "pr8_path": null
+    }
+  },
+  "files": {
+    "funding_source_register_v1_23.csv": {
+      "bytes": 8012,
+      "sha256": "65dcdbbd45b8b82b7e3323eea076fdc6efc31573f3d8f1ade9ee7a8d899a65ca",
+      "rows": 10
+    },
+    "funding_source_register_v1_23.md": {
+      "bytes": 13393,
+      "sha256": "600aeebea72acacd8b0156e3612f8021758e670fc484fbc86a1ba416aa8d9c06"
+    },
+    "nonh8_completeness_unknowns_v1_23.csv": {
+      "bytes": 3567782,
+      "sha256": "dc4689a663b7552ef8688d6392b18ca8eba3cfec14096d2350502899df8938ce",
+      "rows": 3128
+    },
+    "nonh8_completeness_unknowns_v1_23.md": {
+      "bytes": 832302,
+      "sha256": "7a5d5675bff9562b2230d74bade889a06ee491e41cc8cbe9a12107340808fc22"
+    },
+    "rest_2026_11_file_sha256s_v1_23.txt": {
+      "bytes": 26531,
+      "sha256": "1412704ba9925a6595d12dce55e4b9377a7013ce969a52670422f9f786361038",
+      "files": 286
+    },
+    "build_sources_nonh8_v1_23_public.py": {
+      "bytes": 61749,
+      "sha256": "19d1b69acc6655e8756bc49ac877cf40195202b26d26641a4e60cd44d047f6b6"
+    },
+    "CHANGELOG.md": {
+      "bytes": 6670,
+      "sha256": "6a90e003693a839080fb414a8a1df11615d04c91252b3b6031ba7852190145cd"
+    }
+  },
+  "rule": "v1.23 offline compilation of the funding source register and non-8H completeness unknowns from already-saved files only. No refetch, no backtest, no zero-fill, no universe or window change. No official settlement-schedule source was used; inferred denominators are not verified. Team execution evidence, not ChatGPT runtime certification. FIB-4H-LONG-V3 remains NO-GO; live_approved is false.",
+  "cst_vs_utc_boundary": {
+    "note": "Funding completeness is bucketed by CST (UTC+8) month; performance month buckets are UTC months (復盤 Issue #1 comment 7239320542). Crossings are settlements at >= 16:00Z on the last UTC day of a month, counted one by one. CST 2026-11 is a partial month with no month-end crossing in the window (ends 2026-11-26T12:00:00Z).",
+    "counted_one_by_one": true,
+    "no_formula_substitution": true
+  }
+}
