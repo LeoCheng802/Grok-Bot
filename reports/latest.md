@@ -2,37 +2,54 @@
 
 這是 Issue #1 最新一筆擁有者回報，供 ChatGPT 優先閱讀。
 
-- **時間（Asia/Taipei）**: 2026-11-28 09:05:28
+- **時間（Asia/Taipei）**: 2026-11-28 14:19:42
 - **角色**: 一般
-- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7231413139
+- **留言**: https://github.com/LeoCheng802/Grok-Bot/issues/1#issuecomment-7235224607
 
-<!-- comment_id: 7231413139 -->
+<!-- comment_id: 7235224607 -->
 
-【2026-11-28 09:04 台北時間（UTC+8）】
-[ChatGPT研究交接] BACKTEST-READINESS-01 v1.19｜接受 b3c 交付；PR7 組合入口與影響盤點工具補正
+【2026-11-28 14:20 台北時間（UTC+8）】
+[策略組] BACKTEST-READINESS-01 v1.19｜PR #7 依 ChatGPT v1.19 六點補正＋日損日界參數＋引擎原始碼 SHA
 
-實讀執行7231372486、復盤7231390422及策略7231388459全文。固定PR #8 head f1280dc41d8409ed856fd41c339ff095a67ebe74、PR #7 head 23ff0e26ca2b644addb7f39e44843687402dc4ce；均open/draft未合併。本輪是實體、來源及靜態驗收，未執行任何策略、整合runtime、合成測試或歷史回測。
+- 角色：策略組（Grok 開發交付；群組不跑任何歷史／績效回測）
+- 研究編號：BACKTEST-READINESS-01／COMBO_L02_OPT01_SHARED_50K_10X
+- 版本：v1.19（對應 ChatGPT v1.19 #7231413139；另含 復盤 #7231409226 與 風險管理 意見）
+- 時間：開發與合成測試完成於 2026-11-28 09:24 台北時間（UTC+8）；raw 重抓 2026-11-28T06:19:21Z 六檔 HTTP 200、大小與 SHA 全符
+- 資料截止：本輪沒有新資料、沒有抓任何市場資料；runner 預設窗口仍為 2023-01-01T00:00:00Z ～ 2026-11-26T12:00:00Z；資金費參考 PR #8 head `f1280dc41d8409ed856fd41c339ff095a67ebe74`（未讀取）
+- PR #7：base `23ff0e26ca2b644addb7f39e44843687402dc4ce` → 新 head `c1c8c53d6db32644381480aeab3a8380c5c167c4`（Draft，未合併）
 
-一、接受 b3c 可讀增量
-本端9檔原始bytes核對大小/SHA吻合，生成器AST可解析、未執行。
-- manifest 9715 bytes／eaa3dde246eb723cb91ba5fc855e7d81c3a392374ee4f4061365f90219f07ddd。
-- gzip 23008／8f49f40fa0d47297ab7f4d3b5d21a7b60177f1936079519eccba05ab7137cfda；解壓392828／e99fee683c1736e6b867c6302813e61112e27ec18f27e275f2d38c6a87d6faac。
-- 1862唯一有限費率鍵、27標的28來源月份；8H934／非8H928、raw/snap偏移0。對含b3a的1046593列研究庫唯讀核對，再對已驗b3b1084增量核對：raw/snap重合0、衝突0、原庫SHA不變。未建立衍生新庫。
-- 只讀固定repo內承載全部新增鍵的28份已存ZIP，大小/SHA/列數/區間吻合；獨立解析5116鍵＝3254既有同值＋1862新增，新增集合、raw及Decimal費率與delta完全相同。未向OKX重新抓取，其餘1932份ZIP未本端重新解析。
-- r5維持7536鍵集合，恰1960列只改class/complete；7246／285／1／4及complete true7529／false2／空白5吻合。1960來源/fetch紀錄為metadata交叉一致性核對；全量260643、反向無缺及三切片全量通過仍屬團隊自述，不升格為本端全部來源驗證。
-- 生成器相對b3b主要為第三切片與b3b輸入；有限值、衝突雙方保留／排除乾淨基準、衝突月份complete防呆靜態保留。既有全量比較採浮點容差，勿稱逐字Decimal全等。
-OL/ZK兩空值、RVN2026-11、4格404原因及全期1H/4H應有分母仍未知或未完整。complete與miss_8h=0均不代表全費率完整。已驗資料不重抓、不補零、不改母體，不再派重做三切片。
+**完成事項（逐點）**
+1. impact 工具（新檔 `old_result_impact_scope_v1_19.py`，v1_17 保留不動供稽核）：`--out` 與 `--out.tmp` 都要和所有輸入 resolve／samefile 互斥；既存 .tmp、symlink 一律拒絕；.tmp 以 O_EXCL 建立。
+2. impact：每個 `--details` 必配 `--cutoff-utc`（該次回測真實截止）；open_at_end 區間 (ets, cutoff]；清單缺、schema 錯、筆數未宣告或不符 → UNDETERMINABLE；同 basename 不覆蓋；衝突 delta 鍵不進乾淨集合，碰到持倉就 UNDETERMINABLE。
+3. combo：REST 51001 只作資金費註記，母體保留、不擋進場、缺費率維持未知；只有帶 evidence 的缺價視窗才列不可計算。
+4. combo：跨方向改為同尺度名次交錯、同順位多單先（`--cross-leg-order rank_interleave` 預設；`direction_block` 只作敏感度），各方向內排序不變。共同 12 槽／共同 600U 台北日限／block_any 另列為「另加研究風控」，與既定組合口徑分開，可各自關閉，預設值不變。**候選映射、滑價對齊（0.0005 vs 0.0003）、原 24 槽與隔離修正由 ChatGPT 原研究完成，不在本次範圍**，現值不動。
+5. 組合臂 `R2_100U` 改名 `OPT01_SIG_R2_SIZING_100U`，明載它不是 R2 對照；「R2」指原 RETEST24 R2 獨立基準。舊名會被拒絕。
+6. adapter：先開外層禁網，再讀檔、驗完整大小與 SHA（固定常數，換路徑須另給預期值），通過後只執行已驗的位元組；不符就在任何 adapter 程式碼執行前拒絕。
+7. 各腿日損日界改為參數 `--leg-daily-loss-day`，預設台北日、可選 utc；輸出寫明所用日界。凍結 PREREG v1.0 不改，另出 `COMBO_L02_OPT01_SHARED_PREREG_v1.1_DIFF.json`（DEV-1，待 77／ChatGPT 確認）。
+8. 實跑時把修補後引擎原始碼寫進 out-dir `combo_engine_patched_source.txt`，SHA-256 記在 `combo_result.json`。
 
-二、PR7實體接受，採用前補正
-8檔大小/SHA與策略原文吻合、6 Python AST及預登記JSON可解析。combo40262／a2774753679032b7a64208376dd68cba976d55a9ac9186e433c78ca725de9670；impact6275／b824758fef8d18d64ee776085f5acc0682abfbf9a1bc449338e99663ec6abcd1；L1 48621／0d7e316e1dea61c34942dbc6941d8387edbb7fcaebf01e6ece678d3357b7db15。
-L1單一版本標籤及新outdir防護靜態接受，交易公式未變，不為標籤重跑L1。組合確實把兩腿交同一次引擎呼叫，但還不是本端runtime通過；團隊合成PASS與突變測試另列自述。
+**檔案（research/long_struct_01/）**
+| 檔案 | 大小 (B) | SHA-256 |
+|---|---|---|
+| code/run_combo_l02_opt01_shared_backtest.py | 54769 | 36bd693a777b4284875b1d2313ec849f98e98287d524f3f2be18a683e8627a88 |
+| code/test_combo_l02_opt01_shared_synthetic.py | 31377 | 2b18c2850095175057fac1c9348fa3609eee2887c3b50e3f548f941b5ab4187e |
+| code/old_result_impact_scope_v1_19.py | 14531 | b38926f9fb6c50313c00f6e5cb78b6ebf89d6aa7e84c760733c5edf437a0ad0c |
+| code/test_old_result_impact_scope_v1_19.py | 12152 | 38487f448b6e7767647c071904f2ad170828bfed47ab57bfc496733022922c2c |
+| COMBO_L02_OPT01_SHARED_PREREG_v1.1_DIFF.json | 5520 | 4ef65fbea1b0f335c88422eb4676cd1ef9b9c14a49c5fde3045016c75755b45a |
+| V1_19_DELIVERY_NOTES.md | 11272 | 05a0fd99d211f3912a9a0365e95362fc3a8e9838bd7cbd166c010b3de611e9e1 |
 
-請在同draft補正以下具體點，既有可獨立工作繼續，不派Grok歷史：
-1. impact工具L123–140只檢查--out，未檢查out+".tmp"。若輸入明細即assessment.json.tmp而輸出assessment.json，前置檢查可過、hash檢查後write_text會截斷輸入再rename；既存.tmp別名亦有風險。這是源碼靜態推導，未破壞性重現。寫前統一核輸出及.tmp對所有輸入resolve/samefile互斥，拒既存暫存／symlink，拒絕後來源不變。
-2. impact的open_at_end目前無回測截止上界，窗後增量也會算影響；缺closed明細但有open_at_end可能誤稱不受影響。請綁該次真實截止、驗schema及筆數完整性，缺證據標UNDETERMINABLE；相同basename不得覆蓋hash或assessment，衝突delta不得保留首值後仍作乾淨結論。用最小純合成邊界／碰撞案例驗修，勿跑歷史補名冊。
-3. combo L184–188把資金費REST51001直接變成CST月初起無截止禁進場窗，L239–242據此擋單。該次查詢未列出不能證明歷史整月無交易或必要價格全缺；這不是v1.15授權的排除方式。原母體保留、缺費註記；只有必要價格真缺且有證據才列不可算。
-4. 本入口使用舊adapter與滑價0.0003、多單原24槽及整方向long_first；與原研究已固定實際候選映射／0.0005及跨方向名次交錯不同。沿既有決定保留各方向內排序，跨方向以同尺度名次交錯、同順位多先，不以原-dist/-RSI或整個方向先後代替。共同12槽／共同600日限／block_any是另加研究風控，須與既定組合口徑分列，不能默默替換或把結果差全歸訊號。必要映射與隔離修正由ChatGPT原研究自主完成，不等待另問77。
-5. 「上傳R2」指原RETEST24 R2獨立基準；OPT01訊號套R2倉位的組合臂需另名，不能代替已上傳腳本對照。此項已有本人規格，不再轉問。
-6. combo L439先載入可由CLI指定的short adapter，L441才啟動blocker；兩adapter只有量測hash未比對預期固定SHA。請於動態載入前驗完整大小/SHA並建立外層禁網，或由原研究既有隔離wrapper明確補足；不能以載入後hash不變稱載入前已驗。
+**合成測試（全部純合成；沒跑歷史回測）**
+- 新 combo 測試 16 項：新 runner rc=0 全 PASS；套在 23ff0e26 舊 runner rc=1，10 項 FAIL（第 3、4、5、6、7、8 點各自的新測試與版本標籤），6 項舊有測試 PASS。
+- 新 impact 測試 7 項：v1_19 rc=0 全 PASS；套在 v1_17 rc=1，6 項 FAIL（第 1、2 點），legacy 語意 PASS。
+- v1.17 舊 combo 測試對新 runner rc=1：舊樁 adapter 沒給預期 SHA，被第 6 點拒絕，屬預期的介面變更。
+- 未改的 L1／LONG／RETEST24／impact v1_17 測試與 offline_static_check 全部 rc=0。v1.13 L1 舊測試 case 2 因重用目錄失敗，屬預期，沿用 v1.17 紀錄。
 
-b3b1084＋b3c1862留待原單一研究流程核對持倉影響、固定新輸入後接續必要比較及真正共用50000/10x組合。事件不另開歷史，不把更新checkpoint稱已開跑，不因以上新工具補正回退到等全部非8H完整才出初步結果。私人結果不公開；兩PR維持draft，不合併部署交易。
+**偏離預註冊**：DEV-1 各腿日損 UTC→台北（待確認）；DEV-2 51001 不再整月不可算；DEV-3 跨方向名次交錯；DEV-4 R2 改名。詳見差異檔。
+
+**缺口與待決**
+- 各腿日損日界用台北日或 UTC：待 77／ChatGPT 確認。
+- 另加研究風控在主臂要開著，還是只作敏感度：待決。
+- 候選映射、滑價對齊、24 槽與隔離修正：由 ChatGPT 原研究完成。R2 對照由原研究產出，組合臂不能代替。
+- 團隊合成 PASS 仍屬自述，等 復盤 逐點覆核「舊版失敗、新版通過」。
+
+**下一步**：請 復盤 針對這 8 點覆核，請 ChatGPT 原研究決定待決參數並執行。兩個 PR 都維持 Draft，不合併、不部署、不交易；`live_approved: false`；`FIB-4H-LONG-V3` 維持 `NO-GO`。
